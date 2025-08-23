@@ -1,0 +1,140 @@
+/* Background */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #1da1f2, #17c9a7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120vh;
+}
+
+/* Signup Container */
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  
+}
+
+/* Signup Box */
+.signup-box {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0px 8px 20px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.logo {
+  font-size: 26px;
+  font-weight: bold;
+  color: #1d7ff2;
+  margin-bottom: 5px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+/* Form */
+.form-group {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.form-group-inline {
+  display: flex;
+  gap: 25px;
+}
+
+.form-group label {
+  font-size: 13px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.form-group input:focus {
+  border-color: #1d7ff2;
+  outline: none;
+}
+
+
+
+.checkbox a {
+  color: #1d7ff2;
+  text-decoration: none;
+}
+.form-group.checkbox {
+  display: flex;
+  align-items: center; /* keeps text aligned with checkbox */
+  gap: 6px; /* small space between checkbox and text */
+}
+
+.form-group.checkbox input[type="checkbox"] {
+  width: 18px;   /* adjust size */
+  height: 18px;
+  cursor: pointer;
+}
+
+.form-group.checkbox label {
+  margin: 0;
+  display: inline; /* makes sure label stays inline */
+}
+
+/* Button */
+.btn {
+  width: 100%;
+  padding: 12px;
+  background: #1d7ff2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn:hover {
+  background: #0d6fde;
+}
+
+/* Footer Links */
+.footer-text {
+  font-size: 13px;
+  margin-top: 15px;
+}
+
+.footer-text a {
+  color: #1d7ff2;
+  text-decoration: none;
+}
+
+.back-link {
+  margin-top: 10px;
+}
+
+.back-link a {
+  color: #1d7ff2;
+  text-decoration: none;
+  font-size: 14px;
+}
