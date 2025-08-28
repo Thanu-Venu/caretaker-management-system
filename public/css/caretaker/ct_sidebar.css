@@ -1,0 +1,119 @@
+/* Sidebar Base */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 250px;
+  background: linear-gradient(180deg, #1E88E5, #00BFA5);
+  padding: 20px 0;
+  font-family: Arial, sans-serif;
+  transition: all 0.3s ease;
+  overflow-y: auto;  /* enables vertical scrolling */
+  overflow-x: hidden;
+}
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Logo / Company name */
+.sidebar .logo-details {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+/* Menu items */
+.sidebar ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.sidebar ul li {
+  position: relative;
+  margin: 8px 0; /* gap between items */
+}
+
+
+/* Rotate when submenu open */
+.sidebar ul li a {
+  display: flex;
+  align-items: center;   /* vertically center icon, text, and arrow */
+  text-decoration: none;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.sidebar ul li a i { 
+  font-size: 18px;       /* icon size */
+  margin-right: 10px;    /* space between icon and text */
+}
+
+.sidebar ul li a .link-name {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.sidebar ul li a .arrow {
+  margin-left: auto;      /* pushes arrow to the far right */
+  font-size: 16px;
+  transition: transform 0.3s ease;
+  line-height: 1;
+}
+
+.sidebar ul li.showMenu > a .arrow {
+  transform: rotate(-180deg);
+}
+
+/* Submenu */
+.sidebar ul .sub-menu {
+  font-weight: 300;
+  display: none;
+  flex-direction: column;
+  padding-left: 20px;
+  margin-top: 5px;
+  border-radius: 4px;
+}
+
+.sidebar ul li.showMenu .sub-menu {
+  display: flex;
+}
+
+.sidebar ul .sub-menu li a {
+  padding: 10px 20px;
+  font-size: 14px;
+  color: #fff;
+  opacity: 0.85;
+}
+
+.sidebar ul .sub-menu li a:hover {
+  opacity: 1;
+}
+
+/* Logout at bottom 
+.sidebar .logout {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+}
+
+.sidebar .logout a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.sidebar .logout a:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
