@@ -1,0 +1,92 @@
+/* Sidebar container */
+.sidebar {
+  width: 200px;
+  height: 100vh;
+  background: linear-gradient(180deg, #1E88E5, #00BFA5);
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 20px;
+  overflow-y: auto;
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Branding */
+.sidebar-brand {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 40px;
+}
+
+.brand-name {
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Sidebar menu */
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 18px;
+}
+
+.sidebar-menu li {
+  margin: 10px 0;
+}
+
+.sidebar-menu a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+  transition: background 0.3s;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu li.active > a {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Icons */
+.sidebar-menu i {
+  font-size: 20px;
+}
+
+/* Submenu */
+.submenu .arrow {
+  margin-left: auto;
+  transition: transform 0.3s;
+}
+
+.submenu-list {
+  display: none;
+  list-style: none;
+  padding-left: 30px;
+}
+
+.submenu-list li a {
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.submenu.active .submenu-list {
+  display: block;
+}
+
+.submenu.active .arrow {
+  transform: rotate(180deg);
+}
+
+
+
