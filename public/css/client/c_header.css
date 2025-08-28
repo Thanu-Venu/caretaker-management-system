@@ -1,0 +1,98 @@
+/* General header styling */
+.main-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(90deg, #1E88E5, #00BFA5);
+  padding: 10px 20px;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  min-height: 30px;
+  margin-top: 0px;
+}
+body{
+  margin: 0;
+}
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* smaller space between search and icons */
+}
+/* Sidebar toggle */
+.sidebar-toggle {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: white;
+  cursor: pointer;
+  margin-right: 0;
+}
+/* Logo + Company name */
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.company-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* smaller space between search and icons */
+}
+/* Search bar */
+.search-bar {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  max-width: 500px;
+}
+.search-bar input {
+  width: 100%;
+  padding: 8px 0px 8px 15px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  
+}
+.search-bar i {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #555;
+}
+/* Right icons */
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.header-icons i {
+  color: #222;
+  background: #fff;
+  padding: 6px;
+  border-radius: 50%;
+  transition: 0.2s ease;
+}
+
+.header-icons i:hover {
+  background: #eee;
+}
