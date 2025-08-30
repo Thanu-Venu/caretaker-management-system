@@ -1,9 +1,9 @@
 <?php
 class CaretakerController extends Controller {
 
-    public function index() {
+    public function ct_dashboard() {
         $this->view("caretaker/ct_dashboard");
     }
-
+     
     
 }

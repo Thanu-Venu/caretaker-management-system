@@ -17,12 +17,16 @@ class App {
         $this->controller = new $this->controller;
 
         // method
-        if(isset($url[1])) {
-            if(method_exists($this->controller, $url[1])) {
-                $this->method = $url[1];
-                unset($url[1]);
-            }
-        }
+       // method
+    if(isset($url[1])) {
+    if(method_exists($this->controller, $url[1])) {
+        $this->method = $url[1];
+        unset($url[1]);
+    } else {
+        die("Error: Method " . $url[1] . " does not exist in " . get_class($this->controller));
+    }
+}
+
 
         $this->params = $url ? array_values($url) : [];
         call_user_func_array([$this->controller, $this->method], $this->params);

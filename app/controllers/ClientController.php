@@ -1,7 +1,7 @@
 <?php
 class ClientController extends Controller {
 
-    public function index() {
+    public function c_dashboard() {
         $this->view("client/c_dashboard");
     }
 
