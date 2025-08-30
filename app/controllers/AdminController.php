@@ -5,13 +5,6 @@ class AdminController extends Controller {
         $this->view("admin/ad_dashboard");
     }
 
-<<<<<<< HEAD
-    public function ad_Leave() {
-        $this->view("admin/ad_leave");
-    }
-
-    
-=======
     public function ad_leave() {
         $this->view("admin/ad_leave");
     }
@@ -20,5 +13,5 @@ class AdminController extends Controller {
         $this->view("admin/ad_ctmng"); 
     }
 
->>>>>>> main
+
 }
