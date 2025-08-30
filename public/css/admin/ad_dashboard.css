@@ -3,10 +3,10 @@
     font-weight: 300;
 }
 .admin-dashboard {
-    margin-left: 260px;
+    margin-left: 270px;
     margin-right: 20px;
-  padding: 20px;
-  flex: 1; /* so it adjusts with sidebar */
+    padding: 20px;
+    flex: 1; /* so it adjusts with sidebar */
 }
 
 /* Top Cards */
