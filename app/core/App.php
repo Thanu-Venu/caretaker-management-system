@@ -1,7 +1,7 @@
 <?php
 class App {
     protected $controller = "LandingController";
-    protected $method = "index";
+    protected $method = "home";
     protected $params = [];
 
     public function __construct() {

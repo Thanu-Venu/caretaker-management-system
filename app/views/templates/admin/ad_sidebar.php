@@ -15,39 +15,39 @@
     </div>
 
     <ul class="sidebar-menu">
-      <li><a href="#"><i class='bx bxs-dashboard'></i> Dashboard</a></li>
-      <li><a href="#"><i class='bx bx-user-circle'></i> Caretakers</a></li>
-      <li><a href="#"><i class='bx bx-user'></i> Clients</a></li>
-      <li><a href="#"><i class='bx bx-calendar'></i> Bookings</a></li>
-      <li><a href="#"><i class='bx bx-time'></i> Leave</a></li>
-      <li><a href="#"><i class='bx bx-dollar-circle'></i> Payments</a></li>
-      <li><a href="#"><i class='bx bx-message-detail'></i> Feedback</a></li>
+      <li><a href="http://localhost/CMA/public?url=admin/ad_dashboard"><i class='bx bxs-dashboard'></i> Dashboard</a></li>
+      <li><a href="http://localhost/CMA/public?url=admin/ad_caretakers"><i class='bx bx-user-circle'></i> Caretakers</a></li>
+      <li><a href="http://localhost/CMA/public?url=admin/ad_clients"><i class='bx bx-user'></i> Clients</a></li>
+      <li><a href="http://localhost/CMA/public?url=admin/ad_bookings"><i class='bx bx-calendar'></i> Bookings</a></li>
+      <li><a href="http://localhost/CMA/public?url=admin/ad_leave"><i class='bx bx-time'></i> Leave</a></li>
+      <li><a href="http://localhost/CMA/public?url=admin/ad_payment"><i class='bx bx-dollar-circle'></i> Payments</a></li>
+      <li><a href="http://localhost/CMA/public?url=admin/ad_feedback"><i class='bx bx-message-detail'></i> Feedback</a></li>
       
       <!-- Submenu Example -->
       <li class="submenu">
-        <a href="#"><i class='bx bx-group'></i> Users <i class='bx bx-chevron-down arrow'></i></a>
+        <a href="http://localhost/CMA/public?url=admin/ad_users"><i class='bx bx-group'></i> Users <i class='bx bx-chevron-down arrow'></i></a>
         <ul class="submenu-list">
           
-          <li><a href="#">HR Managers</a></li>
-          <li><a href="#">Caretakers</a></li>
-          <li><a href="#">Clients</a></li>
+          <li><a href="http://localhost/CMA/public?url=admin/ad_users">HR Managers</a></li>
+          <li><a href="http://localhost/CMA/public?url=admin/ad_users">Caretakers</a></li>
+          <li><a href="http://localhost/CMA/public?url=admin/ad_users">Clients</a></li>
         </ul>
       </li>
 
-      <li><a href="#"><i class='bx bx-microphone'></i> Announcements</a></li>
-      <li><a href="#"><i class='bx bx-history'></i> History</a></li>
+      <li><a href="http://localhost/CMA/public?url=admin/ad_announcement"><i class='bx bx-microphone'></i> Announcements</a></li>
+      <li><a href="http://localhost/CMA/public?url=admin/ad_history"><i class='bx bx-history'></i> History</a></li>
       
       <!-- Submenu Example -->
       <li class="submenu">
-        <a href="#"><i class='bx bx-bar-chart'></i> Reports <i class='bx bx-chevron-down arrow'></i></a>
+        <a href="http://localhost/CMA/public?url=admin/ad_reports"><i class='bx bx-bar-chart'></i> Reports <i class='bx bx-chevron-down arrow'></i></a>
         <ul class="submenu-list">
-          <li><a href="#">Monthly</a></li>
-          <li><a href="#">Yearly</a></li>
+          <li><a href="http://localhost/CMA/public?url=admin/ad_reports">Monthly</a></li>
+          <li><a href="http://localhost/CMA/public?url=admin/ad_reports">Yearly</a></li>
         </ul>
       </li>
 
-      <li><a href="#"><i class='bx bx-cog'></i> Settings</a></li>
-      <li class="logout"><a href="#"><i class="bx bx-log-out"></i> Logout</a></li>
+      <li><a href="http://localhost/CMA/public?url=admin/ad_settings"><i class='bx bx-cog'></i> Settings</a></li>
+      <li class="logout"><a href="http://localhost/CMA/public"><i class="bx bx-log-out"></i> Logout</a></li>
 
     </ul>
   </aside>
@@ -60,6 +60,31 @@
         menu.parentElement.classList.toggle('active');
       });
     });
+
+
+  // Get the current "url" parameter from the URL
+  const params = new URLSearchParams(window.location.search);
+  const currentPage = params.get('url'); // e.g., "admin/ad_dashboard"
+
+  // Loop through all sidebar links
+  document.querySelectorAll('.sidebar-menu a').forEach(link => {
+    // Only process links that have a "url" parameter
+    const linkURL = new URL(link.href);
+    const linkPage = linkURL.searchParams.get('url');
+
+    // Compare only if linkPage exists
+    if (linkPage && linkPage === currentPage) {
+      link.parentElement.classList.add('active'); // highlight <li>
+
+      // If the link is inside a submenu, open the parent submenu
+      const submenu = link.closest('.submenu');
+      if(submenu) submenu.classList.add('active');
+    }
+  });
+
+
+
+
   </script>
 
 </body>
