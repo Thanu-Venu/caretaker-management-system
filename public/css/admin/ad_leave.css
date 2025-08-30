@@ -5,17 +5,13 @@
   font-family: 'Poppins', sans-serif;
 }
 
-/* Layout */
-body {
-  display: flex;
-  height: 100vh;
-  background: #f9fbff;
-}
+
 
 /* Main Content */
 .content {   
-  flex: 2;
+  flex: 1;
   padding: 20px;
+  margin-left: 260px;
 }
 
 
