@@ -1,0 +1,70 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Layout */
+body {
+  display: flex;
+  height: 100vh;
+  background: #f9fbff;
+}
+
+/* Main Content */
+.content {   
+  flex: 2;
+  padding: 20px;
+}
+
+
+h1{
+   margin: 25px 0px 30px 0px;
+   font-size: 30px;
+}
+/* Table */
+table {
+  width: 90%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-left: 26px;
+  
+}
+
+thead {
+  background: #f1f5f9 ;
+}
+
+th, td {
+  padding: 20px 20px 20px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  background-color: #f1f5f9;
+}
+
+
+/* Status Labels */
+.status {
+  padding: 8px 40px;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+.status.pending {
+  background: #F2D273;
+  color: #000;
+}
+.status.approved {
+  background: #10ADAD;
+  color: #000;
+  padding-right: 30px;
+}
+.status.rejected {
+  background: #FF6668;
+  color: #000;
+  padding-right: 37px;
+}

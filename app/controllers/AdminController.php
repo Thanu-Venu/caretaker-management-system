@@ -5,7 +5,7 @@ class AdminController extends Controller {
         $this->view("admin/ad_dashboard");
     }
 
-    public function indexLeave() {
+    public function ad_Leave() {
         $this->view("admin/ad_leave");
     }
 
