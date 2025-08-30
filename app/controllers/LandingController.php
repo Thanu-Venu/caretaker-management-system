@@ -1,7 +1,7 @@
 <?php
 class LandingController {
 
-    public function index() {
+    public function home() {
         $this->view("landing/home");
     }
 
