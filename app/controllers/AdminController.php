@@ -16,7 +16,10 @@ class AdminController extends Controller {
     public function ad_caretakers() {
         $this->view("admin/ad_caretakers");
     }
-  
+     public function ad_announcement() {
+        $this->view("admin/ad_announcement"); 
+    }
+
     public function ad_clients() {
         $this->view("admin/ad_clients"); 
     }
