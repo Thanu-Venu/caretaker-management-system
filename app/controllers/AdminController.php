@@ -4,15 +4,19 @@ class AdminController extends Controller {
     public function ad_dashboard() {
         $this->view("admin/ad_dashboard");
     }
-
+    
     public function ad_leave() {
         $this->view("admin/ad_leave");
     }
 
-    public function ad_ctmng() {
-        $this->view("admin/ad_ctmng"); 
+    public function ad_history() {
+        $this->view("admin/ad_history");
     }
 
+    public function ad_caretakers() {
+        $this->view("admin/ad_caretakers");
+    }
+  
     public function ad_clients() {
         $this->view("admin/ad_clients"); 
     }
