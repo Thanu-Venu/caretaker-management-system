@@ -1,0 +1,98 @@
+/* Main content */
+.main-content {
+    flex: 1;
+    background: white;
+    padding: 20px;
+    overflow-y: auto;
+    margin-left: 280px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.search {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+    width: 150px;
+    margin-right: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Form section */
+.announcement h1 {
+    margin-bottom: 20px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+
+form input[type="text"],
+form textarea,
+form select,
+form input[type="file"],
+form input[type="datetime-local"] {
+    width: 50%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+form textarea {
+    height: 80px;
+    resize: none;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button.preview {
+    background-color: #6c757d;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+/* Table */
+.announcement h2 {
+    margin: 30px 0 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+   
+}
+
+table th, table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+     font-size: 14px;
+}
+
+table th {
+    background: #f1f1f1;
+}
