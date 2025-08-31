@@ -1,0 +1,127 @@
+*{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 300;
+}
+.admin-dashboard {
+    margin-left: 270px;
+    margin-right: 20px;
+    padding: 20px;
+    flex: 1; /* so it adjusts with sidebar */
+}
+
+/* Top Cards */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+ 
+}
+
+.card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+   cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover{
+    transform: scale(1.05); /* slightly enlarge */
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15); /* optional shadow for depth */
+}
+
+.card .value {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+.change.positive { color: green; }
+.change.negative { color: red; }
+
+/* Action Buttons */
+.actions {
+  margin: 15px 0;
+}
+
+.actions .btn {
+  background: #1E88E5;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  margin-right: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.actions .btn:hover {
+  background: #1565c0;
+}
+
+/* Recent Activity */
+.recent-activity {
+  background: hsla(0, 0%, 100%, 0.575);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  font-size: 15px;
+  font-weight: 200;
+}
+.search-bar {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  max-width: 300px;
+}
+.search-bar input {
+  width: 100%;
+  padding: 8px 0px 8px 15px;
+  border-radius: 8px;
+  border: 1px solid black;
+  outline: none;
+  font-size: 14px;
+  
+}
+.search-bar i {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #555;
+  cursor: pointer;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+th{
+    font-weight: bold;
+}
+table th, table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+/* Analytics */
+.analytics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.chart-box {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}

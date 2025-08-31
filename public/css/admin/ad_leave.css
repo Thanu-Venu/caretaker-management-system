@@ -1,0 +1,67 @@
+* {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 300;
+}
+
+
+
+/* Main Content */
+.content {   
+  flex: 1;
+  padding: 20px;
+  margin-left: 270px;
+}
+
+
+h1{
+   margin: 10px 0px 30px 0px;
+   font-size: 30px;
+}
+/* Table */
+table {
+  width: 90%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-left: 26px;
+  
+}
+
+thead {
+  background: #f1f5f9 ;
+}
+th{
+   font-weight: bold;
+}
+
+th, td {
+  padding: 20px 20px 20px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  background-color: #f1f5f9;
+ }
+
+
+/* Status Labels */
+.status {
+  padding: 8px 40px;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+.status.pending {
+  background: #F2D273;
+  color: #000;
+}
+.status.approved {
+  background: #10ADAD;
+  color: #000;
+  padding-right: 30px;
+}
+.status.rejected {
+  background: #FF6668;
+  color: #000;
+  padding-right: 37px;
+}
