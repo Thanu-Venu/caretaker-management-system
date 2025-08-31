@@ -24,15 +24,7 @@
       <li><a href="http://localhost/CMA/public?url=admin/ad_feedback"><i class='bx bx-message-detail'></i> Feedback</a></li>
       
       <!-- Submenu Example -->
-      <li class="submenu">
-        <a href="http://localhost/CMA/public?url=admin/ad_users"><i class='bx bx-group'></i> Users <i class='bx bx-chevron-down arrow'></i></a>
-        <ul class="submenu-list">
-          
-          <li><a href="http://localhost/CMA/public?url=admin/ad_users">HR Managers</a></li>
-          <li><a href="http://localhost/CMA/public?url=admin/ad_users">Caretakers</a></li>
-          <li><a href="http://localhost/CMA/public?url=admin/ad_users">Clients</a></li>
-        </ul>
-      </li>
+      <li><a href="http://localhost/CMA/public?url=admin/ad_users"><i class='bx bx-group'></i> Users </a></li>
 
       <li><a href="http://localhost/CMA/public?url=admin/ad_announcement"><i class='bx bx-microphone'></i> Announcements</a></li>
       <li><a href="http://localhost/CMA/public?url=admin/ad_history"><i class='bx bx-history'></i> History</a></li>
@@ -81,11 +73,7 @@
       if(submenu) submenu.classList.add('active');
     }
   });
-
-
-
-
-  </script>
+</script>
 
 </body>
 </html>
