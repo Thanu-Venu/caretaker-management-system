@@ -25,7 +25,17 @@ class AdminController extends Controller {
         $this->view("admin/ad_feedback"); 
     }
 
-   
+    public function ad_paymentsHistory() {
+        $this->view("admin/ad_paymentsHistory");
+    }
+
+    public function ad_paymentsPending() {
+        $this->view("admin/ad_paymentsPending");
+    }
+
+    public function ad_bookings() {
+        $this->view("admin/ad_bookings");
+    }
 
 
 }
