@@ -76,7 +76,7 @@
     <!-- Search Results -->
     <section>
       <h3>Search Results</h3>
-      <h2>Available Caretakers</h2>
+      <h2 class="two">Available Caretakers</h2>
       <div id="caretakersList" class="caretakers"></div>
     </section>
   </main>

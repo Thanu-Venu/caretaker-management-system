@@ -22,7 +22,7 @@ function renderCaretakers(data) {
       
       <h3>${c.name}</h3>
       <p>${c.service} Specialist</p>
-      <img src="public\images\find.png" alt="${c.name}">
+      <img src="/CMA/public/images/find.png" alt="${c.name}">
 
       <div class="exp-loc">
         <p>Exp: ${c.exp}</p>

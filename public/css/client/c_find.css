@@ -72,13 +72,15 @@ h1 {
   
 }
 
-
+.two{
+  margin-bottom: 40px;
+}
 
 
 
 .caretakers {
    margin-left: 100px;
-   margin-right: 400px;
+   margin-right: 300px;
    display: grid;
    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
    gap: 200px;
