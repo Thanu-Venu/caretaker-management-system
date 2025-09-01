@@ -25,7 +25,7 @@ h1 {
 .filter-box {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 2 per row */
-  gap: 20px 0px ; /* row gap, column gap */
+  gap: 30px 10px ; /* row gap, column gap */
 }
 
 .filter-row {
