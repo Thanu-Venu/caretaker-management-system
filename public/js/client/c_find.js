@@ -1,9 +1,9 @@
 const caretakers = [
-  { name: "Sarah Johnson", service: "Elderly Care", img: "Media.png", location: "Jaffna", rating: 5.0, exp: "5 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
-  { name: "Emily Brown", service: "Child Care", img: "Media.png", location: "Colombo", rating: 4.8, exp: "4 Years", about: "Experienced caregiver specializing in child care,offering compassionate support,daily assistance,and ensuring comfort and dignity for children." },
-  { name: "John Smith", service: "Disability Support", img: "Media.png", location: "Kandy", rating: 4.2, exp: "6 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
-  { name: "Maya Silva", service: "Elderly Care", img: "Media.png", location: "Colombo", rating: 3.9, exp: "3 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
-  { name: "Raj Kumar", service: "Elderly Care", img: "Media.png", location: "Jaffna", rating: 3.5, exp: "2 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." }
+  { name: "Sarah Johnson", service: "Elderly Care", img: "public\images\find.png", location: "Jaffna", rating: 5.0, exp: "5 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
+  { name: "Emily Brown", service: "Child Care", img: "public\images\find.png", location: "Colombo", rating: 4.8, exp: "4 Years", about: "Experienced caregiver specializing in child care,offering compassionate support,daily assistance,and ensuring comfort and dignity for children." },
+  { name: "John Smith", service: "Disability Support", img: "public\images\find.png", location: "Kandy", rating: 4.2, exp: "6 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
+  { name: "Maya Silva", service: "Elderly Care", img: "public\images\find.png", location: "Colombo", rating: 3.9, exp: "3 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
+  { name: "Raj Kumar", service: "Elderly Care", img: "public\images\find.png", location: "Jaffna", rating: 3.5, exp: "2 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." }
 ];
 
 const listContainer = document.getElementById("caretakersList");
@@ -22,7 +22,7 @@ function renderCaretakers(data) {
       
       <h3>${c.name}</h3>
       <p>${c.service} Specialist</p>
-      <img src="Media.png" alt="${c.name}">
+      <img src="public\images\find.png" alt="${c.name}">
 
       <div class="exp-loc">
         <p>Exp: ${c.exp}</p>
