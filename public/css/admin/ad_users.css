@@ -57,12 +57,13 @@ table th {
 .add-btn {
   margin-top: 20px;
   padding: 10px 18px;
-  background: #e5e7eb;
+  background: #00BFA5;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   float: right;
   margin-right: 50px;
+  color: white;
 }
 
 .add-btn:hover {
