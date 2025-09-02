@@ -8,5 +8,15 @@ class ClientController extends Controller {
         $this->view("client/c_find");
     }
 
-    
+    public function c_payment() {
+        $this->view("client/c_payment");
+    }
+
+    public function c_paymentSuccess() {
+        $this->view("client/c_paymentSuccess");
+    }
+
+    public function c_confirmBooking() {
+        $this->view("client/c_confirmBooking");
+    }
 }
