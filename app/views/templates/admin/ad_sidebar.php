@@ -20,7 +20,7 @@
       <li><a href="http://localhost/CMA/public?url=admin/ad_clients"><i class='bx bx-user'></i> Clients</a></li>
       <li><a href="http://localhost/CMA/public?url=admin/ad_bookings"><i class='bx bx-calendar'></i> Bookings</a></li>
       <li><a href="http://localhost/CMA/public?url=admin/ad_leave"><i class='bx bx-time'></i> Leave</a></li>
-      <li><a href="http://localhost/CMA/public?url=admin/ad_payment"><i class='bx bx-dollar-circle'></i> Payments</a></li>
+      <li><a href="http://localhost/CMA/public?url=admin/ad_payments"><i class='bx bx-dollar-circle'></i> Payments</a></li>
       <li><a href="http://localhost/CMA/public?url=admin/ad_feedback"><i class='bx bx-message-detail'></i> Feedback</a></li>
       
       
