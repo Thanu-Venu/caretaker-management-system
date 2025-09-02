@@ -29,8 +29,26 @@
 
   <!-- Right icons -->
   <div class="header-icons">
+    <div class="notification-wrapper">
+  <button id="notifBtn" class="notif-btn">
     <i class="fas fa-bell"></i>
+    <span class="notif-count" id="notifCount">3</span>
+  </button>
+
+  <!-- Dropdown Menu -->
+  <div id="notifDropdown" class="notif-dropdown">
+    <ul id="notifList">
+      <!-- Notifications injected by JS -->
+    </ul>
+    <div class="see-all">
+      <a href="<?php echo URLROOT; ?>/admin/ad_notification">See All</a>
+    </div>
+  </div>
+</div>
+
     <i class="fas fa-user-circle"></i>
   </div>
 </div>
 </header>
+  <script src="<?php echo URLROOT; ?>/public/js/notification.js"></script>
+</body>

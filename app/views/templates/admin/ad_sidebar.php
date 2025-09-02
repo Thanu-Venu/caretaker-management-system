@@ -23,20 +23,14 @@
       <li><a href="http://localhost/CMA/public?url=admin/ad_payment"><i class='bx bx-dollar-circle'></i> Payments</a></li>
       <li><a href="http://localhost/CMA/public?url=admin/ad_feedback"><i class='bx bx-message-detail'></i> Feedback</a></li>
       
-      <!-- Submenu Example -->
+      
       <li><a href="http://localhost/CMA/public?url=admin/ad_users"><i class='bx bx-group'></i> Users </a></li>
 
       <li><a href="http://localhost/CMA/public?url=admin/ad_announcement"><i class='bx bx-microphone'></i> Announcements</a></li>
       <li><a href="http://localhost/CMA/public?url=admin/ad_history"><i class='bx bx-history'></i> History</a></li>
       
-      <!-- Submenu Example -->
-      <li class="submenu">
-        <a href="http://localhost/CMA/public?url=admin/ad_reports"><i class='bx bx-bar-chart'></i> Reports <i class='bx bx-chevron-down arrow'></i></a>
-        <ul class="submenu-list">
-          <li><a href="http://localhost/CMA/public?url=admin/ad_reports">Monthly</a></li>
-          <li><a href="http://localhost/CMA/public?url=admin/ad_reports">Yearly</a></li>
-        </ul>
-      </li>
+      
+      <li><a href="http://localhost/CMA/public?url=admin/ad_reports"><i class='bx bx-bar-chart'></i> Reports</a></li>
 
       <li><a href="http://localhost/CMA/public?url=admin/ad_settings"><i class='bx bx-cog'></i> Settings</a></li>
       <li class="logout"><a href="http://localhost/CMA/public"><i class="bx bx-log-out"></i> Logout</a></li>
