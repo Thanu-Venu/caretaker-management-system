@@ -58,63 +58,63 @@
             <tr>
               <td>#12345</td>
               <td>Emily Carter</td>
-              <td>Elderly Care</td>
+              <td>Elder Care</td>
               <td>2024-03-15</td>
               <td><span class="status pending">Pending</span></td>
             </tr>
             <tr>
               <td>#12346</td>
               <td>David Lee</td>
-              <td>Child Care</td>
+              <td>Babysitting</td>
               <td>2024-03-16</td>
               <td><span class="status ongoing">Ongoing</span></td>
             </tr>
             <tr>
               <td>#12347</td>
               <td>Sarah Johnson</td>
-              <td>Elderly Care</td>
+              <td>Cleaning and Cooking</td>
               <td>2024-03-17</td>
               <td><span class="status completed">Completed</span></td>
             </tr>
             <tr>
               <td>#12348</td>
               <td>Michael Brown</td>
-              <td>Child Care</td>
+              <td>Babysitting</td>
               <td>2024-03-18</td>
               <td><span class="status pending">Pending</span></td>
             </tr>
             <tr>
               <td>#12349</td>
               <td>Jessica Davis</td>
-              <td>Elderly Care</td>
+              <td>Elder Care</td>
               <td>2024-03-19</td>
               <td><span class="status ongoing">Ongoing</span></td>
             </tr>
             <tr>
               <td>#12350</td>
               <td>Kevin Wilson</td>
-              <td>Child Care</td>
+              <td>Babysitting</td>
               <td>2024-03-20</td>
               <td><span class="status completed">Completed</span></td>
             </tr>
             <tr>
               <td>#12351</td>
               <td>Amanda Taylor</td>
-              <td>Elderly Care</td>
+              <td>Elder Care</td>
               <td>2024-03-21</td>
               <td><span class="status pending">Pending</span></td>
             </tr>
             <tr>
               <td>#12352</td>
               <td>Brian Clark</td>
-              <td>Child Care</td>
+              <td>Cleaning & Cooking</td>
               <td>2024-03-22</td>
               <td><span class="status ongoing">Ongoing</span></td>
             </tr>
             <tr>
               <td>#12353</td>
               <td>Melissa White</td>
-              <td>Elderly Care</td>
+              <td>Elder Care</td>
               <td>2024-03-23</td>
               <td><span class="status completed">Completed</span></td>
             </tr>
