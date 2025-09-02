@@ -12,4 +12,8 @@ class ClientController extends Controller {
     public function c_paymentSuccess() {
         $this->view("client/c_paymentSuccess");
     }
+
+    public function c_confirmBooking() {
+        $this->view("client/c_confirmBooking");
+    }
 }
