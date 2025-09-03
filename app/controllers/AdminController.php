@@ -8,7 +8,9 @@ class AdminController extends Controller {
     public function ad_leave() {
         $this->view("admin/ad_leave");
     }
-
+    public function ad_announcement() {
+        $this->view("admin/ad_announcement");
+    }
     public function ad_history() {
         $this->view("admin/ad_history");
     }
@@ -29,7 +31,13 @@ class AdminController extends Controller {
         $this->view("admin/ad_feedback"); 
     }
 
-   
+    public function ad_reports() {
+        $this->view("admin/ad_reports"); 
+    }
+
+     public function ad_settings() {
+        $this->view("admin/ad_settings"); 
+    }
 
 
 }

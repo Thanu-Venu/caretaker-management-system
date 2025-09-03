@@ -15,7 +15,7 @@
     <ul class="menu">
       <li><a href="#"><i class="bx bxs-dashboard"></i> Dashboard</a></li>
 
-      <li><a href="#"><i class="bx bx-search"></i> Find Caretakers</a></li>
+      <li><a href="http://localhost/CMA/public?url=client/c_find"><i class="bx bx-search"></i> Find Caretakers</a></li>
 
       <!-- My Bookings Dropdown -->
       <li class="submenu">
