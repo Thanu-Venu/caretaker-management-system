@@ -1,0 +1,137 @@
+* {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 300;
+}
+
+.payments-container {
+  width: 100%;
+  max-width: 1200px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 25px;
+  margin-left: 270px;
+  margin-right: 20px;
+  flex: 1;
+
+}
+
+.payments-header {
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.payments-header h1 {
+  font-size: 22px;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.tab-section h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 10px 20px;
+  font-size: 15px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #374151;
+}
+
+.tab-btn.active {
+  border-bottom: 2px solid #007bff;
+  color: #007bff;
+  font-weight: 600;
+
+}
+
+/* Search */
+.search-box {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  margin-bottom: 20px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px 15px 10px 40px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+}
+
+.search-box i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+/* Table */
+.table-container {
+  overflow-x: auto;
+}
+
+.payments-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.payments-table th,
+.payments-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.payments-table th {
+  background-color: #f8f8f8;
+  font-weight: 600;
+  color: #555;
+  font-size: 15px;
+}
+
+.payments-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.payments-table td {
+  color: #444;
+  font-size: 14px;
+}
+
+/* Status */
+.status {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.status.completed {
+  background-color: #e6f7ee;
+  color: #28a745;
+}
+
+.status.pending {
+  background-color: #fde2e7;
+  color: #a4161a;
+}
