@@ -53,35 +53,35 @@
             <tr>
               <td>Sophia Bennett</td>
               <td>Ethan Carter</td>
-              <td data-rating="5">★★★★★</td>
+              <td data-rating="5" class="stars">★★★★★</td>
               <td>Excellent service, very attentive.</td>
               <td data-date="2025-07-20">2025-07-20</td>
             </tr>
             <tr>
               <td>Liam Harper</td>
               <td>Olivia Davis</td>
-              <td data-rating="4">★★★★☆</td>
+              <td data-rating="4" class="stars">★★★★☆</td>
               <td>Good, but could improve on punctuality.</td>
               <td data-date="2025-07-18">2025-07-18</td>
             </tr>
             <tr>
               <td>Ava Morgan</td>
               <td>Noah Wilson</td>
-              <td data-rating="3">★★★☆☆</td>
+              <td data-rating="3" class="stars">★★★☆☆</td>
               <td>Highly recommend, very professional.</td>
               <td data-date="2025-07-15">2025-07-15</td>
             </tr>
             <tr>
               <td>Jackson Reed</td>
               <td>Isabella Clark</td>
-              <td data-rating="3">★★★☆☆</td>
+              <td data-rating="3" class="stars">★★★☆☆</td>
               <td>Satisfactory, but communication could be better.</td>
               <td data-date="2025-07-12">2025-07-12</td>
             </tr>
             <tr>
               <td>Chloe Foster</td>
               <td>Lucas Turner</td>
-              <td data-rating="5">★★★★★</td>
+              <td data-rating="5" class="stars">★★★★★</td>
               <td>Outstanding care, very compassionate.</td>
               <td data-date="2025-07-10">2025-07-10</td>
             </tr>
