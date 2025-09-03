@@ -8,5 +8,8 @@ class ClientController extends Controller {
         $this->view("client/c_find");
     }
 
-    
+    public function c_feedback() {
+        $this->view("client/c_feedback");
+    }
+
 }
