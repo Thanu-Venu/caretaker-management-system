@@ -16,35 +16,36 @@
       <div class="booking-header">
         <h1>Service Booking Management</h1>
       </div>
+
+      <!-- Filter Section -->
       <div class="filter-section">
         <div class="filter-group">
           <label for="type">Type</label>
-          <select id="type">
-            <option>All</option>
-            <option>Elder Care</option>
-            <option>Babysitting</option>
-            <option>Cleaning & Cooking</option>
+          <select id="type" onchange="filterTable()">
+            <option value="All">All</option>
+            <option value="Elder Care">Elder Care</option>
+            <option value="BabySitter">BabySitter</option>
+            <option value="Maid">Maid</option>
           </select>
         </div>
         <div class="filter-group">
-          <label for="date">Date</label>
-          <select id="date">
-            <option>All</option>
-          </select>
+          <label for="dateFilter">Date</label>
+          <input type="date" id="date" onchange="filterTable()">
         </div>
         <div class="filter-group">
           <label for="status">Status</label>
-          <select id="status">
-            <option>All</option>
-            <option>Pending</option>
-            <option>Ongoing</option>
-            <option>Completed</option>
+          <select id="status" onchange="filterTable()">
+            <option value="All">All</option>
+            <option value="Pending">Pending</option>
+            <option value="Ongoing">Ongoing</option>
+            <option value="Completed">Completed</option>
           </select>
         </div>
       </div>
 
+      <!-- Table Section -->
       <div class="table-container">
-        <table class="booking-table">
+        <table class="booking-table" id="bookingTable">
           <thead>
             <tr>
               <th>Request ID</th>
@@ -65,21 +66,21 @@
             <tr>
               <td>#12346</td>
               <td>David Lee</td>
-              <td>Babysitting</td>
+              <td>BabySitter</td>
               <td>2024-03-16</td>
               <td><span class="status ongoing">Ongoing</span></td>
             </tr>
             <tr>
               <td>#12347</td>
               <td>Sarah Johnson</td>
-              <td>Cleaning and Cooking</td>
+              <td>Maid</td>
               <td>2024-03-17</td>
               <td><span class="status completed">Completed</span></td>
             </tr>
             <tr>
               <td>#12348</td>
               <td>Michael Brown</td>
-              <td>Babysitting</td>
+              <td>BabySitter</td>
               <td>2024-03-18</td>
               <td><span class="status pending">Pending</span></td>
             </tr>
@@ -93,7 +94,7 @@
             <tr>
               <td>#12350</td>
               <td>Kevin Wilson</td>
-              <td>Babysitting</td>
+              <td>BabySitter</td>
               <td>2024-03-20</td>
               <td><span class="status completed">Completed</span></td>
             </tr>
@@ -107,7 +108,7 @@
             <tr>
               <td>#12352</td>
               <td>Brian Clark</td>
-              <td>Cleaning & Cooking</td>
+              <td>Maid</td>
               <td>2024-03-22</td>
               <td><span class="status ongoing">Ongoing</span></td>
             </tr>
@@ -123,5 +124,7 @@
       </div>
     </div>
   </div>
+
+  <script src="<?php echo URLROOT; ?>/public/js/admin/ad_bookings.js"></script>
 </body>
 </html>
