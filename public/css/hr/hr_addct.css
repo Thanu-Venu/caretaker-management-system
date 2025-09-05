@@ -14,7 +14,7 @@
 }
 
 .add-btn {
-  background: #00bfa5;
+  background: linear-gradient(to right, #69aeeb, #94f0e4);
   border: none;
   padding: 8px 14px;
   border-radius: 20px;
@@ -75,22 +75,19 @@ th, td {
 }
 
 .status {
-  padding: 4px 30px;
+  padding: 4px 14px;
   border-radius: 12px;
   font-size: 16px;
 }
 
 .status.active {
-  color: #24ab44;
-  background: #00bfa5;
-  padding-right: 20px;
-
+  background: #e6f7ee;
+  color: #28a745;;
 }
 
 .status.inactive {
   background: #fde2e7;
   color: #a4161a;
-  padding-right: 23px
 }
 
 .actions i {
