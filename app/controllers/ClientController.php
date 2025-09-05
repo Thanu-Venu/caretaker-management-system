@@ -7,7 +7,11 @@ class ClientController extends Controller {
     public function c_find() {
         $this->view("client/c_find");
     }
-
+  
+    public function c_feedback() {
+        $this->view("client/c_feedback");
+    }
+  
     public function c_payment() {
         $this->view("client/c_payment");
     }
