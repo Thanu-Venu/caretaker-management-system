@@ -43,16 +43,16 @@ body {
   padding: 20px;
   border-radius: 12px;
   text-align: center;
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 200px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .card span {
   display: block;
   margin-top: 8px;
-  font-size: 18px;
-  color: #00bfa5;
+  font-size: 14px;
+  color: black;
 }
 
 .table-section {
@@ -77,8 +77,8 @@ body {
 }
 
 .table-section th {
-  background: #00bfa5;
-  color: white;
+ background: #f1f1f1;
+ color: black;
 }
 
 .chart-section {
