@@ -5,6 +5,8 @@
 
 .container {
     display: flex;
+    justify-content: center;
+    align-items: center;
     min-height: 85vh;
     margin-left: 270px;
     margin-right: 20px;
@@ -20,6 +22,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    min-height: 75vh;    
 }
 
 /* Booking Card */
