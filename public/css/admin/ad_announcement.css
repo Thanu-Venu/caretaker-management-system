@@ -59,15 +59,15 @@ form textarea {
 button {
     padding: 10px 20px;
     border: none;
-    background-color: #007bff;
-    color: #fff;
+    background: linear-gradient(to right, #69aeeb, #94f0e4);
+    color: black;
     font-weight: bold;
     border-radius: 6px;
     cursor: pointer;
 }
 
-button.preview {
-    background-color: #6c757d;
+.buttons .preview {
+    background-color: #8d98a1;
 }
 
 button:hover {

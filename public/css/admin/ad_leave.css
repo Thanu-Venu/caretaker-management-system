@@ -3,8 +3,6 @@
   font-weight: 300;
 }
 
-
-
 /* Main Content */
 .content {   
   flex: 1;
@@ -12,11 +10,12 @@
   margin-left: 270px;
 }
 
-
 h1{
    margin: 10px 0px 30px 0px;
-   font-size: 30px;
+   font-size: 28px;
+   font-weight: 700;
 }
+
 /* Table */
 table {
   width: 90%;
@@ -29,18 +28,23 @@ table {
 }
 
 thead {
-  background: #f1f5f9 ;
+  background: #f1f4f8 ;
 }
+
 th{
    font-weight: bold;
+   font-size: 18px;
 }
 
 th, td {
   padding: 20px 20px 20px 15px;
   text-align: left;
   border-bottom: 1px solid #eee;
-  background-color: #f1f5f9;
- }
+}
+
+td {
+  background: #fff;
+}
 
 
 /* Status Labels */
@@ -52,16 +56,16 @@ th, td {
   text-transform: capitalize;
 }
 .status.pending {
-  background: #F2D273;
-  color: #000;
+  background-color: #fff5c3;
+  color: #c58d00;
 }
 .status.approved {
-  background: #10ADAD;
-  color: #000;
+  background-color: #d3f8e4;
+  color: #24ab44;
   padding-right: 30px;
 }
 .status.rejected {
-  background: #FF6668;
-  color: #000;
+  background: #fde2e7;
+  color: #a4161a;
   padding-right: 37px;
 }

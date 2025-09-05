@@ -87,3 +87,14 @@
 .client-table td i.bx-trash {
   color: red;
 }
+
+.client-table td i.bx-show:hover {
+  color: #000;
+}
+
+.client-table td i.bx-edit:hover {
+  color: #0056b3;
+}
+.client-table td i.bx-trash:hover {
+  color: #a71d2a;
+}

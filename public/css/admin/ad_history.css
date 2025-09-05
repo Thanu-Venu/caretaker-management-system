@@ -1,5 +1,5 @@
 *{
-   font-family: Arial, Helvetica, sans-serif sans-serif;
+   font-family: Arial, Helvetica, sans-serif;
   font-weight :300px;
 }
 
@@ -27,7 +27,7 @@ h1{
    border-radius: 10px;   
    border: 1px solid #ccc;
    outline: none;
-   background-color: #E5F5F5;
+   background-color: #f2f4f8;
 
 }
 
@@ -35,17 +35,22 @@ h1{
    display: flex;
    margin-left: 10px;
    padding: 10px 25px 10px  25px ;
-   background: #007bff;
-   color: white;
+   background: linear-gradient(to right, #69aeeb, #94f0e4);
+   color: black;
    border: none;
    border-radius: 10px;
    cursor: pointer;
+   font-weight: 600;
+}
+
+.search button:hover {
+  background: linear-gradient(to right, #4ea4ee, #66f0dd);
 }
 
 .filters select {
   margin: 0 15px 30px 0px;
   padding: 5px;
-  background-color: #E5F5F5;
+  background-color: #f2f4f8;
   border-radius: 6px; 
   border-color: #E5F5F5;
   border: 1px solid #ccc;
@@ -62,13 +67,13 @@ table {
 }
 
 thead {
-  background: #f1f5f9;
+  background: #f1f4f8;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 th, td {
   padding: 15px;
   text-align: left;
-  border-bottom: 1px solid #e6a9a9;
-  border-left: 1px solid #e6a9a9;
-  border-right: 1px solid #e6a9a9;
+  border-bottom: 1px solid #d7d7d7;
 }
