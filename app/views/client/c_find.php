@@ -14,13 +14,11 @@
   <main class="content">
     <h1>Find the Perfect Caretaker</h1>
     <p>Browse our qualified professionals and book the care you need</p>
-    <h2>Search Filters</h2>
 
     <!-- Search Filters -->
     <section class="filters">
-  <h2>Filter Results</h2>
-  <div class="filter-box">
-   <div class="filter-row">
+    <div class="filter-box">
+    <div class="filter-row">
 
     <div class="filter-group">
       <label for="serviceFilter">Service Type</label>
@@ -29,6 +27,7 @@
         <option value="Elderly Care">Elderly Care</option>
         <option value="Child Care">Child Care</option>
         <option value="Disability Support">Disability Support</option>
+        <option value="Cleaning & Cooking">Cleaning & Cooking</option>
       </select>
     </div>
     
@@ -41,6 +40,7 @@
         <option value="Jaffna">Jaffna</option>
         <option value="Colombo">Colombo</option>
         <option value="Kandy">Kandy</option>
+        <option value="Matara">Matara</option>
       </select>
     </div>
     </div>
@@ -64,14 +64,9 @@
       <button onclick="clearFilters()">Clear Filters</button>
     </div>
     </div>
-    
 
   </div>
-</section>
-
-
-      </div>
-    </section>
+  </section>
 
     <!-- Search Results -->
     <section>

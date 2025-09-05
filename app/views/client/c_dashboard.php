@@ -72,7 +72,7 @@
   <section class="recent-bookings">
     <h2>Recent Bookings</h2>
     <div class="booking">
-      <img src="../public/images/ct_image.png" alt="">
+      <img src="../public/images/find.png" alt="">
       <div>
         <h3>Elderly Care with Sarah Johnson</h3>
         <p>12/15/2024 at 12:00 PM • 4 hours</p>
@@ -80,7 +80,7 @@
       <span class="status confirmed">Confirmed</span>
     </div>
     <div class="booking">
-      <img src="../public/images/ct_image.png" alt="">
+      <img src="../public/images/find.png" alt="">
       <div>
         <h3>Medical Care with Michael Chen</h3>
         <p>12/18/2024 at 07:30 PM • 2 hours</p>
@@ -88,7 +88,7 @@
       <span class="status confirmed">Confirmed</span>
     </div>
     <div class="booking">
-      <img src="../public/images/ct_image.png" alt="">
+      <img src="../public/images/find.png" alt="">
       <div>
         <h3>Child Care with Emily Rodriguez</h3>
         <p>12/20/2024 at 01:30 PM • 5 hours</p>
