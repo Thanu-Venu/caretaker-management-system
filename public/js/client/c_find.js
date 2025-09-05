@@ -1,9 +1,10 @@
 const caretakers = [
   { name: "Sarah Johnson", service: "Elderly Care", img: "public\images\find.png", location: "Jaffna", rating: 5.0, exp: "5 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
   { name: "Emily Brown", service: "Child Care", img: "public\images\find.png", location: "Colombo", rating: 4.8, exp: "4 Years", about: "Experienced caregiver specializing in child care,offering compassionate support,daily assistance,and ensuring comfort and dignity for children." },
-  { name: "John Smith", service: "Disability Support", img: "public\images\find.png", location: "Kandy", rating: 4.2, exp: "6 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
+  { name: "John Smith", service: "Disability Support", img: "public\images\find-male.jpg", location: "Kandy", rating: 4.2, exp: "6 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
   { name: "Maya Silva", service: "Elderly Care", img: "public\images\find.png", location: "Colombo", rating: 3.9, exp: "3 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
-  { name: "Raj Kumar", service: "Elderly Care", img: "public\images\find.png", location: "Jaffna", rating: 3.5, exp: "2 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." }
+  { name: "Raj Kumar", service: "Elderly Care", img: "public\images\find-male.jpg", location: "Jaffna", rating: 3.5, exp: "2 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
+  { name: "Kala Mass", service: "Maid", img: "public\images\find.jpg", location: "Matara", rating: 4.5, exp: "4 Years", about: "Experienced maid specializing in household chores, cleaning, and assisting families with daily routines, ensuring a neat and comfortable home environment." }
 ];
 
 const listContainer = document.getElementById("caretakersList");
