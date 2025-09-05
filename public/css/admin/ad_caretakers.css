@@ -14,7 +14,7 @@
 }
 
 .add-btn {
-  background: #e8edf7;
+  background: #00bfa5;
   border: none;
   padding: 8px 14px;
   border-radius: 20px;
@@ -75,7 +75,8 @@ th, td {
 }
 
 .status.active {
-  background: #28a745;
+  background: #00bfa5;
+  padding-right: 20px;
 }
 
 .status.inactive {
