@@ -1,66 +1,38 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HR Manager Sidebar</title>
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_sidebar.css">
+  <title>SmartCare Sidebar</title>
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_announcement.css">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
   <div class="sidebar">
-   <br><br><br>
+  
+      <div class="logo">
 
-    <ul class="menu">
-      <li><a href="#"><i class='bx bx-home'></i><span>Dashboard</span></a></li>
-
-      <li class="submenu">
-        <a href="#"><i class='bx bx-group'></i><span>Caretakers</span><i class='bx bx-chevron-down arrow'></i></a>
-        <ul class="submenu-list">
-          <li><a href="#">Add Caretaker</a></li>
-          <li><a href="#">Manage Caretakers</a></li>
-        </ul>
-      </li>
-
-      <li><a href="#"><i class='bx bx-calendar'></i><span>Schedule</span></a></li>
-
-      <li class="submenu">
-        <a href="#"><i class='bx bx-time'></i><span>Leave</span><i class='bx bx-chevron-down arrow'></i></a>
-        <ul class="submenu-list">
-          <li><a href="#">Request Leave</a></li>
-          <li><a href="#">Leave History</a></li>
-        </ul>
-      </li>
-
-      <li><a href="#"><i class='bx bx-error'></i><span>Complaints</span></a></li>
-      <li><a href="#"><i class='bx bx-message'></i><span>Feedback</span></a></li>
-      <li><a href="#"><i class='bx bx-history'></i><span>History</span></a></li>
-
-      <li class="submenu">
-        <a href="#"><i class='bx bx-bar-chart'></i><span>Reports</span><i class='bx bx-chevron-down arrow'></i></a>
-        <ul class="submenu-list">
-          <li><a href="#">Monthly Reports</a></li>
-          <li><a href="#">Yearly Reports</a></li>
-        </ul>
-      </li>
-
-      <li><a href="#"><i class='bx bx-cog'></i><span>Settings</span></a></li>
-    </ul>
-
-    <div class="logout">
-      <a href="#"><i class='bx bx-log-out'></i><span>Logout</span></a>
+      <h2>SmartCare</h2>
     </div>
+    <ul class="nav-links">
+      
+      <li><a href="#"><i class="fa fa-home"></i><span>Dashboard</span></a></li>
+      <li class="active"><a href="#"><i class="fa fa-users"></i><span>Caretakers</span></a></li>
+      <li><a href="#"><i class="fa fa-user-shield"></i><span>Priority</span></a></li>
+      <li><a href="#"><i class="fa fa-bookmark"></i><span>Schedule</span></a></li>
+      <li><a href="#"><i class="fa fa-calendar-minus"></i><span>Leave</span></a></li>
+      <li><a href="#"><i class="fa fa-book-open"></i><span>Complaints</span></a></li>
+      <li><a href="#"><i class="fa fa-comment-dots"></i><span>Feedback</span></a></li>
+      <li><a href="#"><i class="fa fa-history"></i><span>History</span></a></li>
+      <li><a href="#"><i class="fa fa-chart-bar"></i><span>Reports</span></a></li>
+      <li><a href="#"><i class="fa fa-cog"></i><span>Settings</span></a></li>
+    </ul>
   </div>
 
-  <script>
-    // Toggle submenu
-    document.querySelectorAll(".submenu > a").forEach(menu => {
-      menu.addEventListener("click", function(e) {
-        e.preventDefault();
-        let parent = this.parentElement;
-        parent.classList.toggle("open");
-      });
-    });
-  </script>
+
+
+  <script src="script.js"></script>
 </body>
 </html>
