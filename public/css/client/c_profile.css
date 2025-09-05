@@ -1,0 +1,123 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial,  Helvetica, sans-serif;
+  font-weight:300;
+}
+
+.sidebar {
+  position: fixed;       /* stick it on the left */
+  top: 10;           /* same as your margin-left in .container */
+  height: 100vh;         /* full viewport height */
+      
+}
+
+.container {
+  display: flex;
+  margin-left: 270px;
+  padding: 20px;
+  
+}
+
+
+
+/* Main Content */
+.main-content {
+  flex: 1;
+ padding: 20px 30px; /* a bit tighter */
+}
+
+
+/* Edit Profile */
+.edit-profile {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.05);
+}
+
+.edit-profile h1 {
+  font-size: 22px; /* little bigger */
+}
+
+.edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.profile-pic {
+  width: 55px; /* smaller circle */
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.form-group {
+  margin-bottom: 30px;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 14px; /* slightly bigger */
+}
+
+.form-group input,
+.form-group select {
+   width: 100%;   /* full width */
+   padding: 10px;
+   border: 1px solid #ccc;
+   border-radius: 6px;
+   font-size: 14px;
+   box-sizing: border-box; /* prevents overflow */
+}
+
+.profile-header {
+  display: flex;
+  gap: 5px;
+}
+
+.half {
+  flex: 1;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon i {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: green;
+  font-size: 13px;
+}
+
+/* Buttons */
+.form-actions {
+  text-align: right;
+  margin-top: 15px;
+  text-align: left;
+}
+
+.cancel-btn {
+  background: none;
+  border: 1px solid #ccc;
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+.save-btn {
+  background: linear-gradient(to right, #1eb1f7, #1a80d3);
+  border: none;
+  padding: 7px 14px;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
