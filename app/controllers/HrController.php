@@ -13,6 +13,12 @@ class HrController extends Controller {
         $this->view("hr/hr_managect");
     }
 
+    public function hr_history() {
+        $this->view("hr/hr_history");
+    }
 
+    public function hr_leave() {
+        $this->view("hr/hr_leave");
+    }    
     
 }
