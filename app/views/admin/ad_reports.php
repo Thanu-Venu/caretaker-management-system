@@ -16,7 +16,7 @@
 
     <!-- Page Header -->
     <div class="reports-header">
-      <h2>Reports Dashboard</h2>
+      <h2>Reports</h2>
       <div class="filters">
         <label for="from">From:</label>
         <input type="date" id="fromDate">

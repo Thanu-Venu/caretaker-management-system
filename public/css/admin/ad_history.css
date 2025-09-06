@@ -1,6 +1,6 @@
 *{
    font-family: Arial, Helvetica, sans-serif;
-  font-weight :300px;
+
 }
 
 .content{
@@ -23,11 +23,12 @@ h1{
 
 .search input{
    flex: 1;   
-   padding: 10px 900px 10px 10px;     
+   padding: 10px 90px 10px 10px;     
    border-radius: 10px;   
    border: 1px solid #ccc;
    outline: none;
-   background-color: #f2f4f8;
+   background-color: #f5f5f5;
+
 
 }
 
@@ -35,8 +36,8 @@ h1{
    display: flex;
    margin-left: 10px;
    padding: 10px 25px 10px  25px ;
-   background: linear-gradient(to right, #69aeeb, #94f0e4);
-   color: black;
+   background: #00bfa5;
+   color: white;
    border: none;
    border-radius: 10px;
    cursor: pointer;
@@ -50,9 +51,9 @@ h1{
 .filters select {
   margin: 0 15px 30px 0px;
   padding: 5px;
-  background-color: #f2f4f8;
+  background-color: #f5f5f5;
   border-radius: 6px; 
-  border-color: #E5F5F5;
+  border-color: #f5f5f5;
   border: 1px solid #ccc;
 }
 
@@ -67,13 +68,16 @@ table {
 }
 
 thead {
-  background: #f1f4f8;
+
   font-size: 18px;
   font-weight: 700;
+  background: #f5f5f5;
 }
 
 th, td {
   padding: 15px;
   text-align: left;
   border-bottom: 1px solid #d7d7d7;
+  font-size: 14px;
+
 }

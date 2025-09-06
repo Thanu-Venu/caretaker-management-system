@@ -59,8 +59,8 @@ form textarea {
 button {
     padding: 10px 20px;
     border: none;
-    background: linear-gradient(to right, #69aeeb, #94f0e4);
-    color: black;
+    background-color: #00bfa5;
+    color: #fff;
     font-weight: bold;
     border-radius: 6px;
     cursor: pointer;

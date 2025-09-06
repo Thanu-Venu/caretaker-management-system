@@ -14,7 +14,7 @@
 }
 
 .add-btn {
-  background: linear-gradient(to right, #69aeeb, #94f0e4);
+  background: #00bfa5;
   border: none;
   padding: 8px 14px;
   border-radius: 20px;
@@ -81,8 +81,10 @@ th, td {
 }
 
 .status.active {
-  background-color: #d3f8e4;
   color: #24ab44;
+  background: #00bfa5;
+  padding-right: 20px;
+
 }
 
 .status.inactive {
