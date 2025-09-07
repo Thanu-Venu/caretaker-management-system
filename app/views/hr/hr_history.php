@@ -1,12 +1,13 @@
 <?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
+<?php include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>History Logs - SmartCare</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_history.css">
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_history.css">
 </head>
 <body>
   
@@ -61,6 +62,6 @@
     </section>
   </main>
 
-  <script src="<?php echo URLROOT; ?>/public/js/admin/ad_history.js"></script>
+  <script src="<?php echo URLROOT; ?>/public/js/hr/hr_history.js"></script>
 </body>
 </html>

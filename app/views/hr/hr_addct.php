@@ -1,5 +1,5 @@
-<?php  include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php  include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
+<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Caretaker Management</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_caretakers.css">
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_addct.css">
   <link rel="stylesheet" 
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
