@@ -2,14 +2,21 @@
   font-family: Arial,Arial, Helvetica, sans-serif sans-serif;
   font-weight: 300;
 }
+
 .content{
    flex:1;
    padding: 20px;
    margin-left: 270px;
 }
+
 h1 {
   margin-bottom: 10px;
-  font-style: bold;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.content p {
+  color: #252424;
 }
 
 
@@ -19,20 +26,22 @@ h1 {
   padding-bottom: 40px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  max-width: 1200px;
+  max-width: 1000px;
+  margin-left: 100px;
 }
 
 .filter-box {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 2 per row */
-  gap: 30px 10px ; /* row gap, column gap */
+  gap: 10px 10px ; /* row gap, column gap */
 }
 
 .filter-row {
   display: flex;
   flex-direction: row;
-  gap: 100px;
+  gap: 50px;
 }
+
 .only {
   display: flex;
   flex-direction: row;
@@ -72,18 +81,26 @@ h1 {
   
 }
 
-.two{
-  margin-bottom: 40px;
+h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #464646;
 }
 
-
+.two{
+  margin-bottom: 40px;
+  font-size: 22px;
+  font-weight: 600;
+  color: black;
+}
 
 .caretakers {
    margin-left: 100px;
    margin-right: 300px;
    display: grid;
-   grid-template-columns: repeat(3, 1fr);
-   gap: 40px;
+   grid-template-columns: repeat(3, minmax(250px, 1fr));
+   gap: 100px;
+
 }
 
 .card {
@@ -92,7 +109,7 @@ h1 {
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   padding: 15px;
   border: 1px solid #CCC;
-
+  width:300px;
   
 }
 
@@ -107,6 +124,7 @@ h1 {
 
 .card h3 {
   margin: 10px 0 3px;
+  font-weight: 700;
 }
 
 .rating {
@@ -117,6 +135,9 @@ h1 {
 .exp-loc {
   display: flex;
   gap: 50px;  
+  font-weight: 700;
+  color: #464646;
+  font-size: 17px;
 }
 
 .exp-loc p {
@@ -141,11 +162,11 @@ h1 {
 
 
 .view-btn {
-  background-color: rgb(206, 192, 192);
+  background-color: rgb(218, 213, 213);
   color: black;
 }
 
 .book-btn {
-  background-color: rgb(57, 174, 209);
-  color: white;
+  background: linear-gradient(to right, #69aeeb, #94f0e4);
+  color: black;
 }

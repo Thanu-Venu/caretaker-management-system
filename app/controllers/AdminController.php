@@ -32,7 +32,22 @@ class AdminController extends Controller {
         $this->view("admin/ad_feedback"); 
     }
 
-   
+    public function ad_reports() {
+        $this->view("admin/ad_reports"); 
+    }
+
+     public function ad_settings() {
+        $this->view("admin/ad_settings"); 
+    }
+
+
+    public function ad_payments() {
+        $this->view("admin/ad_payments");
+    }
+
+    public function ad_bookings() {
+        $this->view("admin/ad_bookings");
+    }
 
 
 }
