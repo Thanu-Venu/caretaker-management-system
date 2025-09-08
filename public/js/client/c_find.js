@@ -48,7 +48,8 @@ function renderCaretakers(data) {
   // View Profile button -> popup message
   viewBtn.addEventListener("click", (e) => {
     e.stopPropagation(); // prevent event bubbling to card
-    alert(`Viewing profile of ${c.name}`);
+      const url = `http://localhost/CMA/public/?url=client/c_ctprofileview`;
+      window.location.href = url;
   });
 
   // Book Now button -> go to booking page
