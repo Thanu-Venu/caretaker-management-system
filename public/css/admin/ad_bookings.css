@@ -91,16 +91,16 @@
 }
 
 .status.pending {
-  background-color: #fffbe6;
-  color: #d99c00;
+  background-color: #fff5c3;
+  color: #c58d00;
 }
 
 .status.ongoing {
-  background-color: #e6f7ff;
-  color: #1890ff;
+  background-color: #bbe7fb;
+  color: #0f89fc;
 }
 
 .status.completed {
-  background-color: #e6f7ee;
-  color: #28a745;
+  background-color: #d3f8e4;
+  color: #24ab44;
 }

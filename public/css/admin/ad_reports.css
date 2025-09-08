@@ -16,12 +16,11 @@ body {
 }
 
 .apply-btn{
-    background-color: #00bfa5;
-    color: white;
+    background: linear-gradient(to right, #69aeeb, #94f0e4);
+    color: black;
     border: none;
-    border-radius: 10px;
-    
-    
+    border-radius: 10px; 
+    font-weight: 600;    
 }
 
 .filters input,
@@ -51,8 +50,8 @@ body {
 .card span {
   display: block;
   margin-top: 8px;
-  font-size: 14px;
-  color: black;
+  font-size: 18px;
+  color: #1100ab;
 }
 
 .table-section {
@@ -77,8 +76,13 @@ body {
 }
 
 .table-section th {
- background: #f1f1f1;
- color: black;
+  background: #f2f4f8;
+  color: black;
+}
+
+.table-section h3 {
+  color: #0e0089;
+
 }
 
 .chart-section {
@@ -94,4 +98,8 @@ body {
   max-height: 300px;
   margin: auto;
   display: block;
+}
+
+.chart-section h3 {
+  color: #0e0089;
 }

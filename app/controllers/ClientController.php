@@ -16,6 +16,7 @@ class ClientController extends Controller {
         $this->view("client/c_payment");
     }
 
+
     public function c_paymentSuccess() {
         $this->view("client/c_paymentSuccess");
     }
@@ -28,15 +29,4 @@ class ClientController extends Controller {
         $this->view("client/c_complaintReg");
     }
 
-    public function c_book() {
-        $this->view("client/c_book");
-    }
-
-    public function c_upcomingBookings() {
-        $this->view("client/c_upcomingBookings");
-    }
-
-    public function c_pastBookings() {
-        $this->view("client/c_pastBookings");
-    }
 }

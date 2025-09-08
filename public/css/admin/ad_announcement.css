@@ -66,8 +66,8 @@ button {
     cursor: pointer;
 }
 
-button.preview {
-    background-color: #6c757d;
+.buttons .preview {
+    background-color: #8d98a1;
 }
 
 button:hover {

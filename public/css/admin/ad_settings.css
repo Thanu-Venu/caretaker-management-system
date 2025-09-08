@@ -38,7 +38,7 @@ body {
 }
 
 .tab-link.active {
-  border-bottom: 3px solid #00bfa5;
+  border-bottom: 3px solid #69aeeb;
   font-weight: bold;
 }
 
@@ -81,15 +81,16 @@ body {
 
 .btn {
   padding: 10px 20px;
-  background: #00bfa5;
+  background: linear-gradient(to right, #69aeeb, #94f0e4);
   border: none;
   border-radius: 6px;
-  color: white;
+  color: black;
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
+  font-size: 14px;
 }
 
 .btn:hover {
-  background: #028d73;
+  background: linear-gradient(to right, #4ea4ee, #66f0dd);
 }
