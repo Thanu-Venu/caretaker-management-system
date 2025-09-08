@@ -13,7 +13,7 @@
   <div class="sidebar">
     
     <ul class="menu">
-      <li><a href="#"><i class="bx bxs-dashboard"></i> Dashboard</a></li>
+      <li><a href="http://localhost/CMA/public?url=client/c_dashboard"><i class="bx bxs-dashboard"></i> Dashboard</a></li>
 
       <li><a href="http://localhost/CMA/public?url=client/c_find"><i class="bx bx-search"></i> Find Caretakers</a></li>
 
@@ -21,9 +21,9 @@
       <li class="submenu">
         <a href="#" class="dropdown-btn"><i class="bx bx-calendar"></i> My Bookings <i class="bx bx-chevron-down arrow"></i></a>
         <ul class="dropdown-container">
-          <li><a href="#">Upcoming Bookings</a></li><br>
-          <li><a href="#">Past Bookings</a></li><br>
-          <li><a href="#">Cancelled Bookings</a></li><br>
+          <li><a href="http://localhost/CMA/public?url=client/c_upcomingBookings">Upcoming Bookings</a></li><br>
+          <li><a href="http://localhost/CMA/public?url=client/c_pastBookings">Past Bookings</a></li><br>
+          <li><a href="http://localhost/CMA/public?url=client/c_cancelledBookings">Cancelled Bookings</a></li><br>
         </ul>
       </li>
 
@@ -49,7 +49,7 @@
         </ul>
       </li>
 
-      <li class="logout"><a href="#"><i class="bx bx-log-out"></i> Logout</a></li>
+      <li class="logout"><a href="http://localhost/CMA/public"><i class="bx bx-log-out"></i> Logout</a></li>
     </ul>
   </div>
 
