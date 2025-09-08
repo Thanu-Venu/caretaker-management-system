@@ -6,15 +6,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartCare Dashboard</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_dashboard.css">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_editprofile.css">
 </head>
 <body>
 
 <div id="dashboard">
-  
-<div class="content">
-
+<!-- Welcome -->
+   <div class="content">
   <!-- Welcome -->
   <section class="welcome">
     <h2>Welcome back, Sarah!</h2>
@@ -35,7 +34,7 @@
               <button class="btn-verify">Elder Care Specialist</button>
             </h4>
             
-           <button   onclick="openProfile()" class="btn"  >Edit profile</button>
+              <button   onclick="openProfile()" class="btn"  >Edit profile</button>
           </div>
           
           <p class="profile-desc">Experienced elder care specialist with 8 years of compassionate service.<br>
@@ -101,9 +100,7 @@
     <section class="card leave">
       <h3>Leave Management</h3>
       <div class="button-container">
-           <!-- Button to open modal -->
-        <button id="openLeaveModal" class="btn-le">Request Leave</button>
-      
+      <button class="btn-le">Request Leave</button>
      </div>
       <table>
         <thead>
@@ -134,13 +131,17 @@
   </main>
   </div>
 
+
+
 </div>
+
 
 <button   onclick="openProfile()" class="btn"  >Edit profile</button>
 
 <!-- Profile Modal -->
 <div id="profileModal" class="modal">
-  <div class="modal-content"> 
+  <div class="modal-content">
+   
     <h2 class="Edit">Edit Profile</h2>
     <input type="text" id="name" placeholder="Name">
     <input type="text" id="experience" placeholder="Experience">
@@ -149,50 +150,11 @@
     <button class="save-btn" onclick="saveProfile()">Save Changes</button>
     <button class="close-btn" onclick="closeProfile()">Close</button>
     </div>
+    
+
   </div>
 </div>
 
-
-<!-- Modal -->
-  <div id="leaveModal" class="le-modal">
-    <div class="le-modal-content">
-      <span id="closeLeaveModal" class="close">&times;</span>
-      <h2>Request Leave</h2>
-      <p class="subtext">Submit a new leave request</p>
-
-      <form id="leaveForm">
-        <label>Leave Type
-          <select required>
-            <option value="">Select</option>
-            <option value="vacation">Vacation</option>
-            <option value="sick">Sick Leave</option>
-            <option value="personal">Personal</option>
-          </select>
-        </label>
-
-        <div class="row">
-          <label>Start Date <input type="date" required></label>
-          <label>End Date <input type="date" required></label>
-        </div>
-
-        <div class="row">
-          <label>Start Time <input type="time" value="09:00" required></label>
-          <label>End Time <input type="time" value="17:00" required></label>
-        </div>
-
-        <label>Reason
-          <textarea placeholder="Please provide a reason for your leave request..." required></textarea>
-        </label>
-
-        <button type="submit" class="submit-btn">Submit Request</button>
-      </form>
-    </div>
-  </div>
-
-
-
-
-
-<script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_dashboard.js"></script>
+<script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_editprofile.js"></script>
 </body>
 </html>
