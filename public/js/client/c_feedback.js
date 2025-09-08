@@ -14,6 +14,7 @@ openBtn.onclick = () => {
 // Close modal
 closeBtn.onclick = () => {
   modal.style.display = "none";
+  
 };
 
 // Close if clicked outside modal-content

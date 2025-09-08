@@ -27,4 +27,16 @@ class ClientController extends Controller {
     public function c_complaintReg() {
         $this->view("client/c_complaintReg");
     }
+
+    public function c_book() {
+        $this->view("client/c_book");
+    }
+
+    public function c_upcomingBookings() {
+        $this->view("client/c_upcomingBookings");
+    }
+
+    public function c_pastBookings() {
+        $this->view("client/c_pastBookings");
+    }
 }
