@@ -220,8 +220,8 @@ const caretakers = [
   document.getElementById("bookingForm").addEventListener("submit", e => {
     e.preventDefault();
     // Redirect (UI only)
-    window.location.href = "http://localhost/CMA/public/?url=client/c_upcomingBookings"; 
-    alert("Booking confirmed! (frontend only)");
+    window.location.href = "http://localhost/CMA/public/?url=client/c_bookingConfirm"; 
+    
   });
 
   

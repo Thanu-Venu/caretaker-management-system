@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirm Booking</title>
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_confirmBooking.css">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_makePayment.css">
 </head>
 <body>
     <div class="container">
@@ -44,7 +44,7 @@
                         <span class="value">Rs. 22500</span>
                     </div>
                 </div>
-                <button class="confirm-btn">Confirm Booking</button>
+                <button class="confirm-btn"onclick="window.location.href='?url=client/c_paymentPage'">Make Payment</button>
             </div>
         </div>
     </div>

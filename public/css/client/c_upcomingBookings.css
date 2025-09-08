@@ -33,6 +33,7 @@
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transition: transform 0.2s ease;
+    
 }
 
 .booking-card:hover {
@@ -74,7 +75,15 @@
     color: #721c24;
 }
 
-/* Cancel Button */
+.card-actions {
+    display: flex;         /* make buttons side by side */
+    gap: 10px;             /* space between buttons */
+    margin-top: 12px;
+    flex-wrap: wrap;       /* wrap to next line if screen is too small */
+}
+
+
+/* Cancel Button *
 .cancel-btn {
   background: #e74c3c;
   color: #fff;
@@ -84,6 +93,7 @@
   cursor: pointer;
   font-weight: bold;
   transition: background 0.3s;
+  display: flex;
 }
 
 .cancel-btn:hover {
@@ -98,11 +108,43 @@
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
+  transition: background 0.3s;
 }
 
 .reschedule-btn:hover {
   background: #357abd;
 }
+
+.payment-btn {
+  background: #f39c12;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
+}*/
+
+.cancel-btn, .reschedule-btn, .payment-btn {
+  flex: 1;               /* all buttons equal width */
+  text-align: center;
+  display: inline-block;  /* override block */
+  padding: 10px 15px;    /* adjust padding as needed */
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600px;
+  transition: background 0.3s;
+}
+
+.cancel-btn { background: #e74c3c; color: #fff; }
+.cancel-btn:hover { background: #c0392b; }
+
+.reschedule-btn { background: #4a90e2; color: #fff; }
+.reschedule-btn:hover { background: #357abd; }
+
+.payment-btn { background: #f39c12; color: #fff; }
+.payment-btn:hover { background: #e67e22; }
 
 
 /* Responsive */
@@ -207,7 +249,7 @@
   margin-top: 15px;
 }
 
-.cancel-btn {
+.cancel1-btn {
   background: #e74c3c;
   color: #fff;
   border: none;
@@ -217,11 +259,11 @@
   font-weight: bold;
 }
 
-.cancel-btn:hover {
+.cancel1-btn:hover {
   background: #c0392b;
 }
 
-.cancel-btn-secondary {
+.cancel1-btn-secondary {
   background: #bdc3c7;
   color: #333;
   border: none;
@@ -231,7 +273,7 @@
   font-weight: bold;
 }
 
-.cancel-btn-secondary:hover {
+.cancel1-btn-secondary:hover {
   background: #95a5a6;
 }
 

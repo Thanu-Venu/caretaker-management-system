@@ -41,8 +41,9 @@
             <p><strong>Duration:</strong> 2 Months</p>
             <p><strong>Status:</strong> <span class="status confirmed">Confirmed</span></p>
             <div class="card-actions">
-                <button class="cancel-btn">Cancel Booking</button>
-                <button class="reschedule-btn">Reschedule</button>
+                <button class="cancel-btn">Cancel Booking</button><br>
+                <button class="reschedule-btn">Reschedule</button><br>
+                <button class="payment-btn" data-booking-id="1">Proceed to Payment</button>
             </div>
         </div>
     </div>
@@ -92,8 +93,8 @@
         <textarea id="cancelReason" rows="3" placeholder="Enter reason"></textarea>
       </div>
       <div class="modal-actions">
-        <button type="button" id="cancelNo" class="cancel-btn-secondary">No, Keep Booking</button>
-        <button type="submit" class="cancel-btn">Yes, Cancel Booking</button>
+        <button type="button" id="cancelNo" class="cancel1-btn-secondary">No, Keep Booking</button>
+        <button type="submit" class="cancel1-btn">Yes, Cancel Booking</button>
       </div>
     </form>
   </div>

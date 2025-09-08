@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment History</title>
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_payment.css">
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_paymentHistory.css">
 </head>
 <body>
   <div class="container">
@@ -147,6 +147,6 @@
   </div>
 
   <!-- JavaScript -->
-  <script src="<?php echo URLROOT; ?>/public/js/client/c_payment.js"></script>
+  <script src="<?php echo URLROOT; ?>/public/js/client/c_paymentHistory.js"></script>
 </body>
 </html>
