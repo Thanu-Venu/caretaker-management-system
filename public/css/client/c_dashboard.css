@@ -12,17 +12,17 @@
 
 /* Welcome */
 .welcome {
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   text-align: left;
 }
 .welcome h1 {
-  font-size: 28px;
+  font-size: 36px;
   font-weight: 600;
-  color: #00008B;
+  color: black;
 }
 .welcome p {
   color: #555;
-  font-size: 15px;
+  font-size: 18px;
 }
 
 /* Stats Cards*/
@@ -58,7 +58,7 @@
 .stats-cards h3 {
   font-size: 22px;
   font-weight: 700;
-  color: #0000CD;
+  color: black;
   margin-bottom: 8px;
 }
 
@@ -66,6 +66,12 @@
   font-size: 14px;
   color: #444;
   font-weight: 500;
+}
+
+.action1 i {
+  font-size: 30px;
+ 
+  color: #0d89ec;
 }
 
 /* Quick Actions */
