@@ -1,0 +1,76 @@
+.content {
+    margin-left: 270px;
+    padding: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f9fafc;
+    min-height: 100vh;
+}
+
+.content h1 {
+    font-size: 26px;
+    margin-bottom: 20px;
+    color: #222;
+}
+
+/* No bookings text */
+.no-cancelled {
+    font-size: 16px;
+    color: #666;
+    display: none;
+}
+
+/* Cancelled List */
+.cancelled-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* Cancelled Card */
+.cancelled-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.cancelled-card:hover {
+    transform: translateY(-3px);
+}
+
+.cancelled-card h2 {
+    margin-bottom: 8px;
+    font-size: 20px;
+    color: #333;
+}
+
+.cancelled-card p {
+    margin: 6px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Status */
+.status.cancelled {
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-size: 13px;
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Cancel Reason */
+.cancel-reason {
+    font-style: italic;
+    color: #a94442;
+    margin-top: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .content {
+        margin-left: 0;
+    }
+}

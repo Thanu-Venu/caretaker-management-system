@@ -1,0 +1,37 @@
+.main-content {
+    padding: 40px;
+    margin-left: 270px;
+}
+
+h1 {
+    color: #1E88E5;
+    margin-bottom: 20px;
+}
+
+.feedback-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.feedback-table th, .feedback-table td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.feedback-table th {
+    background-color: #1E88E5;
+    color: white;
+    font-weight: 600;
+}
+
+.feedback-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.feedback-table tr:hover {
+    background-color: #e0f7fa;
+}

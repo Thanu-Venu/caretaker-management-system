@@ -39,6 +39,55 @@
             <p><strong>Duration:</strong> 2 Days</p>
             <p><strong>Status:</strong> <span class="status cancelled">Cancelled</span></p>
         </div>
+
+        <div class="booking-card completed">
+            <h2>David</h2>
+            <p><strong>Service:</strong> Babysitting</p>
+            <p><strong>Date:</strong> 2025-08-15</p>
+            <p><strong>Time:</strong> Morning</p>
+            <p><strong>Duration:</strong> 3 Hours</p>
+            <p><strong>Status:</strong> <span class="status completed">Completed</span></p>
+            <button class="feedback-btn">Give Feedback</button>
+        </div>
+
+        <div class="booking-card cancelled">
+            <h2>Winson</h2>
+            <p><strong>Service:</strong> Elder Care</p>
+            <p><strong>Date:</strong> 2025-08-10</p>
+            <p><strong>Time:</strong> Evening</p>
+            <p><strong>Duration:</strong> 2 Days</p>
+            <p><strong>Status:</strong> <span class="status cancelled">Cancelled</span></p>
+        </div>
+
+        <div class="booking-card completed">
+            <h2>Jane Doe</h2>
+            <p><strong>Service:</strong> Babysitting</p>
+            <p><strong>Date:</strong> 2025-08-15</p>
+            <p><strong>Time:</strong> Morning</p>
+            <p><strong>Duration:</strong> 3 Hours</p>
+            <p><strong>Status:</strong> <span class="status completed">Completed</span></p>
+            <button class="feedback-btn">Give Feedback</button>
+        </div>
+
+        <div class="booking-card completed">
+            <h2>Emily</h2>
+            <p><strong>Service:</strong> Babysitting</p>
+            <p><strong>Date:</strong> 2025-08-15</p>
+            <p><strong>Time:</strong> Morning</p>
+            <p><strong>Duration:</strong> 3 Hours</p>
+            <p><strong>Status:</strong> <span class="status completed">Completed</span></p>
+            <button class="feedback-btn">Give Feedback</button>
+        </div>
+
+        <div class="booking-card cancelled">
+            <h2>John piris</h2>
+            <p><strong>Service:</strong> Elder Care</p>
+            <p><strong>Date:</strong> 2025-08-10</p>
+            <p><strong>Time:</strong> Evening</p>
+            <p><strong>Duration:</strong> 2 Days</p>
+            <p><strong>Status:</strong> <span class="status cancelled">Cancelled</span></p>
+        </div>
+
     </div>
 
     <!-- Feedback Modal -->

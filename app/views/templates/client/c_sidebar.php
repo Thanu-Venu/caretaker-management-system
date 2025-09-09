@@ -28,25 +28,13 @@
       </li>
 
       <!-- Payment Dropdown -->
-      <li class="submenu">
-        <a href="#" class="dropdown-btn"><i class="bx bx-dollar-circle"></i> Payment History <i class="bx bx-chevron-down arrow"></i></a>
-        <ul class="dropdown-container">
-          <li><a href="#">Invoices</a></li><br>
-          <li><a href="#">Pending Payments</a></li><br>
-          <li><a href="#">Completed Payments</a></li><br>
-        </ul>
+      <li>
+        <a href="http://localhost/CMA/public?url=client/c_paymentHistory"><i class="bx bx-dollar-circle"></i> Payment History </a>
       </li>
 
-      <li><a href="#"><i class="bx bx-message-dots"></i> Feedback</a></li>
-
-      <!-- Settings Dropdown -->
-      <li class="submenu">
-        <a href="#" class="dropdown-btn"><i class="bx bx-cog"></i> Settings <i class="bx bx-chevron-down arrow"></i></a>
-        <ul class="dropdown-container">
-          <li><a href="#">Edit Profile</a></li><br>
-          <li><a href="#">Change Password</a></li><br>
-          <li><a href="#">Manage Addresses</a></li><br>
-        </ul>
+      <li>
+        <a href="http://localhost/CMA/public?url=client/c_settings"><i class="bx bx-cog"></i> Settings </i></a>
+      
       </li>
 
       <li class="logout"><a href="http://localhost/CMA/public"><i class="bx bx-log-out"></i> Logout</a></li>

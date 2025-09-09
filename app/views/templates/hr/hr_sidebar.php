@@ -12,43 +12,32 @@
    <br><br><br>
 
     <ul class="menu">
-      <li><a href="#"><i class='bx bx-home'></i><span>Dashboard</span></a></li>
+      <li><a href="http://localhost/CMA/public?url=hr/hr_dashboard"><i class='bx bx-home'></i><span>Dashboard</span></a></li>
 
       <li class="submenu">
         <a href="#"><i class='bx bx-group'></i><span>Caretakers</span><i class='bx bx-chevron-down arrow'></i></a>
         <ul class="submenu-list">
-          <li><a href="#">Add Caretaker</a></li>
-          <li><a href="#">Manage Caretakers</a></li>
+          <li><a href="http://localhost/CMA/public?url=hr/hr_addct">Add Caretaker</a></li>
+          <li><a href="http://localhost/CMA/public?url=hr/hr_managect">Manage Caretakers</a></li>
         </ul>
       </li>
+      <li><a href="http://localhost/CMA/public?url=hr/hr_pending_request"><i class="fas fa-hourglass-half"></i><span>Pending Request</span></a></li>
 
-      <li><a href="#"><i class='bx bx-calendar'></i><span>Schedule</span></a></li>
+      <li><a href="http://localhost/CMA/public?url=hr/hr_schedule"><i class='bx bx-calendar'></i><span>Schedule</span></a></li>
+      <li><a href="http://localhost/CMA/public?url=hr/hr_leave"><i class='bx bx-time'></i><span>Leave</span></a></li>
+      <li><a href="http://localhost/CMA/public?url=hr/hr_complaint"><i class='bx bx-error'></i><span>Complaints</span></a></li>
+      <li><a href="http://localhost/CMA/public?url=hr/hr_feedback"><i class='bx bx-message'></i><span>Feedback</span></a></li>
+      <li><a href="http://localhost/CMA/public?url=hr/hr_history"><i class='bx bx-history'></i><span>History</span></a></li>
 
-      <li class="submenu">
-        <a href="#"><i class='bx bx-time'></i><span>Leave</span><i class='bx bx-chevron-down arrow'></i></a>
-        <ul class="submenu-list">
-          <li><a href="#">Request Leave</a></li>
-          <li><a href="#">Leave History</a></li>
-        </ul>
+      <li>
+        <a href="http://localhost/CMA/public?url=hr/hr_reports"><i class='bx bx-bar-chart'></i><span>Reports</span></a>
       </li>
 
-      <li><a href="#"><i class='bx bx-error'></i><span>Complaints</span></a></li>
-      <li><a href="#"><i class='bx bx-message'></i><span>Feedback</span></a></li>
-      <li><a href="#"><i class='bx bx-history'></i><span>History</span></a></li>
-
-      <li class="submenu">
-        <a href="#"><i class='bx bx-bar-chart'></i><span>Reports</span><i class='bx bx-chevron-down arrow'></i></a>
-        <ul class="submenu-list">
-          <li><a href="#">Monthly Reports</a></li>
-          <li><a href="#">Yearly Reports</a></li>
-        </ul>
-      </li>
-
-      <li><a href="#"><i class='bx bx-cog'></i><span>Settings</span></a></li>
+      <li><a href="http://localhost/CMA/public?url=hr/hr_settings"><i class='bx bx-cog'></i><span>Settings</span></a></li>
     </ul>
 
     <div class="logout">
-      <a href="#"><i class='bx bx-log-out'></i><span>Logout</span></a>
+      <a href="http://localhost/CMA/public"><i class='bx bx-log-out'></i><span>Logout</span></a>
     </div>
   </div>
 

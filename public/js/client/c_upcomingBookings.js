@@ -130,3 +130,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Payment button dummy redirect
+    const paymentButtons = document.querySelectorAll(".payment-btn");
+
+    paymentButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const bookingId = btn.getAttribute("data-booking-id");
+           
+            // Later replace alert with actual redirect
+             window.location.href = `http://localhost/CMA/public/?url=client/c_makePayment`;
+        });
+    });
+
+    // Existing Cancel/Reschedule modal JS can remain here
+});
+

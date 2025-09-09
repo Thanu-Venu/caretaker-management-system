@@ -11,6 +11,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+   color: #1E88E5;
 }
 
 .add-btn {
@@ -66,6 +67,8 @@ thead {
 th {
     font-size: 18px;
     font-weight: 700;
+     background-color: #1E88E5;
+    color: white;
 }
 
 th, td {
