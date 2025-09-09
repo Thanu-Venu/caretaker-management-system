@@ -102,7 +102,7 @@
       <h3>Leave Management</h3>
       <div class="button-container">
            <!-- Button to open modal -->
-        <button onclick="openProfile()"  id="openModal" class="btn-le">Request Leave</button>
+        <button onclick="openProfile()"  id="openModal" class="btn-lex">Request Leave</button>
        
      </div>
       <table>
