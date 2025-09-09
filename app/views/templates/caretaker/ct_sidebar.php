@@ -39,6 +39,24 @@ dropdownLinks.forEach(arrow => {
   });
 });
 
+   // Highlight active page link
+    const currentURL = new URL(window.location.href);
+const currentPath = currentURL.searchParams.get("url"); // gets "caretaker/ct_dashboard"
+
+const menuItems = document.querySelectorAll('.nav-links li a');
+
+menuItems.forEach(link => {
+  const linkURL = new URL(link.href).searchParams.get("url");
+  if (linkURL === currentPath) {
+    link.parentElement.classList.add('active');
+  }
+});
+
+
+
+
+
+
   </script>
 </body>
 </html>

@@ -72,6 +72,17 @@
   transform: rotate(-180deg);
 }
 
+.sidebar a:hover,
+.sidebar li.active > a {
+  background: rgba(255, 255, 255, 0.3);
+   margin: 0 10px;        /* reduces width from left and right */
+  border-radius: 10px;    /* keeps rounded corners */
+}
+
+
+
+
+
 /* Submenu */
 .sidebar ul .sub-menu {
   font-weight: 300;
