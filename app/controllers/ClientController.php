@@ -13,14 +13,14 @@ class ClientController extends Controller {
         $this->view("client/c_feedback");
     }
   
-<<<<<<< HEAD
+
 
     public function c_payment() {
         $this->view("client/c_payment");
-=======
+    }
+
     public function c_paymentHistory() {
         $this->view("client/c_paymentHistory");
->>>>>>> 1e5e5c8abd2f92247a9ddc82ec32d50ce17b8524
     }
 
 
