@@ -14,13 +14,11 @@
 
       <li><a href="http://localhost/CMA/public?url=caretaker/ct_dashboard"><i class='bx bxs-dashboard'></i><span class="link_name">Dashboard</span></a></li>
       <li><a href="http://localhost/CMA/public?url=caretaker/ct_schedule"><i class='bx bxs-calendar'></i><span class="link_name">My Schedule</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_bookings"><i class='bx bx-book-alt'></i><span class="link_name">Bookings</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_clientsassigned"><i class='bx bxs-user-pin'></i><span class="link_name">Clients Assigned</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_leave"><i class='bx bxs-calendar-check'></i><span class="link_name">Leave Request</span></a></li>
+      <li><a href="http://localhost/CMA/public?url=caretaker/ct_booking"><i class='bx bx-book-alt'></i><span class="link_name">Bookings</span></a></li>
+      <li><a href="http://localhost/CMA/public?url=caretaker/ct_leaveHistory"><i class='bx bxs-calendar-check'></i><span class="link_name">Leave Request</span></a></li>
       <li><a href="http://localhost/CMA/public?url=caretaker/ct_complaints"><i class='bx bxs-error'></i><span class="link_name">Complaints</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_feedback"><i class='bx bxs-message-dots'></i><span class="link_name">Feedback</span></a></li>
+      <li><a href="http://localhost/CMA/public?url=caretaker/ct_reviews"><i class='bx bxs-message-dots'></i><span class="link_name">Reviews</span></a></li>
       <li><a href="http://localhost/CMA/public?url=caretaker/ct_reports"><i class='bx bxs-report'></i><span class="link_name">Reports</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_profile"><i class='bx bxs-user-circle'></i><span class="link_name">Profile</span></a></li>
       <li><a href="http://localhost/CMA/public?url=caretaker/ct_settings"><i class='bx bxs-cog'></i><span class="link_name">Settings</span></a></li>
       <li class="logout"><a href="http://localhost/CMA/public"><i class='bx bx-log-out'></i><span class="link_name">Logout</span></a></li>
 
