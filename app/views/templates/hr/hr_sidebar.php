@@ -50,6 +50,26 @@
         parent.classList.toggle("open");
       });
     });
+
+    // Highlight active menu item
+    const currentPath = window.location.href;
+
+  document.querySelectorAll(".menu a").forEach(link => {
+    // Check if the link's href is included in the current URL
+    if (currentPath.includes(link.getAttribute("href"))) {
+      link.classList.add("active");
+
+      // If it's inside a submenu, also open the submenu
+      const parent = link.closest(".submenu");
+      if (parent) {
+        parent.classList.add("open");
+      }
+    }
+  });
+      
+  
+  
+
   </script>
 </body>
 </html>

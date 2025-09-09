@@ -48,9 +48,12 @@ body {
   transition: 0.2s;
 }
 
-.menu a:hover {
-  background: rgba(255,255,255,0.1);
+
+.menu a:hover,
+.menu a.active {
+  background: rgba(255,255,255,0.3);
 }
+
 
 .arrow {
   margin-left: auto;
