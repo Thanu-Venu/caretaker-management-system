@@ -53,6 +53,25 @@
         button.querySelector(".arrow").classList.toggle("rotate");
       });
     });
+
+    // Highlight active sidebar item
+const currentUrl = window.location.href.split("?")[1]; // just compare after ?
+document.querySelectorAll(".sidebar .menu li a").forEach(link => {
+  const href = link.getAttribute("href");
+  
+  if (href && href.includes(currentUrl)) {
+    link.classList.add("active");
+
+    // If it's inside a dropdown, also expand it
+    const dropdown = link.closest(".dropdown-container");
+    if (dropdown) {
+      dropdown.classList.add("show");
+      dropdown.previousElementSibling.querySelector(".arrow").classList.add("rotate");
+    }
+  }
+});
+
+
   </script>
 </body>
 </html>
