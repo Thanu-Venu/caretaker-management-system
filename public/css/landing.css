@@ -116,10 +116,7 @@ p {
   content: "";
   position: absolute;
   inset: 0;
-  .hero-slider::after {
   background: linear-gradient(to top, rgba(0,0,0,0.5) 30%, transparent 100%);
-}
-
   z-index: 1;
 }
 .hero-text {
@@ -194,7 +191,7 @@ p {
 /* Steps */
 .steps {
   display: flex;
-  gap: 20px;
+  gap: 60px;
   margin-top: 30px;
 }
 .step {

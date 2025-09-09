@@ -17,7 +17,7 @@
 
   <!-- Welcome -->
   <section class="welcome">
-    <h2>Welcome back, Sarah!</h2>
+    <h1>Welcome back, Sarah!</h1>
     <p>Manage your bookings and availability</p>
   </section>
 
