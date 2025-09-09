@@ -13,7 +13,7 @@
 <body>
   <!-- Main Content -->
   <div class="content">
-    <h1 class="page-title">Caretakers</h1>
+    <h1 class="page-title">Caretaker Management</h1>
 
     <!-- Search bar -->
     <div class="search-box">
@@ -27,6 +27,7 @@
       <table class="caretaker-table" id="caretakerTable">
         <thead>
           <tr>
+            <th>Caretaker ID</th>
             <th>Name</th>
             <th>Status</th>
             <th>Location</th>
@@ -36,6 +37,7 @@
         </thead>
         <tbody>
           <tr>
+            <td>101</td>
             <td>Emily Carter</td>
             <td><span class="status available">Available</span></td>
             <td>123 Maple Street, Anytown</td>
@@ -43,6 +45,7 @@
             <td>04:00 PM</td>
           </tr>
           <tr>
+            <td>102</td>
             <td>David Lee</td>
             <td><span class="status duty">On Duty</span></td>
             <td>456 Oak Avenue, Anytown</td>
@@ -50,6 +53,7 @@
             <td>05:00 PM</td>
           </tr>
           <tr>
+            <td>103</td>
             <td>Sarah Johnson</td>
             <td><span class="status unavailable">Unavailable</span></td>
             <td>789 Pine Lane, Anytown</td>
@@ -57,6 +61,7 @@
             <td>N/A</td>
           </tr>
           <tr>
+            <td>104</td>
             <td>Michael Brown</td>
             <td><span class="status leave">On Leave</span></td>
             <td>101 Elm Road, Anytown</td>
@@ -64,6 +69,7 @@
             <td>N/A</td>
           </tr>
           <tr>
+            <td>105</td>
             <td>Jessica Wilson</td>
             <td><span class="status available">Available</span></td>
             <td>222 Cedar Court, Anytown</td>

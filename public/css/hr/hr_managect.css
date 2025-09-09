@@ -8,12 +8,14 @@
   margin-left: 270px;
   padding: 30px;
   flex: 1;
+
 }
 
 .page-title {
   font-size: 28px;
   font-weight: bold;
   margin-bottom: 20px;
+   color: #1E88E5;
 }
 
 /* Search box */
@@ -69,6 +71,8 @@ h2 {
 .caretaker-table th {
     font-size: 17px;
     font-weight: 600;
+     background-color: #1E88E5;
+    color: white;
 }
 
 .caretaker-table th,
