@@ -1,6 +1,4 @@
-
-
-// Example caretaker profile  data
+// Example caretaker data
 let caretaker = {
   name: "Sarah Johnson",
   experience: "Elder care specialist with 8 years of compassionate service.",
@@ -36,37 +34,12 @@ function closeProfile() {
     document.getElementById('dashboard').classList.remove('blur'); 
    }
 
-   //leve mengement js
-const leaveModal = document.getElementById("leaveModal");
-const openLeaveBtn = document.getElementById("openLeaveModal");
-const closeLeaveBtn = document.getElementById("closeLeaveModal");
-const leaveForm = document.getElementById("leaveForm");
-
-// Open leave modal
-openLeaveBtn.onclick = () => {
-  leaveModal.style.display = "flex";
-};
-
-// Close leave modal
-closeLeaveBtn.onclick = () => {
-  leaveModal.style.display = "none";
-};
-
-// Submit leave form
-leaveForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  alert("Leave request submitted!");
-  leaveModal.style.display = "none";
-  leaveForm.reset();
-});
 
 
 
 
 
-
-
-
+   
 // Toggle availability button state
 document.querySelectorAll('.switch input').forEach(toggle => {
   toggle.addEventListener('change', function() {
