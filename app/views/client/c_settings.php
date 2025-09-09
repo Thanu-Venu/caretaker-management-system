@@ -30,12 +30,6 @@
           <label>Phone Number
             <input type="text" id="phone" placeholder="+94 712345678" required>
           </label><br>
-          <label>Experience
-            <input type="text" id="experience" placeholder="8 years" required>
-          </label><br>
-          <label>Qualifications
-            <input type="text" id="qualifications" placeholder="Certified Elder Care Specialist" required>
-          </label><br>
           <label>Profile Picture
             <input type="file" id="profileFile" accept="image/*">
           </label><br><br>
