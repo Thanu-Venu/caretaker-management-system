@@ -135,6 +135,8 @@
   cursor: pointer;
   font-weight: 600px;
   transition: background 0.3s;
+  outline: none;
+  border: none;
 }
 
 .cancel-btn { background: #e74c3c; color: #fff; }

@@ -16,8 +16,8 @@ body {
 }
 
 .apply-btn{
-    background: linear-gradient(to right, #69aeeb, #94f0e4);
-    color: black;
+    background:#1e88e5;
+    color:white;
     border: none;
     border-radius: 10px; 
     font-weight: 600;    
@@ -51,7 +51,7 @@ body {
   display: block;
   margin-top: 8px;
   font-size: 18px;
-  color: #1100ab;
+  color: #1e88e5;
 }
 
 .table-section {
@@ -81,7 +81,7 @@ body {
 }
 
 .table-section h3 {
-  color: #0e0089;
+  color: #1e88e5;
 
 }
 
@@ -90,7 +90,7 @@ body {
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .chart-section canvas {
@@ -101,5 +101,20 @@ body {
 }
 
 .chart-section h3 {
-  color: #0e0089;
+  color: #1e88e5;
+}
+
+/* Download Button */
+.btn-download {
+  background: #1e88e5;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.btn-download:hover {
+  background: #1871be;
 }

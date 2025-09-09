@@ -1,0 +1,77 @@
+.main-content {
+  margin-left: 270px; /* adjust based on sidebar */
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  margin-right: 20px;
+}
+
+h1 {
+  margin-bottom: 20px;
+  color: #1E88E5;
+}
+
+/* Leave History Table */
+.leave-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.leave-history-table th,
+.leave-history-table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.leave-history-table th {
+  background-color: #1E88E5;
+  color: #fff;
+}
+
+.leave-history-table tr:nth-child(even) {
+  background-color: #f7f7f7;
+}
+
+.status {
+  padding: 6px 12px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+  display: inline-block;
+}
+
+.status.approved {
+  background-color: #00BFA5;
+}
+
+.status.rejected {
+  background-color: #e74c3c;
+}
+
+.status.pending {
+  background-color: #fbc02d;
+  color: #333;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination .btn {
+  background: #1E88E5;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.pagination .btn:hover {
+  background: #1565c0;
+}
