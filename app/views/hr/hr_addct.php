@@ -14,7 +14,7 @@
 <body>
         <main class="main-content">
       <section class="caretaker-header">
-        <h1>Caretaker Management</h1>
+        <h1>Caretakers</h1>
         <button class="add-btn">Add Caretaker</button>
       </section>
 
@@ -27,6 +27,7 @@
         <table>
           <thead>
             <tr>
+              <th>Caretaker ID</th>
               <th>Name</th>
               <th>Role</th>
               <th>Status</th>
@@ -35,6 +36,7 @@
           </thead>
           <tbody>
             <tr>
+              <td>101</td>
               <td>Ethan Bennett</td>
               <td>Maid</td>
               <td><span class="status active">Active</span></td>
@@ -45,6 +47,7 @@
               </td>
             </tr>
             <tr>
+              <td>102</td>
               <td>Isabella Reed</td>
               <td>Elder Care</td>
               <td><span class="status inactive">Inactive</span></td>
@@ -55,6 +58,7 @@
               </td>
             </tr>
               <tr>
+              <td>103</td>
               <td>Liam Foster</td>
               <td>Elder Care</td>
               <td><span class="status active">Active</span></td>
@@ -65,6 +69,7 @@
               </td>
             </tr>
             <tr>
+              <td>104</td>
               <td>Ava Morgan</td>
               <td>Maid</td>
               <td><span class="status active">Active</span></td>
@@ -75,6 +80,7 @@
               </td>
             </tr>
             <tr>
+              <td>105</td>
               <td>Noah Parker</td>
               <td>Babysitter</td>
               <td><span class="status active">Active</span></td>
@@ -85,6 +91,7 @@
               </td>
             </tr>
             <tr>
+              <td>106</td>
               <td>Isabella Reed</td>
               <td>Elder Care</td>
               <td><span class="status inactive">Inactive</span></td>
@@ -95,6 +102,7 @@
               </td>
             </tr>
             <tr>
+              <td>107</td>
               <td>Jackson Cole</td>
               <td>Maid</td>
               <td><span class="status active">Active</span></td>
@@ -105,6 +113,7 @@
               </td>
             </tr>
             <tr>
+              <td>108</td>
               <td>Mia Fisher</td>
               <td>Babysitter</td>
               <td><span class="status active">Active</span></td>

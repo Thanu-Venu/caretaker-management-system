@@ -19,6 +19,30 @@ class HrController extends Controller {
 
     public function hr_leave() {
         $this->view("hr/hr_leave");
-    }    
+    }
+    
+    public function hr_schedule() {
+        $this->view("hr/hr_schedule");
+    }
+
+    public function hr_pending_request() {
+        $this->view("hr/hr_pending_request");
+    }
+
+    public function hr_complaint() {
+        $this->view("hr/hr_complaint");
+    }
+
+     public function hr_feedback() {
+        $this->view("hr/hr_feedback");
+    }
+
+    public function hr_reports() {
+        $this->view("hr/hr_reports");
+    }
+
+     public function hr_settings() {
+        $this->view("hr/hr_settings");
+    }
     
 }

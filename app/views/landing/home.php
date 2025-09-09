@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SmartCare</title>
   <link rel="stylesheet" href="/CMA/public/css/landing.css?v=1.1">
+   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
   
@@ -14,11 +15,14 @@
   <!-- Navbar -->
   <header>
     <nav class="navbar">
-      <div class="logo">SmartCare</div>
+       
+       <div class="logo">
+        <img src="<?php echo URLROOT; ?>/public/images/logo.jpg" alt="SmartCare Logo">
+       SmartCare</div>
       <ul class="nav-links">
-        <li><a href="#">About</a></li>
-        <li><a href="#">Services</a></li>
-        <li><a href="#">Contact</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
         <li><a href="/CMA/app/views/auth/login.php" class="btn-login">Login</a></li>
       </ul>
     </nav>
@@ -48,7 +52,7 @@
 
 
   <!-- About -->
-  <section class="about">
+  <section class="about" id="about">
     <h2>About SmartCare</h2>
     <p>
       SmartCare is a digital platform that connects families with trusted caregivers for elder care, babysitting, and home support. 
@@ -64,7 +68,7 @@
   </section>
 
   <!-- Services -->
-  <section class="services">
+  <section class="services" id="services">
     <h2>Our Services</h2>
     <div class="service-cards">
       <div class="card">
@@ -98,10 +102,10 @@
   <!-- Pricing -->
   <section class="pricing">
     <h2>Pricing Options</h2>
-    <h3>For Elder Care</h3>
+    <h3>For Baby Care</h3>
     <div class="pricing-cards">
       <div class="price-card">
-        <h4>Hourly</h4>
+        <h4>Daily</h4>
         <p class="price">LKR 6000 <span>per hour</span></p>
         <ul>
           <li style="list-style:none">✔ Flexible scheduling</li>
@@ -128,6 +132,8 @@
         <button class="select">Select</button>
       </div>
     </div>
+
+    
   </section>
 
   <!-- Testimonials -->
@@ -160,6 +166,31 @@
     </details>
   </section>
 
+ <section class="contact" id="contact">
+  <h2>Contact Us</h2>
+  <p>Have questions or need support? Reach out to us anytime!</p>
+  
+  <div class="contact-container">
+    <!-- Contact Form -->
+    <form class="contact-form" action="#" method="POST">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+      <button type="submit" class="btn-start">Send Message</button>
+    </form>
+
+    <!-- Map & Social -->
+    <div class="contact-info">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.921306041527!2d79.85392287930699!3d6.900014875306098!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2596309dfdd3f%3A0x45a4b0e7834ac0d4!2sUniversity%20of%20Colombo!5e0!3m2!1sen!2slk!4v1757388167234!5m2!1sen!2slk" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div class="social-icons">
+        <a href="#"><i class='bx bxl-facebook-square'></i></a>
+        <a href="#"><i class='bx bxl-twitter' ></i></a>
+        <a href="#"><i class='bx bxl-instagram' ></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
   <!-- CTA -->
   <section class="cta">
     <h2>Are You Ready?</h2>
@@ -170,8 +201,8 @@
   <footer>
     <p>© 2025 SmartCare. All rights reserved.</p>
     <ul class="footer-links">
-      <li><a href="#">About</a></li>
-      <li><a href="#">Services</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#services">Services</a></li>
       <li><a href="#">Terms</a></li>
       <li><a href="#">Privacy</a></li>
     </ul>
@@ -190,6 +221,13 @@
 
   setInterval(changeSlide, 5000);
 });
+
+
+  document.querySelectorAll(".select").forEach(btn => {
+    btn.addEventListener("click", () => {
+      window.location.href = "/CMA/app/views/auth/login.php";
+    });
+  });
 
 </script>
 </body>
