@@ -43,12 +43,6 @@
     </div>
   </div>
 
-  <!-- Action Buttons -->
-  <div class="actions">
-    <button class="btn">+ Add Caretaker</button>
-    <button class="btn">Send Announcement</button>
-    <button class="btn">Generate Report</button>
-  </div>
 
   <!-- Recent Activity -->
   <div class="recent-activity">

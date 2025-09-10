@@ -1,0 +1,96 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f7fa;
+  
+}
+
+.settings-container {
+  margin-top: 20px;
+  margin-left: 270px;
+  margin-right: 20px;
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.settings-header h2 {
+  margin-bottom: 20px;
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.tab-link {
+  flex: 1;
+  padding: 10px;
+  cursor: pointer;
+  text-align: center;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  transition: 0.3s;
+  color: #333;
+}
+
+.tab-link.active {
+  border-bottom: 3px solid #69aeeb;
+  font-weight: bold;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+  width: 50%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-group input {
+  width: auto;
+  margin-right: 10px;
+}
+
+.btn {
+  padding: 10px 20px;
+  background: linear-gradient(to right, #69aeeb, #94f0e4);
+  border: none;
+  border-radius: 6px;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 14px;
+}
+
+.btn:hover {
+  background: linear-gradient(to right, #4ea4ee, #66f0dd);
+}

@@ -1,0 +1,106 @@
+* {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 300;
+}
+
+.main-content {
+  margin-left: 260px;
+  padding: 20px;
+}
+
+.booking-container {
+  width: 95%;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 30px;
+}
+
+.booking-header h1 {
+  font-size: 24px;
+  color: #333;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.filter-section {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-size: 16px;
+  color: #555;
+  font-weight: 700;
+}
+
+.filter-group select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.booking-table {
+  width: 95%;
+  border-collapse: collapse;
+}
+
+.booking-table thead th {
+  background-color: #f8f8f8;
+  font-weight: 700;
+  color: #555;
+  font-size: 16px;
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.booking-table tbody td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  color: #444;
+  font-size: 14px;
+}
+
+.booking-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.status {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.status.pending {
+  background-color: #fff5c3;
+  color: #c58d00;
+}
+
+.status.ongoing {
+  background-color: #bbe7fb;
+  color: #0f89fc;
+}
+
+.status.completed {
+  background-color: #d3f8e4;
+  color: #24ab44;
+}
