@@ -16,12 +16,11 @@ body {
 }
 
 .apply-btn{
-    background-color: #00bfa5;
-    color: white;
+    background:#1e88e5;
+    color:white;
     border: none;
-    border-radius: 10px;
-    
-    
+    border-radius: 10px; 
+    font-weight: 600;    
 }
 
 .filters input,
@@ -43,8 +42,8 @@ body {
   padding: 20px;
   border-radius: 12px;
   text-align: center;
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 200px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
@@ -52,7 +51,7 @@ body {
   display: block;
   margin-top: 8px;
   font-size: 18px;
-  color: #00bfa5;
+  color: #1e88e5;
 }
 
 .table-section {
@@ -77,8 +76,13 @@ body {
 }
 
 .table-section th {
-  background: #00bfa5;
-  color: white;
+  background: #f2f4f8;
+  color: black;
+}
+
+.table-section h3 {
+  color: #1e88e5;
+
 }
 
 .chart-section {
@@ -86,7 +90,7 @@ body {
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .chart-section canvas {
@@ -94,4 +98,23 @@ body {
   max-height: 300px;
   margin: auto;
   display: block;
+}
+
+.chart-section h3 {
+  color: #1e88e5;
+}
+
+/* Download Button */
+.btn-download {
+  background: #1e88e5;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.btn-download:hover {
+  background: #1871be;
 }

@@ -1,0 +1,77 @@
+.main-content {
+  margin-left: 270px;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #1E88E5;
+  margin-bottom: 20px;
+}
+
+h2{
+    color: #333;
+    font-size: 20px;
+}
+
+/* Summary Cards */
+.report-summary .summary-cards {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.summary-cards .card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  flex: 1;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.summary-cards .card h3 {
+  margin-bottom: 10px;
+  color: #1565c0;
+}
+
+.summary-cards .card p {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Service Table */
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.report-table th, .report-table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.report-table th {
+  background: #1E88E5;
+  color: #fff;
+}
+
+.report-table tr:nth-child(even) {
+  background: #f7f7f7;
+}
+
+/* Download Button */
+.btn-download {
+  margin-top: 20px;
+  background: #1E88E5;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-download:hover {
+  background: #1a74c4;
+}

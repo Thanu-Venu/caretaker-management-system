@@ -1,0 +1,117 @@
+/* Reset */
+* {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+/* Main Content Area */
+.main-content {
+  margin-left: 270px; /* Adjust this if your sidebar width differs */
+  padding: 30px;
+  flex: 1;
+  overflow-y: auto;
+  background: #f8f9fb;
+}
+
+h1 {
+  font-size: 26px;
+  margin-bottom: 8px;
+  color: #1e88e5;
+}
+
+.subtitle {
+  margin-bottom: 20px;
+  color: #666;
+}
+
+/* Tabs */
+.tabs {
+  margin-bottom: 20px;
+}
+
+.tabs .tab {
+  background: #f0f0f0;
+  border: none;
+  padding: 10px 18px;
+  margin-right: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tabs .tab.active {
+  background: #0f7cc0;
+  color: white;
+}
+
+/* Table Styling */
+.table-container {
+  background: white;
+  border-radius: 8px;
+  overflow-x: auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+th, td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+th {
+  background-color: #1E88E5;
+    color: white;
+  font-weight: 600;
+  
+}
+
+/* Tags */
+.tag {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  display: inline-block;
+  background: #e0eff5; /* light ash background */
+  color: #333; 
+  font-weight: bold;
+   display: inline-block;
+  width: 150px;
+  height:30px;
+  
+
+}
+
+
+/* Status Labels */
+.status {
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: bold;
+   background: #e0eff5; /* light ash */
+  color: #333;
+  display: inline-block;
+  width: 100px;
+  height:30px;
+  
+}
+
+
+/* Action Buttons */
+.btn {
+ 
+  border: none;
+  font-size: 13px;
+  font-weight: bold;
+ 
+}
+
+

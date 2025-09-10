@@ -167,9 +167,9 @@
               <td>Maid</td>
               <td><span class="status active">Active</span></td>
               <td class="actions">
-                <i class="fa-solid fa-eye"></i>
-                <i class="fa-solid fa-pen"></i>
-                <i class="fa-solid fa-trash"></i>
+                <i class="bx bx-show"></i>
+                <i class="bx bx-edit"></i>
+                <i class="bx bx-trash"></i>
               </td>
             </tr>
             <tr>
@@ -177,9 +177,9 @@
               <td>Elder Care</td>
               <td><span class="status inactive">Inactive</span></td>
               <td class="actions">
-                <i class="fa-solid fa-eye"></i>
-                <i class="fa-solid fa-pen"></i>
-                <i class="fa-solid fa-trash"></i>
+                <i class="bx bx-show"></i>
+                <i class="bx bx-edit"></i>
+                <i class="bx bx-trash"></i>
               </td>
             </tr>
               <tr>
@@ -187,9 +187,9 @@
               <td>Elder Care</td>
               <td><span class="status active">Active</span></td>
               <td class="actions">
-                <i class="fa fa-eye"></i>
-                <i class="fa fa-pen"></i>
-                <i class="fa fa-trash"></i>
+                <i class="bx bx-show"></i>
+                <i class="bx bx-edit"></i>
+                <i class="bx bx-trash"></i>
               </td>
             </tr>
             <tr>
@@ -197,9 +197,9 @@
               <td>Maid</td>
               <td><span class="status active">Active</span></td>
               <td class="actions">
-                <i class="fa fa-eye"></i>
-                <i class="fa fa-pen"></i>
-                <i class="fa fa-trash"></i>
+                <i class="bx bx-show"></i>
+                <i class="bx bx-edit"></i>
+                <i class="bx bx-trash"></i>
               </td>
             </tr>
             <tr>
@@ -207,9 +207,9 @@
               <td>Babysitter</td>
               <td><span class="status active">Active</span></td>
               <td class="actions">
-                <i class="fa fa-eye"></i>
-                <i class="fa fa-pen"></i>
-                <i class="fa fa-trash"></i>
+                <i class="bx bx-show"></i>
+                <i class="bx bx-edit"></i>
+                <i class="bx bx-trash"></i>
               </td>
             </tr>
             <tr>
@@ -217,9 +217,9 @@
               <td>Elder Care</td>
               <td><span class="status inactive">Inactive</span></td>
               <td class="actions">
-                <i class="fa fa-eye"></i>
-                <i class="fa fa-pen"></i>
-                <i class="fa fa-trash"></i>
+                <i class="bx bx-show"></i>
+                <i class="bx bx-edit"></i>
+                <i class="bx bx-trash"></i>
               </td>
             </tr>
             <tr>
@@ -227,9 +227,9 @@
               <td>Maid</td>
               <td><span class="status active">Active</span></td>
               <td class="actions">
-                <i class="fa fa-eye"></i>
-                <i class="fa fa-pen"></i>
-                <i class="fa fa-trash"></i>
+                <i class="bx bx-show"></i>
+                <i class="bx bx-edit"></i>
+                <i class="bx bx-trash"></i>
               </td>
             </tr>
             <tr>
@@ -237,9 +237,9 @@
               <td>Babysitter</td>
               <td><span class="status active">Active</span></td>
               <td class="actions">
-                <i class="fa fa-eye"></i>
-                <i class="fa fa-pen"></i>
-                <i class="fa fa-trash"></i>
+                <i class="bx bx-show"></i>
+                <i class="bx bx-edit"></i>
+                <i class="bx bx-trash"></i>
               </td>
             </tr>
          

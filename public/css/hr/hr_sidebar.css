@@ -91,3 +91,15 @@ body {
   text-decoration: none;
   bottom: 10px;
 }
+
+/* Active link highlight */
+/* Active main menu link */
+
+
+.sidebar .menu li a.active {
+  background:rgba(255, 255, 255, 0.3);
+  margin: 0 10px 10px 10px;        /* reduces width from left and right */
+  border-radius: 10px;
+  
+}
+

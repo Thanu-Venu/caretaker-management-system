@@ -1,42 +1,48 @@
 * {
-  font-family: Arial,Arial, Helvetica, sans-serif sans-serif;
-  font-weight: 300;
+  font-family:Arial, Helvetica, sans-serif;
+  
 }
+
 .content{
    flex:1;
    padding: 20px;
    margin-left: 270px;
 }
+
 h1 {
   margin-bottom: 10px;
-  font-style: bold;
+  font-size: 28px;
+  color: #1e88e5;
+  
+}
+
+.content p {
+  color: #252424;
 }
 
 
 .filters {
-  background: #f9f9f9;
+  background: white;
   padding: 15px;
   padding-bottom: 40px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  max-width: 1200px;
+  max-width: 1000px;
+  margin-left: 50px;
 }
 
 .filter-box {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 per row */
-  gap: 30px 10px ; /* row gap, column gap */
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 .filter-row {
   display: flex;
   flex-direction: row;
-  gap: 100px;
-}
-.only {
-  display: flex;
-  flex-direction: row;
   gap: 50px;
+  
 }
 
 
@@ -57,33 +63,43 @@ h1 {
   padding: 6px 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  width: 180px; /* consistent smaller width */
+  width: 150px; /* consistent smaller width */
   background: white;
 }
 
 .filter-box button {
-  background: #f3f3ff;
-  border: 1px solid #bbb;
+  background: #1e88e5;
+  color: white;
+  font-weight: 600;
+ border: none;
   cursor: pointer;
 }
 
 .filter-box button:hover {
-  background: #e0e0ff;
+  background: #1b7ed3;
   
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: black;
 }
 
 .two{
   margin-bottom: 40px;
+  font-size: 22px;
+  font-weight: 600;
+  color: black;
 }
 
-
-
 .caretakers {
-   margin-left: 100px;
+   margin-left: 50px;
    margin-right: 300px;
    display: grid;
-   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-   gap: 200px;
+   grid-template-columns: repeat(3, minmax(250px, 1fr));
+   gap: 100px;
+
 }
 
 .card {
@@ -92,7 +108,7 @@ h1 {
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   padding: 15px;
   border: 1px solid #CCC;
-  width:350px;
+  width:300px;
   
 }
 
@@ -107,6 +123,7 @@ h1 {
 
 .card h3 {
   margin: 10px 0 3px;
+  font-weight: 700;
 }
 
 .rating {
@@ -116,7 +133,10 @@ h1 {
 
 .exp-loc {
   display: flex;
-  gap: 50px;  
+  gap: 40px;  
+  font-weight: 700;
+  color: black;
+  font-size: 17px;
 }
 
 .exp-loc p {
@@ -127,7 +147,7 @@ h1 {
   display: flex;
   justify-content: right;
   gap: 20px;         /* space between buttons */
-  margin-top: 10px;  /* space above buttons */
+    /* space above buttons */
 }
 
 .card-buttons button {
@@ -141,11 +161,11 @@ h1 {
 
 
 .view-btn {
-  background-color: rgb(206, 192, 192);
-  color: black;
+  background-color: #1e88e5;
+  color: white;
 }
 
 .book-btn {
-  background-color: rgb(57, 174, 209);
+  background: #00bfa5;
   color: white;
 }

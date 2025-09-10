@@ -24,18 +24,30 @@
   <div class="stats-cards">
     <h2>Stats Cards</h2>
     <div class="card">
+      <div class="action1">
+        <i class='bx bx-book'></i>
+      </div>
         <h3>5</h3>
         <p>Active Bookings</p>
     </div>
     <div class="card">
+      <div class="action1">
+       <i class='bx bx-user'></i>
+       </div>
         <h3>3</h3>
         <p>Assigned Caretakers</p>
     </div>
     <div class="card">
+      <div class="action1">
+        <i class='bx bx-money'></i>
+        </div>
         <h3>LKR 170,250</h3>
         <p>Total Spent</p>
     </div>
     <div class="card">
+      <div class="action1">
+        <i class='bx bx-star' ></i>
+        </div>
         <h3>4.8</h3>
         <p>Avg Rating Given</p>
     </div>
@@ -72,7 +84,7 @@
   <section class="recent-bookings">
     <h2>Recent Bookings</h2>
     <div class="booking">
-      <img src="../public/images/ct_image.png" alt="">
+      <img src="../public/images/find.png" alt="">
       <div>
         <h3>Elderly Care with Sarah Johnson</h3>
         <p>12/15/2024 at 12:00 PM • 4 hours</p>
@@ -80,7 +92,7 @@
       <span class="status confirmed">Confirmed</span>
     </div>
     <div class="booking">
-      <img src="../public/images/ct_image.png" alt="">
+      <img src="../public/images/find.png" alt="">
       <div>
         <h3>Medical Care with Michael Chen</h3>
         <p>12/18/2024 at 07:30 PM • 2 hours</p>
@@ -88,7 +100,7 @@
       <span class="status confirmed">Confirmed</span>
     </div>
     <div class="booking">
-      <img src="../public/images/ct_image.png" alt="">
+      <img src="../public/images/find.png" alt="">
       <div>
         <h3>Child Care with Emily Rodriguez</h3>
         <p>12/20/2024 at 01:30 PM • 5 hours</p>

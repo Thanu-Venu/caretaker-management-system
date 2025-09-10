@@ -14,29 +14,30 @@
 }
 
 .add-btn {
-  background: #e8edf7;
+  background: #00bfa5;
   border: none;
   padding: 8px 14px;
   border-radius: 20px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
 }
+
 .add-btn:hover {
-  background: #d6ddec;
+  background: linear-gradient(to right, #4ea4ee, #66f0dd);
 }
 
 /* Search bar */
 .search-wrapper {
   display: flex;
   align-items: center;
-  background: #f1f3f6;
+  background: #f2f4f8;
   border-radius: 12px;
   padding: 8px 12px;
   margin-bottom: 20px;
 }
 
 .search-wrapper i {
-  color: #6b7280;
+  color: #545b66;
   margin-right: 8px;
 }
 
@@ -46,6 +47,7 @@
   background: transparent;
   width: 100%;
   font-size: 14px;
+  color: #545b66;
 }
 
 /* Table */
@@ -61,6 +63,11 @@ thead {
   background: #f2f4f8;
 }
 
+th {
+    font-size: 18px;
+    font-weight: 700;
+}
+
 th, td {
   padding: 14px;
   text-align: left;
@@ -68,25 +75,56 @@ th, td {
 }
 
 .status {
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 14px;
-  color: #fff;
+  padding: 4px 30px;
+  border-radius: 12px;
+  font-size: 16px;
 }
 
 .status.active {
-  background: #28a745;
+  color: #24ab44;
+  background: #00bfa5;
+  padding-right: 20px;
+
 }
 
 .status.inactive {
-  background: #dc3545;
+  background: #fde2e7;
+  color: #a4161a;
+  padding-right: 23px
 }
 
 .actions i {
   margin-right: 12px;
   cursor: pointer;
-  color: #444;
+  transition: color 0.3s ease;
+  font-size: 18px;
 }
+<<<<<<< HEAD
 .actions i:hover {
+=======
+
+.actions .bx-show {
+    color: #333;
+}
+
+.actions .bx-edit {
+  color: #007bff;
+}
+
+.actions .bx-trash {
+    color: red;
+}
+
+.actions .bx-show:hover {
+>>>>>>> 54bb2ecc0700a189964a6d2d44b5aef46cdcc4cc
   color: #000;
 }
+
+.actions .bx-edit:hover {
+  color: #0056b3;
+}
+
+.actions .bx-trash:hover {
+    color: #a71d2a;
+}
+

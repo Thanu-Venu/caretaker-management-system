@@ -16,7 +16,7 @@
 
     <!-- Page Header -->
     <div class="reports-header">
-      <h2>Reports Dashboard</h2>
+      <h2>Reports</h2>
       <div class="filters">
         <label for="from">From:</label>
         <input type="date" id="fromDate">
@@ -87,8 +87,9 @@
       <h3>Monthly Bookings Trend</h3>
       <canvas id="bookingsChart"></canvas>
     </div>
-
+  <button id="downloadReport" class="btn-download">Download Report</button>
   </div>
+  
   <script src="<?php echo URLROOT; ?>/public/js/admin/ad_reports.js"></script>
 </body>
 </html>

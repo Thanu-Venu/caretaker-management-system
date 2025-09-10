@@ -12,7 +12,7 @@
   
 
   <main class="content">
-      <h1>History Logs</h1>
+      <h1>Logs</h1>
       <div class="search">
         <input type="text" id="searchInput" placeholder="Search...">
         <button id="searchButton">Search</button>

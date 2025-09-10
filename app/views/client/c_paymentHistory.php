@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment History</title>
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_payment.css">
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_paymentHistory.css">
 </head>
 <body>
   <div class="container">
@@ -47,24 +47,24 @@
     <div class="filters">
       <div class="search-bar">
         <i class="fas fa-search"></i>
-        <input type="text" placeholder="Search by description or payment ID...">
+        <input type="text" id="searchInput" placeholder="Search by description or payment ID...">
       </div>
-      <select>
-        <option>All Status</option>
-        <option>Completed</option>
-        <option>Pending</option>
-        <option>Failed</option>
+      <select id="statusFilter">
+        <option value="">All Status</option>
+        <option value="Completed">Completed</option>
+        <option value="Pending">Pending</option>
+        <option value="Failed">Failed</option>
       </select>
-      <select>
-        <option>All Services</option>
-        <option>BabySitters</option>
-        <option>Elder Care</option>
-        <option>Maids</option>
+      <select id="serviceFilter">
+        <option value="">All Services</option>
+        <option value="BabySitter">BabySitter</option>
+        <option value="Elder Care">Elder Care</option>
+        <option value="Maid">Maid</option>
       </select>
     </div>
 
     <!-- Table -->
-    <table>
+    <table id="paymentTable">
       <thead>
         <tr>
           <th>Payment ID</th>
@@ -78,17 +78,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr data-status="Completed" data-service="BabySitter">
           <td>PAY-001</td>
           <td>Sarah Williams</td>
-          <td>BabySitters</td>
+          <td>BabySitter</td>
           <td>8h</td>
           <td>LKR 7500.00/hr</td>
           <td>LKR 35000.00</td>
           <td><span class="status completed">Completed</span></td>
           <td>Jan 15, 2025</td>
         </tr>
-        <tr>
+        <tr data-status="Completed" data-service="Elder Care">
           <td>PAY-002</td>
           <td>Maria Rodriguez</td>
           <td>Elder Care</td>
@@ -98,17 +98,17 @@
           <td><span class="status completed">Completed</span></td>
           <td>Jan 11, 2025</td>
         </tr>
-        <tr>
+        <tr data-status="Pending" data-service="Maid">
           <td>PAY-003</td>
           <td>Lisa Anderson</td>
-          <td>Maids</td>
+          <td>Maid</td>
           <td>12h</td>
           <td>LKR 7000.00/hr</td>
           <td>LKR 50000.00</td>
           <td><span class="status pending">Pending</span></td>
           <td>Jan 09, 2025</td>
         </tr>
-        <tr>
+        <tr data-status="Failed" data-service="Elder Care">
           <td>PAY-004</td>
           <td>Amanda Garcia</td>
           <td>Elder Care</td>
@@ -118,10 +118,10 @@
           <td><span class="status failed">Failed</span></td>
           <td>Jan 04, 2025</td>
         </tr>
-        <tr>
+        <tr data-status="Pending" data-service="Maid">
           <td>PAY-005</td>
           <td>Lisa Anderson</td>
-          <td>Maids</td>
+          <td>Maid</td>
           <td>12h</td>
           <td>LKR 7000.00/hr</td>
           <td>LKR 50000.00</td>
@@ -130,6 +130,10 @@
         </tr>
       </tbody>
     </table>
+
+    <p id="noResults" style="display:none; text-align:center; margin-top:20px; color:red;">
+      No matching records found.
+    </p>
 
     <!-- Footer -->
     <div class="footer">
@@ -141,5 +145,8 @@
     </div>
 
   </div>
+
+  <!-- JavaScript -->
+  <script src="<?php echo URLROOT; ?>/public/js/client/c_paymentHistory.js"></script>
 </body>
 </html>

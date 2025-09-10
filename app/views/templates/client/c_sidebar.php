@@ -13,7 +13,7 @@
   <div class="sidebar">
     
     <ul class="menu">
-      <li><a href="#"><i class="bx bxs-dashboard"></i> Dashboard</a></li>
+      <li><a href="http://localhost/CMA/public?url=client/c_dashboard"><i class="bx bxs-dashboard"></i> Dashboard</a></li>
 
       <li><a href="http://localhost/CMA/public?url=client/c_find"><i class="bx bx-search"></i> Find Caretakers</a></li>
 
@@ -21,35 +21,23 @@
       <li class="submenu">
         <a href="#" class="dropdown-btn"><i class="bx bx-calendar"></i> My Bookings <i class="bx bx-chevron-down arrow"></i></a>
         <ul class="dropdown-container">
-          <li><a href="#">Upcoming Bookings</a></li><br>
-          <li><a href="#">Past Bookings</a></li><br>
-          <li><a href="#">Cancelled Bookings</a></li><br>
+          <li><a href="http://localhost/CMA/public?url=client/c_upcomingBookings">Upcoming Bookings</a></li><br>
+          <li><a href="http://localhost/CMA/public?url=client/c_pastBookings">Past Bookings</a></li><br>
+          <li><a href="http://localhost/CMA/public?url=client/c_cancelledBookings">Cancelled Bookings</a></li><br>
         </ul>
       </li>
 
       <!-- Payment Dropdown -->
-      <li class="submenu">
-        <a href="#" class="dropdown-btn"><i class="bx bx-dollar-circle"></i> Payment History <i class="bx bx-chevron-down arrow"></i></a>
-        <ul class="dropdown-container">
-          <li><a href="#">Invoices</a></li><br>
-          <li><a href="#">Pending Payments</a></li><br>
-          <li><a href="#">Completed Payments</a></li><br>
-        </ul>
+      <li>
+        <a href="http://localhost/CMA/public?url=client/c_paymentHistory"><i class="bx bx-dollar-circle"></i> Payment History </a>
       </li>
 
-      <li><a href="#"><i class="bx bx-message-dots"></i> Feedback</a></li>
-
-      <!-- Settings Dropdown -->
-      <li class="submenu">
-        <a href="#" class="dropdown-btn"><i class="bx bx-cog"></i> Settings <i class="bx bx-chevron-down arrow"></i></a>
-        <ul class="dropdown-container">
-          <li><a href="#">Edit Profile</a></li><br>
-          <li><a href="#">Change Password</a></li><br>
-          <li><a href="#">Manage Addresses</a></li><br>
-        </ul>
+      <li>
+        <a href="http://localhost/CMA/public?url=client/c_settings"><i class="bx bx-cog"></i> Settings </i></a>
+      
       </li>
 
-      <li class="logout"><a href="#"><i class="bx bx-log-out"></i> Logout</a></li>
+      <li class="logout"><a href="http://localhost/CMA/public"><i class="bx bx-log-out"></i> Logout</a></li>
     </ul>
   </div>
 
@@ -65,6 +53,25 @@
         button.querySelector(".arrow").classList.toggle("rotate");
       });
     });
+
+    // Highlight active sidebar item
+const currentUrl = window.location.href.split("?")[1]; // just compare after ?
+document.querySelectorAll(".sidebar .menu li a").forEach(link => {
+  const href = link.getAttribute("href");
+  
+  if (href && href.includes(currentUrl)) {
+    link.classList.add("active");
+
+    // If it's inside a dropdown, also expand it
+    const dropdown = link.closest(".dropdown-container");
+    if (dropdown) {
+      dropdown.classList.add("show");
+      dropdown.previousElementSibling.querySelector(".arrow").classList.add("rotate");
+    }
+  }
+});
+
+
   </script>
 </body>
 </html>
