@@ -22,18 +22,11 @@ class AdminController extends Controller {
     }
 
     public function ad_caretakers() {
-<<<<<<< HEAD
-        $this->view("admin/ad_caretakers"); 
-=======
-    $caretakers = $this->caretakerModel->getCaretakers(); // ✅ use the initialized property
-    $this->view("admin/ad_caretakers", ['caretakers'=>$caretakers]);
+
+    $this->view("admin/ad_caretakers");
 }
 
-     public function ad_announcement() {
-        $this->view("admin/ad_announcement"); 
->>>>>>> 0c7983bba4a11fb59e245f151d7232f48bed7f8e
-    }
-
+  
     public function ad_clients() {
         $this->view("admin/ad_clients"); 
     }
