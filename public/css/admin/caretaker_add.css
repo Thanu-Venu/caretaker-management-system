@@ -1,0 +1,70 @@
+/* Main section */
+.main-content {
+    margin-left: 270px;
+    padding: 40px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.form-section {
+    max-width: 600px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.form-section h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+/* Form fields */
+.caretaker-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.caretaker-form input,
+.caretaker-form select {
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.caretaker-form input:focus,
+.caretaker-form select:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+/* Submit button */
+.submit-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #45a049;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-section {
+        padding: 20px;
+    }
+}
