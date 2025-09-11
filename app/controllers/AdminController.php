@@ -1,6 +1,12 @@
 <?php
 class AdminController extends Controller {
 
+    private $caretakerModel;
+
+    public function __construct() {
+        // Load caretaker model once
+        $this->caretakerModel = $this->model('CaretakerModel');
+    }
     public function ad_dashboard() {
         $this->view("admin/ad_dashboard");
     }
@@ -16,7 +22,16 @@ class AdminController extends Controller {
     }
 
     public function ad_caretakers() {
+<<<<<<< HEAD
         $this->view("admin/ad_caretakers"); 
+=======
+    $caretakers = $this->caretakerModel->getCaretakers(); // ✅ use the initialized property
+    $this->view("admin/ad_caretakers", ['caretakers'=>$caretakers]);
+}
+
+     public function ad_announcement() {
+        $this->view("admin/ad_announcement"); 
+>>>>>>> 0c7983bba4a11fb59e245f151d7232f48bed7f8e
     }
 
     public function ad_clients() {

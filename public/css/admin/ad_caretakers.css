@@ -15,6 +15,7 @@
 
 .add-btn {
   background: #00bfa5;
+  color: white;
   border: none;
   padding: 8px 14px;
   border-radius: 20px;
@@ -23,7 +24,8 @@
 }
 
 .add-btn:hover {
-  background: linear-gradient(to right, #4ea4ee, #66f0dd);
+  background: #00a791;
+ 
 }
 
 /* Search bar */
@@ -81,15 +83,15 @@ th, td {
 }
 
 .status.active {
-  color: #24ab44;
+  color: white;
   background: #00bfa5;
-  padding-right: 20px;
+  padding-right: 35px;
 
 }
 
 .status.inactive {
-  background: #fde2e7;
-  color: #a4161a;
+  background: #ea0b34;
+  color: white;
   padding-right: 23px
 }
 
