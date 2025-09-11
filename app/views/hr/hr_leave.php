@@ -44,6 +44,7 @@
         <table class="leave-table">
             <thead>
                 <tr>
+                    <th>Caregiver ID</th>
                     <th>Caregiver Name</th>
                     <th>Leave Type</th>
                     <th>Start Date</th>
@@ -54,6 +55,7 @@
             </thead>
             <tbody>
                 <tr>
+                    <td>101</td>
                     <td>Emily Carter</td>
                     <td>Vacation</td>
                     <td>2024-07-15</td>
@@ -62,9 +64,10 @@
                     <td>
                         <button class="action-btn approve-btn">Approve</button>
                         <button class="action-btn reject-btn">Reject</button>
-                    </td>
+    
                 </tr>
                 <tr>
+                    <td>102</td>
                     <td>David Lee</td>
                     <td>Sick Leave</td>
                     <td>2024-07-10</td>
@@ -75,6 +78,7 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>103</td>
                     <td>Sarah Jones</td>
                     <td>Personal Leave</td>
                     <td>2024-07-22</td>
@@ -86,6 +90,7 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>104</td>
                     <td>Michael Brown</td>
                     <td>Vacation</td>
                     <td>2024-08-05</td>
@@ -96,6 +101,7 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>105</td>
                     <td>Jessica Wilson</td>
                     <td>Maternity Leave</td>
                     <td>2024-09-01</td>

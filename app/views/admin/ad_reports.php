@@ -87,8 +87,9 @@
       <h3>Monthly Bookings Trend</h3>
       <canvas id="bookingsChart"></canvas>
     </div>
-
+  <button id="downloadReport" class="btn-download">Download Report</button>
   </div>
+  
   <script src="<?php echo URLROOT; ?>/public/js/admin/ad_reports.js"></script>
 </body>
 </html>

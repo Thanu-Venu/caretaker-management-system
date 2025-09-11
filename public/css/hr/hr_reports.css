@@ -1,0 +1,122 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f7fa;
+}
+
+.reports-container {
+  margin-left: 270px;
+  margin-right: 20px;
+}
+
+.reports-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #1e88e5;
+}
+
+.apply-btn{
+    background:#1e88e5;
+    color:white;
+    border: none;
+    border-radius: 10px; 
+    font-weight: 600;    
+}
+
+.filters input,
+.filters button {
+  margin-left: 8px;
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 200px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card span {
+  display: block;
+  margin-top: 8px;
+  font-size: 18px;
+  color: black;
+}
+
+.table-section {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-bottom: 25px;
+  overflow-x: auto;
+}
+
+.table-section table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-section th, 
+.table-section td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.table-section th {
+   background-color: #1E88E5;
+    color: white;
+}
+
+.table-section h3 {
+  color: black;
+
+}
+
+.chart-section {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-bottom: 15px;
+}
+
+.chart-section canvas {
+  max-width: 500px;
+  max-height: 300px;
+  margin: auto;
+  display: block;
+}
+
+.chart-section h3 {
+  color: black;
+}
+
+/* Download Button */
+.btn-download {
+  
+  background: #1e88e5;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.btn-download:hover {
+  background: #1871be;
+}

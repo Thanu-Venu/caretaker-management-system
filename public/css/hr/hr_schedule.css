@@ -1,0 +1,145 @@
+.main-content {
+  margin-left: 250px; /* match your sidebar */
+  padding: 20px 40px;
+  min-height: 100vh;
+  background: #f4f6f8;
+}
+
+.main-content h1 {
+   color: #1E88E5;
+  margin-bottom: 20px;
+}
+
+/* Calendar container */
+#calendar {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 90%;
+}
+
+.close {
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Table inside modal */
+#scheduleTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+#scheduleTable th, #scheduleTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+#scheduleTable th {
+  background-color: #1E88E5;
+  color: white;
+}
+
+#scheduleTable tr:nth-child(even){background-color: #f2f2f2;}
+#scheduleTable tr:hover{background-color: #e0f7fa;}
+
+/* Calendar container */
+#calendar {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    height: 600px;
+}
+
+/* Header (month title, prev/next buttons) */
+.fc .fc-toolbar-title {
+    color: #1E88E5; /* Deep blue title */
+    font-weight: 600;
+}
+
+.fc .fc-button {
+    background-color: #1E88E5; /* buttons */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+.fc .fc-button:hover {
+    background-color: #00BFA5; /* teal hover */
+}
+
+/* Active view button */
+.fc .fc-button.fc-button-active {
+    background: linear-gradient(to right, #1E88E5, #00BFA5);
+}
+
+/* Weekdays header */
+.fc .fc-col-header-cell-cushion {
+    color: #1E88E5;
+    font-weight: 600;
+}
+
+/* Calendar days */
+.fc-daygrid-day {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.fc-daygrid-day:hover {
+    background-color: #e0f7fa; /* light teal hover */
+    border-radius: 5px;
+}
+
+/* Event styling */
+.fc-event {
+    background-color: #1E88E5; /* deep blue */
+    color: white;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    padding: 2px 4px;
+}
+
+.fc-event:hover {
+    background-color: #00BFA5; /* teal hover */
+    cursor: pointer;
+}
+
+/* Highlight today */
+.fc-day-today {
+    background-color: #B3E5FC !important; /* light blue for today */
+    
+}
+
+.fc-selected-date {
+    background: linear-gradient(to right, #1E88E5, #00BFA5);
+    color: white !important;
+    border-radius: 5px;
+}

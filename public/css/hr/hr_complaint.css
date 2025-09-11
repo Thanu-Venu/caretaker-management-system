@@ -1,5 +1,6 @@
 /* Reset */
 * {
+<<<<<<< HEAD
   margin-left:0;
   padding: 0;
   box-sizing: 90%;
@@ -11,21 +12,38 @@ body {
   height: 100vh;
   background: #f8f9fb;
   color: #333;
+=======
+  font-family: Arial, Helvetica, sans-serif;
+>>>>>>> origin/main
 }
 
 
 
+<<<<<<< HEAD
 
 /* Main */
 .main {
   flex: 1;
   padding: 30px;
   overflow-y: auto;
+=======
+/* Main Content Area */
+.main-content {
+  margin-left: 270px; /* Adjust this if your sidebar width differs */
+  padding: 30px;
+  flex: 1;
+  overflow-y: auto;
+  background: #f8f9fb;
+>>>>>>> origin/main
 }
 
 h1 {
   font-size: 26px;
   margin-bottom: 8px;
+<<<<<<< HEAD
+=======
+  color: #1e88e5;
+>>>>>>> origin/main
 }
 
 .subtitle {
@@ -35,16 +53,27 @@ h1 {
 
 /* Tabs */
 .tabs {
+<<<<<<< HEAD
   margin-bottom: 15px;
+=======
+  margin-bottom: 20px;
+>>>>>>> origin/main
 }
 
 .tabs .tab {
   background: #f0f0f0;
   border: none;
   padding: 10px 18px;
+<<<<<<< HEAD
   margin-right: 8px;
   border-radius: 6px;
   cursor: pointer;
+=======
+  margin-right: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+>>>>>>> origin/main
 }
 
 .tabs .tab.active {
@@ -52,6 +81,7 @@ h1 {
   color: white;
 }
 
+<<<<<<< HEAD
 /* Table */
 .table-container {
   background: white;
@@ -59,17 +89,30 @@ h1 {
   overflow: hidden;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   width:80%;
+=======
+/* Table Styling */
+.table-container {
+  background: white;
+  border-radius: 8px;
+  overflow-x: auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+>>>>>>> origin/main
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+<<<<<<< HEAD
+=======
+  min-width: 900px;
+>>>>>>> origin/main
 }
 
 th, td {
   padding: 14px;
   text-align: left;
   border-bottom: 1px solid #eee;
+<<<<<<< HEAD
 }
 
 th {
@@ -78,20 +121,50 @@ th {
   color: #555;
 }
 
+=======
+  font-size: 14px;
+}
+
+th {
+  background-color: #1E88E5;
+    color: white;
+  font-weight: 600;
+  
+}
+
+/* Tags */
+>>>>>>> origin/main
 .tag {
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 13px;
+<<<<<<< HEAD
 }
 
 .tag.blue { background: #e6f0fa; color: #0f7cc0; }
 .tag.green { background: #e6faef; color: #2e9d5e; }
 
+=======
+  display: inline-block;
+  background: #e0eff5; /* light ash background */
+  color: #333; 
+  font-weight: bold;
+   display: inline-block;
+  width: 150px;
+  height:30px;
+  
+
+}
+
+
+/* Status Labels */
+>>>>>>> origin/main
 .status {
   padding: 6px 10px;
   border-radius: 4px;
   font-size: 13px;
   font-weight: bold;
+<<<<<<< HEAD
 }
 
 .status.open { background: #fde8e8; color: #d9534f; }
@@ -112,3 +185,24 @@ th {
 .btn:hover {
   background: #0c5f92;
 }
+=======
+   background: #e0eff5; /* light ash */
+  color: #333;
+  display: inline-block;
+  width: 100px;
+  height:30px;
+  
+}
+
+
+/* Action Buttons */
+.btn {
+ 
+  border: none;
+  font-size: 13px;
+  font-weight: bold;
+ 
+}
+
+
+>>>>>>> origin/main

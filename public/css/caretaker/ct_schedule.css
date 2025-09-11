@@ -1,0 +1,201 @@
+.main-content {
+  margin-left: 270px; /* sidebar space */
+  padding: 40px;
+  margin-right: 20px;
+}
+
+h1 {
+  
+  margin-bottom: 20px;
+  color: #1e88e5;
+
+}
+
+/* Calendar tweaks */
+#calendar {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Modal overlay */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Card style modal */
+.modal-card {
+  background: #fff;
+  border-radius: 12px;
+  max-width: 700px;
+  margin: 80px auto;
+  padding: 20px;
+  animation: slideUp 0.3s ease-in-out;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+/* Modal header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.modal-header h3 {
+  color: #34495e;
+}
+
+.close {
+  font-size: 22px;
+  cursor: pointer;
+  color: #e74c3c;
+}
+
+/* Table styles */
+#scheduleTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+#scheduleTable th, 
+#scheduleTable td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+#scheduleTable th {
+  background: #3498db;
+  color: #fff;
+  border-radius: 6px 6px 0 0;
+}
+
+#scheduleTable tr:hover {
+  background: #f4faff;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes slideUp {
+  from {transform: translateY(50px); opacity: 0;}
+  to {transform: translateY(0); opacity: 1;}
+}
+
+/* Calendar container */
+#calendar {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: "Poppins", sans-serif;
+  color: #2c3e50;
+}
+
+/* Header toolbar (month/year, prev/next buttons) */
+.fc .fc-toolbar-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.fc .fc-button {
+  background: #3498db;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  border-radius: 6px;
+  padding: 6px 12px;
+  transition: 0.3s;
+}
+
+.fc .fc-button:hover {
+  background: #2980b9;
+}
+
+/* Calendar grid */
+.fc .fc-daygrid-day {
+  cursor: pointer; /* so it looks clickable */
+  transition: background 0.2s ease;
+}
+
+.fc .fc-daygrid-day:hover {
+  background: #f0f8ff; /* light hover */
+}
+
+/* Today highlight */
+.fc .fc-day-today {
+  background: #eaf6fd !important;
+  border: 2px solid #3498db !important;
+  font-weight: bold;
+}
+
+/* Selected date (when clicked) */
+.fc-day-active {
+  background: #3498db !important;
+  color: #fff !important;
+  border-radius: 6px;
+}
+
+/* Day numbers */
+.fc .fc-daygrid-day-number {
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+/* Event styling (if you later add events) */
+.fc-event {
+  background: #3498db !important;
+  border: none !important;
+  color: #fff !important;
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-size: 13px;
+}
+
+.fc-event {
+  border-radius: 6px !important;
+  padding: 2px 4px !important;
+  font-size: 12px !important;
+  font-weight: 500;
+}
+
+/* Status badges */
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.status-badge.approved {
+  background-color: #2ecc71;
+}
+.status-badge.pending {
+  background-color: #f1c40f;
+  color: #2c3e50;
+}
+.status-badge.rejected {
+  background-color: #e74c3c;
+}
+
+/* Month/Year title color */
+.fc .fc-toolbar-title {
+  color: #1e88e5;   /* Your theme blue */
+  font-weight: 700; /* make it bold */
+}
+
+

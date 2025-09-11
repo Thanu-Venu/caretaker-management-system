@@ -24,18 +24,30 @@
   <div class="stats-cards">
     <h2>Stats Cards</h2>
     <div class="card">
+      <div class="action1">
+        <i class='bx bx-book'></i>
+      </div>
         <h3>5</h3>
         <p>Active Bookings</p>
     </div>
     <div class="card">
+      <div class="action1">
+       <i class='bx bx-user'></i>
+       </div>
         <h3>3</h3>
         <p>Assigned Caretakers</p>
     </div>
     <div class="card">
+      <div class="action1">
+        <i class='bx bx-money'></i>
+        </div>
         <h3>LKR 170,250</h3>
         <p>Total Spent</p>
     </div>
     <div class="card">
+      <div class="action1">
+        <i class='bx bx-star' ></i>
+        </div>
         <h3>4.8</h3>
         <p>Avg Rating Given</p>
     </div>

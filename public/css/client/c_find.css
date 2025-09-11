@@ -1,6 +1,6 @@
 * {
-  font-family: Arial,Arial, Helvetica, sans-serif sans-serif;
-  font-weight: 300;
+  font-family:Arial, Helvetica, sans-serif;
+  
 }
 
 .content{
@@ -12,7 +12,8 @@
 h1 {
   margin-bottom: 10px;
   font-size: 28px;
-  font-weight: bold;
+  color: #1e88e5;
+  
 }
 
 .content p {
@@ -21,31 +22,27 @@ h1 {
 
 
 .filters {
-  background: #f9f9f9;
+  background: white;
   padding: 15px;
   padding-bottom: 40px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   max-width: 1000px;
-  margin-left: 100px;
+  margin-left: 50px;
 }
 
 .filter-box {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 per row */
-  gap: 10px 10px ; /* row gap, column gap */
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 .filter-row {
   display: flex;
   flex-direction: row;
   gap: 50px;
-}
-
-.only {
-  display: flex;
-  flex-direction: row;
-  gap: 50px;
+  
 }
 
 
@@ -66,25 +63,27 @@ h1 {
   padding: 6px 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  width: 180px; /* consistent smaller width */
+  width: 150px; /* consistent smaller width */
   background: white;
 }
 
 .filter-box button {
-  background: #f3f3ff;
-  border: 1px solid #bbb;
+  background: #1e88e5;
+  color: white;
+  font-weight: 600;
+ border: none;
   cursor: pointer;
 }
 
 .filter-box button:hover {
-  background: #e0e0ff;
+  background: #1b7ed3;
   
 }
 
 h3 {
   font-size: 18px;
   font-weight: 600;
-  color: #464646;
+  color: black;
 }
 
 .two{
@@ -95,7 +94,7 @@ h3 {
 }
 
 .caretakers {
-   margin-left: 100px;
+   margin-left: 50px;
    margin-right: 300px;
    display: grid;
    grid-template-columns: repeat(3, minmax(250px, 1fr));
@@ -134,9 +133,9 @@ h3 {
 
 .exp-loc {
   display: flex;
-  gap: 50px;  
+  gap: 40px;  
   font-weight: 700;
-  color: #464646;
+  color: black;
   font-size: 17px;
 }
 
@@ -148,7 +147,7 @@ h3 {
   display: flex;
   justify-content: right;
   gap: 20px;         /* space between buttons */
-  margin-top: 10px;  /* space above buttons */
+    /* space above buttons */
 }
 
 .card-buttons button {
@@ -162,11 +161,11 @@ h3 {
 
 
 .view-btn {
-  background-color: rgb(218, 213, 213);
-  color: black;
+  background-color: #1e88e5;
+  color: white;
 }
 
 .book-btn {
-  background: linear-gradient(to right, #69aeeb, #94f0e4);
-  color: black;
+  background: #00bfa5;
+  color: white;
 }

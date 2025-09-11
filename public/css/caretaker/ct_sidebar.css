@@ -4,7 +4,7 @@
   top: 0;
   left: 0;
   height: 100%;
-  width: 250px;
+  width: 240px;
   background: linear-gradient(180deg, #1E88E5, #00BFA5);
   padding: 20px 0;
   font-family: Arial, sans-serif;
@@ -71,6 +71,17 @@
 .sidebar ul li.showMenu > a .arrow {
   transform: rotate(-180deg);
 }
+
+.sidebar a:hover,
+.sidebar li.active > a {
+  background: rgba(255, 255, 255, 0.3);
+   margin: 0 10px;        /* reduces width from left and right */
+  border-radius: 10px;    /* keeps rounded corners */
+}
+
+
+
+
 
 /* Submenu */
 .sidebar ul .sub-menu {
