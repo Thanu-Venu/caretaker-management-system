@@ -17,7 +17,7 @@
             </div>
             <h1>Payment Successful!</h1>
             <p>The payment was made successfully!</p>
-            <button class="ok-btn">OK</button>
+            <button class="ok-btn"><a href="http://localhost/CMA/public/?url=client/c_contactCT">OK</a></button>
         </div>
     </div>
 </body>

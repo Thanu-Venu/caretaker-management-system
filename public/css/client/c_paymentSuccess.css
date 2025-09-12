@@ -55,3 +55,9 @@
 .payment-success .ok-btn:hover {
     opacity: 0.9;
 }
+
+.ok-btn a{
+    text-decoration: none;
+    color: white;
+
+}

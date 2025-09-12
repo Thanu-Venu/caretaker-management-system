@@ -1,0 +1,60 @@
+.main-content {
+  margin-left: 270px;
+  padding: 30px 20px;
+}
+
+h2 {
+  color: #1E88E5;
+  margin-bottom: 20px;
+}
+
+.caretaker-card {
+  display: flex;
+  gap: 20px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  align-items: center;
+}
+
+.caretaker-card img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.caretaker-info h3 {
+  margin: 0 0 10px 0;
+}
+
+.caretaker-info p {
+  margin: 5px 0;
+}
+
+.buttons {
+  margin-top: 10px;
+}
+
+.buttons .btn-call,
+.buttons .btn-msg,
+.buttons .btn-call1 {
+  background: #1E88E5;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  margin-right: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.buttons .btn-call:hover,
+.buttons .btn-msg:hover {
+  background: #1565c0;
+}
+
+.btn-call1 a{
+  text-decoration: none;
+  color: white;
+}   

@@ -1,8 +1,10 @@
 RewriteEngine On
 
-# Serve existing files/directories directly
+# Redirect everything to public folder
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteRule ^(.*)$ public/$1 [L]
+
+# Optional: hide public in URLs
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-
-# Route everything else to index.php
-RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+RewriteRule ^(.+)$ public/index.php?url=$1 [QSA,L]
