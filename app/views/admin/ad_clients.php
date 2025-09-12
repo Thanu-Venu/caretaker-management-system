@@ -11,7 +11,12 @@
 </head>
 <body>
     <div class="content">
-  <h1 class="page-title">Client Management</h1>
+
+    
+    <section class="client-header">
+        <h1>Client Management</h1>
+        <button class="add-btn">Add Client</button>
+      </section>
 
   <div class="search-box">
     <i class='bx bx-search'></i>
