@@ -15,7 +15,7 @@
     
     <section class="client-header">
         <h1>Client Management</h1>
-        <button class="add-btn">Add Client</button>
+        
       </section>
 
   <div class="search-box">
