@@ -1,10 +1,9 @@
-// Example actions (for demo)
+// Show alert for table buttons
 document.querySelectorAll('.link-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    alert(`${btn.innerText} clicked`);
+    alert(`${btn.innerText} clicked!`);
   });
 });
-
 
 // Modal functionality
 const addBtn = document.querySelector('.add-btn');

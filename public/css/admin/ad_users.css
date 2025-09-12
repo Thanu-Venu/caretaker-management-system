@@ -1,5 +1,7 @@
+
+
 .content {
-  margin-left: 260px; /* adjust depending on sidebar width */
+  margin-left: 260px;
   padding: 20px;
   min-height: 100vh;
   background: #f9fafb;
@@ -12,7 +14,7 @@
   border-radius: 12px;
   box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
   max-width: 900px;
-  margin: auto;
+  margin: 40px auto;
 }
 
 .card h2 {
@@ -55,7 +57,6 @@ table th {
 }
 
 .add-btn {
-  margin-top: 20px;
   padding: 10px 18px;
   background: #00BFA5;
   border: none;
@@ -67,7 +68,7 @@ table th {
 }
 
 .add-btn:hover {
-  background: #d1d5db;
+  background: #00a68a;
 }
 
 /* Modal styles */

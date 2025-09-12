@@ -36,6 +36,7 @@ class AdminController extends Controller {
         $this->view("admin/ad_users"); 
     }
     
+
     public function ad_feedback() {
         $this->view("admin/ad_feedback"); 
     }
