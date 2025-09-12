@@ -55,6 +55,7 @@
     });
 
 
+
    // Get current page URL's "url" parameter
 const urlParams = new URLSearchParams(window.location.search);
 const currentPage = urlParams.get("url"); // e.g., "client/c_dashboard"
@@ -75,9 +76,24 @@ menuLinks.forEach(link => {
       parentSubmenu.classList.add("show");
       const arrow = parentSubmenu.querySelector(".arrow");
       if (arrow) arrow.classList.add("rotate");
+    // Highlight active sidebar item
+const currentUrl = window.location.href.split("?")[1]; // just compare after ?
+document.querySelectorAll(".sidebar .menu li a").forEach(link => {
+  const href = link.getAttribute("href");
+  
+  if (href && href.includes(currentUrl)) {
+    link.classList.add("active");
+
+    // If it's inside a dropdown, also expand it
+    const dropdown = link.closest(".dropdown-container");
+    if (dropdown) {
+      dropdown.classList.add("show");
+      dropdown.previousElementSibling.querySelector(".arrow").classList.add("rotate");
     }
   }
 });
+
+
 
 
 

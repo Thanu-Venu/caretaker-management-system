@@ -68,6 +68,10 @@ class ClientController extends Controller {
         $this->view("client/c_settings");
     }
 
+     public function c_contactCT() {
+        $this->view("client/c_contactCT");
+    }
+
 
 
 

@@ -53,6 +53,7 @@ body {
 
 .menu a:hover {
   background: rgba(255, 255, 255, 0.2);
+  margin: 10px;
 }
 
 .menu a i {
@@ -85,7 +86,7 @@ body {
 
 .dropdown-container li a {
   font-size: 14px;
-  padding: 10px 40px;
+  padding: 10px 30px;
   display:block;
   width: 100%;
   box-sizing: border-box;
@@ -93,6 +94,7 @@ body {
 
 .dropdown-container li a:hover {
   background: rgba(255, 255, 255, 0.3);
+  
   
 }
 
@@ -105,28 +107,24 @@ body {
   transform: rotate(180deg);
 }
 
-/* Logout at bottom 
-.menu li:last-child {
-  position: absolute;
-  bottom: 20px;
-  width: 100%;
-}
-.logout {
-  position: sticky;
-  bottom: 30px;
-  
-  z-index: 10px;
-  
+
+.sidebar .menu li a.active {
+  background:rgba(255, 255, 255, 0.3);
+  margin: 0 10px;        /* reduces width from left and right */
+  border-radius: 10px;
 }
 
-.logout a {
-  display: block;
-  padding: 30px 20px;
+.sidebar .menu li a.active i {
   color: #fff;
-  text-decoration: none;
 }
 
-.logout a:hover {
-  background: rgba(255, 255, 255, 0.2);
-}*/
- 
+.dropdown-container {
+  display: none;
+}
+.dropdown-container.show {
+  display: block;
+}
+.arrow.rotate {
+  transform: rotate(180deg);
+}
+
