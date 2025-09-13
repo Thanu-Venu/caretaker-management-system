@@ -23,7 +23,7 @@
         <li><a href="#about">About</a></li>
         <li><a href="#services">Services</a></li>
         <li><a href="#contact">Contact</a></li>
-        <li><a href="/CMA/app/views/auth/login.php" class="btn-login">Login</a></li>
+        <li><a href="http://localhost/CMA/public/?url=auth/login" class="btn-login">Login</a></li>
       </ul>
     </nav>
   </header>

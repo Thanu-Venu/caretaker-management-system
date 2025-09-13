@@ -109,3 +109,21 @@ body {
     text-decoration: none;
     font-size: 14px;
 }
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    flex: 1;
+    padding-right: 30px; /* space for the icon */
+}
+
+.password-wrapper i {
+    position: absolute;
+    right: 10px;
+    font-size: 1.2em;
+    user-select: none;
+}
