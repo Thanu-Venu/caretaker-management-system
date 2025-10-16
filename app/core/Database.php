@@ -8,7 +8,7 @@ class Database {
 
         $host = "localhost";
         $user = "root";
-        $pass = "Thanuvenu";            
+        $pass = "";            
         $dbname = "smartcare";  
 
         $this->conn = new mysqli($host, $user, $pass, $dbname);
