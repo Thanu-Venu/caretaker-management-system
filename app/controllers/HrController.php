@@ -33,10 +33,6 @@ class HrController extends Controller {
         $this->view("hr/hr_pending_request");
     }
 
-    public function hr_complaint() {
-        $this->view("hr/hr_complaint");
-    }
-
      public function hr_feedback() {
         $this->view("hr/hr_feedback");
     }

@@ -12,6 +12,7 @@ class AdminController extends Controller {
     }
     
     public function ad_leave() {
+        
         $this->view("admin/ad_leave");
     }
 
