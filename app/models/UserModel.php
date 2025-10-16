@@ -1,5 +1,5 @@
 <?php
-class User {
+class UserModel {
     private $db;
 
     public function __construct() {
@@ -14,11 +14,13 @@ class User {
 
     // 🔹 Add user
     public function addUser($data) {
-        $this->db->query("INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)");
+        $this->db->query("INSERT INTO users (username, email, password, role, status) 
+                          VALUES (:username, :email, :password, :role, :status)");
         $this->db->bind(':username', $data['username']);
         $this->db->bind(':email', $data['email']);
         $this->db->bind(':password', $data['password']);
         $this->db->bind(':role', $data['role']);
+        $this->db->bind(':status', $data['status']);
 
         return $this->db->execute();
     }
@@ -31,13 +33,15 @@ class User {
     }
 
     // 🔹 Update user
-    public function updateUser($data) {
-        $this->db->query("UPDATE users SET username = :username, email = :email, role = :role WHERE id = :id");
+    public function updateUser($id, $data) {
+        $this->db->query("UPDATE users 
+                          SET username = :username, email = :email, role = :role, status = :status 
+                          WHERE id = :id");
         $this->db->bind(':username', $data['username']);
         $this->db->bind(':email', $data['email']);
         $this->db->bind(':role', $data['role']);
-        $this->db->bind(':id', $data['id']);
-
+        $this->db->bind(':status', $data['status']);
+        $this->db->bind(':id', $id);
         return $this->db->execute();
     }
 
@@ -48,3 +52,4 @@ class User {
         return $this->db->execute();
     }
 }
+?>
