@@ -1,44 +1,68 @@
 <?php
-class CaretakerCRUDController extends Controller {
+class UserController extends Controller {
 
-    private $caretakerModel;
+    private $userModel;
 
     public function __construct() {
-        $this->caretakerModel = $this->model('CaretakerModel');
+        $this->userModel = $this->model('User');
     }
 
-    // Add caretaker
-    public function add() {
-        if($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $result = $this->caretakerModel->addCaretaker($_POST);
+    // 🔹 View all users
+    public function index() {
+        $users = $this->userModel->getAllUsers();
+        $this->view('admin/ad_users', ['users' => $users]);
+    }
 
-            // Redirect to admin caretakers page
-            header("Location: " . URLROOT . "/admin/ad_caretakers");
-            exit;
+    // 🔹 Add new user
+    public function add() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'username' => trim($_POST['username']),
+                'email' => trim($_POST['email']),
+                'password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
+                'role' => $_POST['role']
+            ];
+
+            if ($this->userModel->addUser($data)) {
+                header("Location: " . URLROOT . "/UserController/index");
+                exit;
+            } else {
+                die("Error adding user.");
+            }
         } else {
-            $this->view("admin/caretaker_add");
+            $this->view('admin/ad_user_add');
         }
     }
 
-    // Edit caretaker
-   public function edit($id) {
-    if($_SERVER['REQUEST_METHOD'] == 'POST') {
-        // Update caretaker in DB
-        $this->caretakerModel->updateCaretaker($id, $_POST);
-        header("Location: " . URLROOT . "/admin/ad_caretakers");
-        exit;
-    } else {
-        // Load caretaker data and open edit form
-        $caretaker = $this->caretakerModel->getCaretakerById($id);
-        $this->view("admin/caretaker_edit", ['caretaker' => $caretaker]);
+    // 🔹 Edit user
+    public function edit($id) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'id' => $id,
+                'username' => trim($_POST['username']),
+                'email' => trim($_POST['email']),
+                'role' => $_POST['role']
+            ];
+
+            if ($this->userModel->updateUser($data)) {
+                header("Location: " . URLROOT . "/UserController/index");
+                exit;
+            } else {
+                die("Error updating user.");
+            }
+        } else {
+            $user = $this->userModel->getUserById($id);
+            $this->view('admin/ad_user_edit', ['user' => $user]);
+        }
+    }
+
+    // 🔹 Delete user
+    public function delete($id) {
+        if ($this->userModel->deleteUser($id)) {
+            header("Location: " . URLROOT . "/UserController/index");
+            exit;
+        } else {
+            die("Error deleting user.");
+        }
     }
 }
-
-
-    public function delete($id) {
-    $this->caretakerModel->deleteCaretaker($id);
-    header("Location: " . URLROOT . "?url=admin/ad_caretakers");
-    exit;
-}
-}
-?>
