@@ -53,48 +53,8 @@ body {
   transition: background 0.3s;
 }
 
-<<<<<<< HEAD
-
-.menu a:hover,
-.menu a.active {
-  background: rgba(255,255,255,0.3);
-}
 
 
-.arrow {
-  margin-left: auto;
-  transition: transform 0.3s;
-}
-
-.submenu-list {
-  list-style: none;
-  padding-left: 40px;
-  display: none;
-  flex-direction: column;
-}
-
-.submenu-list li a {
-  padding: 8px 20px;
-  font-size: 14px;
-  color: #f1f1f1;
-}
-
-.submenu.open .submenu-list {
-  display: flex;
-}
-
-.submenu.open .arrow {
-  transform: rotate(180deg);
-}
-
-.logout {
-  padding: 30px 20px;
-=======
-.nav-links li a i {
->>>>>>> 1c913aaaa248cb8bdbf13aa5c6646aff1fac4701
-  
-  font-size: 20px;
-}
 
 .nav-links li.active a,
 .nav-links li a:hover {
