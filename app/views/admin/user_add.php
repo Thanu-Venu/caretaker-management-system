@@ -8,7 +8,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
   <meta charset="UTF-8">
   <title>Add User</title>
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_users.css">
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/user_add.css">
 </head>
 <body>
 <main class="main-content">
@@ -33,13 +33,19 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
         <option value="Client">Client</option>
       </select>
 
+      <label>Phone</label>
+            <input type="text" name="phone" required placeholder="Enter phone number">
+
       <label>Status</label>
       <select name="status">
         <option value="Active">Active</option>
         <option value="Inactive">Inactive</option>
       </select>
+      <br><br>
+       <button type="submit" class="submit-btn" window.location.href='/CMA/public/userCRUD/list'>Add user</button>
+        </form>
 
-      <button type="submit" class="submit-btn">Add User</button>
+      
     </form>
   </section>
 </main>

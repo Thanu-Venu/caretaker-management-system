@@ -14,9 +14,8 @@
   
       <div class="logo">
 
-<<<<<<< HEAD
       <h2>SmartCare</h2>
-=======
+
     <ul class="menu">
       <li><a href="http://localhost/CMA/public?url=hr/hr_dashboard"><i class='bx bx-home'></i><span>Dashboard</span></a></li>
 
@@ -44,7 +43,6 @@
 
     <div class="logout">
       <a href="http://localhost/CMA/public"><i class='bx bx-log-out'></i><span>Logout</span></a>
->>>>>>> origin/main
     </div>
     <ul class="nav-links">
       
@@ -61,11 +59,9 @@
     </ul>
   </div>
 
-<<<<<<< HEAD
 
 
   <script src="script.js"></script>
-=======
   <script>
     // Toggle submenu
     document.querySelectorAll(".submenu > a").forEach(menu => {
@@ -95,6 +91,5 @@ document.querySelectorAll(".sidebar .menu li a").forEach(link => {
 });
 
   </script>
->>>>>>> origin/main
 </body>
 </html>

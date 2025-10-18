@@ -1,0 +1,103 @@
+/* ===== General Layout ===== */
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+.main-content {
+    margin-left: 260px; /* Sidebar width */
+    padding: 20px;
+    min-height: 100vh;
+    background-color: #f9f9f9;
+}
+
+/* ===== Form Section ===== */
+.form-section {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-width: 700px;
+    margin: 40px auto;
+}
+
+.form-section h1 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: #333;
+}
+
+/* ===== Form Fields ===== */
+.form-section label {
+    font-weight: 500;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: #555;
+    display: block;
+}
+
+.form-section input[type="text"],
+.form-section input[type="email"],
+.form-section select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 1rem;
+    transition: 0.3s;
+}
+
+.form-section input[type="text"]:focus,
+.form-section input[type="email"]:focus,
+.form-section select:focus {
+    border-color: #4a90e2;
+}
+
+/* ===== Buttons ===== */
+.submit-btn, .cancel-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 20px;
+    transition: 0.3s;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+}
+
+.submit-btn {
+    background-color: #2ce2d3;
+    color: #fff;
+}
+
+.submit-btn:hover {
+    background-color: #357ABD;
+}
+
+.cancel-btn {
+    background-color: #f57e8a;
+    color: #fff;
+    margin-left: 10px;
+}
+
+.cancel-btn:hover {
+    background-color: #c82333;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .form-section {
+        margin: 20px auto;
+        padding: 20px;
+    }
+}

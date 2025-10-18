@@ -1,0 +1,91 @@
+/* ===== General Layout ===== */
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0px;
+}
+
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding-top: 40px;
+   margin-left: 200px;
+
+}
+
+/* ===== Form Section ===== */
+.form-section {
+  background: #fff;
+  width: 100%;
+  max-width: 550px;
+  margin: 30px auto;
+  padding: 40px 50px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+     margin-left: 200px;
+}
+
+/* ===== Heading ===== */
+.form-section h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 26px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ===== Input Labels ===== */
+.form-section label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #444;
+}
+
+/* ===== Input Fields ===== */
+.form-section input,
+.form-section select {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.form-section input:focus,
+.form-section select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* ===== Button ===== */
+.submit-btn {
+  width: 100%;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .form-section {
+    padding: 30px 25px;
+  }
+  .form-section h1 {
+    font-size: 22px;
+  }
+}

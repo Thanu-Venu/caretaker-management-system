@@ -49,3 +49,5 @@ $caretaker = $data['caretaker'];
 
   </section>
 </main>
+</body>
+</html>

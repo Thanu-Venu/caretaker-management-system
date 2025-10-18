@@ -1,55 +1,48 @@
 <?php
+require_once APPROOT . '/core/Database.php';
+
 class UserModel {
-    private $db;
+    private $conn;
 
     public function __construct() {
-        $this->db = new Database();
+        $db = new Database();
+        $this->conn = $db->conn; // mysqli object
     }
 
     // 🔹 Get all users
     public function getAllUsers() {
-        $this->db->query("SELECT * FROM users ORDER BY id DESC");
-        return $this->db->resultSet();
+        $result = $this->conn->query("SELECT * FROM users ORDER BY id DESC");
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     // 🔹 Add user
     public function addUser($data) {
-        $this->db->query("INSERT INTO users (username, email, password, role, status) 
-                          VALUES (:username, :email, :password, :role, :status)");
-        $this->db->bind(':username', $data['username']);
-        $this->db->bind(':email', $data['email']);
-        $this->db->bind(':password', $data['password']);
-        $this->db->bind(':role', $data['role']);
-        $this->db->bind(':status', $data['status']);
-
-        return $this->db->execute();
+        $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+        $stmt = $this->conn->prepare("INSERT INTO users (username, email, password, role, status) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssss", $data['username'], $data['email'], $hashedPassword, $data['role'], $data['status']);
+        return $stmt->execute();
     }
 
     // 🔹 Get user by ID
     public function getUserById($id) {
-        $this->db->query("SELECT * FROM users WHERE id = :id");
-        $this->db->bind(':id', $id);
-        return $this->db->single();
+        $stmt = $this->conn->prepare("SELECT * FROM users WHERE id=?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
     }
 
     // 🔹 Update user
     public function updateUser($id, $data) {
-        $this->db->query("UPDATE users 
-                          SET username = :username, email = :email, role = :role, status = :status 
-                          WHERE id = :id");
-        $this->db->bind(':username', $data['username']);
-        $this->db->bind(':email', $data['email']);
-        $this->db->bind(':role', $data['role']);
-        $this->db->bind(':status', $data['status']);
-        $this->db->bind(':id', $id);
-        return $this->db->execute();
+        $stmt = $this->conn->prepare("UPDATE users SET username=?, email=?, role=?, status=? WHERE id=?");
+        $stmt->bind_param("ssssi", $data['username'], $data['email'], $data['role'], $data['status'], $id);
+        return $stmt->execute();
     }
 
     // 🔹 Delete user
     public function deleteUser($id) {
-        $this->db->query("DELETE FROM users WHERE id = :id");
-        $this->db->bind(':id', $id);
-        return $this->db->execute();
+        $stmt = $this->conn->prepare("DELETE FROM users WHERE id=?");
+        $stmt->bind_param("i", $id);
+        return $stmt->execute();
     }
 }
 ?>
