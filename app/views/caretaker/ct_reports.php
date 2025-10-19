@@ -26,7 +26,7 @@
         <p id="totalHours">0</p>
       </div>
       <div class="card">
-        <h3>Total Earnings</h3>
+        <h3>Total Earnings(LKR)</h3>
         <p id="totalEarnings">0</p>
       </div>
     </div>
@@ -42,7 +42,7 @@
           <th>Service</th>
           <th>Date</th>
           <th>Hours</th>
-          <th>Payment</th>
+          <th>Payment(LKR)</th>
         </tr>
       </thead>
       <tbody id="serviceTableBody">

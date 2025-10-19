@@ -124,7 +124,7 @@
       <i class='bx bx-credit-card'></i>
       <div>
         <h4>Payment Processed</h4>
-        <p>Payment of $150 has been successfully processed.</p>
+        <p>Payment of LKR 45,000 has been successfully processed.</p>
       </div>
       <span>1 day ago</span>
     </div>

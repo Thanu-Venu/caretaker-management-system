@@ -19,7 +19,7 @@
     <section class="card profile">
       <h3>Profile Details</h3>
       <div class="profile-body">
-        <img id="profileImg" src="<?php echo URLROOT; ?>/public/images/find.png" alt="Profile">
+        <img id="profileImg" src="<?php echo URLROOT; ?>/public/images/client.png" alt="Profile">
         <div class="pro-section">
           <label>Full Name
             <input type="text" id="name" placeholder="Sarah Johnson" required>
@@ -59,17 +59,17 @@
     <section class="card">
       <h3>Notification Settings</h3>
       <div class="notif-option">
-        <label>Booking Updates
+        <label>Booking Details
           <input type="checkbox" checked>
         </label>
       </div>
       <div class="notif-option">
-        <label>Leave Approval Updates
+        <label>Payment Details
           <input type="checkbox" checked>
         </label>
       </div>
       <div class="notif-option">
-        <label>Promotions / Announcements
+        <label>Announcements
           <input type="checkbox">
         </label>
       </div>

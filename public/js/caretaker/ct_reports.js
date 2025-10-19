@@ -1,8 +1,8 @@
 // Dummy service data
 const services = [
-  { client: "Mrs Johnson", service: "Elder Care", date: "2025-08-01", hours: 4, payment: 700 },
-  { client: "The Smith Family", service: "Babysitting", date: "2025-08-03", hours: 6, payment: 1200 },
-  { client: "Mr Davis", service: "Maid Service", date: "2025-08-05", hours: 5, payment: 900 }
+  { client: "Mrs Johnson", service: "Elder Care", date: "2025-08-01", hours: 4, payment: 7000 },
+  { client: "The Smith Family", service: "Babysitting", date: "2025-08-03", hours: 6, payment: 12000 },
+  { client: "Mr Davis", service: "Maid Service", date: "2025-08-05", hours: 5, payment: 9000 }
 ];
 
 // Render service table

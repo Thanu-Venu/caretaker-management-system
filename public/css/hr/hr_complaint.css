@@ -7,17 +7,18 @@
 
 /* Main Content Area */
 .main-content {
-  margin-left: 270px; /* Adjust this if your sidebar width differs */
-  padding: 30px;
+  margin-left: 260px; /* Adjust this if your sidebar width differs */
+  padding: 20px;
   flex: 1;
   overflow-y: auto;
   background: #f8f9fb;
 }
 
 h1 {
-  font-size: 26px;
+  font-size: 28px;
   margin-bottom: 8px;
   color: #1e88e5;
+  
 }
 
 .subtitle {
@@ -41,7 +42,7 @@ h1 {
 }
 
 .tabs .tab.active {
-  background: #0f7cc0;
+  background: #1E88E5;
   color: white;
 }
 
@@ -67,7 +68,7 @@ th, td {
 }
 
 th {
-  background-color: #1E88E5;
+  background-color: #3093e9;
     color: white;
   font-weight: 600;
   
