@@ -14,9 +14,9 @@
   
       <div class="logo">
 
-<<<<<<< HEAD
+
       <h2>SmartCare</h2>
-=======
+
     <ul class="menu">
       <li><a href="http://localhost/CMA/public?url=hr/hr_dashboard"><i class='bx bx-home'></i><span>Dashboard</span></a></li>
 
@@ -44,7 +44,7 @@
 
     <div class="logout">
       <a href="http://localhost/CMA/public"><i class='bx bx-log-out'></i><span>Logout</span></a>
->>>>>>> origin/main
+
     </div>
     <ul class="nav-links">
       
@@ -61,11 +61,11 @@
     </ul>
   </div>
 
-<<<<<<< HEAD
+
 
 
   <script src="script.js"></script>
-=======
+
   <script>
     // Toggle submenu
     document.querySelectorAll(".submenu > a").forEach(menu => {
@@ -75,6 +75,25 @@
         parent.classList.toggle("open");
       });
     });
+
+    // Highlight active menu item
+    const currentPath = window.location.href;
+
+  document.querySelectorAll(".menu a").forEach(link => {
+    // Check if the link's href is included in the current URL
+    if (currentPath.includes(link.getAttribute("href"))) {
+      link.classList.add("active");
+
+      // If it's inside a submenu, also open the submenu
+      const parent = link.closest(".submenu");
+      if (parent) {
+        parent.classList.add("open");
+      }
+    }
+  });
+      
+  
+  
 
     
    // Highlight active sidebar item
@@ -95,6 +114,6 @@ document.querySelectorAll(".sidebar .menu li a").forEach(link => {
 });
 
   </script>
->>>>>>> origin/main
+
 </body>
 </html>

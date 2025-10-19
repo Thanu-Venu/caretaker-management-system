@@ -1,16 +1,10 @@
-<<<<<<< HEAD
-
-
-
-=======
 <?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; ?>
->>>>>>> origin/main
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<<<<<<< HEAD
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Complaints Management - SmartCare</title>
@@ -98,7 +92,7 @@
   <script src="script.js"></script>
 </body>
 </html>
-=======
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Complaints Management - SmartCare</title>
@@ -188,4 +182,4 @@
   <script src="script.js"></script>
 </body>
 </html>
->>>>>>> origin/main
+

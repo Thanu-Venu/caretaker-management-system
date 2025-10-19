@@ -29,7 +29,6 @@ body {
 
 
 
-
 .nav-links {
   list-style: none;
   padding: 0;
@@ -53,10 +52,8 @@ body {
   transition: background 0.3s;
 }
 
-.nav-links li a i {
-  
-  font-size: 20px;
-}
+
+
 
 .nav-links li.active a,
 .nav-links li a:hover {
