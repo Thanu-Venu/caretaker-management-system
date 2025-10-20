@@ -4,43 +4,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register a Complaint</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_complaintReg.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register a Complaint</title>
+<link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_complaintReg.css">
 </head>
 <body>
-  <div class="main-wrapper">
-  <div class="container">
-    <h2>Register a Complaint</h2>
-    <form id="complaintForm">
-      <label for="caretaker">Select Caretaker</label>
-      <select id="caretaker" required>
-        <option value="">Choose a caretaker</option>
-        <option value="John">John</option>
-        <option value="Sarah">Sarah</option>
-        <option value="Mike">Mike</option>
-      </select>
+<div class="main-wrapper">
+<div class="container">
+<h2>Register a Complaint</h2>
 
-      <label for="serviceDate">Service Date</label>
-      <input type="date" id="serviceDate" required>
+<form action="/CMA/public/index.php?url=Complaint/store" method="POST">
+    <label>Client Name:</label><br>
+    <input type="text" name="client_name" required><br>
 
-      <label for="category">Complaint Category</label>
-      <select id="category" required>
+    <label>Caretaker Name:</label><br>
+    <input type="text" name="caretaker_name" required><br>
+
+    <label>Complaint Category:</label><br>
+    <select name="category" required>
         <option value="">Choose a category</option>
+        <option value="Caretaker Behavior">Caretaker Behavior</option>
         <option value="Service Quality">Service Quality</option>
         <option value="Late Arrival">Late Arrival</option>
         <option value="Unprofessional">Unprofessional</option>
-      </select>
+        <option value="Other">Other</option>
+    </select><br>
 
-      <label for="description">Complaint Description</label>
-      <textarea id="description" rows="4"></textarea>
+    <label>Complaint Description:</label><br>
+    <textarea name="details" rows="5" required></textarea><br>
 
-      <button type="submit">Submit Complaint</button>
-    </form>
-  </div>
-  </div>
+    <button type="submit">Submit Complaint</button>
+</form>
 
-  <script src="<?php echo URLROOT; ?>/public/js/client/c_complaintReg.js"></script>
+</div>
+</div>
 </body>
 </html>
