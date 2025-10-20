@@ -1,32 +1,13 @@
-/* Reset */
-* {
-  margin-left:0;
-  padding: 0;
-  box-sizing: 90%;
-  font-family:Arial, Helvetica, sans-serif;
-}
+/* Main Content Area */
 
-body {
-  display: flex;
-  height: 100vh;
-  background: #f8f9fb;
-  color: #333;
-}
-
-
-
-
-/* Main */
-.main {
-  flex: 1;
-  padding: 30px;
-  overflow-y: auto;
+.main-content {
+    padding: 40px;
+    margin-left: 270px;
 }
 
 h1 {
-  font-size: 28px;
+  font-size: 26px;
   margin-bottom: 8px;
-  
 }
 
 
@@ -38,80 +19,108 @@ h1 {
 
 /* Tabs */
 .tabs {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .tabs .tab {
   background: #f0f0f0;
   border: none;
   padding: 10px 18px;
-  margin-right: 8px;
+  margin-right: 10px;
   border-radius: 6px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .tabs .tab.active {
-  background: #1E88E5;
+  background: #0f7cc0;
   color: white;
 }
 
-/* Table */
+/* Table Styling */
 .table-container {
   background: white;
   border-radius: 8px;
-  overflow: hidden;
+  overflow-x: auto;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  width:80%;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 900px;
 }
 
 th, td {
   padding: 14px;
   text-align: left;
   border-bottom: 1px solid #eee;
+  font-size: 14px;
 }
 
 th {
   background: #f7f9fb;
-  font-weight: bold;
+  font-weight: 600;
   color: #555;
 }
 
+/* Tags */
 .tag {
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 13px;
+  display: inline-block;
+  background: #e0eff5; /* light ash background */
+  color: #333; 
+  font-weight: bold;
+   display: inline-block;
+  width: 150px;
+  height:30px;
+  
+
 }
 
-.tag.blue { background: #e6f0fa; color: #0f7cc0; }
-.tag.green { background: #e6faef; color: #2e9d5e; }
 
+/* Status Labels */
 .status {
   padding: 6px 10px;
   border-radius: 4px;
   font-size: 13px;
   font-weight: bold;
+   background: #e0eff5; /* light ash */
+  color: #333;
+  display: inline-block;
+  width: 100px;
+  height:30px;
+  
 }
 
-.status.open { background: #fde8e8; color: #d9534f; }
-.status.progress { background: #fff3cd; color: #856404; }
-.status.resolved { background: #e6faef; color: #2e9d5e; }
 
+/* Action Buttons */
 .btn {
-  padding: 8px 12px;
-  background: #0f7cc0;
-  color: white;
+ 
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
   font-size: 13px;
-  transition: background 0.3s;
+  font-weight: bold;
+ 
 }
 
-.btn:hover {
-  background: #0c5f92;
+/* delete */
+a {
+  text-decoration: none;
+  color: #007bff;
+  margin: 0 5px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a.delete-link {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+a.delete-link:hover {
+  color: #c0392b;
 }

@@ -1,6 +1,10 @@
 <?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
 
+<?php if (!empty($_SESSION['flash_message'])): ?>
+  <div class="alert success"><?php echo $_SESSION['flash_message']; unset($_SESSION['flash_message']); ?></div>
+<?php endif; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
