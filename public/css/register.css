@@ -6,7 +6,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 120vh;
+  height: 110vh;
 }
 
 /* Signup Container */
@@ -15,7 +15,7 @@ body {
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 20px;
+  
   
 }
 
@@ -138,3 +138,24 @@ h2 {
   text-decoration: none;
   font-size: 14px;
 }
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    flex: 1;
+    padding-right: 30px; /* space for the icon */
+}
+
+.password-wrapper i {
+    position: absolute;
+    right: 10px;
+    font-size: 1.2em;
+    user-select: none;
+}
+
+
+
