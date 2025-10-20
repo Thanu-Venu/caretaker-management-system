@@ -23,9 +23,11 @@ body {
 }
 
 h1 {
-  font-size: 26px;
+  font-size: 28px;
   margin-bottom: 8px;
 }
+
+
 
 .subtitle {
   margin-bottom: 20px;
@@ -48,7 +50,7 @@ h1 {
 }
 
 .tabs .tab.active {
-  background: #0f7cc0;
+  background: #1E88E5;
   color: white;
 }
 

@@ -1,10 +1,10 @@
 const caretakers = [
-  { id: 1, name: "Sarah Johnson", service: "Elderly Care", img: "public/images/find.png", location: "Jaffna", rating: 5.0, exp: "5 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
-  { id: 2, name: "Emily Brown", service: "Child Care", img: "public/images/find.png", location: "Colombo", rating: 4.8, exp: "4 Years", about: "Experienced caregiver specializing in child care,offering compassionate support,daily assistance,and ensuring comfort and dignity for children." },
-  { id: 3, name: "John Smith", service: "Child Care", img: "public/images/find-male.jpg", location: "Kandy", rating: 4.2, exp: "6 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
-  { id: 4, name: "Maya Silva", service: "Elderly Care", img: "public/images/find.png", location: "Colombo", rating: 3.9, exp: "3 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
-  { id: 5, name: "Raj Kumar", service: "Elderly Care", img: "public/images/find-male.jpg", location: "Jaffna", rating: 3.5, exp: "2 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
-  { id: 6, name: "Kala Mass", service: "Maid", img: "public/images/find.jpg", location: "Matara", rating: 4.5, exp: "4 Years", about: "Experienced maid specializing in household chores, cleaning, and assisting families with daily routines, ensuring a neat and comfortable home environment." }
+  { id: 1, name: "Sarah Johnson", gender: "female", service: "Elderly Care", img: "public/images/find.png", location: "Jaffna", rating: 5.0, exp: "5 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
+  { id: 2, name: "Emily Brown", gender: "female", service: "Child Care", img: "public/images/find.png", location: "Colombo", rating: 4.8, exp: "4 Years", about: "Experienced caregiver specializing in child care,offering compassionate support,daily assistance,and ensuring comfort and dignity for children." },
+  { id: 3, name: "John Smith", gender: "male", service: "Elderly Care", img: "public/images/find-male.jpg", location: "Kandy", rating: 4.2, exp: "6 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
+  { id: 4, name: "Maya Silva", gender: "female", service: "Elderly Care", img: "public/images/find.png", location: "Colombo", rating: 3.9, exp: "3 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
+  { id: 5, name: "Raj Kumar", gender: "male", service: "Elderly Care", img: "public/images/find-male.jpg", location: "Jaffna", rating: 3.5, exp: "2 Years", about: "Experienced caregiver specializing in elderly care,offering compassionate support,daily assistance,and ensuring comfort and dignity for seniors." },
+  { id: 6, name: "Kala Mass", gender: "female", service: "Maid", img: "public/images/find.jpg", location: "Matara", rating: 4.5, exp: "4 Years", about: "Experienced maid specializing in household chores, cleaning, and assisting families with daily routines, ensuring a neat and comfortable home environment." }
 ];
 
 
@@ -18,13 +18,16 @@ function renderCaretakers(data) {
   }
 
   data.forEach(c => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      
+  const imgSrc = c.gender === "male" 
+    ? "/CMA/public/images/find-male.jpg" 
+    : "/CMA/public/images/find.png"; // female default
+
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `
       <h3>${c.name}</h3>
       <p>${c.service} Specialist</p>
-      <img src="/CMA/public/images/find.png" alt="${c.name}">
+      <img src="${imgSrc}" alt="${c.name}">
 
       <div class="exp-loc">
         <p>Exp: ${c.exp}</p>
@@ -38,8 +41,7 @@ function renderCaretakers(data) {
        <button class="view-btn">View Profile</button>
        <button class="book-btn">Book Now</button>
       </div>
-
-    `;
+  `;
    
     // Select the buttons individually
   const viewBtn = card.querySelector(".view-btn");
