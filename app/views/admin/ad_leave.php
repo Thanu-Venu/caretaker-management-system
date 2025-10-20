@@ -18,6 +18,31 @@
 
     <section>
       <h1>Leave Management</h1>
+         <!-- Filter Section -->
+      <div class="filter-container">
+          <h3>Filter</h3>
+        <div class="filter-row">    
+          <select class="caregiver">
+            <option>Select Caregiver</option>
+            <option>Emily Carter</option>
+            <option>David Lee</option>
+            <option>Sarah Jones</option>
+            <option>Michael Brown</option>
+            <option>Jessica Wilson</option>
+          </select>
+
+          <select class ="caregiver1">
+            <option>Select Status</option>
+            <option>Pending</option>
+            <option>Approved</option>
+            <option>Rejected</option>
+          </select>
+
+          <button class="apply-btn">Apply Filters</button>
+        </div>
+      </div>
+
+<h3 class="leave">Leave Requests</h3>
 
       <!-- Leave Requests Table -->
       <table>

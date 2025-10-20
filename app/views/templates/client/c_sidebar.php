@@ -21,9 +21,9 @@
       <li class="submenu">
         <a href="#" class="dropdown-btn"><i class="bx bx-calendar"></i> My Bookings <i class="bx bx-chevron-down arrow"></i></a>
         <ul class="dropdown-container">
-          <li><a href="http://localhost/CMA/public?url=client/c_upcomingBookings">Upcoming Bookings</a></li><br>
-          <li><a href="http://localhost/CMA/public?url=client/c_pastBookings">Past Bookings</a></li><br>
-          <li><a href="http://localhost/CMA/public?url=client/c_cancelledBookings">Cancelled Bookings</a></li><br>
+          <li><a href="http://localhost/CMA/public?url=client/c_upcomingBookings">Upcoming Bookings</a></li>
+          <li><a href="http://localhost/CMA/public?url=client/c_pastBookings">Past Bookings</a></li>
+          <li><a href="http://localhost/CMA/public?url=client/c_cancelledBookings">Cancelled Bookings</a></li>
         </ul>
       </li>
 
@@ -54,6 +54,28 @@
       });
     });
 
+
+
+   // Get current page URL's "url" parameter
+const urlParams = new URLSearchParams(window.location.search);
+const currentPage = urlParams.get("url"); // e.g., "client/c_dashboard"
+
+// Get all sidebar links
+const menuLinks = document.querySelectorAll(".menu a");
+
+menuLinks.forEach(link => {
+  const linkURL = new URL(link.href).searchParams.get("url");
+
+  if (linkURL === currentPage) {
+    // Highlight this link
+    link.classList.add("active");
+
+    // If inside a submenu, open the parent dropdown
+    const parentSubmenu = link.closest(".submenu");
+    if (parentSubmenu) {
+      parentSubmenu.classList.add("show");
+      const arrow = parentSubmenu.querySelector(".arrow");
+      if (arrow) arrow.classList.add("rotate");
     // Highlight active sidebar item
 const currentUrl = window.location.href.split("?")[1]; // just compare after ?
 document.querySelectorAll(".sidebar .menu li a").forEach(link => {
@@ -70,6 +92,9 @@ document.querySelectorAll(".sidebar .menu li a").forEach(link => {
     }
   }
 });
+
+
+
 
 
   </script>

@@ -1,15 +1,21 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HR Manager Sidebar</title>
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_sidebar.css">
+  <title>SmartCare Sidebar</title>
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_announcement.css">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
   <div class="sidebar">
-   <br><br><br>
+  
+      <div class="logo">
+
+
+      <h2>SmartCare</h2>
 
     <ul class="menu">
       <li><a href="http://localhost/CMA/public?url=hr/hr_dashboard"><i class='bx bx-home'></i><span>Dashboard</span></a></li>
@@ -38,8 +44,27 @@
 
     <div class="logout">
       <a href="http://localhost/CMA/public"><i class='bx bx-log-out'></i><span>Logout</span></a>
+
     </div>
+    <ul class="nav-links">
+      
+      <li><a href="#"><i class="fa fa-home"></i><span>Dashboard</span></a></li>
+      <li class="active"><a href="#"><i class="fa fa-users"></i><span>Caretakers</span></a></li>
+      <li><a href="#"><i class="fa fa-user-shield"></i><span>Priority</span></a></li>
+      <li><a href="#"><i class="fa fa-bookmark"></i><span>Schedule</span></a></li>
+      <li><a href="#"><i class="fa fa-calendar-minus"></i><span>Leave</span></a></li>
+      <li><a href="#"><i class="fa fa-book-open"></i><span>Complaints</span></a></li>
+      <li><a href="#"><i class="fa fa-comment-dots"></i><span>Feedback</span></a></li>
+      <li><a href="#"><i class="fa fa-history"></i><span>History</span></a></li>
+      <li><a href="#"><i class="fa fa-chart-bar"></i><span>Reports</span></a></li>
+      <li><a href="#"><i class="fa fa-cog"></i><span>Settings</span></a></li>
+    </ul>
   </div>
+
+
+
+
+  <script src="script.js"></script>
 
   <script>
     // Toggle submenu
@@ -50,6 +75,25 @@
         parent.classList.toggle("open");
       });
     });
+
+    // Highlight active menu item
+    const currentPath = window.location.href;
+
+  document.querySelectorAll(".menu a").forEach(link => {
+    // Check if the link's href is included in the current URL
+    if (currentPath.includes(link.getAttribute("href"))) {
+      link.classList.add("active");
+
+      // If it's inside a submenu, also open the submenu
+      const parent = link.closest(".submenu");
+      if (parent) {
+        parent.classList.add("open");
+      }
+    }
+  });
+      
+  
+  
 
     
    // Highlight active sidebar item
@@ -70,5 +114,6 @@ document.querySelectorAll(".sidebar .menu li a").forEach(link => {
 });
 
   </script>
+
 </body>
 </html>
