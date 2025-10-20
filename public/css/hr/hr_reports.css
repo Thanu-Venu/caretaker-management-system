@@ -16,12 +16,20 @@ body {
   color: #1e88e5;
 }
 
+h2 {
+  color: #1E88E5;
+  font-size: 28px;
+}
+
 .apply-btn{
     background:#1e88e5;
     color:white;
     border: none;
     border-radius: 10px; 
     font-weight: 600;    
+}
+.apply-btn:hover {
+  background: #1871be;
 }
 
 .filters input,
@@ -115,6 +123,7 @@ body {
   border-radius: 6px;
   cursor: pointer;
   margin-bottom: 10px;
+  font-weight: 600;
 }
 
 .btn-download:hover {
