@@ -4,14 +4,24 @@ class ClientController extends Controller {
     public function c_dashboard() {
         $this->view("client/c_dashboard");
     }
+     public function c_profile() {
+        $this->view("client/c_profile");
+    }
     public function c_find() {
         $this->view("client/c_find");
     }
+
   
     public function c_feedback() {
         $this->view("client/c_feedback");
     }
   
+
+
+    public function c_payment() {
+        $this->view("client/c_payment");
+    }
+
     public function c_paymentHistory() {
         $this->view("client/c_paymentHistory");
     }

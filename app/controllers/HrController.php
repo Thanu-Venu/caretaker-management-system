@@ -4,6 +4,10 @@ class HrController extends Controller {
     public function hr_dashboard() {
         $this->view("hr/hr_dashboard");
     }
+        public function hr_complaint() {
+        $this->view("hr/hr_complaint");
+    }
+    
 
     public function hr_addct() {
         $this->view("hr/hr_addct");
@@ -27,10 +31,6 @@ class HrController extends Controller {
 
     public function hr_pending_request() {
         $this->view("hr/hr_pending_request");
-    }
-
-    public function hr_complaint() {
-        $this->view("hr/hr_complaint");
     }
 
      public function hr_feedback() {

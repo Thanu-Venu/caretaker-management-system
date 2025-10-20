@@ -10,10 +10,70 @@
   margin-left: 270px;
 }
 
-h1{
+.h1{
    margin: 10px 0px 30px 0px;
-   font-size: 28px;
-   font-weight: 700;
+   font-size:100px ; 
+   font-weight: 900;
+}
+
+/* ===== Filter Section ===== */
+
+.filter-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 25px;
+  padding-top:5px;
+}
+
+ .caregiver {
+  display: flex;
+  align-items: center;
+  gap: 100px;
+  margin-bottom: 20px;
+}
+
+ .caregiver1{
+  display: flex;
+  align-items: center;
+  gap: 100px;
+  margin-bottom: 20px;
+}
+
+.filter-row select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 300px;
+  font-size: 15px;
+}
+
+.filter-row , h3{
+  font-weight: 600;
+  display: block;
+}
+
+.apply-btn {
+  background-color: #4b45c2;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  border-radius:25px;
+}
+
+.apply-btn:hover {
+  background-color: #4338ca;
+}
+
+.leave{
+  padding-left:20px;
+  padding-bottom: 10px;
+  font-weight: 600;
 }
 
 /* Table */
@@ -32,7 +92,7 @@ thead {
 }
 
 th{
-   font-weight: bold;
+  font-weight:300;
    font-size: 18px;
    background:#f1f1f1;
    padding: 20px 20px 20px 15px;

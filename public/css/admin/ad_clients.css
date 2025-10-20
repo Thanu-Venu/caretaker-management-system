@@ -6,11 +6,29 @@
 }
 
 /* Page title */
-.page-title {
-  font-size: 24px;
-  font-weight: bold;
+
+
+
+/* Client header */
+.client-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
 }
+
+.add-btn {
+  background: #00bfa5;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.add-btn:hover {
+  background: #d6ddec;
+}
+
 
 /* Search box */
 .search-box {
