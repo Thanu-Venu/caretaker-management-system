@@ -10,8 +10,15 @@
   padding: 20px;
 }
 
+h2 {
+  font-size: 28px;
+  color: #1e88e5;
+}
+
 p {
   margin-bottom: 20px;
+  color: rgb(41, 40, 40);
+  font-size: 18px;
 }
 
 /* Dashboard */
@@ -43,7 +50,7 @@ button {
 }
 
 .top button.active {
-  background: #007bff;
+  background: #1e88e5;;
   color: #fff;
 }
 

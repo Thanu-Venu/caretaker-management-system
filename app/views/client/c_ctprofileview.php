@@ -17,9 +17,9 @@
     <div class="profile-header">
       <img src="<?php echo URLROOT; ?>/public/images/find.png" alt="Caretaker Photo" class="profile-img">
       <div>
-        <h1>Jane Doe</h1>
-        <p class="service-type">Babysitter</p>
-        <p class="location"><i class="fas fa-map-marker-alt"></i> Colombo, Sri Lanka</p>
+        <h1>Sarah Johnson</h1>
+        <p class="service-type">Elderly Care</p>
+        <p class="location"><i class="fas fa-map-marker-alt"></i> Jaffna, Sri Lanka</p>
       </div>
     </div>
 
