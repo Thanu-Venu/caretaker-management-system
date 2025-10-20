@@ -2,17 +2,20 @@
 class AdminController extends Controller {
 
     private $caretakerModel;
+    private $userModel;
 
     public function __construct() {
         // Load caretaker model once
         $this->caretakerModel = $this->model('CaretakerModel');
+
+           $this->userModel = $this->model('UserModel'); 
     }
+  
     public function ad_dashboard() {
         $this->view("admin/ad_dashboard");
     }
     
     public function ad_leave() {
-        
         $this->view("admin/ad_leave");
     }
 
@@ -34,7 +37,8 @@ class AdminController extends Controller {
     }
 
     public function ad_users() {
-        $this->view("admin/ad_users"); 
+    $users = $this->userModel->getAllUsers(); // ✅ use the initialized property
+        $this->view("admin/ad_users", ['users' => $users]); 
     }
     
 
