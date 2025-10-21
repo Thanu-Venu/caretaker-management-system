@@ -1,17 +1,29 @@
 <?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin dashboard</title>
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <title>Admin Dashboard - Users</title>
+
+  <!-- Boxicons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_users.css">
 </head>
 <body>
-    <div class="content">
-        <button class="add-btn">Add User</button><br><br><br><br><br><br>
+
+<div class="content">
+  <!-- Add User Button -->
+  <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/userCRUD/add'">Add User</button>
+
+  <!-- Search Input -->
+  <input type="text" id="searchInput" placeholder="Search users..." class="search-input">
+
+  <!-- Users Table -->
   <div class="card">
     <h2>User Roles and Access Control</h2>
     <div class="table-container">
@@ -20,56 +32,45 @@
           <tr>
             <th>Username</th>
             <th>Role</th>
-            <th>Actions</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>emma.smith</td>
-            <td>Admin</td>
-            <td>
-              <button class="link-btn">Edit Role</button> |
-              <button class="link-btn">Manage Permissions</button>
-            </td>
-          </tr>
-          <tr>
-            <td>david.jones</td>
-            <td>HR Manager</td>
-            <td>
-              <button class="link-btn">Edit Role</button> |
-              <button class="link-btn">Manage Permissions</button>
-            </td>
-          </tr>
-          <tr>
-            <td>olivia.brown</td>
-            <td>Caregiver</td>
-            <td>
-              <button class="link-btn">Edit Role</button> |
-              <button class="link-btn">Manage Permissions</button>
-            </td>
-          </tr>
-          <tr>
-            <td>liam.wilson</td>
-            <td>Caregiver</td>
-            <td>
-              <button class="link-btn">Edit Role</button> |
-              <button class="link-btn">Manage Permissions</button>
-            </td>
-          </tr>
-          <tr>
-            <td>sophia.davis</td>
-            <td>Caregiver</td>
-            <td>
-              <button class="link-btn">Edit Role</button> |
-              <button class="link-btn">Manage Permissions</button>
-            </td>
-          </tr>
+          <?php if (!empty($data['users'])): ?>
+            <?php foreach ($data['users'] as $user): ?>
+              <tr>
+                <td><?php echo htmlspecialchars($user['username'] ?? 'N/A'); ?></td>
+                <td><?php echo htmlspecialchars($user['role'] ?? 'N/A'); ?></td>
+                <td>
+                  <a href="<?php echo URLROOT; ?>/userCRUD/edit/<?php echo $user['id'] ?? 0; ?>"><i class="bx bx-edit"></i></a> |
+                  <a href="<?php echo URLROOT; ?>/userCRUD/delete/<?php echo $user['id'] ?? 0; ?>" onclick="return confirm('Are you sure?');"><i class="bx bx-trash"></i></a>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <tr>
+              <td colspan="3">No users found.</td>
+            </tr>
+          <?php endif; ?>
         </tbody>
       </table>
     </div>
-    
   </div>
 </div>
+
+<!-- JS for Search Filter -->
+<script>
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('keyup', function() {
+    const filter = this.value.toLowerCase();
+    document.querySelectorAll('tbody tr').forEach(row => {
+      row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
+    });
+  });
+</script>
+
+<!-- Custom JS -->
 <script src="<?php echo URLROOT; ?>/public/js/admin/ad_users.js"></script>
+
 </body>
 </html>

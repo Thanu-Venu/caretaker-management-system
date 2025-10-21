@@ -13,7 +13,7 @@
   <main class="content">
     <div class="booking">
       <h2>Bookings</h2>
-      <p>Welcome back, Emma Thamson</p>
+      <p>Welcome back, Emma Thamson!</p>
 
       <!-- Buttons -->
       <div class="top">

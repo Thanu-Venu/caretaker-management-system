@@ -1,6 +1,10 @@
 <?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
 
+<?php if (!empty($_SESSION['flash_message'])): ?>
+  <div class="alert success"><?php echo $_SESSION['flash_message']; unset($_SESSION['flash_message']); ?></div>
+<?php endif; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -124,7 +128,7 @@
       <i class='bx bx-credit-card'></i>
       <div>
         <h4>Payment Processed</h4>
-        <p>Payment of $150 has been successfully processed.</p>
+        <p>Payment of LKR 45,000 has been successfully processed.</p>
       </div>
       <span>1 day ago</span>
     </div>

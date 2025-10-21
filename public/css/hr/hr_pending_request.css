@@ -7,7 +7,9 @@
 
 h1 {
     color: #1E88E5;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
+    margin-top: 20px;
+    font-size: 28px;
 }
 
 .requests-table {
@@ -35,13 +37,13 @@ h1 {
 }
 
 .requests-table tr:hover {
-    background-color: #e0f7fa;
+    background-color: #f7f9f9;
     cursor: pointer;
 }
 
 button.approve {
-    background: linear-gradient(to right, #1E88E5, #00BFA5);
-    color: white;
+    background: #e0f7e9;
+    color: green;
     border: none;
     border-radius: 5px;
     padding: 5px 10px;
@@ -50,8 +52,8 @@ button.approve {
 }
 
 button.reject {
-    background: #e74c3c;
-    color: white;
+    background: #f8d7da;
+    color: red; 
     border: none;
     border-radius: 5px;
     padding: 5px 10px;

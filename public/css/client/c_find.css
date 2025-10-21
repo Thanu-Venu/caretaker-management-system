@@ -71,7 +71,7 @@ h1 {
   background: #1e88e5;
   color: white;
   font-weight: 600;
- border: none;
+  border: none;
   cursor: pointer;
 }
 
@@ -118,8 +118,13 @@ h3 {
 
 .card img {
   width: 100%;
-  border-radius: 12px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 10px; 
+  margin: 10px auto;
+  display: block;
 }
+
 
 .card h3 {
   margin: 10px 0 3px;

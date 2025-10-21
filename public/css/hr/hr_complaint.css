@@ -1,24 +1,16 @@
-/* Reset */
-* {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-
-
 /* Main Content Area */
+
 .main-content {
-  margin-left: 270px; /* Adjust this if your sidebar width differs */
-  padding: 30px;
-  flex: 1;
-  overflow-y: auto;
-  background: #f8f9fb;
+    padding: 40px;
+    margin-left: 270px;
 }
 
 h1 {
   font-size: 26px;
   margin-bottom: 8px;
-  color: #1e88e5;
 }
+
+
 
 .subtitle {
   margin-bottom: 20px;
@@ -67,10 +59,9 @@ th, td {
 }
 
 th {
-  background-color: #1E88E5;
-    color: white;
+  background: #f7f9fb;
   font-weight: 600;
-  
+  color: #555;
 }
 
 /* Tags */
@@ -114,4 +105,22 @@ th {
  
 }
 
+/* delete */
+a {
+  text-decoration: none;
+  color: #007bff;
+  margin: 0 5px;
+}
 
+a:hover {
+  text-decoration: underline;
+}
+
+a.delete-link {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+a.delete-link:hover {
+  color: #c0392b;
+}

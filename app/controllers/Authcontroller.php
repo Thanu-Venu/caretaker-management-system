@@ -1,10 +1,109 @@
 <?php
-class AuthController extends Controller {
-    public function login() {
-        $this->view("auth/login");
+session_start();
+require_once APPROOT . '/models/client_login.php';
+require_once APPROOT . '/models/staff_login.php';
+
+class AuthController extends Controller
+{
+    private $clientModel;
+    private $staffModel;
+
+    public function __construct()
+    {
+        $db = new Database();
+
+        if (!$db->conn) {
+            die("Connection failed");
+        }
+
+        $this->clientModel = new Client($db->conn);
+        $this->staffModel = new Staff($db->conn);
     }
 
-    public function register() {
-        $this->view("auth/register");
+    // Client Signup
+    public function register()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $password = $_POST['password'];
+            $confirmPassword = $_POST['confirmPassword'];
+
+            if ($password !== $confirmPassword) {
+                $data = [
+                    'firstName' => $_POST['firstName'] ?? '',
+                    'lastName' => $_POST['lastName'] ?? '',
+                    'email' => $_POST['email'] ?? '',
+                    'phone' => $_POST['phone'] ?? '',
+                    'error' => 'Passwords do not match'
+                ];
+                $this->view("auth/register", $data);
+                return;
+            }
+
+            $data = [
+                'name' => $_POST['firstName'] . ' ' . $_POST['lastName'],
+                'email' => $_POST['email'],
+                'phone' => $_POST['phone'],
+                'password' => $password
+            ];
+
+            if ($this->clientModel->register($data)) {
+                header("Location: index.php?url=auth/login");
+                exit;
+            } else {
+                $this->view("auth/register", ['error' => 'Registration failed']);
+            }
+        } else {
+            $this->view("auth/register");
+        }
     }
+
+    // Login for all types
+    public function login()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+
+            // Try normal client first
+            $staffUser = $this->staffModel->login($email, $password);
+            if ($staffUser) {
+                $_SESSION['user'] = $staffUser;
+                $_SESSION['role'] = $staffUser['role'];
+
+                switch ($staffUser['role']) {
+                    case 'caretaker':
+                        header("Location: index.php?url=caretaker/ct_dashboard");
+                        exit;
+                    case 'admin':
+                        header("Location: index.php?url=admin/ad_dashboard");
+                        exit;
+                    case 'Manager':
+                        header("Location: index.php?url=hr/hr_dashboard");
+                        exit;
+                }
+            }
+            // Then client
+            $clientUser = $this->clientModel->login($email, $password);
+            if ($clientUser) {
+                $_SESSION['user'] = $clientUser;
+                $_SESSION['role'] = 'client';
+                header("Location:index.php?url=client/c_dashboard");
+                exit;
+            }
+
+            // if none matched:
+            $this->view('auth/login', ['error' => 'Invalid credentials']);
+            return;
+        }
+
+        $this->view('auth/login');
+    }
+
+     // Logout
+    public function logout() {
+        session_destroy();
+        header("Location:index.php?url=auth/login");
+        exit;
+    }
+
 }
