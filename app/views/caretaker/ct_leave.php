@@ -1,184 +1,75 @@
 <?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
+  <title>Leave Management</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_leave.css">
-</head>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  
+
 </head>
 <body>
+    <main class="content">
+        <section>
+        
 
-<div id="dashboard">
-  <!-- Welcome -->
-   <div class="content">
-  <!-- Welcome -->
-  <section class="welcome">
-    <h2>Welcome back, Sarah!</h2>
-    <p>Manage your bookings and availability</p>
-  </section>
+    <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">Request Leave</button>
 
-  <!-- Dashboard Layout -->
-  
-  <main class="dashboard">
-    <!-- Profile Overview -->
-    <section class="card profile">
-      <h3>Profile Overview</h3>
-      <div class="profile-body">
-        <img src="<?php echo URLROOT; ?>/public/images/find.png" alt="Profile">
-        <div>
-          <div class="profile-header">
-            <h4>Sarah Johnson <br><span class="rating">⭐ 4.9 (127 views)</span>
-              <button class="btn-verify">Elder Care Specialist</button>
-            </h4>
-            
-            <button class="btn">Edit profile</button>
-          </div>
-          
-          <p class="profile-desc">Experienced elder care specialist with 8 years of compassionate service.<br>
-             Specialized in medication management, mobility assistance, and companionship care.</p>
-          <div class="tags">
-            <span class="tag">Elder Care</span>
-            <span class="tag">Medication Management</span>
-            <span class="tag">Mobility assistance</span>
-            <span class="tag">Companionship</span><br>
-          </div>
+
+    <div class="card">
+        <h2>Leave Requests</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dates</th>
+                        <th>Type</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($data['leaves'])): ?>
+                        <?php foreach ($data['leaves'] as $leave): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($leave['start_date'] . " – " . $leave['end_date']); ?></td>
+                                <td><?php echo htmlspecialchars($leave['leave_type']); ?></td>
+                                <td><?php echo htmlspecialchars($leave['reason']); ?></td>
+                                <td><span class="status <?php echo strtolower($leave['status']); ?>"><?php echo $leave['status']; ?></span></td>
+                                <td>
+                                    <a href="<?php echo URLROOT; ?>/leaveController/edit/<?php echo $leave['id']; ?>"><i class="bx bx-edit"></i></a> |
+                                    <a href="<?php echo URLROOT; ?>/leaveController/delete/<?php echo $leave['id']; ?>" onclick="return confirm('Delete this leave request?');"><i class="bx bx-trash"></i></a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr><td colspan="5">No leave requests found.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
-      </div>
-    </section>
-
-    <!-- Availability -->
-    <section class="card availability">
-      <h3>Availability Status</h3>
-      <p><strong>Currently Available</strong></p>
-      <label class="switch">
-        <input type="checkbox" checked>
-        <span class="slider"></span>
-      </label>
-      
-      <p>You're visible to clients and can receive new bookings</p>
-      <div class="Available">
-      <button class="butn">Available now</button>
-      </div>
-    </section>
-
-    <!-- Bookings -->
-    <section class="card bookings">
-      <h3>Upcoming Bookings</h3>
-      <table>
-        <thead>
-          <tr><th>Client</th><th>Date & Time</th><th>Service</th><th>Location</th><th>Payment</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Mrs Johnson</td><td>2024-01-20<br>9:00 AM - 1:00 PM</td><td><span class="badge">Elder Care</span></td><td>Vavuniya</td><td>700</td></tr>
-          <tr><td>The Smith Family</td><td>2024-01-20<br>6:00 AM - 1:00 PM</td><td><span class="badge">Elder Care</span></td><td>Jaffna</td><td>2000</td></tr>
-          <tr><td>Mr Davis</td><td>2024-01-20<br>8:00 AM - 5:00 PM</td><td><span class="badge">Elder Care</span></td><td>Colombo</td><td>1000</td></tr>
-        </tbody>
-      </table>
-     
-       <div class="button-cont">
-      <button class="btn-small">See All</button>
-      </div>
-    </section>
-
-      <!-- Schedule -->
-    <section class="card schedule">
-      <h3>Schedule</h3>
-      <div class="calendar">
-        <p>September 2025</p>
-        <div class="days">
-          <span>Su</span><span>Mo</span><span>Tu</span><span>We</span>
-          <span>Th</span><span>Fr</span><span>Sa</span>
-        </div>
-        <div class="dates" id="calendarDates"></div>
-      </div>
-    </section>
-
-    <!-- Leave Management -->
-    <section class="card leave">
-      <h3>Leave Management</h3>
-      <div class="button-container">
-           <!-- Button to open modal -->
-        <button onclick="openProfile()"  id="openModal" class="btn-lex">Request Leave</button>
-       
-     </div>
-      <table>
-        <thead>
-          <tr><th>Dates</th><th>Reason</th><th>Status</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Jan 15–17, 2024</td><td>Personal</td><td><span class="status approved">Approved</span></td></tr>
-          <tr><td>Dec 1–7, 2024</td><td>Holiday</td><td><span class="status approved">Approved</span></td></tr>
-          <tr><td>Nov 15, 2024</td><td>Medical</td><td><span class="status approved">Approved</span></td></tr>
-        </tbody>
-      </table>
-       <div class="button-cont">
-      <button class="btn-small">See All</button>
-      </div>
-      
-    </section>
-
-    <!-- This Month -->
-    <section class="card">
-      <h3>This Month</h3>
-      <div class="mon-bod">
-      <p>Currently Available: <strong>12</strong></p>
-      <p>Hours Worked: <strong>48</strong></p>
-      <p>Earnings: <strong>1200</strong></p>
-      <p>Ratings: ⭐ 4.9</p>
-      </div>
-    </section>
-  </main>
-  </div>
-
-</div>
-
-
-
-
-<!-- Modal -->
-  <div id="leaveModal" class="le-modal">
-    <div class="le-modal-content">
-      <span id="closeModal" class="close">&times;</span>
-      <h2>Request Leave</h2>
-      <p class="subtext">Submit a new leave request</p>
-
-      <form id="leaveForm">
-        <label>Leave Type
-          <select required>
-            <option value="">Select</option>
-            <option value="vacation">Vacation</option>
-            <option value="sick">Sick Leave</option>
-            <option value="personal">Personal</option>
-          </select>
-        </label>
-
-        <div class="row">
-          <label>Start Date <input type="date" required></label>
-          <label>End Date <input type="date" required></label>
-        </div>
-
-        <div class="row">
-          <label>Start Time <input type="time" value="09:00" required></label>
-          <label>End Time <input type="time" value="17:00" required></label>
-        </div>
-
-        <label>Reason
-          <textarea placeholder="Please provide a reason for your leave request..." required></textarea>
-        </label>
-
-        <button type="submit" class="submit-btn">Submit Request</button>
-      </form>
     </div>
-  </div>
-    
-
-  </div>
 </div>
 
-<script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_leave.js"></script>
+<!-- Optional: Search Filter -->
+<script>
+const searchInput = document.getElementById('searchInput');
+if(searchInput){
+    searchInput.addEventListener('keyup', function() {
+        const filter = this.value.toLowerCase();
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
+        });
+    });
+}
+</script>
+
 </body>
 </html>

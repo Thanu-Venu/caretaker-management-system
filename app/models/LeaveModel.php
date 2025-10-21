@@ -9,38 +9,63 @@ class LeaveModel {
         $this->conn = $db->conn;
     }
 
-    // Create Leave
-    public function addLeave($data) {
-        $stmt = $this->conn->prepare("INSERT INTO leaves (caretaker_id, leave_type, start_date, end_date, start_time, end_time, reason) VALUES (?,?,?,?,?,?,?)");
-        $stmt->bind_param("issssss", $data['caretaker_id'], $data['leave_type'], $data['start_date'], $data['end_date'], $data['start_time'], $data['end_time'], $data['reason']);
-        return $stmt->execute();
-    }
-
-    // Get all leaves for a caretaker
-    public function getLeavesByCaretaker($caretaker_id) {
+    // 🔹 Get all leaves for a caretaker
+    public function getLeavesByCaretaker($caretakerId) {
         $stmt = $this->conn->prepare("SELECT * FROM leaves WHERE caretaker_id=? ORDER BY start_date DESC");
-        $stmt->bind_param("i", $caretaker_id);
+        $stmt->bind_param("i", $caretakerId);
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    // Get all leaves for admin
-    public function getAllLeaves() {
-        $result = $this->conn->query("SELECT l.*, c.name FROM leaves l JOIN caretakers c ON l.caretaker_id=c.id ORDER BY l.start_date DESC");
-        return $result->fetch_all(MYSQLI_ASSOC);
+    // 🔹 Get single leave
+    public function getLeaveById($id) {
+        $stmt = $this->conn->prepare("SELECT * FROM leaves WHERE id=?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_object();
     }
 
-    // Update leave status (Admin)
-    public function updateLeaveStatus($leave_id, $status) {
-        $stmt = $this->conn->prepare("UPDATE leaves SET status=? WHERE leave_id=?");
-        $stmt->bind_param("si", $status, $leave_id);
+    // 🔹 Add new leave
+    public function addLeave($data) {
+        $stmt = $this->conn->prepare(
+            "INSERT INTO leaves (caretaker_id, leave_type, start_date, end_date, start_time, end_time, reason, status) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending')"
+        );
+        $stmt->bind_param(
+            "issssss",
+            $data['caretaker_id'],
+            $data['leave_type'],
+            $data['start_date'],
+            $data['end_date'],
+            $data['start_time'],
+            $data['end_time'],
+            $data['reason']
+        );
         return $stmt->execute();
     }
 
-    // Delete leave
-    public function deleteLeave($leave_id) {
-        $stmt = $this->conn->prepare("DELETE FROM leaves WHERE leave_id=?");
-        $stmt->bind_param("i", $leave_id);
+    // 🔹 Update existing leave
+    public function updateLeave($data) {
+        $stmt = $this->conn->prepare(
+            "UPDATE leaves SET leave_type=?, start_date=?, end_date=?, start_time=?, end_time=?, reason=? WHERE id=?"
+        );
+        $stmt->bind_param(
+            "ssssssi",
+            $data['leave_type'],
+            $data['start_date'],
+            $data['end_date'],
+            $data['start_time'],
+            $data['end_time'],
+            $data['reason'],
+            $data['id']
+        );
+        return $stmt->execute();
+    }
+
+    // 🔹 Delete leave
+    public function deleteLeave($id) {
+        $stmt = $this->conn->prepare("DELETE FROM leaves WHERE id=?");
+        $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
 }

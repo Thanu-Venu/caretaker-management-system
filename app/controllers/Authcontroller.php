@@ -76,7 +76,7 @@ class AuthController extends Controller
                     case 'admin':
                         header("Location: index.php?url=admin/ad_dashboard");
                         exit;
-                    case 'hr':
+                    case 'Manager':
                         header("Location: index.php?url=hr/hr_dashboard");
                         exit;
                 }

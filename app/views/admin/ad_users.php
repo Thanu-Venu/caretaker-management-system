@@ -6,79 +6,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <title>Admin Dashboard - Users</title>
+
+  <!-- Boxicons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_users.css">
 </head>
 <body>
-  <div class="content">
-    <button class="add-btn">Add User</button>
 
-    <!-- Add User Modal -->
-    <div class="modal" id="addUserModal">
-      <div class="modal-content">
-        <h3>Add New User</h3>
-        <form id="addUserForm">
-          <label for="name">Name</label>
-          <input type="text" id="name" name="name" placeholder="Enter name" required>
+<div class="content">
+  <!-- Add User Button -->
+  <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/userCRUD/add'">Add User</button>
 
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="Enter email" required>
+  <!-- Search Input -->
+  <input type="text" id="searchInput" placeholder="Search users..." class="search-input">
 
-          <label for="phone">Phone</label>
-          <input type="text" id="phone" name="phone" placeholder="Enter phone" required>
-
-          <label for="role">User Type</label>
-          <select id="role" name="role" required>
-            <option value="">-- Select Role --</option>
-            <option value="Admin">Admin</option>
-            <option value="HR Manager">HR Manager</option>
-          </select>
-
-          <div class="modal-buttons">
-            <button type="button" class="cancel-btn">Cancel</button>
-            <button type="submit" class="save-btn">Add user</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Users Table -->
-    <div class="card">
-      <h2>User Roles and Access Control</h2>
-      <div class="table-container">
-        <table>
-          <thead>
+  <!-- Users Table -->
+  <div class="card">
+    <h2>User Roles and Access Control</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php if (!empty($data['users'])): ?>
+            <?php foreach ($data['users'] as $user): ?>
+              <tr>
+                <td><?php echo htmlspecialchars($user['username'] ?? 'N/A'); ?></td>
+                <td><?php echo htmlspecialchars($user['role'] ?? 'N/A'); ?></td>
+                <td>
+                  <a href="<?php echo URLROOT; ?>/userCRUD/edit/<?php echo $user['id'] ?? 0; ?>"><i class="bx bx-edit"></i></a> |
+                  <a href="<?php echo URLROOT; ?>/userCRUD/delete/<?php echo $user['id'] ?? 0; ?>" onclick="return confirm('Are you sure?');"><i class="bx bx-trash"></i></a>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          <?php else: ?>
             <tr>
-              <th>Username</th>
-              <th>Role</th>
-              <th>Actions</th>
+              <td colspan="3">No users found.</td>
             </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>emma.smith</td>
-              <td>Admin</td>
-              <td>
-                <button class="link-btn">Edit Role</button> |
-                <button class="link-btn">Manage Permissions</button>
-              </td>
-            </tr>
-            <tr>
-              <td>david.jones</td>
-              <td>HR Manager</td>
-              <td>
-                <button class="link-btn">Edit Role</button> |
-                <button class="link-btn">Manage Permissions</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          <?php endif; ?>
+        </tbody>
+      </table>
     </div>
   </div>
+</div>
 
-  <script src="<?php echo URLROOT; ?>/public/js/admin/ad_users.js"></script>
+<!-- JS for Search Filter -->
+<script>
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('keyup', function() {
+    const filter = this.value.toLowerCase();
+    document.querySelectorAll('tbody tr').forEach(row => {
+      row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
+    });
+  });
+</script>
+
+<!-- Custom JS -->
+<script src="<?php echo URLROOT; ?>/public/js/admin/ad_users.js"></script>
 
 </body>
 </html>
