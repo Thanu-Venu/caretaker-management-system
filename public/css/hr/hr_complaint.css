@@ -1,25 +1,8 @@
-/* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
-}
-
-body {
-  display: flex;
-  height: 100vh;
-  background: #f8f9fb;
-  color: #333;
-}
-
 /* Main Content Area */
+
 .main-content {
-  margin-left: 240px; /* Adjust this if your sidebar width differs */
-  padding: 30px;
-  flex: 1;
-  overflow-y: auto;
-  background: #f8f9fb;
+    padding: 40px;
+    margin-left: 270px;
 }
 
 h1 {
@@ -121,4 +104,22 @@ th {
   font-weight: bold;
 }
 
+/* delete */
+a {
+  text-decoration: none;
+  color: #007bff;
+  margin: 0 5px;
+}
 
+a:hover {
+  text-decoration: underline;
+}
+
+a.delete-link {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+a.delete-link:hover {
+  color: #c0392b;
+}

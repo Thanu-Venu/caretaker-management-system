@@ -1,4 +1,5 @@
-
+<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,6 +7,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Complaints Management - SmartCare</title>
+
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_complaint.css" />
 </head>
 <body>

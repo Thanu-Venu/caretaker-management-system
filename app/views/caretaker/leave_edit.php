@@ -2,11 +2,15 @@
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
 
 $leave = $data['leave'];
-?> 
+?>
+<html>
+  <title>Edit Leave Request</title>
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/leave_edit.css">
+</html> 
 <main class="main-content">
   <section class="form-section">
     <h1>Edit Leave Request</h1>
-    <form method="POST" action="<?php echo URLROOT; ?>/leaveController/edit/<?php echo $data['leave']->id; ?>">
+    <form method="POST" action="<?php echo URLROOT; ?>/LeaveCRUD/edit/<?php echo $data['leave']->id; ?>">
       <label>Leave Type</label>
       <select name="leave_type" required>
         <option value="Vacation" <?php echo ($data['leave']->leave_type == 'Vacation') ? 'selected' : ''; ?>>Vacation</option>
@@ -28,7 +32,7 @@ $leave = $data['leave'];
       <textarea name="reason" required><?php echo $data['leave']->reason; ?></textarea>
 
       <button type="submit" class="submit-btn">Update Leave</button>
-      <a href="<?php echo URLROOT; ?>/leaveController/index" class="cancel-btn">Cancel</a>
+      <a href="<?php echo URLROOT; ?>/LeaveCRUD/index" class="cancel-btn">Cancel</a>
     </form>
   </section>
 </main>
