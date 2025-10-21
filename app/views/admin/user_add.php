@@ -29,8 +29,6 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
         <option value="">Select Role</option>
         <option value="Admin">Admin</option>
         <option value="Manager">Manager</option>
-        <option value="Caretaker">Caretaker</option>
-        <option value="Client">Client</option>
       </select>
 
       <label>Phone</label>

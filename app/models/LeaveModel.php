@@ -9,10 +9,10 @@ class LeaveModel {
         $this->conn = $db->conn;
     }
 
-    // 🔹 Get all leaves for a caretaker
-    public function getLeavesByCaretaker($caretakerId) {
-        $stmt = $this->conn->prepare("SELECT * FROM leaves WHERE caretaker_id=? ORDER BY start_date DESC");
-        $stmt->bind_param("i", $caretakerId);
+    // 🔹 Get all leaves for a user
+    public function getLeavesByUser($userId) {
+        $stmt = $this->conn->prepare("SELECT * FROM leaves WHERE user_id=? ORDER BY start_date DESC");
+        $stmt->bind_param("i", $userId);
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
@@ -28,18 +28,19 @@ class LeaveModel {
     // 🔹 Add new leave
     public function addLeave($data) {
         $stmt = $this->conn->prepare(
-            "INSERT INTO leaves (caretaker_id, leave_type, start_date, end_date, start_time, end_time, reason, status) 
-             VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending')"
+            "INSERT INTO leaves (user_id, leave_type, start_date, end_date, start_time, end_time, reason, can_edit_until, status) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Pending')"
         );
         $stmt->bind_param(
-            "issssss",
-            $data['caretaker_id'],
+            "isssssss",
+            $data['user_id'],
             $data['leave_type'],
             $data['start_date'],
             $data['end_date'],
             $data['start_time'],
             $data['end_time'],
-            $data['reason']
+            $data['reason'],
+            $data['can_edit_until']
         );
         return $stmt->execute();
     }
@@ -69,4 +70,3 @@ class LeaveModel {
         return $stmt->execute();
     }
 }
-?>
