@@ -21,7 +21,7 @@ class AuthController extends Controller
     }
 
     // Client Signup
-    public function register()  
+    public function register()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $password = $_POST['password'];
@@ -58,7 +58,7 @@ class AuthController extends Controller
     }
 
     // Login for all types
-    public function login() 
+    public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'];
@@ -69,6 +69,7 @@ class AuthController extends Controller
             if ($staffUser) {
                 $_SESSION['user'] = $staffUser;
                 $_SESSION['role'] = $staffUser['role'];
+
                 switch ($staffUser['role']) {
                     case 'caretaker':
                         header("Location: index.php?url=caretaker/ct_dashboard");
@@ -96,6 +97,13 @@ class AuthController extends Controller
         }
 
         $this->view('auth/login');
+    }
+
+     // Logout
+    public function logout() {
+        session_destroy();
+        header("Location:index.php?url=auth/login");
+        exit;
     }
 
 }
