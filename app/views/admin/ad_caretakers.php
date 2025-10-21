@@ -50,11 +50,19 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
                   <?= htmlspecialchars($caretaker['status']) ?>
                 </span>
               </td>
-              <td class="actions">
-                      <a href="<?php echo URLROOT; ?>/CaretakerCRUD/edit/<?php echo $caretaker['id']; ?>"><i class="bx bx-edit"></i></a>              
-                      <a href="<?php echo URLROOT; ?>/CaretakerCRUD/delete/<?php echo $caretaker['id']; ?>" onclick="return confirm('Are you sure you want to delete this caretaker?');"><i class="bx bx-trash"></i></a>
-                </a>
-              </td>
+             <td class="actions">
+                <a href="<?= URLROOT ?>/caretakerCRUD/edit/<?= $caretaker['id'] ?>" title="Edit">
+                <i class="bx bx-edit"></i>
+              </a>
+            
+              <a href="<?= URLROOT ?>/caretakerCRUD/delete/<?= $caretaker['id'] ?>"
+                onclick="return confirm('Are you sure you want to delete this caretaker?');" title="Delete">
+                <i class="bx bx-trash"></i>
+              </a>
+            </td>
+
+
+
             </tr>
           <?php endforeach; ?>
         <?php else: ?>
