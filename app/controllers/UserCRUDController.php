@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 class UserCRUDController extends Controller {
 
     private $userModel;

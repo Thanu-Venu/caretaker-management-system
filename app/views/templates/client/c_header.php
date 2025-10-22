@@ -45,9 +45,8 @@
     </div>
   </div>
 </div>
-
-    <i class="fas fa-user-circle"></i>
-  </div>
+  <!--<a href="<?php echo URLROOT; ?>/client/c_profile"><i class="fas fa-user-circle"></i></a>-->
+ </div>
 </div>
 </header>
   <!--<script src="<#?php echo URLROOT; ?>/public/js/notification.js"></script>-->

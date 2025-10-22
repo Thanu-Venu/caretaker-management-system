@@ -14,6 +14,13 @@
 
 <body>
   <div class="signup-container">
+    <?php if (!empty($error)): ?>
+      <div class="alert-danger"
+        style="padding:10px; background:#f8d7da; color:#721c24; border-radius:5px; margin-bottom:10px; text-align:center;">
+        <?= $error; ?>
+      </div>
+    <?php endif; ?>
+
     <div class="signup-box">
       <h1 class="logo">SmartCare</h1>
       <h2>Create Account</h2>

@@ -1,5 +1,7 @@
 <?php
 require_once "../app/models/ComplaintModel.php";
+session_start();
+
 class ComplaintController
 {
     private $complaintModel;
@@ -12,14 +14,15 @@ class ComplaintController
     // Show the complaint form
     public function create()
     {
-        include_once "../app/views/client/complaint_create.php";
+        include_once "../app/views/client/c_complaintReg.php";
     }
 
     // Store complaint in DB
     public function store()
     {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $client_name = trim($_POST["client_name"]);
+            $client_name = $_SESSION['user']['name'];
+
             $caretaker_name = trim($_POST["caretaker_name"]);
             $category = $_POST["category"];
             $details = trim($_POST["details"]);
@@ -33,8 +36,11 @@ class ComplaintController
             $success = $this->complaintModel->createComplaint($client_name, $caretaker_name, $category, $details);
 
             if ($success) {
-                $_SESSION['flash_message'] = "Complaint submitted successfully!";
-                header("Location: " . URLROOT . "/index.php?url=client/c_dashboard");
+                echo "<script>
+        alert('Complaint submitted successfully!');
+        window.location.href='" . URLROOT . "/public/index.php?url=Complaint/complaintlist';
+
+    </script>";
                 exit;
             } else {
                 echo "<script>alert('Error submitting complaint.'); window.history.back();</script>";
@@ -42,6 +48,9 @@ class ComplaintController
             }
         }
     }
+
+
+
 
     public function index()
     {
@@ -128,8 +137,91 @@ class ComplaintController
         </script>";
         }
     }
+    // =================== CLIENT-SIDE FUNCTIONS ===================
+
+    // View complaints submitted by the logged-in client
+    public function myComplaints()
+    {
+
+
+        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+            echo "<script>alert('Please login first.'); window.location.href='/CMA/public/index.php?url=auth/login';</script>";
+            exit;
+        }
+
+        $client_name = $_SESSION['user']['name'];
+        $complaints = $this->complaintModel->getComplaintsByClient($client_name);
+
+        include_once APPROOT . "/views/templates/client/c_header.php";
+    include_once APPROOT . "/views/templates/client/c_sidebar.php";
+
+    // Then include main complaint list
+    include_once APPROOT . "/views/client/c_complaintlist.php";
+    }
+
+
+
+    // Show edit form for client
+    public function clientEdit($id = null)
+    {
+        $id = (int) $id;
+        $complaint = $this->complaintModel->getComplaintById($id);
+
+        if (!$complaint) {
+            echo "<script>alert('Complaint not found'); window.location.href='/CMA/public/index.php?url=Complaint/myComplaints';</script>";
+            exit;
+        }
+
+        include_once "../app/views/client/c_complaintedit.php";
+    }
+
+
+    // Handle update for client
+    public function clientUpdate()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $id = (int) $_POST['Id'];
+            $details = trim($_POST['details']);
+
+            if (empty($details)) {
+                echo "<script>alert('Details are required.'); window.history.back();</script>";
+                exit;
+            }
+
+            $success = $this->complaintModel->updateComplaintByClient($id, $details);
+
+            if ($success) {
+                echo "<script>alert('Complaint updated successfully!'); window.location.href='/CMA/public/index.php?url=Complaint/myComplaints';</script>";
+            } else {
+                echo "<script>alert('Failed to update complaint.'); window.history.back();</script>";
+            }
+        }
+    }
+
+
+    // Delete complaint for client
+    public function clientDelete($id)
+    {
+        if ($this->complaintModel->deleteComplaintByClient($id)) {
+            echo "<script>alert('Complaint deleted successfully!'); window.location.href='/CMA/public/index.php?url=Complaint/myComplaints';</script>";
+        } else {
+            echo "<script>alert('Failed to delete complaint.'); window.history.back();</script>";
+        }
+    }
+
+    public function complaintlist()
+{
+    $client_name = $_SESSION['user']['name'];
+    $complaints = $this->complaintModel->getComplaintsByClient($client_name);
+
+    include_once APPROOT . "/views/templates/client/c_header.php";
+    include_once APPROOT . "/views/templates/client/c_sidebar.php";
+    include_once APPROOT . "/views/client/c_complaintlist.php";
+}
+
 
 
 
 }
+
 ?>
