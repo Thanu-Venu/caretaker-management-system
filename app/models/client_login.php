@@ -1,13 +1,27 @@
 <?php
-class Client {
+class Client
+{
     private $conn;
     private $table = "clients"; // your clients table
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
-    public function register($data) {
+    public function findUserByEmail($email)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM clients WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result->num_rows > 0; // true if email already exists
+    }
+
+
+    public function register($data)
+    {
         $sql = "INSERT INTO {$this->table} (name, email, phone, password, role) 
                 VALUES (?, ?, ?, ?, 'client')";
 
@@ -24,7 +38,8 @@ class Client {
         return true;
     }
 
-    public function login($email, $password) {
+    public function login($email, $password)
+    {
         $stmt = $this->conn->prepare("SELECT * FROM {$this->table} WHERE email = ? LIMIT 1");
         if (!$stmt) {
             die("Prepare failed: " . $this->conn->error);
@@ -36,15 +51,15 @@ class Client {
         $user = $result->fetch_assoc();
         $stmt->close();
 
-        if ($user && password_verify($password, $user['password']) ) {
+        if ($user && password_verify($password, $user['password'])) {
             return $user;
         }
         return false;
 
         if (!$staffUser && !$clientUser) {
-    // invalid credentials
-        $this->view('auth/login', ['error' => 'Invalid email or password']);
-        return;
+            // invalid credentials
+            $this->view('auth/login', ['error' => 'Invalid email or password']);
+            return;
         }
 
     }

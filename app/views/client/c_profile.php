@@ -1,5 +1,10 @@
 <?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
+<?php
+if (isset($data['user'])) {
+    $user = $data['user'];
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,55 +22,40 @@
       <form id="profileForm">
         <div class="row">
           <div class="form-group">
-            <label for="firstName">First Name</label>
-            <input type="text" id="firstName" value="Mehrab">
+            <label>Full Name</label>
+            <input type="text" value="<?= htmlspecialchars($user['name']); ?>" readonly>
           </div>
-          <div class="form-group">
-            <label for="lastName">Last Name</label>
-            <input type="text" id="lastName" value="Bozorgi">
-          </div>
+          
         </div>
 
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" id="email" value="mehrabbozorgi.business@gmail.com">
+          <input type="email" id="email" value="<?= htmlspecialchars($user['email']); ?>" readonly>
         </div>
 
         <div class="form-group">
           <label for="address">Address</label>
-          <input type="text" id="address" value="33062 Zboncak Isle">
+          <input type="text" id="address">
         </div>
 
         <div class="form-group">
           <label for="contact">Contact Number</label>
-          <input type="text" id="contact" value="58077.79">
+          <input type="text" id="contact">
         </div>
 
         <div class="row">
           <div class="form-group">
             <label for="city">City</label>
             <select id="city">
-              <option selected>Mehrab</option>
-              <option>Tehran</option>
-              <option>London</option>
-              <option>New York</option>
+              <option selected>colombo</option>
+              <option>jaffna</option>
+              <option>matara</option>
+              <option>vavuniya</option>
             </select>
           </div>
-          <div class="form-group">
-            <label for="state">State</label>
-            <select id="state">
-              <option selected>Bozorgi</option>
-              <option>California</option>
-              <option>Ontario</option>
-              <option>Berlin</option>
-            </select>
-          </div>
+          
         </div>
 
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" value="sbdlfbnd65sfdvb s">
-        </div>
 
         <div class="form-actions">
           <button type="button" class="btn btn-cancel">Cancel</button>

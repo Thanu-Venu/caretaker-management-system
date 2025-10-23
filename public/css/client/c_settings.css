@@ -93,3 +93,8 @@ input[type="file"] {
     width: 75%;
     box-sizing: border-box;
 }
+
+input[readonly] {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}

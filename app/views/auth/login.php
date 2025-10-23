@@ -13,6 +13,13 @@
 
 <body>
     <div class="login-container">
+        <?php if (isset($_SESSION['success_message'])): ?>
+            <div class="alert alert-success"
+                style="padding:10px; background:#1e88e5; color:white; border-radius:5px; margin-bottom:10px;">
+                <?= $_SESSION['success_message']; ?>
+            </div>
+            <?php unset($_SESSION['success_message']); ?>
+        <?php endif; ?>
         <div class="login-box">
             <h1>SmartCare</h1>
             <h2>Welcome Back!</h2>
@@ -52,25 +59,25 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-    const loginPassword = document.getElementById('loginPassword');
-    const toggleLogin = document.getElementById('toggleLoginPassword');
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginPassword = document.getElementById('loginPassword');
+            const toggleLogin = document.getElementById('toggleLoginPassword');
 
-    toggleLogin.addEventListener('click', function() {
-        // Toggle input type
-        const type = loginPassword.getAttribute('type') === 'password' ? 'text' : 'password';
-        loginPassword.setAttribute('type', type);
+            toggleLogin.addEventListener('click', function () {
+                // Toggle input type
+                const type = loginPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+                loginPassword.setAttribute('type', type);
 
-        // Toggle icon
-        if (this.classList.contains('bx-hide')) {
-            this.classList.remove('bx-hide');
-            this.classList.add('bx-show'); // eye open
-        } else {
-            this.classList.remove('bx-show');
-            this.classList.add('bx-hide'); // eye closed
-        }
-    });
-});
+                // Toggle icon
+                if (this.classList.contains('bx-hide')) {
+                    this.classList.remove('bx-hide');
+                    this.classList.add('bx-show'); // eye open
+                } else {
+                    this.classList.remove('bx-show');
+                    this.classList.add('bx-hide'); // eye closed
+                }
+            });
+        });
 
 
     </script>

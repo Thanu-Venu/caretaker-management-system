@@ -194,7 +194,7 @@
   <!-- CTA -->
   <section class="cta">
     <h2>Are You Ready?</h2>
-    <button class="btn-start"><a href="/CMA/app/views/auth/login.php" class="login_button">Get Started</a></button>
+    <button class="btn-start"><a href="/CMA/public/?url=auth/login" class="login_button">Get Started</a></button>
   </section>
 
   <!-- Footer -->

@@ -1,5 +1,11 @@
 <?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
+<?php
+if (isset($_SESSION['flash_message'])) {
+    echo "<script>alert('" . $_SESSION['flash_message'] . "');</script>";
+    unset($_SESSION['flash_message']);
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -15,9 +21,6 @@
 <h2>Register a Complaint</h2>
 
 <form action="/CMA/public/index.php?url=Complaint/store" method="POST">
-    <label>Client Name:</label><br>
-    <input type="text" name="client_name" required><br>
-
     <label>Caretaker Name:</label><br>
     <input type="text" name="caretaker_name" required><br>
 
