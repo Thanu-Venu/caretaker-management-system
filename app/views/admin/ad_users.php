@@ -20,9 +20,6 @@
   <!-- Add User Button -->
   <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/userCRUD/add'">Add User</button>
 
-  <!-- Search Input -->
-  <input type="text" id="searchInput" placeholder="Search users..." class="search-input">
-
   <!-- Users Table -->
   <div class="card">
     <h2>User Roles and Access Control</h2>

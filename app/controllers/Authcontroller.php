@@ -45,8 +45,14 @@ class AuthController extends Controller
                 'phone' => $_POST['phone'],
                 'password' => $password
             ];
-
+            if ($this->clientModel->findUserByEmail($data['email'])) {
+                $this->view("auth/register", [
+                    'error' => 'This email is already registered. Please log in instead.'
+                ]);
+                return;
+            }
             if ($this->clientModel->register($data)) {
+                $_SESSION['success_message'] = "Registration successful! You can now log in.";
                 header("Location: index.php?url=auth/login");
                 exit;
             } else {

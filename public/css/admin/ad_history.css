@@ -5,14 +5,7 @@
   box-sizing: border-box;
   font-family: Arial, Helvetica, sans-serif;
 }
-*{
-   font-family: Arial, Helvetica, sans-serif;
-<<<<<<< HEAD
-  font-weight :300;
-=======
 
->>>>>>> 487ce13652445172fed12b495b5c329cec6c7cd9
-}
 
 .content{
    flex:1;
@@ -22,6 +15,7 @@
 h1{
     margin-bottom: 30px;
     font-size: 30px;
+    color: #1e88e5;
 }
 
 .search{

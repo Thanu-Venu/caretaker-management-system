@@ -1,6 +1,10 @@
 <?php  include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php  include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; ?>
-
+<?php
+if (isset($data['user'])) {
+    $user = $data['user'];
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
