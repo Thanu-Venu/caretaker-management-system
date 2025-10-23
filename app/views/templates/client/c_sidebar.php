@@ -34,7 +34,6 @@
 
       <li>
         <a href="http://localhost/CMA/public?url=client/c_complaintReg"><i class="fa-solid fa-file-circle-exclamation"></i> Complaints </i></a>
-      
       </li>
 
       <li>
