@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 class LandingController {
 
     public function home() {

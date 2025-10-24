@@ -7,7 +7,9 @@
     margin-left: 280px;
     font-family: Arial, Helvetica, sans-serif;
 }
-
+h1{
+    color: #1e88e5;
+}
 .search {
     padding: 8px;
     border: 1px solid #ddd;
@@ -21,6 +23,7 @@
 /* Form section */
 .announcement h1 {
     margin-bottom: 20px;
+    color: #1e88e5;
 }
 
 form label {

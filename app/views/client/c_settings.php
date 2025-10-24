@@ -1,6 +1,10 @@
 <?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
-
+<?php
+if (isset($data['user'])) {
+    $user = $data['user'];
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,10 +26,10 @@
         <img id="profileImg" src="<?php echo URLROOT; ?>/public/images/client.png" alt="Profile">
         <div class="pro-section">
           <label>Full Name
-            <input type="text" id="name" placeholder="Sarah Johnson" required>
+            <input type="text" id="name" value="<?= htmlspecialchars($user['name']); ?>" readonly>
           </label><br>
           <label>Email
-            <input type="email" id="email" placeholder="sarah@example.com" required>
+            <input type="email" id="email" value="<?= htmlspecialchars($user['email']); ?>" readonly>
           </label><br>
           <label>Phone Number
             <input type="text" id="phone" placeholder="+94 712345678" required>

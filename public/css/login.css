@@ -127,3 +127,9 @@ body {
     font-size: 1.2em;
     user-select: none;
 }
+.alert-success {
+    display: block;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
