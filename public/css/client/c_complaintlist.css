@@ -1,0 +1,60 @@
+/* Target main content area */
+.main-content {
+    padding: 20px;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+    margin-left: 250px; /* adjust if sidebar width differs */
+}
+
+/* Page heading */
+.main-content h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #1e88e5;
+    color: white;
+    font-weight: 600;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Actions links */
+a {
+    text-decoration: none;
+    color: #2196F3;
+    font-weight: 500;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+em {
+    color: #999;
+    font-style: italic;
+}
+
+p {
+    color: #555;
+    font-size: 16px;
+}

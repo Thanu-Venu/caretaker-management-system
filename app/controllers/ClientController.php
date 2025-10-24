@@ -1,12 +1,25 @@
 <?php
+session_start();
+
 class ClientController extends Controller {
 
     public function c_dashboard() {
         $this->view("client/c_dashboard");
     }
      public function c_profile() {
-        $this->view("client/c_profile");
+    
+    if (!isset($_SESSION['user'])) {
+        
+        header("Location: index.php?url=auth/login");
+        exit;
     }
+
+    $user = $_SESSION['user'];
+
+    // pass user info to the view
+    $this->view("client/c_profile", ['user' => $user]);
+}
+
     public function c_find() {
         $this->view("client/c_find");
     }
@@ -68,11 +81,25 @@ class ClientController extends Controller {
     }
 
      public function c_settings() {
-        $this->view("client/c_settings");
+        if (!isset($_SESSION['user'])) {
+        
+        header("Location: index.php?url=auth/login");
+        exit;
+    }
+
+    $user = $_SESSION['user'];
+
+    // pass user info to the view
+    $this->view("client/c_settings", ['user' => $user]);
+      
     }
 
      public function c_contactCT() {
         $this->view("client/c_contactCT");
+    }
+
+     public function c_complaintlist() {
+        $this->view("client/c_complaintlist");
     }
 
 
