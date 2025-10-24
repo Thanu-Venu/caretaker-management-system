@@ -1,8 +1,9 @@
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
+/* === SIDEBAR BASE === */
 .sidebar {
   width: 240px;
   height: 90vh;
@@ -10,42 +11,41 @@ body {
   color: #fff;
   padding: 20px 0;
   position: fixed;
-  overflow-y: auto;   /* enables vertical scrolling */
+  overflow-y: auto;
   overflow-x: hidden;
 }
+
 .sidebar::-webkit-scrollbar {
   display: none;
 }
 
+/* === LOGO === */
 .sidebar .logo {
   text-align: center;
   margin-bottom: 20px;
   font-size: 20px;
 }
 
+/* === MENU LIST === */
 .menu {
   list-style: none;
-  padding: 0;
-  margin: 0;
+  padding:0;
+  margin-bottom:0;
 }
 
 .menu li {
   position: relative;
 }
 
+/* === MENU LINKS === */
 .menu a {
   display: flex;
-  
   align-items: center;
-  padding: 20px 20px;
+  padding:20px 20px;
   color: #fff;
   text-decoration: none;
   transition: background 0.3s;
-}
-
-.menu a:hover {
-  background: rgba(255, 255, 255, 0.2);
-  margin: 10px;
+  border-radius: 10px;
 }
 
 .menu a i {
@@ -53,13 +53,25 @@ body {
   font-size: 18px;
 }
 
-/* Dropdown styling */
+/* Hover */
+.menu a:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* === ACTIVE LINK (normal + dropdown) === */
+.menu a.active,
+.menu a.active-parent {
+  background: rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+  border-left: 4px solid #fff;
+}
+
+/* === DROPDOWN STYLES === */
 .dropdown-container {
   display: none;
   list-style: none;
-   margin: 0;              /* remove default margin */
-  padding: 0; 
- 
+  margin: 0;
+  padding: 0;
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -67,22 +79,22 @@ body {
   display: block;
 }
 
+/* Submenu links */
 .dropdown-container li a {
   font-size: 14px;
-  padding: 10px 30px;
-  display:block;
+  padding: 10px 40px; /* indent subitems */
+  display: block;
   width: 100%;
   box-sizing: border-box;
 }
 
 .dropdown-container li a:hover {
   background: rgba(255, 255, 255, 0.3);
-  
-  
 }
 
-/* Arrow animation */
+/* === ARROW === */
 .arrow {
+  margin-left: auto;
   transition: transform 0.3s ease;
 }
 
@@ -90,24 +102,9 @@ body {
   transform: rotate(180deg);
 }
 
-
-.sidebar .menu li a.active {
-  background:rgba(255, 255, 255, 0.3);
-  margin: 0 10px;        /* reduces width from left and right */
-  border-radius: 10px;
+/* === Optional visual cue for active parent === */
+.dropdown-btn.active-parent {
+  background: rgba(255, 255, 255, 0.25);
+  border-left: 4px solid #fff;
+  font-weight: 600;
 }
-
-.sidebar .menu li a.active i {
-  color: #fff;
-}
-
-.dropdown-container {
-  display: none;
-}
-.dropdown-container.show {
-  display: block;
-}
-.arrow.rotate {
-  transform: rotate(180deg);
-}
-

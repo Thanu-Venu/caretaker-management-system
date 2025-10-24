@@ -101,6 +101,9 @@ th, td {
   transition: color 0.3s ease;
   font-size: 18px;
 }
+<<<<<<< HEAD
+.actions i:hover {
+=======
 
 .actions .bx-show {
     color: #333;
@@ -115,6 +118,7 @@ th, td {
 }
 
 .actions .bx-show:hover {
+>>>>>>> 54bb2ecc0700a189964a6d2d44b5aef46cdcc4cc
   color: #000;
 }
 

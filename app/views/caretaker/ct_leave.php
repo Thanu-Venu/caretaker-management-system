@@ -19,11 +19,13 @@
         <section>
         
 
-    <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">Request Leave</button>
-
+    
 
     <div class="card">
+        <div class="card-header">
         <h2>Leave Requests</h2>
+        <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">Request Leave</button>
+    </div>
         <div class="table-container">
             <table>
                 <thead>
@@ -44,8 +46,8 @@
                                 <td><?php echo htmlspecialchars($leave['reason']); ?></td>
                                 <td><span class="status <?php echo strtolower($leave['status']); ?>"><?php echo $leave['status']; ?></span></td>
                                 <td>
-                                    <a href="<?php echo URLROOT; ?>/leaveController/edit/<?php echo $leave['id']; ?>"><i class="bx bx-edit"></i></a> |
-                                    <a href="<?php echo URLROOT; ?>/leaveController/delete/<?php echo $leave['id']; ?>" onclick="return confirm('Delete this leave request?');"><i class="bx bx-trash"></i></a>
+                                    <a href="<?php echo URLROOT; ?>/LeaveCRUD/edit/<?php echo $leave['id']; ?>"><i class="bx bx-edit"></i></a> |
+                                    <a href="<?php echo URLROOT; ?>/LeaveCRUD/delete/<?php echo $leave['id']; ?>" onclick="return confirm('Delete this leave request?');"><i class="bx bx-trash"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

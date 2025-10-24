@@ -13,7 +13,7 @@
 
 h1 {
     margin: 30px 0 30px 0;
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 700;
      color: #1E88E5;
 }
@@ -70,8 +70,8 @@ h2 {
 
 .apply-filters-btn {
     padding: 10px 30px;
-    background: linear-gradient(to right, #69aeeb, #94f0e4);
-    color: black;
+    background: #1E88E5;
+    color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -81,13 +81,13 @@ h2 {
 }
 
 .apply-filters-btn:hover {
-    background: linear-gradient(to right, #4ea4ee, #66f0dd);
+    background: #346cda
 }
 
 .cancel-filters-btn {
     padding: 10px 30px;
     background-color: #d7e0f2;
-    color: black;
+    color: rgb(80, 80, 80);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -173,13 +173,13 @@ tr:last-child td {
 }
 
 .approve-btn {
-    background-color: #7cf198;
-    color: black
+    background-color: #e0f7e9; 
+    color: green;
 }
 
 .reject-btn {
-    background-color: #ff1018;
-    color: black;
+    background-color: #f8d7da; 
+    color: red; 
 }
 
 .view-btn {
@@ -188,13 +188,13 @@ tr:last-child td {
 }
 
 .approve-btn:hover {
-    background-color: #00bb2c;
+    background-color: #70be83;
 }
 
 .reject-btn:hover {
-    background-color: #9e0207;
+    background-color: #e1767a;
 }
 
 .view-btn:hover {
-    background-color: #8c8c8c;
+    background-color: #b2b1b1;
 }

@@ -36,8 +36,9 @@ input, select, textarea {
 
 .row {
   display: flex;
-  gap: 15px;
+ gap: 40px;
 }
+
 
 .submit-btn {
   background: #007bff;

@@ -1,7 +1,7 @@
 <?php
 class Client {
     private $conn;
-    private $table = "users"; // your clients table
+    private $table = "clients"; // your clients table
 
     public function __construct($db) {
         $this->conn = $db;

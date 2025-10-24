@@ -1,5 +1,10 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 class LeaveCRUDController extends Controller {
+
 
     private $leaveModel;
 
@@ -9,42 +14,35 @@ class LeaveCRUDController extends Controller {
 
     // 🔹 Display all leaves for logged-in caretaker
     public function index() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
+            die("Caretaker not logged in");
         }
-     
 
-        if (!isset($_SESSION['caretaker_id'])) {
-            header("Location: " . URLROOT . "/login");
-            exit;
-        }
-        
-
-        $caretakerId = $_SESSION['caretaker_id'];
-        $leaves = $this->leaveModel->getLeavesByCaretaker($caretakerId);
+        $userId = $_SESSION['user']['id'];
+        $leaves = $this->leaveModel->getLeavesByUser($userId);
         $this->view('caretaker/ct_leave', ['leaves' => $leaves]);
-    
     }
-    // 🔹 Add new leave
+
+     // 🔹 Add new leave
     public function add() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
+            die("Caretaker not logged in");
         }
-        
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
-               
-                'leave_type'   => $_POST['leave_type'],
-                'start_date'   => $_POST['start_date'],
-                'end_date'     => $_POST['end_date'],
-                'start_time'   => $_POST['start_time'],
-                'end_time'     => $_POST['end_time'],
-                'reason'       => $_POST['reason']
+                'user_id' => $_SESSION['user']['id'],
+                'leave_type' => $_POST['leave_type'],
+                'start_date' => $_POST['start_date'],
+                'end_date' => $_POST['end_date'],
+                'start_time' => $_POST['start_time'],
+                'end_time' => $_POST['end_time'],
+                'reason' => $_POST['reason'],
+                'can_edit_until' => date('Y-m-d H:i:s', strtotime('+1 day'))
             ];
 
             $this->leaveModel->addLeave($data);
-            header("Location: " . URLROOT . "/leaveCRUD/index");
+            header("Location: " . URLROOT . "/LeaveCRUD/index");
             exit;
         } else {
             $this->view('caretaker/leave_add');
@@ -53,31 +51,53 @@ class LeaveCRUDController extends Controller {
 
     // 🔹 Edit leave
     public function edit($id) {
+        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
+            die("Caretaker not logged in");
+        }
+
+        $userId = $_SESSION['user']['id'];
+        $leave = $this->leaveModel->getLeaveById($id);
+        if (!$leave) die("Leave not found");
+
+        if ($leave->user_id != $userId || strtotime($leave->can_edit_until) < time()) {
+            die("You cannot edit this leave.");
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
-              
-                'id' =>$id,
-                'leave_type'   => $_POST['leave_type'],
-                'start_date'   => $_POST['start_date'],
-                'end_date'     => $_POST['end_date'],
-                'start_time'   => $_POST['start_time'],
-                'end_time'     => $_POST['end_time'],
-                'reason'       => $_POST['reason']
+                'id' => $id,
+                'leave_type' => $_POST['leave_type'],
+                'start_date' => $_POST['start_date'],
+                'end_date' => $_POST['end_date'],
+                'start_time' => $_POST['start_time'],
+                'end_time' => $_POST['end_time'],
+                'reason' => $_POST['reason']
             ];
+
             $this->leaveModel->updateLeave($data);
-            header("Location: " . URLROOT . "/leaveCRUD/index");
+            header("Location: " . URLROOT . "/LeaveCRUD/index");
             exit;
         } else {
-            $leave = $this->leaveModel->getLeaveById($id);
             $this->view('caretaker/leave_edit', ['leave' => $leave]);
         }
     }
 
     // 🔹 Delete leave
     public function delete($id) {
+        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
+            die("Caretaker not logged in");
+        }
+
+        $userId = $_SESSION['user']['id'];
+        $leave = $this->leaveModel->getLeaveById($id);
+        if (!$leave) die("Leave not found");
+
+        if ($leave->user_id != $userId || strtotime($leave->can_edit_until) < time()) {
+            die("You cannot delete this leave.");
+        }
+
         $this->leaveModel->deleteLeave($id);
-        header("Location: " . URLROOT . "/leaveCRUD/index");
+        header("Location: " . URLROOT . "/LeaveCRUD/index");
         exit;
     }
 }
-?>

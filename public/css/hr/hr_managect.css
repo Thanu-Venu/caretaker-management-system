@@ -11,6 +11,11 @@
 
 }
 
+h1 {
+  color: #1E88E5;
+  font-size: 28px;
+}
+
 .page-title {
   font-size: 28px;
   font-weight: bold;
@@ -44,7 +49,7 @@
 }
 
 h2 {
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 600;
     color: rgb(8, 8, 88);
 }
@@ -71,7 +76,7 @@ h2 {
 .caretaker-table th {
     font-size: 17px;
     font-weight: 600;
-     background-color: #1E88E5;
+    background-color: #1E88E5;
     color: white;
 }
 

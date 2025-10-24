@@ -22,12 +22,26 @@ class CaretakerModel {
         return $stmt->get_result()->fetch_assoc();
     }
 
-    public function addCaretaker($data) {
+   public function addCaretaker($data) {
     $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
-    $stmt = $this->conn->prepare("INSERT INTO caretakers (name,email,phone,service_type,status,password) VALUES (?,?,?,?,?,?)");
-    $stmt->bind_param("ssssss", $data['name'],$data['email'],$data['phone'],$data['service_type'],$data['status'],$hashedPassword);
+
+    $stmt = $this->conn->prepare(
+        "INSERT INTO caretakers (name, email, phone, service_type, status, password) VALUES (?, ?, ?, ?, ?, ?)"
+    );
+
+    $stmt->bind_param(
+        "ssssss",
+        $data['name'],
+        $data['email'],
+        $data['phone'],
+        $data['service_type'],
+        $data['status'],
+        $hashedPassword
+    );
+
     return $stmt->execute();
-}
+ }
+
 
 
     public function updateCaretaker($id, $data) {

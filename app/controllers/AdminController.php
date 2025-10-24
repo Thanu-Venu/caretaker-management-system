@@ -18,20 +18,19 @@ class AdminController extends Controller {
     public function ad_leave() {
         $this->view("admin/ad_leave");
     }
-
-    public function ad_history(){
+    public function ad_announcement() {
+        $this->view("admin/ad_announcement");
+    }
+    public function ad_history() {
         $this->view("admin/ad_history");
     }
 
     public function ad_caretakers() {
-    $caretakers = $this->caretakerModel->getCaretakers(); // ✅ use the initialized property
-    $this->view("admin/ad_caretakers", ['caretakers'=>$caretakers]);
+
+    $this->view("admin/ad_caretakers");
 }
 
-     public function ad_announcement() {
-        $this->view("admin/ad_announcement"); 
-    }
-
+  
     public function ad_clients() {
         $this->view("admin/ad_clients"); 
     }
@@ -41,10 +40,11 @@ class AdminController extends Controller {
         $this->view("admin/ad_users", ['users' => $users]); 
     }
     
+
     public function ad_feedback() {
         $this->view("admin/ad_feedback"); 
     }
-
+    
      public function ad_bookings() {
         $this->view("admin/ad_bookings"); 
     }
@@ -62,6 +62,9 @@ class AdminController extends Controller {
     }
 
 
+
+
+   
 
 
 }
