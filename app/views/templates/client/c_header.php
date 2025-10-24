@@ -20,12 +20,6 @@
     <span class="company-name">SmartCare</span>
   </div> 
 </div>
-  <!-- Search bar -->
-  <div class="right-section">
-  <div class="search-bar">
-    <input type="text" placeholder="Search...">
-    <i class="fas fa-search"></i>
-  </div>
 
   <!-- Right icons -->
   <div class="header-icons">
@@ -45,7 +39,7 @@
     </div>
   </div>
 </div>
-  <!--<a href="<?php echo URLROOT; ?>/client/c_profile"><i class="fas fa-user-circle"></i></a>-->
+  <i class="fas fa-user-circle"></i>
  </div>
 </div>
 </header>

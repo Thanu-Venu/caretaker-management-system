@@ -14,10 +14,6 @@
 
   <main class="content">
       <h1>Logs</h1>
-      <div class="search">
-        <input type="text" id="searchInput" placeholder="Search...">
-        <button id="searchButton">Search</button>
-      </div>
 
       <div class="filters">
         <select id="roleFilter">
