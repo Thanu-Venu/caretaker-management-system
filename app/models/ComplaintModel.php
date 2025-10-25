@@ -77,5 +77,32 @@ public function deleteComplaintById($id)
     return $stmt->execute();
 }
 
+
+public function getComplaintsByClient($client_name)
+{
+    $query = "SELECT * FROM complaints WHERE client_name = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param("s", $client_name);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+public function updateComplaintByClient($id, $details)
+{
+    $query = "UPDATE complaints SET details = ? WHERE Id = ? AND status != 'Approved'";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param("si", $details, $id);
+    return $stmt->execute();
+}
+
+public function deleteComplaintByClient($id)
+{
+    $query = "DELETE FROM complaints WHERE Id = ? AND status != 'Approved'";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param("i", $id);
+    return $stmt->execute();
+}
+
 }
 ?>

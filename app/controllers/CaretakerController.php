@@ -17,9 +17,17 @@ class CaretakerController extends Controller {
     }
 
      public function ct_leave() {
-        $this->view("caretaker/ct_leave");
+    if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
+        die("Caretaker not logged in");
     }
-    
+
+    $leaveModel = $this->model('LeaveModel');
+    $userId = $_SESSION['user']['id'];
+    $leaves = $leaveModel->getLeavesByUser($userId);
+
+    $this->view('caretaker/ct_leave', ['leaves' => $leaves]);
+}
+
 
      
      public function ct_booking() {
@@ -43,7 +51,16 @@ class CaretakerController extends Controller {
      }
 
       public function ct_settings() {
-         $this->view("caretaker/ct_settings");
+        if (!isset($_SESSION['user'])) {
+            header("Location: index.php?url=auth/login");
+            exit;
+        }
+
+        $user = $_SESSION['user'];
+
+        // pass user info to the view
+        $this->view("caretaker/ct_settings", ['user' => $user]);
+         
      }
 
       public function ct_reviews() {

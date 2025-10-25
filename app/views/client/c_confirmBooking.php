@@ -44,7 +44,8 @@
                         <span class="value">Rs. 22500</span>
                     </div>
                 </div>
-                <button class="confirm-btn">Confirm Booking</button>
+                
+                <button class="confirm-btn"onclick="window.location.href='?url=client/c_makePayment'">c_confirmBooking</button>
             </div>
         </div>
     </div>

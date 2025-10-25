@@ -36,6 +36,10 @@
         <a href="http://localhost/CMA/public?url=client/c_complaintReg"><i class="fa-solid fa-file-circle-exclamation"></i> Complaints </i></a>
       
       </li>
+       <li>
+<a href="<?= URLROOT ?>/index.php?url=Complaint/myComplaints"><i class="fa-solid fa-file-circle-exclamation"></i> My Complaints</a>      
+      </li>
+
 
       <li>
         <a href="http://localhost/CMA/public?url=client/c_settings"><i class="bx bx-cog"></i> Settings </i></a>
