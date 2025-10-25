@@ -19,8 +19,6 @@ $user = $data['user']; // object
       <select name="role" required>
         <option value="Admin" <?php echo ($user->role == 'Admin') ? 'selected' : ''; ?>>Admin</option>
         <option value="Manager" <?php echo ($user->role == 'Manager') ? 'selected' : ''; ?>>Manager</option>
-        <option value="Caretaker" <?php echo ($user->role == 'Caretaker') ? 'selected' : ''; ?>>Caretaker</option>
-        <option value="Client" <?php echo ($user->role == 'Client') ? 'selected' : ''; ?>>Client</option>
       </select>
 
       <label>Status</label>
