@@ -13,6 +13,7 @@
 
 <?php if (!empty($complaints)): ?>
     <div class="main-content">
+        <h1>Registered Complaints</h1>
 <table border="1" cellpadding="10" cellspacing="0">
     <tr>
         <th>ID</th>

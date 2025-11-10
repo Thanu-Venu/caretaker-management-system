@@ -82,10 +82,10 @@ body {
 
 .btn {
   padding: 10px 20px;
-  background: linear-gradient(to right, #69aeeb, #94f0e4);
+  background:#1e88e5;
   border: none;
   border-radius: 6px;
-  color: black;
+  color: white;
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
@@ -93,5 +93,5 @@ body {
 }
 
 .btn:hover {
-  background: linear-gradient(to right, #4ea4ee, #66f0dd);
+  background:#1b7cd0;
 }

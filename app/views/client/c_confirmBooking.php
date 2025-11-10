@@ -1,7 +1,7 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
+<?php #include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php #include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
 
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -50,4 +50,4 @@
         </div>
     </div>
 </body>
-</html>
+</html>-->

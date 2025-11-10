@@ -1,37 +1,32 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const caregiverSelect = document.querySelectorAll(".filter-select")[0];
-  const statusSelect = document.querySelectorAll(".filter-select")[1];
+
+  const statusSelect = document.querySelector(".filter-select");
   const applyBtn = document.querySelector(".apply-filters-btn");
   const cancelBtn = document.querySelector(".cancel-filters-btn");
   const tableRows = document.querySelectorAll(".leave-table tbody tr");
 
   // ✅ Apply Filters
   applyBtn.addEventListener("click", () => {
-    const caregiver = caregiverSelect.value;
     const status = statusSelect.value;
 
     tableRows.forEach(row => {
-      const caregiverName = row.cells[0].textContent.trim();
       const leaveStatus = row.querySelector(".status").textContent.trim();
-
-      let show = true;
-      if (caregiver !== "Select Caregiver" && caregiver !== caregiverName) {
-        show = false;
+      if (status === "Select Status" || status === leaveStatus) {
+        row.style.display = ""; // show
+      } else {
+        row.style.display = "none"; // hide
       }
-      if (status !== "Select Status" && status !== leaveStatus) {
-        show = false;
-      }
-
-      row.style.display = show ? "" : "none";
     });
   });
 
-  // ✅ Cancel Filters (reset everything)
+  // ✅ Cancel Filters
   cancelBtn.addEventListener("click", () => {
-    caregiverSelect.selectedIndex = 0;
-    statusSelect.selectedIndex = 0;
+    statusSelect.selectedIndex = 0; // reset to "Select Status"
     tableRows.forEach(row => (row.style.display = ""));
   });
+
+
+
 
   // ✅ Approve / Reject / View Actions
   document.querySelectorAll(".approve-btn").forEach(btn => {
