@@ -1,5 +1,5 @@
 <?php  
-include_once APPROOT . "/views/templates/client/c_header.php"; 
+include_once APPROOT . "/views/templates/admin/ad_header.php"; 
 include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; 
 
 $user = $data['user']; // object
