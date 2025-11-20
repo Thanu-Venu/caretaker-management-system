@@ -3,7 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', Arial, sans-serif;
 }
 body {
   background: #fff;
@@ -14,15 +14,25 @@ body {
 h1{
   color:rgb(234, 234, 234);
   font-size: 2.5rem;
-   margin-bottom: 10px;
+  margin-bottom: 10px;
    
 }
- h2, h3, h4 {
+ h2 {
   margin-bottom: 10px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  color: #2c3e50; /* elegant deep blue */
+  color: #1e88e5; /* elegant deep blue */
+  font-size: 28px;
 }
+
+h3 {
+  margin-bottom: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #1565c0;;
+}
+
+
 .hero-text p{
   color: #f0f0f0;
 }
@@ -351,7 +361,7 @@ footer {
 }
 
 .contact-form button {
-  background: #1E88E5;
+  background: rgba(30,136,229,0.9);
   color: white;
   padding: 12px 20px;
   border: none;
