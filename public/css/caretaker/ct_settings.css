@@ -1,5 +1,5 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins', Arial, sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -11,7 +11,7 @@ body {
 
 h1 {
   margin-bottom: 20px;
-  color: #1E88E5;
+  color: #1e88e5;
   font-size: 28px;
 }
 
@@ -31,6 +31,7 @@ h1 {
 .card h3 {
   margin-bottom: 15px;
   color: #1565c0;
+  font-size: 22px
 }
 
 .profile-body {
@@ -38,6 +39,9 @@ h1 {
   grid-template-columns: 120px 1fr;
   gap: 30px;
   align-items: start;
+  font-size: 16px;
+  color: #1b1b1b;
+  font-weight: 500;
 }
 
 .profile-body img {
@@ -51,9 +55,10 @@ h1 {
 form label {
   display: flex;
   flex-direction: column;
-  font-size: 14px;
+  font-size: 16px;
   margin-bottom: 15px;
-  color: #333;
+  color: #1b1b1b;
+  font-weight: 500;
 }
 
 input[type="text"],
@@ -86,7 +91,9 @@ input[type="file"] {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
-  font-size: 14px;
+  font-size: 16px;
+  color: #1b1b1b;
+  font-weight: 500;  
 }
 
 .pro-section input{

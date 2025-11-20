@@ -3,7 +3,7 @@ main.content {
     margin-left: 250px; /* space for sidebar */
     background-color: #f4f6f8;
     min-height: 100vh;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', Arial, sans-serif;
 
 }
 
@@ -17,7 +17,9 @@ main.content {
 
 h2 {
     margin: 0;
+    font-size: 28px;
     color: #1e88e5;
+    font-family: 'Poppins', Arial, sans-serif;
 }
 
 /* Optional: make button smaller on mobile screens */
