@@ -18,7 +18,7 @@ $caretaker = $data['caretaker'];
 <body>
 <main class="main-content">
   <section class="form-section">
-    <h1>Edit Caretaker</h1>
+    <h1>Edit Caregiver</h1>
     <form action="<?php echo URLROOT; ?>/CaretakerCRUD/edit/<?php echo $caretaker['id']; ?>" method="POST">
       
   <label for="name">Name</label>
@@ -43,7 +43,7 @@ $caretaker = $data['caretaker'];
     <option value="Inactive" <?php if($caretaker['status']=='Inactive') echo 'selected'; ?>>Inactive</option>
   </select>
 
-  <button type="submit">Update Caretaker</button>
+  <button type="submit">Update Caregiver</button>
   <a href="<?php echo URLROOT; ?>/admin/ad_caretakers">Cancel</a>
 </form>
 
