@@ -10,8 +10,7 @@
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_dashboard.css">
 </head>
 <body>
-
-
+  
 <div class="admin-dashboard">
 
   <!-- Top Stats Cards -->
