@@ -14,7 +14,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
 <body>
 <main class="main-content">
     <section class="form-section">
-        <h1>Add Caretaker</h1>
+        <h1>Add Caregiver</h1>
         <form method="POST" class="caretaker-form">
             <label>Name</label>
             <input type="text" name="name" required placeholder="Enter full name">
@@ -43,7 +43,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
                 <option value="Inactive">Inactive</option>
             </select>
 
-            <button type="submit" class="submit-btn" window.location.href='/CMA/public/caretakerCRUD/list'>Add Caretaker</button>
+            <button type="submit" class="submit-btn" window.location.href='/CMA/public/caretakerCRUD/list'>Add Caregiver</button>
         </form>
     </section>
 </main>

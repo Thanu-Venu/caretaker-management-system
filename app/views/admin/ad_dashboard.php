@@ -11,13 +11,12 @@
 </head>
 <body>
 
-
 <div class="admin-dashboard">
 
   <!-- Top Stats Cards -->
   <div class="stats-cards">
     <div class="card">
-      <h3>Total Caretakers</h3>
+      <h3>Total Caregivers</h3>
       <p class="value">120</p>
       <span class="change positive">+10%</span>
     </div>
@@ -62,7 +61,7 @@
       </thead>
       <tbody>
         <tr>
-          <td>New caretaker added</td>
+          <td>New caregiver added</td>
           <td>2025-07-26</td>
           <td>Admin</td>
         </tr>
