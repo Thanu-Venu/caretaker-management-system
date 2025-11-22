@@ -1,3 +1,7 @@
+body {
+    background: #f4f7fb;
+}
+
 .main-content {
   flex: 1;
   padding: 20px 40px;
@@ -21,7 +25,8 @@
   padding: 8px 14px;
   border-radius: 20px;
   cursor: pointer;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .add-btn:hover {
@@ -33,7 +38,7 @@
 .search-wrapper {
   display: flex;
   align-items: center;
-  background: #f2f4f8;
+  background: #fff;
   border-radius: 12px;
   padding: 8px 12px;
   margin-bottom: 20px;
@@ -63,12 +68,13 @@ table {
 }
 
 thead {
-  background: #f2f4f8;
+  background: #1e88e5;
 }
 
 th {
     font-size: 18px;
     font-weight: 700;
+    color: white
 }
 
 th, td {
