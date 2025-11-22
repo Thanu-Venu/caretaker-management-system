@@ -84,7 +84,6 @@ th, td {
 }
 
 .status {
-  padding: 4px 30px;
   border-radius: 12px;
   font-size: 16px;
 }
@@ -92,14 +91,13 @@ th, td {
 .status.active {
   color: white;
   background: #00bfa5;
-  padding-right: 35px;
-
+  padding: 4px 16px;
 }
 
 .status.inactive {
   background: #ea0b34;
   color: white;
-  padding-right: 23px
+  padding: 4px 12px;
 }
 
 .actions i {
