@@ -74,7 +74,7 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: white;
   overflow: hidden;
 }
 
@@ -85,7 +85,7 @@ thead {
 th {
     font-size: 18px;
     font-weight: 700;
-    color: white
+    color: white;
 }
 
 th, td {
