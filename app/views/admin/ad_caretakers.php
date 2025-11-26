@@ -29,7 +29,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
   </div>
 
   <!-- Caretaker Table -->
-  <section>
+  <div class="table-container">
     <table>
       <thead>
         <tr>
@@ -64,7 +64,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
         <?php endif; ?>
       </tbody>
     </table>
-  </section>
+    </div>
 
 </main>
 

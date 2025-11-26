@@ -6,7 +6,7 @@ body {
   flex: 1;
   padding: 20px 40px;
   margin-left: 270px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Poppins', Arial, sans-serif;
 }
 
 /* Caretaker header */
@@ -18,19 +18,24 @@ body {
   color: #1e88e5;
 }
 
+.caretaker-header h1 {
+  color: #1e88e5;
+  font-size: 28px;
+}
+
 .add-btn {
-  background: #00bfa5;
-  color: white;
+  background: #1e88e5;
+  color: #fff;
   border: none;
   padding: 8px 14px;
-  border-radius: 20px;
+  border-radius: 15px;
   cursor: pointer;
   font-size: 16px;
   font-weight: 700;
 }
 
 .add-btn:hover {
-  background: #00a791;
+  background: #1565c0;
  
 }
 
@@ -38,7 +43,7 @@ body {
 .search-wrapper {
   display: flex;
   align-items: center;
-  background: #fff;
+  background: white;
   border-radius: 12px;
   padding: 8px 12px;
   margin-bottom: 20px;
@@ -59,11 +64,17 @@ body {
 }
 
 /* Table */
+.table-container {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 15px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
-  border-radius: 10px;
   overflow: hidden;
 }
 

@@ -1,8 +1,8 @@
 /* caretaker_edit.css */
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background: #f0f2f5;
+    font-family: 'Poppins', Arial, sans-serif;
+    background: #f4f7fb;
     
 }
 
@@ -27,7 +27,7 @@ body {
 .form-section h1 {
     text-align: center;
     margin-bottom: 30px;
-    color: #333;
+    color: #1e88e5;
     font-size: 28px;
 }
 
@@ -40,8 +40,8 @@ body {
 
 .form-section input,
 .form-section select {
-    width: 90%;
-    padding: 12px 15px;
+    width: 100%;
+    padding: 12px 1px;
     margin-bottom: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -52,14 +52,14 @@ body {
 .form-section input:focus,
 .form-section select:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: #1565c0;
     box-shadow: 0 0 5px rgba(0,123,255,0.3);
 }
 
 .form-section button {
     width: 100%;
     padding: 12px;
-    background-color: #007bff;
+    background-color: #1E88E5;
     color: #fff;
     font-size: 16px;
     font-weight: 600;
@@ -70,7 +70,7 @@ body {
 }
 
 .form-section button:hover {
-    background-color: #0056b3;
+    background-color: #1565c0;
 }
 
 .form-section a {
