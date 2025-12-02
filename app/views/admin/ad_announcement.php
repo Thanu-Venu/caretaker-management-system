@@ -16,7 +16,7 @@
 
     <!-- Main Content -->
     <main class="main-content">
-         <h1>Send Announcement</h1>
+         <h2>Send Announcement</h2>
          <section class="announcement">
             <form>
                 <label>Title</label>
@@ -47,8 +47,10 @@
                     <button type="button" class="preview">Preview</button>
                 </div>
             </form>
-
+        </section>
+        <section class="announcement-log">
             <h2>Announcement Log</h2>
+            <div class="table-container">
             <table>
                 <thead>
                     <tr>
@@ -75,6 +77,7 @@
                     </tr>
                 </tbody>
             </table>
+            </div> 
         </section>
     </main>
 </div>

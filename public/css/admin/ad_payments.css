@@ -9,12 +9,12 @@ body {
 
 .payments-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1150px;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 25px;
-  margin-left: 270px;
+  margin-left: 300px;
   margin-right: 20px;
   margin-top: 25px;
   flex: 1;
@@ -23,7 +23,7 @@ body {
 
 .payments-header {
   margin-bottom: 15px;
-  margin-left: 270px;
+  margin-left: 300px;
   padding-top: 25px;
 }
 
@@ -70,7 +70,7 @@ body {
 .search-box {
   position: relative;
   width: 100%;
-  max-width: 1140px;
+  max-width: 1100px;
   margin-bottom: 20px;
 }
 
