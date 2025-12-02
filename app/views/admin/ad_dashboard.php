@@ -47,7 +47,7 @@
   <div class="recent-activity">
     <h2>Recent Activity</h2>
     <div class="search-bar">
-    <input type="text" placeholder="Search...">
+    <input type="text" placeholder="     Search...">
     <i class="fas fa-search"></i>
   </div>
     

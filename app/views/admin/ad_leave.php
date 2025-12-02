@@ -19,8 +19,33 @@
     <section>
       <h1>Leave Management</h1>
 
+          <!-- Filter Section -->
+      <div class="filter-section">
+        <div class="filter-group">
+          <label for="type">Type</label>
+          <select id="type" onchange="filterTable()">
+            <option value="All">All</option>
+            <option value="Vacation">Vacation</option>
+            <option value="Sick Leave">Sick Leave</option>
+            <option value="Personal Leave">Personal Leave</option>
+            <option value="Maternity Leave">Maternity Leave</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="status">Status</label>
+          <select id="status" onchange="filterTable()">
+            <option value="All">All</option>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+
+
       <!-- Leave Requests Table -->
-      <table>
+    <div class="table-container">
+      <table class="leave-table" id="leaveTable">
         <thead>
           <tr>
             <th>Caregiver Name</th>
@@ -30,7 +55,7 @@
             <th>Status</th>
           </tr>
         </thead>
-        <tbody id="leaveTable">
+        <tbody>
           <tr>
             <td>Emily Carter</td>
             <td>Vacation</td>
@@ -99,6 +124,6 @@
     </section>
   </main>
 
-  <script src="script.js"></script>
+  <script src="<?php echo URLROOT; ?>/public/js/admin/ad_leave.js"></script>
 </body>
 </html>

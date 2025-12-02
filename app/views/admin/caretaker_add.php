@@ -23,7 +23,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
             <input type="email" name="email" required placeholder="Enter email">
 
             <label for="password">Password</label>
-            <input type="password" name="password" id="password" required>
+            <input type="password" name="password" id="password" required placeholder="Enter password">
 
 
             <label>Phone</label>
