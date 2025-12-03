@@ -15,22 +15,22 @@
 <body>
         <main class="main-content">
       <section class="caretaker-header">
-        <h1>Caretakers</h1>
-        <button class="add-btn">Add Caretaker</button>
+        <h1>Caregivers</h1>
+        <button class="add-btn">Add Caregiver</button>
       </section>
 
       <div class="search-wrapper">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="Search caretakers">
+        <input type="text" placeholder="Search caregivers">
       </div>
 
-      <section>
+      <section class="table-container">
         <table>
           <thead>
             <tr>
-              <th>Caretaker ID</th>
+              <th>Caregiver ID</th>
               <th>Name</th>
-              <th>Role</th>
+              <th>Service</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -42,7 +42,6 @@
               <td>Maid</td>
               <td><span class="status active">Active</span></td>
               <td class="actions">
-                <i class="bx bx-show"></i>
                 <i class="bx bx-edit"></i>
                 <i class="bx bx-trash"></i>
               </td>
@@ -53,7 +52,6 @@
               <td>Elder Care</td>
               <td><span class="status inactive">Inactive</span></td>
               <td class="actions">
-                <i class="bx bx-show"></i>
                 <i class="bx bx-edit"></i>
                 <i class="bx bx-trash"></i>
               </td>
@@ -64,7 +62,6 @@
               <td>Elder Care</td>
               <td><span class="status active">Active</span></td>
               <td class="actions">
-                <i class="bx bx-show"></i>
                 <i class="bx bx-edit"></i>
                 <i class="bx bx-trash"></i>
               </td>
@@ -75,7 +72,6 @@
               <td>Maid</td>
               <td><span class="status active">Active</span></td>
               <td class="actions">
-                <i class="bx bx-show"></i>
                 <i class="bx bx-edit"></i>
                 <i class="bx bx-trash"></i>
               </td>
@@ -86,7 +82,6 @@
               <td>Babysitter</td>
               <td><span class="status active">Active</span></td>
               <td class="actions">
-                <i class="bx bx-show"></i>
                 <i class="bx bx-edit"></i>
                 <i class="bx bx-trash"></i>
               </td>
@@ -97,7 +92,6 @@
               <td>Elder Care</td>
               <td><span class="status inactive">Inactive</span></td>
               <td class="actions">
-                <i class="bx bx-show"></i>
                 <i class="bx bx-edit"></i>
                 <i class="bx bx-trash"></i>
               </td>
@@ -108,7 +102,6 @@
               <td>Maid</td>
               <td><span class="status active">Active</span></td>
               <td class="actions">
-                <i class="bx bx-show"></i>
                 <i class="bx bx-edit"></i>
                 <i class="bx bx-trash"></i>
               </td>
@@ -119,7 +112,6 @@
               <td>Babysitter</td>
               <td><span class="status active">Active</span></td>
               <td class="actions">
-                <i class="bx bx-show"></i>
                 <i class="bx bx-edit"></i>
                 <i class="bx bx-trash"></i>
               </td>

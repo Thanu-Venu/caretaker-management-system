@@ -1,24 +1,28 @@
+body {
+    background: #f4f7fb;
+}
+
 .main-content {
-  margin-left: 250px; /* match your sidebar */
+  flex: 1;
   padding: 20px 40px;
-  min-height: 100vh;
-  background: #f4f6f8;
+  margin-left: 270px;
+  font-family: 'Poppins', Arial, sans-serif;
 }
 
 .main-content h1 {
    color: #1E88E5;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   font-size: 28px;
 }
 
 /* Calendar container */
 #calendar {
-  max-width: 900px;
+  max-width: 100%;
   margin: 0 auto;
-  background: #fff;
-  padding: 10px;
+  background: white;
+  padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 /* Modal */
@@ -34,7 +38,7 @@
 }
 
 .modal-content {
-  background: #fff;
+  background: white;
   padding: 20px;
   border-radius: 10px;
   max-width: 600px;
@@ -55,7 +59,7 @@
 }
 
 #scheduleTable th, #scheduleTable td {
-  border: 1px solid #ddd;
+  border-bottom: 1px solid #eee;
   padding: 8px;
   text-align: center;
 }
@@ -63,19 +67,19 @@
 #scheduleTable th {
   background-color: #1E88E5;
   color: white;
+  font-size: 18px;
 }
 
-#scheduleTable tr:nth-child(even){background-color: #f2f2f2;}
-#scheduleTable tr:hover{background-color: #e0f7fa;}
+#scheduleTable tr:hover{background-color: #f9f9f9;}
 
 /* Calendar container */
 #calendar {
-    max-width: 900px;
+    max-width: 100%;
     margin: 0 auto;
-    background: #fff;
+    background: white;
     border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     height: 600px;
 }
 
@@ -89,17 +93,18 @@
     background-color: #1E88E5; /* buttons */
     color: white;
     border: none;
-    border-radius: 5px;
-    font-weight: 500;
+    border-radius: 15px;
+    font-weight: 700;
+    font-size: 16px;
 }
 
 .fc .fc-button:hover {
-    background-color: #00BFA5; /* teal hover */
+    background: #1565c0;
 }
 
 /* Active view button */
 .fc .fc-button.fc-button-active {
-    background: linear-gradient(to right, #1E88E5, #00BFA5);
+    background: #1e88e5;
 }
 
 /* Weekdays header */
@@ -129,7 +134,7 @@
 }
 
 .fc-event:hover {
-    background-color: #00BFA5; /* teal hover */
+    background-color: #1565c0; /* teal hover */
     cursor: pointer;
 }
 

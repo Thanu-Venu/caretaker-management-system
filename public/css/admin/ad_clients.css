@@ -98,6 +98,11 @@ body {
   border-bottom: 1px solid #eee;
 }
 
+
+.client-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
 .client-table tbody tr:last-child {
   border-bottom: none;
 }

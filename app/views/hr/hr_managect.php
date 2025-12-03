@@ -13,21 +13,21 @@
 <body>
   <!-- Main Content -->
   <div class="content">
-    <h1 class="page-title">Caretaker Management</h1>
+    <h1 class="page-title">Caregiver Management</h1>
 
     <!-- Search bar -->
     <div class="search-box">
       <i class='bx bx-search'></i>
-      <input type="text" id="searchInput" placeholder="Search caretakers">
+      <input type="text" id="searchInput" placeholder="Search caregivers">
     </div>
 
     <!-- Table -->
-    <h2 class="section-title">Caretaker Availability</h2>
+    <h2 class="section-title">Caregiver Availability</h2>
     <div class="table-container">
       <table class="caretaker-table" id="caretakerTable">
         <thead>
           <tr>
-            <th>Caretaker ID</th>
+            <th>Caregiver ID</th>
             <th>Name</th>
             <th>Status</th>
             <th>Location</th>
