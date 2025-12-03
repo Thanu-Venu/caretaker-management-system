@@ -1,4 +1,4 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,16 +10,17 @@
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_payments.css">
 </head>
 <body>
-<div class="payments-container">
+
   <div class="payments-header">
     <h1>Payments & Billing</h1>
+  </div>
+  <div class="payments-container">
     <!-- Tabs -->
     <div class="tabs">
       <button class="tab-btn active" data-tab="history">Payment History</button>
       <button class="tab-btn" data-tab="pending">Pending Payments</button>
       <button class="tab-btn" data-tab="invoices">Invoices</button>
     </div>
-  </div>
 
   <!-- Payment History -->
   <div id="historySection" class="tab-section">

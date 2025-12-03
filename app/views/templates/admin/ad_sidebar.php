@@ -16,7 +16,7 @@
 
     <ul class="sidebar-menu">
       <li><a href="http://localhost/CMA/public?url=admin/ad_dashboard"><i class='bx bxs-dashboard'></i> Dashboard</a></li>
-      <li><a href="http://localhost/CMA/public?url=admin/ad_caretakers"><i class='bx bx-user-circle'></i> Caretakers</a></li>
+      <li><a href="http://localhost/CMA/public?url=admin/ad_caretakers"><i class='bx bx-user-circle'></i> Caregivers</a></li>
       <li><a href="http://localhost/CMA/public?url=admin/ad_clients"><i class='bx bx-user'></i> Clients</a></li>
       <li><a href="http://localhost/CMA/public?url=admin/ad_bookings"><i class='bx bx-calendar'></i> Bookings</a></li>
       <li><a href="http://localhost/CMA/public?url=admin/ad_leave"><i class='bx bx-time'></i> Leave</a></li>
@@ -24,7 +24,7 @@
       <li><a href="http://localhost/CMA/public?url=admin/ad_feedback"><i class='bx bx-message-detail'></i> Feedback</a></li>
       
       
-      <li><a href="http://localhost/CMA/public?url=admin/ad_users"><i class='bx bx-group'></i> Users </a></li>
+      <li><a href="http://localhost/CMA/public?url=admin/ad_users"><i class='bx bx-group'></i> Staff</a></li>
 
       <li><a href="http://localhost/CMA/public?url=admin/ad_announcement"><i class='bx bx-microphone'></i> Announcements</a></li>
       <li><a href="http://localhost/CMA/public?url=admin/ad_history"><i class='bx bx-history'></i> History</a></li>

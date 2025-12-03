@@ -1,4 +1,4 @@
-<?php  include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php  include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
 <?php  include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
 
 <!DOCTYPE html>
@@ -16,7 +16,7 @@
 
     <!-- Main Content -->
     <main class="main-content">
-         <h1>Send Announcement</h1>
+         <h2>Send Announcement</h2>
          <section class="announcement">
             <form>
                 <label>Title</label>
@@ -47,8 +47,10 @@
                     <button type="button" class="preview">Preview</button>
                 </div>
             </form>
-
+        </section>
+        <section class="announcement-log">
             <h2>Announcement Log</h2>
+            <div class="table-container">
             <table>
                 <thead>
                     <tr>
@@ -75,6 +77,7 @@
                     </tr>
                 </tbody>
             </table>
+            </div> 
         </section>
     </main>
 </div>
