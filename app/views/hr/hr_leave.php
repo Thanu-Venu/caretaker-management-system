@@ -29,7 +29,7 @@
         </div>
 
         <h2>Leave Requests</h2>
-
+        <div class="table-container">
         <table class="leave-table">
             <thead>
                 <tr>
@@ -103,6 +103,7 @@
                 </tr>
             </tbody>
         </table>
+        </div>
     </main>
 
 <script src="<?php echo URLROOT; ?>/public/js/hr/hr_leave.js"></script>

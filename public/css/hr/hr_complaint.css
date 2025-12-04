@@ -1,21 +1,19 @@
-/* Main Content Area */
+body {
+    background: #f4f7fb;
+}
 
+/* Main Content Area */
 .main-content {
-    padding: 40px;
-    margin-left: 270px;
+  flex: 1;
+  padding: 20px 40px;
+  margin-left: 270px;
+  font-family: 'Poppins', Arial, sans-serif;
 }
 
 h1 {
-  font-size: 26px;
-  margin-bottom: 8px;
+  font-size: 28px;
   color:#1e88e5;
-}
-
-
-
-.subtitle {
-  margin-bottom: 20px;
-  color: #666;
+  font-weight: 700;
 }
 
 /* Tabs */
@@ -34,35 +32,45 @@ h1 {
 }
 
 .tabs .tab.active {
-  background: #0f7cc0;
-  color: white;
+  background: #1e88e5;
+  color: #fff;
 }
 
 /* Table Styling */
 .table-container {
+  padding-top: 40px;
   background: white;
-  border-radius: 8px;
-  overflow-x: auto;
+  border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 15px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   min-width: 900px;
+  background: white;
+  overflow: hidden;
 }
 
 th, td {
   padding: 14px;
   text-align: left;
   border-bottom: 1px solid #eee;
-  font-size: 14px;
+}
+
+thead {
+  background: #1e88e5;
 }
 
 th {
-  background: #f7f9fb;
-  font-weight: 600;
-  color: #555;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+}
+
+tbody tr:hover {
+  background-color: #f9f9f9;
 }
 
 /* Tags */
