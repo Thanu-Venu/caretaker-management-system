@@ -20,7 +20,7 @@
           <tr>
             <th>Complaint ID</th>
             <th>Client Name</th>
-            <th>Caretaker Name</th>
+            <th>Caregiver Name</th>
             <th>Category</th>
             <th>Details</th>
             <th>Complaint_Date</th>
