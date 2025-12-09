@@ -28,7 +28,6 @@ class CaretakerController extends Controller {
     $this->view('caretaker/ct_leave', ['leaves' => $leaves]);
 }
 
-
      
      public function ct_booking() {
          $this->view("caretaker/ct_booking");
