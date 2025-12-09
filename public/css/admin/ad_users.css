@@ -1,31 +1,56 @@
+* {
+  font-family: 'Poppins', Arial, sans-serif;
+  font-weight: 300;
+}
 
+body {
+  background: #f4f7fb;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px 40px;
+  margin-left: 270px;
+}
 
 .content {
-  margin-left: 260px;
-  padding: 20px;
-  min-height: 100vh;
-  background: #f9fafb;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.card {
-  background: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
-  max-width: 900px;
-  margin: 40px auto;
-}
-
-.card h2 {
-  font-size: 22px;
-  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
   color: #1e88e5;
 }
 
+.content h2 {
+  font-size: 28px;
+  color: #1e88e5;
+  font-weight: 700;
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
+
+.add-btn {
+  background: #1e88e5;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.add-btn:hover {
+  background: #1565c0;
+ 
+}
+
 .table-container {
   overflow-x: auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 15px;
 }
 
 table {
@@ -34,15 +59,16 @@ table {
 }
 
 table th, table td {
-  padding: 14px 16px;
+  padding: 14px;
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
 }
 
 table th {
-  background: #f3f4f6;
-  font-weight: 600;
-  font-size: 15px;
+  background: #1e88e5;
+  font-weight: 700;
+  font-size: 18px;
+  color: white;
 }
 
 .link-btn {
@@ -55,21 +81,6 @@ table th {
 
 .link-btn:hover {
   text-decoration: underline;
-}
-
-.add-btn {
-  padding: 10px 18px;
-  background: #00BFA5;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  float: right;
-  margin-right: 50px;
-  color: white;
-}
-
-.add-btn:hover {
-  background: #00a68a;
 }
 
 /* Modal styles */

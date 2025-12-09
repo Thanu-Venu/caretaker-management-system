@@ -25,10 +25,10 @@ class AdminController extends Controller {
         $this->view("admin/ad_history");
     }
 
-    public function ad_caretakers() {
-
-    $this->view("admin/ad_caretakers");
-}
+  public function ad_caretakers() {
+    $caretakers = $this->caretakerModel->getCaretakers(); // ✅ use the initialized property
+    $this->view("admin/ad_caretakers", ['caretakers'=>$caretakers]);
+  }
 
   
     public function ad_clients() {

@@ -1,4 +1,4 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
 
 <!DOCTYPE html>
@@ -18,34 +18,34 @@
 
     <section>
       <h1>Leave Management</h1>
-         <!-- Filter Section -->
-      <div class="filter-container">
-          <h3>Filter</h3>
-        <div class="filter-row">    
-          <select class="caregiver">
-            <option>Select Caregiver</option>
-            <option>Emily Carter</option>
-            <option>David Lee</option>
-            <option>Sarah Jones</option>
-            <option>Michael Brown</option>
-            <option>Jessica Wilson</option>
-          </select>
 
-          <select class ="caregiver1">
-            <option>Select Status</option>
-            <option>Pending</option>
-            <option>Approved</option>
-            <option>Rejected</option>
+          <!-- Filter Section -->
+      <div class="filter-section">
+        <div class="filter-group">
+          <label for="type">Type</label>
+          <select id="type" onchange="filterTable()">
+            <option value="All">All</option>
+            <option value="Vacation">Vacation</option>
+            <option value="Sick Leave">Sick Leave</option>
+            <option value="Personal Leave">Personal Leave</option>
+            <option value="Maternity Leave">Maternity Leave</option>
           </select>
-
-          <button class="apply-btn">Apply Filters</button>
+        </div>
+        <div class="filter-group">
+          <label for="status">Status</label>
+          <select id="status" onchange="filterTable()">
+            <option value="All">All</option>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
         </div>
       </div>
 
-<h3 class="leave">Leave Requests</h3>
 
       <!-- Leave Requests Table -->
-      <table>
+    <div class="table-container">
+      <table class="leave-table" id="leaveTable">
         <thead>
           <tr>
             <th>Caregiver Name</th>
@@ -55,7 +55,7 @@
             <th>Status</th>
           </tr>
         </thead>
-        <tbody id="leaveTable">
+        <tbody>
           <tr>
             <td>Emily Carter</td>
             <td>Vacation</td>
@@ -124,6 +124,6 @@
     </section>
   </main>
 
-  <script src="script.js"></script>
+  <script src="<?php echo URLROOT; ?>/public/js/admin/ad_leave.js"></script>
 </body>
 </html>

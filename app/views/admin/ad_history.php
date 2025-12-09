@@ -1,4 +1,4 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,10 +13,6 @@
 
   <main class="content">
       <h1>Logs</h1>
-      <div class="search">
-        <input type="text" id="searchInput" placeholder="Search...">
-        <button id="searchButton">Search</button>
-      </div>
 
       <div class="filters">
         <select id="roleFilter">
