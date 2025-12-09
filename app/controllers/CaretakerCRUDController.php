@@ -10,6 +10,7 @@ class CaretakerCRUDController extends Controller {
 
     // Add caretaker
     public function add() {
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->caretakerModel->addCaretaker($_POST);
             header("Location: " . URLROOT . "/admin/ad_caretakers");
