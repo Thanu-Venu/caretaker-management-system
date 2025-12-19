@@ -1,11 +1,11 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f7fa;
+  font-family: 'Poppins', Arial, sans-serif;
+  background: #f4f7fb;
 }
 
 .reports-container {
-  margin-left: 270px;
-  margin-right: 20px;
+  margin-left: 290px;
+  margin-right: 30px;
 }
 
 .reports-header {
@@ -14,22 +14,33 @@ body {
   align-items: center;
   margin-bottom: 20px;
   color: #1e88e5;
+  margin-top: 18px;
 }
 
 h2 {
   color: #1E88E5;
   font-size: 28px;
+  font-weight: 700;
 }
 
 .apply-btn{
     background:#1e88e5;
-    color:white;
+    color:#fff;
     border: none;
-    border-radius: 10px; 
-    font-weight: 600;    
+    border-radius: 15px; 
+    font-weight: 700;
+    font-size: 16px;    
+    padding: 8px 14px;
+    cursor: pointer;
 }
 .apply-btn:hover {
-  background: #1871be;
+  background: #1565c0;
+}
+
+.filters label {
+  font-size: 18px;
+  color: #00447f;
+  font-weight: 600;
 }
 
 .filters input,
@@ -47,29 +58,46 @@ h2 {
 }
 
 .card {
-  background: white;
+  background: #e5f0f0;
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 10px;
+  color: #1565c0;
   text-align: center;
-  font-size: 16px;
-  font-weight: 200px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  font-size: 20px;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+.card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
 
 .card span {
   display: block;
   margin-top: 8px;
-  font-size: 18px;
+  font-size: 22px;
   color: black;
+}
+
+.table-section h3 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1e88e5;
+  margin-top: 12px;
+  margin-bottom: 12px;
 }
 
 .table-section {
   background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  margin-bottom: 25px;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   overflow-x: auto;
+  margin-bottom: 30px;
+  margin-top: 30px;
 }
 
 .table-section table {
@@ -79,26 +107,28 @@ h2 {
 
 .table-section th, 
 .table-section td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
+  border-bottom: 1px solid #eee;
+  padding: 12px 15px;
+  text-align: left;
 }
 
 .table-section th {
    background-color: #1E88E5;
-    color: white;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
 }
 
-.table-section h3 {
+.table-section td {
+  font-size: 16px;
   color: black;
-
 }
 
 .chart-section {
   background: white;
   padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   margin-bottom: 15px;
 }
 
@@ -110,22 +140,26 @@ h2 {
 }
 
 .chart-section h3 {
-  color: black;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1e88e5;
+  margin-top: 12px;
+  margin-bottom: 12px;
 }
 
 /* Download Button */
-.btn-download {
-  
+.btn-download { 
   background: #1e88e5;
   color: #fff;
   padding: 10px 15px;
   border: none;
-  border-radius: 6px;
+  border-radius: 15px;
   cursor: pointer;
-  margin-bottom: 10px;
-  font-weight: 600;
+  margin-bottom: 15px;
+  font-weight: 700;
+  font-size: 16px;
 }
 
 .btn-download:hover {
-  background: #1871be;
+  background: #1565c0;
 }
