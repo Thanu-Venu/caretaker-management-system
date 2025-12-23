@@ -3,23 +3,22 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Leave Management</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_leave.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
 </head>
+
 <body>
-  
-
-  <!-- Main Content -->
   <main class="content">
-   
-
     <section>
       <h1>Leave Management</h1>
 
-          <!-- Filter Section -->
+      <!-- Filter Section -->
       <div class="filter-section">
         <div class="filter-group">
           <label for="type">Type</label>
@@ -42,88 +41,68 @@
         </div>
       </div>
 
-
       <!-- Leave Requests Table -->
-    <div class="table-container">
-      <table class="leave-table" id="leaveTable">
-        <thead>
-          <tr>
-            <th>Caregiver Name</th>
-            <th>Leave Type</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Emily Carter</td>
-            <td>Vacation</td>
-            <td>2024-07-15</td>
-            <td>2024-07-20</td>
-            <td><span class="status pending">Pending</span></td>
-          </tr>
-          <tr>
-            <td>David Lee</td>
-            <td>Sick Leave</td>
-            <td>2024-07-10</td>
-            <td>2024-07-12</td>
-            <td><span class="status approved">Approved</span></td>
-          </tr>
-          <tr>
-            <td>Sarah Jones</td>
-            <td>Personal Leave</td>
-            <td>2024-07-22</td>
-            <td>2024-07-25</td>
-            <td><span class="status pending">Pending</span></td>
-          </tr>
-          <tr>
-            <td>Michael Brown</td>
-            <td>Vacation</td>
-            <td>2024-08-05</td>
-            <td>2024-08-10</td>
-            <td><span class="status rejected">Rejected</span></td>
-          </tr>
-          <tr>
-            <td>Jessica Wilson</td>
-            <td>Maternity Leave</td>
-            <td>2024-09-01</td>
-            <td>2024-12-01</td>
-            <td><span class="status pending">Pending</span></td>
-          </tr>
-          <tr>
-            <td>chael duo</td>
-            <td>Vacation</td>
-            <td>2024-08-05</td>
-            <td>2024-08-10</td>
-            <td><span class="status rejected">Rejected</span></td>
-          </tr>
-           <tr>
-            <td>Emily Carter</td>
-            <td>Vacation</td>
-            <td>2024-07-15</td>
-            <td>2024-07-20</td>
-            <td><span class="status pending">Pending</span></td>
-          </tr>
-          <tr>
-            <td>David Lee</td>
-            <td>Sick Leave</td>
-            <td>2024-07-10</td>
-            <td>2024-07-12</td>
-            <td><span class="status approved">Approved</span></td>
-          </tr>
-          <tr>
-            <td>Sarah Jones</td>
-            <td>Personal Leave</td>
-            <td>2024-07-22</td>
-            <td>2024-07-25</td>
-            <td><span class="status pending">Pending</span></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-container">
+        <table class="leave-table" id="leaveTable">
+          <thead>
+            <tr>
+              <th>Caregiver Name</th>
+              <th>Leave Type</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php if (!empty($data['leaves'])): ?>
+              <?php foreach ($data['leaves'] as $leave): ?>
+                <tr>
+                  <td><?= htmlspecialchars($leave['caretaker_name']) ?></td>
+                  <td><?= htmlspecialchars($leave['leave_type']) ?></td>
+                  <td><?= htmlspecialchars($leave['start_date']) ?></td>
+                  <td><?= htmlspecialchars($leave['end_date']) ?></td>
+                  <td><span
+                      class="status <?= strtolower($leave['status']) ?>"><?= htmlspecialchars($leave['status']) ?></span>
+                  </td>
+                  <td>
+                    <?php if ($leave['status'] == 'Pending'): ?>
+                      <a href="<?= URLROOT ?>/Admin/update_leave_status/<?= $leave['id'] ?>/Approved"
+                        onclick="return confirm('Approve this leave?')" class="approve-btn"><i class='bx bx-check-circle' style="color:green;"></i></a>
+                      <a href="<?= URLROOT ?>/Admin/update_leave_status/<?= $leave['id'] ?>/Rejected"
+                        onclick="return confirm('Reject this leave?')" class="reject-btn"><i class='bx bx-x-circle' style="color:red;"></i></a>
+
+                    <?php endif; ?>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <tr>
+                <td colspan="6">No leave requests found.</td>
+              </tr>
+            <?php endif; ?>
+          </tbody>
+        </table>
+      </div>
     </section>
   </main>
 
-  <script src="<?php echo URLROOT; ?>/public/js/admin/ad_leave.js"></script>
+  <script>
+    function filterTable() {
+      const typeFilter = document.getElementById('type').value.toLowerCase();
+      const statusFilter = document.getElementById('status').value.toLowerCase();
+
+      document.querySelectorAll('#leaveTable tbody tr').forEach(row => {
+        const type = row.cells[1].innerText.toLowerCase();
+        const status = row.cells[4].innerText.toLowerCase();
+
+        const typeMatch = typeFilter === 'all' || type === typeFilter;
+        const statusMatch = statusFilter === 'all' || status === statusFilter;
+
+        row.style.display = (typeMatch && statusMatch) ? '' : 'none';
+      });
+    }
+  </script>
 </body>
+
 </html>
