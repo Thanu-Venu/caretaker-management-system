@@ -6,7 +6,8 @@ body {
 .main-content {
   flex: 1;
   padding: 20px 40px;
-  margin-left: 270px;
+  margin-left: 260px;
+  margin-right: 15px;
   font-family: 'Poppins', Arial, sans-serif;
 }
 
@@ -14,6 +15,7 @@ h1 {
   font-size: 28px;
   color:#1e88e5;
   font-weight: 700;
+  margin-bottom: 30px;
 }
 
 /* Tabs */
@@ -38,17 +40,16 @@ h1 {
 
 /* Table Styling */
 .table-container {
-  padding-top: 40px;
   background: white;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   padding: 15px;
+  overflow-x: auto;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 900px;
   background: white;
   overflow: hidden;
 }
@@ -66,7 +67,7 @@ thead {
 th {
   font-size: 18px;
   font-weight: 700;
-  color: white;
+  color: #fff;
 }
 
 tbody tr:hover {
