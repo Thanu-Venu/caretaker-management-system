@@ -1,16 +1,36 @@
 <?php
 class HrController extends Controller {
+    private $caretakerModel;
+    private $userModel;
+
+    private $announcementModel;
+
+    private $clientModel;
+    private $adminLeaveModel;
+
+    public function __construct()
+    {
+        // Load caretaker model once
+        $this->caretakerModel = $this->model('CaretakerModel');
+
+        $this->userModel = $this->model('UserModel');
+        $this->announcementModel = $this->model('AnnouncementModel');
+        $this->clientModel = $this->model('ClientModel');
+        $this->adminLeaveModel = $this->model('AdminLeaveModel');
+    }
 
     public function hr_dashboard() {
         $this->view("hr/hr_dashboard");
     }
-        public function hr_complaint() {
+    
+    public function hr_complaint() {
         $this->view("hr/hr_complaint");
     }
     
 
     public function hr_addct() {
-        $this->view("hr/hr_addct");
+        $caretakers = $this->caretakerModel->getCaretakers(); // ✅ use the initialized property
+        $this->view("hr/hr_addct", ['caretakers' => $caretakers]);
     }    
 
     public function hr_managect() {
