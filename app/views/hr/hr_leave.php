@@ -3,86 +3,106 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Leave Management</title>
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_leave.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leave Management</title>
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_leave.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
 </head>
 
 <body>
-<main class="content">
+  <main class="content">
+    <section>
+      <h1>Leave Management</h1>
 
-<h1>Leave Management</h1>
-
-<!-- FILTER -->
-<div class="filter-section">
-    <form method="GET" action="<?php echo URLROOT; ?>/LeaveApproval/index">
-        <select name="status" class="filter-select">
-            <option value="">All</option>
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <div class="filter-group">
+          <label for="type">Type</label>
+          <select id="type" onchange="filterTable()">
+            <option value="All">All</option>
+            <option value="Vacation">Vacation</option>
+            <option value="Sick Leave">Sick Leave</option>
+            <option value="Personal Leave">Personal Leave</option>
+            <option value="Maternity Leave">Maternity Leave</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="status">Status</label>
+          <select id="status" onchange="filterTable()">
+            <option value="All">All</option>
             <option value="Pending">Pending</option>
             <option value="Approved">Approved</option>
             <option value="Rejected">Rejected</option>
-        </select>
-        <button class="apply-filters-btn">Apply</button>
-        <a href="<?php echo URLROOT; ?>/LeaveApproval/index" class="cancel-filters-btn">Reset</a>
-    </form>
-</div>
+          </select>
+        </div>
+      </div>
 
-<h2>Leave Requests</h2>
+      <!-- Leave Requests Table -->
+      <div class="table-container">
+        <table class="leave-table" id="leaveTable">
+          <thead>
+            <tr>
+              <th>Caregiver Name</th>
+              <th>Leave Type</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php if (!empty($data['leaves'])): ?>
+              <?php foreach ($data['leaves'] as $leave): ?>
+                <tr>
+                  <td><?= htmlspecialchars($leave['caretaker_name']) ?></td>
+                  <td><?= htmlspecialchars($leave['leave_type']) ?></td>
+                  <td><?= htmlspecialchars($leave['start_date']) ?></td>
+                  <td><?= htmlspecialchars($leave['end_date']) ?></td>
+                  <td><span
+                      class="status <?= strtolower($leave['status']) ?>"><?= htmlspecialchars($leave['status']) ?></span>
+                  </td>
+                  <td>
+                    <?php if ($leave['status'] == 'Pending'): ?>
+                      <a href="<?= URLROOT ?>/Admin/update_leave_status/<?= $leave['id'] ?>/Approved"
+                        onclick="return confirm('Approve this leave?')" class="approve-btn"><i class='bx bx-check-circle' style="color:green;"></i></a>
+                      <a href="<?= URLROOT ?>/Admin/update_leave_status/<?= $leave['id'] ?>/Rejected"
+                        onclick="return confirm('Reject this leave?')" class="reject-btn"><i class='bx bx-x-circle' style="color:red;"></i></a>
 
-<div class="table-container">
-<table class="leave-table">
-<thead>
-<tr>
-    <th>Caretaker ID</th>
-    <th>Name</th>
-    <th>Leave Type</th>
-    <th>Start</th>
-    <th>End</th>
-    <th>Status</th>
-    <th>Actions</th>
-</tr>
-</thead>
+                    <?php endif; ?>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <tr>
+                <td colspan="6">No leave requests found.</td>
+              </tr>
+            <?php endif; ?>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
 
-<tbody>
-<?php if(!empty($data['leaves'])): ?>
-<?php foreach($data['leaves'] as $leave): ?>
-<tr>
-    <td><?php echo $leave['caretaker_id']; ?></td>
-    <td><?php echo htmlspecialchars($leave['caretaker_name']); ?></td>
-    <td><?php echo $leave['leave_type']; ?></td>
-    <td><?php echo $leave['start_date']; ?></td>
-    <td><?php echo $leave['end_date']; ?></td>
+  <script>
+    function filterTable() {
+      const typeFilter = document.getElementById('type').value.toLowerCase();
+      const statusFilter = document.getElementById('status').value.toLowerCase();
 
-    <span class="status <?php echo strtolower($leave['status']); ?>">
-            <?php echo $leave['status']; ?>
-    </span>
+      document.querySelectorAll('#leaveTable tbody tr').forEach(row => {
+        const type = row.cells[1].innerText.toLowerCase();
+        const status = row.cells[4].innerText.toLowerCase();
 
-    <td>
-    <?php if($leave->status == 'Pending'): ?>
-        <a href="<?php echo URLROOT; ?>/LeaveApproval/approve/<?php echo $leave->id; ?>" 
-           class="action-btn approve-btn"
-           onclick="return confirm('Approve this leave request?')">Approve</a>
+        const typeMatch = typeFilter === 'all' || type === typeFilter;
+        const statusMatch = statusFilter === 'all' || status === statusFilter;
 
-        <a href="<?php echo URLROOT; ?>/LeaveApproval/reject/<?php echo $leave->id; ?>" 
-           class="action-btn reject-btn"
-           onclick="return confirm('Reject this leave request?')">Reject</a>
-    <?php else: ?>
-        <span class="view-only">Completed</span>
-    <?php endif; ?>
-    </td>
-</tr>
-<?php endforeach; ?>
-<?php else: ?>
-<tr>
-    <td colspan="7">No leave requests found.</td>
-</tr>
-<?php endif; ?>
-</tbody>
-
-</table>
-</div>
-
-</main>
+        row.style.display = (typeMatch && statusMatch) ? '' : 'none';
+      });
+    }
+  </script>
 </body>
+
 </html>

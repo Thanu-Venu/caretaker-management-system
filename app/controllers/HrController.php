@@ -3,10 +3,8 @@ class HrController extends Controller {
     private $caretakerModel;
     private $userModel;
 
-    private $announcementModel;
-
     private $clientModel;
-    private $adminLeaveModel;
+    private $hrLeaveModel;
 
     public function __construct()
     {
@@ -14,9 +12,8 @@ class HrController extends Controller {
         $this->caretakerModel = $this->model('CaretakerModel');
 
         $this->userModel = $this->model('UserModel');
-        $this->announcementModel = $this->model('AnnouncementModel');
         $this->clientModel = $this->model('ClientModel');
-        $this->adminLeaveModel = $this->model('AdminLeaveModel');
+        $this->hrLeaveModel = $this->model('HRLeaveModel');
     }
 
     public function hr_dashboard() {
@@ -42,7 +39,14 @@ class HrController extends Controller {
     }
 
     public function hr_leave() {
-        $this->view("hr/hr_leave");
+        $leaves = $this->hrLeaveModel->getAllLeaves();
+        $this->view("hr/hr_leave", ['leaves' => $leaves]);
+    }
+
+    public function update_leave_status($id, $status) {
+        $this->hrLeaveModel->updateLeaveStatus($id, $status); // update in DB
+        header('Location: ' . URLROOT . '/hr/hr_leave'); // redirect back to admin leave page
+        exit();
     }
     
     public function hr_schedule() {
