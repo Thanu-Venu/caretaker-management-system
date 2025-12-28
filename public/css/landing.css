@@ -3,10 +3,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', Arial, sans-serif;
 }
+
 body {
-  background: #fff;
+  background: #f4f7fb;
   color: #333;
   line-height: 1.8;
 }
@@ -14,18 +15,29 @@ body {
 h1{
   color:rgb(234, 234, 234);
   font-size: 2.5rem;
-   margin-bottom: 10px;
+  margin-bottom: 10px;
    
 }
- h2, h3, h4 {
+
+ h2 {
   margin-bottom: 10px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  color: #2c3e50; /* elegant deep blue */
+  color: #1e88e5; /* elegant deep blue */
+  font-size: 28px;
 }
+
+h3 {
+  margin-bottom: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #1565c0;;
+}
+
 .hero-text p{
   color: #f0f0f0;
 }
+
 p {
   color: #696969;
 }
@@ -62,6 +74,7 @@ p {
   display: flex;
   gap: 25px;
 }
+
 .nav-links a {
   text-decoration: none;
   color: white;
@@ -69,9 +82,11 @@ p {
   font-size: 16px;
   transition: color 0.3s ease;
 }
+
 .nav-links a:hover {
   color: #b8bdc1; 
 }
+
 .btn-login {
   background:#1e88e5;
   color: white;
@@ -80,9 +95,9 @@ p {
   font-weight: 600;
   transition: all 0.3s ease;
 }
+
 .btn-login:hover {
   background: #1a77c8;
- 
 }
 
 /* Hero */
@@ -91,6 +106,7 @@ p {
   margin: 20px auto;
   position: relative;
 }
+
 .hero-slider {
   width: 90%;
   height: 80vh;
@@ -101,6 +117,7 @@ p {
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
+
 .hero-slider img {
   width: 100%;
   height: 100%;
@@ -109,9 +126,11 @@ p {
   opacity: 0;
   transition: opacity 1s ease-in-out;
 }
+
 .hero-slider img.active {
   opacity: 1;
 }
+
 .hero-slider::after {
   content: "";
   position: absolute;
@@ -119,6 +138,7 @@ p {
   background: linear-gradient(to top, rgba(0,0,0,0.5) 30%, transparent 100%);
   z-index: 1;
 }
+
 .hero-text {
   position: absolute;
   bottom: 5%;
@@ -129,11 +149,13 @@ p {
   max-width: 1000px;
    text-shadow: 0 3px 6px rgba(0,0,0,0.6);
 }
+
 .hero-text h1 {
   font-size: 3rem;
   margin-bottom: 10px;
   line-height: 1.3;
 }
+
 .hero-text p {
   font-size: 1.1rem;
   opacity: 0.9;
@@ -143,12 +165,14 @@ p {
 .about, .services, .how-it-works, .pricing, .faq {
   padding: 60px 80px;
 }
+
 .features {
   display: flex;
   justify-content: space-between;
   gap: 25px;
   margin-top: 30px;
 }
+
 .feature {
   flex: 1;
   background: rgba(30,136,229,0.9);
@@ -159,6 +183,7 @@ p {
   font-weight: 500;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 .feature:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 18px rgba(0,0,0,0.15);
@@ -170,6 +195,7 @@ p {
   gap: 25px;
   margin-top: 30px;
 }
+
 .card, .price-card {
   flex: 1;
   background: white;
@@ -178,10 +204,12 @@ p {
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 .card:hover, .price-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 18px rgba(0,0,0,0.15);
 }
+
 .card img {
   width: 100%;
   border-radius: 10px;
@@ -194,6 +222,7 @@ p {
   gap: 60px;
   margin-top: 30px;
 }
+
 .step {
   flex: 1;
   background: rgba(30,136,229,0.9);
@@ -203,6 +232,7 @@ p {
   text-align: center;
   transition: transform 0.3s ease;
 }
+
 .step:hover {
   transform: scale(1.05);
 }
@@ -218,6 +248,7 @@ p {
   font-size: 14px;
   color: gray;
 }
+
 .price-card button {
   background: rgba(30,136,229,0.9);
   color: white;
@@ -229,6 +260,7 @@ p {
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
 .price-card button:hover {
   background:#1971bf ;
  
@@ -237,9 +269,10 @@ p {
 /* Testimonials */
 .testimonials {
   padding: 60px 80px;
-  background: #f9f9f9;
+  background: #fff;
   border-top: 1px solid #eee;
 }
+
 .testimonial {
   margin-bottom: 25px;
   font-style: italic;
@@ -252,8 +285,9 @@ p {
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  background: #fafafa;
+  background: white;
 }
+
 .faq summary {
   font-weight: 600;
   cursor: pointer;
@@ -264,6 +298,7 @@ p {
   text-align: center;
   padding: 60px;
 }
+
 .btn-start {
   background:rgba(30,136,229,0.9);
   color: white;
@@ -351,7 +386,7 @@ footer {
 }
 
 .contact-form button {
-  background: #1E88E5;
+  background: rgba(30,136,229,0.9);
   color: white;
   padding: 12px 20px;
   border: none;

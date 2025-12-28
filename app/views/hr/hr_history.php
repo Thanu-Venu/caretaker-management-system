@@ -1,4 +1,4 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/hr/hr_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; ?>
 
 <!DOCTYPE html>
@@ -14,36 +14,34 @@
 
   <main class="content">
       <h1>Logs</h1>
-      <div class="search">
-        <input type="text" id="searchInput" placeholder="Search...">
-        <button id="searchButton">Search</button>
-      </div>
-
       <div class="filters">
-        <select id="roleFilter">
-          <option value="">User Role</option>
+        <label for="rolFilter">User Role</label>
+        <select id="roleFilter" onchange="filterLogs()">
+          <option value="">All</option>
           <option value="Admin">Admin</option>
           <option value="Manager">HR Manager</option>
           <option value="Caregiver">Caregiver</option>
           <option value="Client">Client</option>
         </select>
 
-        <select id="userFilter">
-          <option value="">Username</option>
+        <label for="userFilter">Username</label>
+        <select id="userFilter" onchange="filterLogs()">
+          <option value="">All</option>
         </select>
 
-        <select id="dateFilter">
-          <option value="">Date Range</option> 
+        <label for="dateFilter">Date Range</label>
+        <select id="dateFilter" onchange="filterLogs()">
+          <option value="">All</option> 
          <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
-        </select>
-        
+        </select>  
 
-       <select id="actionFilter">
-          <option value="">Action Type</option>
+        <label for="actionFilter">Action Type</label>
+       <select id="actionFilter" onchange="filterLogs()">
+          <option value="">All</option>
         </select>
       </div>  
-
+  <div class="container">
     <section>
       <table id="logTable">
         <thead>
@@ -60,6 +58,7 @@
         </tbody>
       </table>
     </section>
+  </div>
   </main>
 
   <script src="<?php echo URLROOT; ?>/public/js/hr/hr_history.js"></script>

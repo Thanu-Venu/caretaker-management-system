@@ -1,4 +1,4 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/hr/hr_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; ?>
 
 <!DOCTYPE html>
@@ -17,17 +17,6 @@
         <div class="filter-section">
             <div class="filter-group">
                 <select class="filter-select">
-                    <option disabled selected>Select Caregiver</option>
-                    <option>Emily Carter</option>
-                    <option>David Lee</option>
-                    <option>Sarah Jones</option>
-                    <option>Michael Brown</option>
-                    <option>Jessica Wilson</option>
-                </select>
-                <div class="select-arrow"></div>
-            </div>
-            <div class="filter-group">
-                <select class="filter-select">
                     <option disabled selected>Select Status</option>
                     <option>Pending</option>
                     <option>Approved</option>
@@ -40,7 +29,7 @@
         </div>
 
         <h2>Leave Requests</h2>
-
+        <div class="table-container">
         <table class="leave-table">
             <thead>
                 <tr>
@@ -114,6 +103,7 @@
                 </tr>
             </tbody>
         </table>
+        </div>
     </main>
 
 <script src="<?php echo URLROOT; ?>/public/js/hr/hr_leave.js"></script>

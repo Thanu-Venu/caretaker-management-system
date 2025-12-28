@@ -1,5 +1,5 @@
 <?php  
-include_once APPROOT . "/views/templates/client/c_header.php"; 
+include_once APPROOT . "/views/templates/admin/ad_header.php"; 
 include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; 
 ?>
 
@@ -8,7 +8,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caretaker Management</title>
+  <title>Caregiver Management</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_caretakers.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -18,18 +18,18 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
 
   <!-- Header -->
   <section class="caretaker-header">
-    <h1>Caretaker Management</h1>
-    <button class="add-btn" onclick="window.location.href='/CMA/public/caretakerCRUD/add'">Add Caretaker</button>
+    <h1>Caregiver Management</h1>
+    <button class="add-btn" onclick="window.location.href='/CMA/public/caretakerCRUD/add'">Add Caregiver</button>
   </section>
 
   <!-- Search -->
   <div class="search-wrapper">
     <i class="fa-solid fa-magnifying-glass"></i>
-    <input type="text" placeholder="Search caretakers" id="searchInput">
+    <input type="text" placeholder="Search caregivers" id="searchInput">
   </div>
 
   <!-- Caretaker Table -->
-  <section>
+  <div class="table-container">
     <table>
       <thead>
         <tr>
@@ -59,12 +59,12 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
           <?php endforeach; ?>
         <?php else: ?>
           <tr>
-            <td colspan="4" style="text-align:center;">No caretakers found</td>
+            <td colspan="4" style="text-align:center;">No caregivers found</td>
           </tr>
         <?php endif; ?>
       </tbody>
     </table>
-  </section>
+    </div>
 
 </main>
 

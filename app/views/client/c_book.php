@@ -71,6 +71,11 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="serviceLocation">Service Location</label>
+                    <textarea id="serviceLocation" name="serviceLocation" placeholder="Enter Your Service Location"></textarea>
+                </div>
+
+                <div class="form-group">
                     <label for="customization">Any Customization</label>
                     <textarea id="customization" name="customization" placeholder="Enter any specific requests"></textarea>
                 </div>
