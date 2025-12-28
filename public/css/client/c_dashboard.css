@@ -76,7 +76,18 @@
   color: #0d89ec;
 }
 
-/* Quick Actions */
+/* Quick  Actions */
+button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+
 .quick-actions h2 {
   margin: 20px 0 18px;
   font-size: 22px;

@@ -12,7 +12,6 @@
 </head>
 
 <body>
-
   <main class="content">
     <h1>Find the Perfect Caretaker</h1>
     <p>Browse our qualified professionals and book the care you need</p>

@@ -20,7 +20,7 @@
 
   <!-- Welcome -->
   <section class="welcome">
-    <h1>Welcome back, John!</h1>
+    <h1>Welcome back, </h1>
     <p>Here’s what’s happening with your care services</p>
   </section>
 
@@ -63,22 +63,36 @@
     <div class="actions">
       <div class="action">
         <i class='bx bx-search'></i>
-        <h3>Book New Service</h3>
+        <h3>   
+          <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_find'">
+           Book New Service
+          </button>
+        </h3>
+
         <p>Find and book a caretaker</p>
       </div>
       <div class="action">
         <i class='bx bx-calendar-edit'></i>
-        <h3>Reschedule Booking</h3>
+          <h3>   
+          <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_upcomingBookings'">
+           Reschedule Booking
+          </button>
+        </h3>
+
         <p>Change your appointmnet time</p>
       </div>
       <div class="action">
         <i class='bx bx-phone'></i>
-        <h3>Contact Caretaker</h3>
+         <h3>   
+          <button id="bookBtn" class="main-btn">Contact Caretaker</button>
+        </h3>      
         <p>Manage your assigned caretaker</p>
       </div>
       <div class="action">
         <i class='bx bx-support'></i>
-        <h3>Emergency Support</h3>
+         <h3>   
+          <button id="bookBtn" class="main-btn">Emergency Support</button>
+        </h3> 
         <p>24/7 Emergency assistance</p>
       </div>
     </div>

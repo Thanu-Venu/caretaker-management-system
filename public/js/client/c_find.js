@@ -65,7 +65,6 @@ function renderCaretakers(data) {
 });
 
 
-
   listContainer.appendChild(card);
 });
 
