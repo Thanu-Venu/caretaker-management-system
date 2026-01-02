@@ -1,7 +1,8 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,78 +10,44 @@
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_clients.css">
 </head>
+
 <body>
-    <div class="content">
+  <div class="content">
 
-    
+
     <section class="client-header">
-        <h1>Client Management</h1>
-        
-      </section>
+      <h1>Client Management</h1>
 
-  <div class="search-box">
-    <i class='bx bx-search'></i>
-    <input type="text" placeholder="Search clients...">
-  </div>
+    </section>
 
-  <div class="table-container">
-    <table class="client-table">
-      <thead>
-        <tr>
-          <th>Client Name</th>
-          <th>Associated Services</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Sophia Carter</td>
-          <td>Elder Care</td>
-          <td>
-            <i class='bx bx-show'></i>
-            <i class='bx bx-edit'></i>
-            <i class='bx bx-trash'></i>
-          </td>
-        </tr>
-        <tr>
-          <td>Ethan Bennett</td>
-          <td>Cooking and meal preparation</td>
-          <td>
-            <i class='bx bx-show'></i>
-            <i class='bx bx-edit'></i>
-            <i class='bx bx-trash'></i>
-          </td>
-        </tr>
-        <tr>
-          <td>Isabella Harper</td>
-          <td>Personal care (feeding, bathing, grooming)</td>
-          <td>
-            <i class='bx bx-show'></i>
-            <i class='bx bx-edit'></i>
-            <i class='bx bx-trash'></i>
-          </td>
-        </tr>
-        <tr>
-          <td>Caleb Foster</td>
-          <td>Child supervision and safety</td>
-          <td>
-            <i class='bx bx-show'></i>
-            <i class='bx bx-edit'></i>
-            <i class='bx bx-trash'></i>
-          </td>
-        </tr>
-        <tr>
-          <td>Mia Reynolds</td>
-          <td>Cleaning and housekeeping</td>
-          <td>
-            <i class='bx bx-show'></i>
-            <i class='bx bx-edit'></i>
-            <i class='bx bx-trash'></i>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-container">
+      <table class="client-table">
+        <thead>
+          <tr>
+            <th>Client Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php if (!empty($data['clients'])): ?>
+            <?php foreach ($data['clients'] as $client): ?>
+              <tr>
+                <td><?= htmlspecialchars($client['name']) ?></td>
+                <td><?= htmlspecialchars($client['email']) ?></td>
+                <td><?= htmlspecialchars($client['phone']) ?></td>
+              </tr>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <tr>
+              <td colspan="4">No clients found</td>
+            </tr>
+          <?php endif; ?>
+        </tbody>
+      </table>
+
+    </div>
   </div>
-</div>
 </body>
+
 </html>

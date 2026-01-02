@@ -3,7 +3,7 @@
   font-family: Arial, Helvetica, sans-serif;
   margin-left: 270px;
   margin-right: 20px;
-  padding: 20px;
+  padding-left: 20px;
   flex: 1;
   background: white;
   
@@ -213,3 +213,5 @@
   font-size: 12px;
   color: #999;
 }
+
+

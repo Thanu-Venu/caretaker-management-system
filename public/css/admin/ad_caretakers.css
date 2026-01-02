@@ -1,8 +1,12 @@
+body {
+    background: #f4f7fb;
+}
+
 .main-content {
   flex: 1;
   padding: 20px 40px;
   margin-left: 270px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Poppins', Arial, sans-serif;
 }
 
 /* Caretaker header */
@@ -14,18 +18,24 @@
   color: #1e88e5;
 }
 
+.caretaker-header h1 {
+  color: #1e88e5;
+  font-size: 28px;
+}
+
 .add-btn {
-  background: #00bfa5;
-  color: white;
+  background: #1e88e5;
+  color: #fff;
   border: none;
   padding: 8px 14px;
-  border-radius: 20px;
+  border-radius: 15px;
   cursor: pointer;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .add-btn:hover {
-  background: #00a791;
+  background: #1565c0;
  
 }
 
@@ -33,7 +43,7 @@
 .search-wrapper {
   display: flex;
   align-items: center;
-  background: #f2f4f8;
+  background: white;
   border-radius: 12px;
   padding: 8px 12px;
   margin-bottom: 20px;
@@ -54,21 +64,28 @@
 }
 
 /* Table */
+.table-container {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 15px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
-  border-radius: 10px;
+  background: white;
   overflow: hidden;
 }
 
 thead {
-  background: #f2f4f8;
+  background: #1e88e5;
 }
 
 th {
     font-size: 18px;
     font-weight: 700;
+    color: white;
 }
 
 th, td {
@@ -77,8 +94,12 @@ th, td {
   border-bottom: 1px solid #eee;
 }
 
+
+tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
 .status {
-  padding: 4px 30px;
   border-radius: 12px;
   font-size: 16px;
 }
@@ -86,14 +107,13 @@ th, td {
 .status.active {
   color: white;
   background: #00bfa5;
-  padding-right: 35px;
-
+  padding: 4px 16px;
 }
 
 .status.inactive {
   background: #ea0b34;
   color: white;
-  padding-right: 23px
+  padding: 4px 12px;
 }
 
 .actions i {
@@ -130,4 +150,3 @@ th, td {
 .actions .bx-trash:hover {
     color: #a71d2a;
 }
-

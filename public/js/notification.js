@@ -1,4 +1,4 @@
-/* Sample admin notifications
+ //Sample admin notifications
 const adminNotifications = [
   "New caretaker registered",
   "Monthly report ready",
@@ -41,4 +41,4 @@ document.addEventListener("click", function(event) {
 });
 
 // Initialize for admin
-loadNotifications("admin");*/
+loadNotifications("admin");

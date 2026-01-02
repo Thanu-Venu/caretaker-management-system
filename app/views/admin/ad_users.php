@@ -1,4 +1,4 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
 
 <!DOCTYPE html>
@@ -15,15 +15,15 @@
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_users.css">
 </head>
 <body>
-
+<main class="main-content">
 <div class="content">
+  <h2>User Roles and Access Control</h2>
   <!-- Add User Button -->
   <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/userCRUD/add'">Add User</button>
+</div>
 
-  <!-- Users Table -->
-  <div class="card">
-    <h2>User Roles and Access Control</h2>
-    <div class="table-container">
+<!-- Users Table -->
+  <div class="table-container">
       <table>
         <thead>
           <tr>
@@ -52,9 +52,7 @@
         </tbody>
       </table>
     </div>
-  </div>
-</div>
-
+</main>
 <!-- JS for Search Filter -->
 <script>
   const searchInput = document.getElementById('searchInput');

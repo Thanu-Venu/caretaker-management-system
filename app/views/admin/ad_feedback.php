@@ -1,4 +1,4 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,10 +10,10 @@
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_feedback.css">
 </head>
 <body>
-   <div class="content">
-  <div class="card">
+   <div class="content"> 
     <h2>Feedback & Complaints</h2>
-
+   </div>
+   <div class="card">
     <!-- Tabs -->
     <div class="tabs">
       <button class="tab-btn active" data-tab="feedback">Client Feedback</button>
@@ -112,28 +112,28 @@
               <td>Sophia Lewis</td>
               <td>Caregiver was late multiple times.</td>
               <td>2025-07-22</td>
-              <td>Pending</td>
+              <td><span class="status pending">Pending</span></td>
             </tr>
             <tr>
               <td>Emily White</td>
               <td>Daniel Scott</td>
               <td>Unprofessional behavior during visit.</td>
               <td>2025-07-19</td>
-              <td>Resolved</td>
+              <td><span class="status resolved">Resolved</span></td>
             </tr>
             <tr>
               <td>James Hall</td>
               <td>Emma Brown</td>
               <td>Lack of communication with family.</td>
               <td>2025-07-16</td>
-              <td>In Review</td>
+              <td><span class="status review">In Review</span></td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
-</div>
+
 
 <script src="<?php echo URLROOT; ?>/public/js/admin/ad_feedback.js"></script>
 </body>

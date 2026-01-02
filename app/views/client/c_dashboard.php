@@ -15,6 +15,8 @@
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_dashboard.css">
 </head>
 <body>
+<<div class="container">
+ 
 
 <div class="client-dashboard">
 
@@ -142,6 +144,8 @@
     </div>
   </section>
 
+</div>
+ <!-- your existing content -->
 </div>
 
 </body>

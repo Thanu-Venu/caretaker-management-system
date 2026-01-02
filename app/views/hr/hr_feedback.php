@@ -1,4 +1,4 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/hr/hr_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; ?>
 
 <!DOCTYPE html>
@@ -13,11 +13,12 @@
 <body>
 <div class="main-content">
     <h1>Client Feedback</h1>
+    <div class="table-container">
     <table class="feedback-table">
         <thead>
             <tr>
                 <th>Client</th>
-                <th>Caretaker</th>
+                <th>Caregiver</th>
                 <th>Service</th>
                 <th>Rating</th>
                 <th>Comments</th>
@@ -48,6 +49,7 @@
             </tr>
         </tbody>
     </table>
+    </div>  
 </div>
 
 <script src="<?php echo URLROOT; ?>/public/js/hr/hr_feedback.js"></script>

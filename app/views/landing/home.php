@@ -37,7 +37,7 @@
 
     <div class="hero-text">
       <h1>Your Partner in Caregiving</h1>
-      <p>Reliable caretakers for your home, loved ones, and daily needs.</p>
+      <p>Reliable caregivers for your home, loved ones, and daily needs.</p>
     </div>
     
     <div class="nav-arrows">
@@ -56,11 +56,11 @@
     <h2>About SmartCare</h2>
     <p>
       SmartCare is a digital platform that connects families with trusted caregivers for elder care, babysitting, and home support. 
-      Our mission is to make caregiving simple, safe, and reliable by offering background-checked caretakers, easy booking, and 
+      Our mission is to make caregiving simple, safe, and reliable by offering background-checked caregivers, easy booking, and 
       24/7 support — all in one place.
     </p>
     <div class="features">
-      <div class="feature">✅ Verified Caretakers</div>
+      <div class="feature">✅ Verified Caregivers</div>
       <div class="feature">⚡ Easy Booking System</div>
       <div class="feature">📞 24/7 Customer Support</div>
       <div class="feature">💰 Affordable Packages</div>

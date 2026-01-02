@@ -1,5 +1,5 @@
 <?php  
-include_once APPROOT . "/views/templates/client/c_header.php"; 
+include_once APPROOT . "/views/templates/admin/ad_header.php"; 
 include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; 
 ?>
 <!DOCTYPE html>
@@ -14,7 +14,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
 <body>
 <main class="main-content">
     <section class="form-section">
-        <h1>Add Caretaker</h1>
+        <h1>Add Caregiver</h1>
         <form method="POST" class="caretaker-form">
             <label>Name</label>
             <input type="text" name="name" required placeholder="Enter full name">
@@ -23,14 +23,14 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
             <input type="email" name="email" required placeholder="Enter email">
 
             <label for="password">Password</label>
-            <input type="password" name="password" id="password" required>
+            <input type="password" name="password" id="password" required placeholder="Enter password">
 
 
             <label>Phone</label>
             <input type="text" name="phone" required placeholder="Enter phone number">
 
             <label>Service Type</label>
-            <select name="service_type" required>
+            <select name="service_typea" required>
                 <option value="">Select service</option>
                 <option value="Elder Care">Elder Care</option>
                 <option value="Maid">Maid</option>
@@ -43,7 +43,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
                 <option value="Inactive">Inactive</option>
             </select>
 
-            <button type="submit" class="submit-btn" window.location.href='/CMA/public/caretakerCRUD/list'>Add Caretaker</button>
+            <button type="submit" class="submit-btn" window.location.href='/CMA/public/caretakerCRUD/list'>Add Caregiver</button>
         </form>
     </section>
 </main>

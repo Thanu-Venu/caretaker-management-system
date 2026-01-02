@@ -5,10 +5,10 @@ body {
 
 .sidebar {
   width: 240px;
-  height: 90vh;
+  height: 100vh;
   background: linear-gradient(180deg, #1E88E5, #00BFA5);
   color: #fff;
-  padding: 20px 0;
+  padding: 0 0;
   position: fixed;
   overflow-y: auto;   /* enables vertical scrolling */
   overflow-x: hidden;

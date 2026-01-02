@@ -1,4 +1,4 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/hr/hr_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; ?>
 
 <!DOCTYPE html>
@@ -14,15 +14,13 @@
 <main class="main-content">
     <br>
     <h1>Complaints Management</h1>
-    <p class="subtitle">Manage and resolve client complaints efficiently.</p>
-
     <div class="table-container">
       <table>
         <thead>
           <tr>
             <th>Complaint ID</th>
             <th>Client Name</th>
-            <th>Caretaker Name</th>
+            <th>Caregiver Name</th>
             <th>Category</th>
             <th>Details</th>
             <th>Complaint_Date</th>

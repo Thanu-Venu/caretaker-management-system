@@ -1,6 +1,7 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f7fa;
+  font-family: 'Poppins', Arial, sans-serif;
+  background: #f4f7fb;
+  font-weight: 300;
 }
 
 .reports-container {
@@ -16,7 +17,15 @@ body {
   color: #1e88e5;
 }
 
-.apply-btn{
+h2 {
+  font-size: 28px;
+  color: #1e88e5;
+  font-weight: 700;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.apply-btn {
     background:#1e88e5;
     color:white;
     border: none;

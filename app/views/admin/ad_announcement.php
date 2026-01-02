@@ -1,82 +1,61 @@
-<?php  include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php  include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
-
+<?php
+include_once APPROOT . "/views/templates/admin/ad_header.php";
+include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Send Announcement</title>
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_announcement.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Booking Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_announcement.css">
 </head>
 <body>
-<div class="container">
-   
+<h2>Announcements</h2>
 
+<form action="<?= URLROOT ?>/AnnouncementCRUD/add" method="POST">
+    <input type="text" name="title" placeholder="Title" required>
+    <textarea name="message" placeholder="Message" required></textarea>
+    <select name="target_role" required>
+        <option value="All">All</option>
+        <option value="admin">Admin</option>
+        <option value="Manager">Manager</option>
+        <option value="Caretaker">Caretaker</option>
+        <option value="Client">Client</option>
+    </select>
+    <button type="submit">Add Announcement</button>
+</form>
 
-    <!-- Main Content -->
-    <main class="main-content">
-         <h1>Send Announcement</h1>
-         <section class="announcement">
-            <form>
-                <label>Title</label>
-                <input type="text" placeholder="Enter announcement title">
-
-                <label>Message</label>
-                <textarea placeholder="Enter message"></textarea>
-
-                <label>Recipient Role</label>
-                <select>
-                    <option>Select recipient role</option>
-                    <option>All</option>
-                    <option>HR manager</option>
-                    <option>Caretaker</option>
-                    <option>Clients</option>
-
-                    
-                </select>
-
-                <label>Attachment (Optional)</label>
-                <input type="file" class="file-button">
-
-                <label>Schedule Send (Optional)</label>
-                <input type="datetime-local">
-
-                <div class="buttons">
-                    <button type="submit">Send</button>
-                    <button type="button" class="preview">Preview</button>
-                </div>
-            </form>
-
-            <h2>Announcement Log</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>Target Audience</th>
-                        <th>Title</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>2024-07-26 10:00 AM</td>
-                        <td>All</td>
-                        <td>Company-wide Update</td>
-                    </tr>
-                    <tr>
-                        <td>2024-07-25 02:30 PM</td>
-                        <td>HR Manager</td>
-                        <td>HR Policy Changes</td>
-                    </tr>
-                    <tr>
-                        <td>2024-07-24 09:15 AM</td>
-                        <td>Caretaker</td>
-                        <td>New Training Module</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-    </main>
-</div>
-</body>
-</html>
+<table border="1" width="100%">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Message</th>
+            <th>Target</th>
+            <th>Created By</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if (!empty($data['announcements'])): ?>
+            <?php foreach ($data['announcements'] as $ann): ?>
+                <tr>
+                    <td><?= htmlspecialchars($ann['title']) ?></td>
+                    <td><?= htmlspecialchars($ann['message']) ?></td>
+                    <td><?= htmlspecialchars($ann['target_role']) ?></td>
+                    <td><?= htmlspecialchars($ann['created_by_name'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($ann['created_at']) ?></td>
+                    <td>
+                        <a href="<?= URLROOT ?>/AnnouncementCRUD/edit/<?= $ann['id'] ?>">Edit</a>
+                        <a href="<?= URLROOT ?>/AnnouncementCRUD/delete/<?= $ann['id'] ?>"
+                           onclick="return confirm('Delete this announcement?')">Delete</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr><td colspan="6">No announcements found</td></tr>
+        <?php endif; ?>
+    </tbody>
+</table>
