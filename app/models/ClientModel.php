@@ -37,6 +37,18 @@ class ClientModel {
         return $stmt->get_result()->fetch_assoc();
     }
 
+ public function updateClient($id, $data) {
+        $stmt = $this->conn->prepare("UPDATE clients SET name=?,email=?,phone=? WHERE id=?");
+        $stmt->bind_param("ssssi", $data['name'],$data['email'],$data['phone'],$id);
+        return $stmt->execute();
+    }
+
+    public function updateClientPassword($id, $hashedPassword) {
+        $stmt = $this->conn->prepare("UPDATE clients SET password=? WHERE id=?");
+        $stmt->bind_param("si", $hashedPassword, $id);
+        return $stmt->execute();
+    }
+
     /**
      * Delete client
      */
