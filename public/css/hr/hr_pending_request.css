@@ -1,62 +1,71 @@
+body {
+    background: #f4f7fb;
+}
+
 .main-content {
-    margin-left: 250px; /* match your sidebar */
-    padding: 20px 40px;
-    min-height: 100vh;
-    background: #f4f6f8;
+  flex: 1;
+  padding: 20px 40px;
+  margin-left: 270px;
+  font-family: 'Poppins', Arial, sans-serif;
 }
 
 h1 {
-    color: #1E88E5;
-    margin-bottom: 40px;
-    margin-top: 20px;
-    font-size: 28px;
+  color: #1e88e5;
+  font-size: 28px;
+  padding-bottom: 20px;
+}
+
+.table-container {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 15px;
 }
 
 .requests-table {
     width: 100%;
     border-collapse: collapse;
-    background: #fff;
-    border-radius: 10px;
+    background: white;
     overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .requests-table th, .requests-table td {
-    padding: 12px 15px;
-    text-align: left;
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+.requests-table thead{
+    background: #1E88E5;
 }
 
 .requests-table th {
-    background-color: #1E88E5;
+    font-size: 18px;
+    font-weight: 700;
     color: white;
-    font-weight: 600;
 }
 
-.requests-table tr:nth-child(even) {
+.requests-table tbody tr:hover {
     background-color: #f9f9f9;
 }
 
-.requests-table tr:hover {
-    background-color: #f7f9f9;
-    cursor: pointer;
-}
-
 button.approve {
-    background: #e0f7e9;
-    color: green;
+    background: #00bfa5;
+    color: white;
     border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 16px;
+    padding: 4px 12px;
     margin-right: 5px;
     cursor: pointer;
 }
 
 button.reject {
-    background: #f8d7da;
-    color: red; 
+    background: #ea0b34;
+    color: white; 
     border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
+    border-radius: 12px;
+    padding: 4px 16px;
+    font-size: 16px;
     cursor: pointer;
 }
 
@@ -88,6 +97,7 @@ button.reject:hover {
     max-width: 400px;
     text-align: center;
     box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+
 }
 
 .modal-actions {

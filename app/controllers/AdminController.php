@@ -1,64 +1,106 @@
 <?php
-class AdminController extends Controller {
+class AdminController extends Controller
+{
 
     private $caretakerModel;
     private $userModel;
 
-    public function __construct() {
+    private $announcementModel;
+
+    private $clientModel;
+    private $adminLeaveModel;
+
+    public function __construct()
+    {
         // Load caretaker model once
         $this->caretakerModel = $this->model('CaretakerModel');
 
-           $this->userModel = $this->model('UserModel'); 
+        $this->userModel = $this->model('UserModel');
+        $this->announcementModel = $this->model('AnnouncementModel');
+        $this->clientModel = $this->model('ClientModel');
+        $this->adminLeaveModel = $this->model('AdminLeaveModel');
     }
-  
-    public function ad_dashboard() {
+
+    public function ad_dashboard()
+    {
         $this->view("admin/ad_dashboard");
     }
-    
-    public function ad_leave() {
-        $this->view("admin/ad_leave");
-    }
-    public function ad_announcement() {
-        $this->view("admin/ad_announcement");
-    }
-    public function ad_history() {
+
+    public function ad_leave()
+{
+    $leaves = $this->adminLeaveModel->getAllLeaves(); // Fetch caretakers' leaves
+    $this->view("admin/ad_leave", ['leaves' => $leaves]);
+}
+
+public function update_leave_status($id, $status)
+{
+    $this->adminLeaveModel->updateLeaveStatus($id, $status); // update in DB
+    header('Location: ' . URLROOT . '/admin/ad_leave'); // redirect back to admin leave page
+    exit();
+}
+
+
+
+
+    public function ad_history()
+    {
         $this->view("admin/ad_history");
     }
 
-  public function ad_caretakers() {
-    $caretakers = $this->caretakerModel->getCaretakers(); // ✅ use the initialized property
-    $this->view("admin/ad_caretakers", ['caretakers'=>$caretakers]);
-  }
-
-  
-    public function ad_clients() {
-        $this->view("admin/ad_clients"); 
+    public function ad_caretakers()
+    {
+        $caretakers = $this->caretakerModel->getCaretakers(); // ✅ use the initialized property
+        $this->view("admin/ad_caretakers", ['caretakers' => $caretakers]);
     }
 
-    public function ad_users() {
-    $users = $this->userModel->getAllUsers(); // ✅ use the initialized property
-        $this->view("admin/ad_users", ['users' => $users]); 
-    }
-    
-
-    public function ad_feedback() {
-        $this->view("admin/ad_feedback"); 
-    }
-    
-     public function ad_bookings() {
-        $this->view("admin/ad_bookings"); 
+    public function ad_announcement()
+    {
+        $announcements = $this->announcementModel->getAllAnnouncements();
+        $this->view("admin/ad_announcement", [
+            'announcements' => $announcements
+        ]);
     }
 
-     public function ad_settings() {
-        $this->view("admin/ad_settings"); 
+
+    public function ad_clients()
+    {
+        $clients = $this->clientModel->getAllClients();
+        $this->view("admin/ad_clients", ['clients' => $clients]);
     }
 
-     public function ad_reports() {
-        $this->view("admin/ad_reports"); 
+
+
+
+    public function ad_users()
+    {
+        $users = $this->userModel->getAllUsers(); // ✅ use the initialized property
+        $this->view("admin/ad_users", ['users' => $users]);
     }
 
-     public function ad_payments() {
-        $this->view("admin/ad_payments"); 
+
+    public function ad_feedback()
+    {
+        $this->view("admin/ad_feedback");
+    }
+
+    public function ad_bookings()
+    {
+        $this->view("admin/ad_bookings");
+    }
+
+    public function ad_settings()
+    {
+        $this->view("admin/ad_settings");
+    }
+
+    public function ad_reports()
+    {
+        $this->view("admin/ad_reports");
+    }
+
+    public function ad_payments()
+    {
+        $this->view("admin/ad_payments");
     }
 
 

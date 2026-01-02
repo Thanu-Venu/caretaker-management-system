@@ -15,15 +15,10 @@
    <!-- Main Content Container -->
 <div class="main-content">
 
-  <!-- Dashboard Header -->
-  <div class="dashboard-header">
-    <h1>HR Manager Dashboard</h1>
-  </div>
-
   <!-- KPI Cards -->
   <div class="kpi-cards">
     <div class="kpi-card">
-      <h3>Total Caretakers</h3>
+      <h3>Total Caregivers</h3>
       <p id="total-caretakers">25</p>
     </div>
     <div class="kpi-card">
@@ -49,7 +44,7 @@
       <canvas id="attendanceChart"></canvas>
     </div>
     <div class="chart-card">
-      <h3>Caretaker Performance Ratings</h3>
+      <h3>Caregiver Performance Ratings</h3>
       <canvas id="performanceChart"></canvas>
     </div>
   </div>
