@@ -50,6 +50,12 @@ class CaretakerModel {
         return $stmt->execute();
     }
 
+     public function updateCaretakerDetails($id, $data) {
+        $stmt = $this->conn->prepare("UPDATE caretakers SET name=?,email=?,phone=? WHERE id=?");
+        $stmt->bind_param("sssi", $data['name'],$data['email'],$data['phone'],$id);
+        return $stmt->execute();
+    }
+
     public function deleteCaretaker($id) {
         $stmt = $this->conn->prepare("DELETE FROM caretakers WHERE id=?");
         $stmt->bind_param("i", $id);
