@@ -1,15 +1,30 @@
 <?php
-require_once "../app/models/CaretakerModel.php";
-session_start();
+
 class CaretakerController extends Controller {
 
     private $leaveModel;
     private $caretakerModel;
-
      public function __construct() {
-        $this->leaveModel = $this->model('LeaveModel');
-        $this->caretakerModel = $this->model('CaretakerModel');
+    if (session_status() === PHP_SESSION_NONE) session_start();
+
+    if (!isset($_SESSION['user'])) {
+        header("Location: index.php?url=auth/login");
+        exit;
     }
+
+    $this->leaveModel = $this->model('LeaveModel');
+    $this->caretakerModel = $this->model('CaretakerModel'); // lowercase property
+
+    // Revalidate caretaker from DB
+    $user = $this->caretakerModel->getCaretakerById($_SESSION['user']['id']); // lowercase usage
+    if (!$user) {
+        session_destroy();
+        header("Location: index.php?url=auth/login");
+        exit;
+    }
+
+    $_SESSION['user'] = $user;
+}
 
     public function ct_dashboard() {
         $this->view("caretaker/ct_dashboard");
@@ -30,7 +45,6 @@ class CaretakerController extends Controller {
 
     $this->view('caretaker/ct_leave', ['leaves' => $leaves]);
 }
-
 
 
      
@@ -67,37 +81,8 @@ class CaretakerController extends Controller {
          
      }
 
-
-     public function editCaretakerDetails() {
-          if (!isset($_SESSION['user'])) {
-            header("Location: index.php?url=auth/login");
-            exit;
-        }
-
-        $user = $_SESSION['user'];
-
-        // Update user details
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $updatedData = [
-                'name' => $_POST['name'] ?? $user['name'],
-                'email' => $_POST['email'] ?? $user['email'],
-                'phone' => $_POST['phone'] ?? $user['phone'],
-            ];
-
-
-            $this->caretakerModel->updateCaretaker($user['id'], $updatedData);
-            $_SESSION['user'] = array_merge($user, $updatedData);
-            $user = $_SESSION['user'];
-        $this->view("caretaker/ct_settings", ['user' => $user]);
-            exit;
-        }
-
-        $this->view("caretaker/ct_settings", ['user' => $user]);
-    }
-
       public function ct_reviews() {
          $this->view("caretaker/ct_reviews");
      }
-
-
-    }
+    
+}

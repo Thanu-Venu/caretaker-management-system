@@ -15,7 +15,8 @@ $leave = $data['leave'];
       <select name="leave_type" required>
         <option value="Vacation" <?php echo ($data['leave']->leave_type == 'Vacation') ? 'selected' : ''; ?>>Vacation</option>
         <option value="Sick Leave" <?php echo ($data['leave']->leave_type == 'Sick Leave') ? 'selected' : ''; ?>>Sick Leave</option>
-        <option value="Personal" <?php echo ($data['leave']->leave_type == 'Personal') ? 'selected' : ''; ?>>Personal</option>
+        <option value="Personal Leave" <?php echo ($data['leave']->leave_type == 'Personal Leave') ? 'selected' : ''; ?>>Personal Leave</option>
+        <option value="Maternity Leave" <?php echo ($data['leave']->leave_type == 'Maternity Leave') ? 'selected' : ''; ?>>Maternity Leave</option>
       </select>
 
       <div class="row">

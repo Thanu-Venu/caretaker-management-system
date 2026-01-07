@@ -1,12 +1,14 @@
 <?php
-session_start();
+
 require_once APPROOT . '/models/client_login.php';
-require_once APPROOT . '/models/staff_login.php';
+require_once APPROOT . '/models/caretaker_login.php';
+require_once APPROOT . '/models/user_login.php';
 
 class AuthController extends Controller
 {
     private $clientModel;
-    private $staffModel;
+    private $caretakerModel;
+    private $userModel;
 
     public function __construct()
     {
@@ -17,7 +19,8 @@ class AuthController extends Controller
         }
 
         $this->clientModel = new Client($db->conn);
-        $this->staffModel = new Staff($db->conn);
+        $this->caretakerModel = new Caretaker($db->conn);
+        $this->userModel = new User($db->conn);
     }
 
     // Client Signup
@@ -64,52 +67,60 @@ class AuthController extends Controller
     }
 
     // Login for all types
-    public function login()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = $_POST['email'];
-            $password = $_POST['password'];
+    public function login() {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $email = $_POST['email'];
+        $password = $_POST['password'];
 
-            // Try normal client first
-            $staffUser = $this->staffModel->login($email, $password);
-            if ($staffUser) {
-                $_SESSION['user'] = $staffUser;
-                $_SESSION['role'] = $staffUser['role'];
 
-                switch ($staffUser['role']) {
-                    case 'caretaker':
-                        header("Location: index.php?url=caretaker/ct_dashboard");
-                        exit;
-                    case 'admin':
-                        header("Location: index.php?url=admin/ad_dashboard");
-                        exit;
-                    case 'Manager':
-                        header("Location: index.php?url=hr/hr_dashboard");
-                        exit;
-                }
+        // 1️⃣ Check in users table (admin & HR)
+        $user = $this->userModel->login($email, $password);
+        if ($user) {
+            $_SESSION['user'] = $user;
+            $_SESSION['role'] = $user['role']; // 'admin' or 'hr'
+            
+            if ($user['role'] === 'admin') {
+                header("Location: index.php?url=admin/ad_dashboard"); exit;
+            } else {
+                header("Location: index.php?url=hr/hr_dashboard"); exit;
             }
-            // Then client
-            $clientUser = $this->clientModel->login($email, $password);
-            if ($clientUser) {
-                $_SESSION['user'] = $clientUser;
-                $_SESSION['role'] = 'client';
-                header("Location:index.php?url=client/c_dashboard");
-                exit;
-            }
-
-            // if none matched:
-            $this->view('auth/login', ['error' => 'Invalid credentials']);
-            return;
         }
 
+        // 2️⃣ Check in caretakers table
+        $caretaker = $this->caretakerModel->login($email, $password);
+        if ($caretaker) {
+            $_SESSION['user'] = $caretaker;
+            $_SESSION['role'] = 'caretaker';
+            header("Location: index.php?url=caretaker/ct_dashboard"); exit;
+        }
+
+        // 3️⃣ Check in clients table
+        $client = $this->clientModel->login($email, $password);
+        if ($client) {
+            $_SESSION['user'] = $client;
+            $_SESSION['role'] = 'client';
+            header("Location: index.php?url=client/c_dashboard"); exit;
+        }
+
+        // If none matched
+        $this->view('auth/login', ['error' => 'Invalid credentials']);
+    } else {
         $this->view('auth/login');
     }
+}
 
      // Logout
     public function logout() {
-        session_destroy();
-        header("Location:index.php?url=auth/login");
+        session_start();              // Start session if not already started
+        $_SESSION = [];               // Clear all session variables
+        session_unset();              // Unset session variables
+        session_destroy();            // Destroy the session
+        setcookie(session_name(), '', time() - 3600); // Clear session cookie
+
+        // Redirect to login page
+        header("Location: index.php?url=auth/login");
         exit;
     }
+
 
 }

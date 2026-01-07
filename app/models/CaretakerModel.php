@@ -61,5 +61,17 @@ class CaretakerModel {
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
+
+    public function login($email, $password) {
+    $stmt = $this->conn->prepare("SELECT * FROM caretakers WHERE email=?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $caretaker = $stmt->get_result()->fetch_assoc();
+    if ($caretaker && password_verify($password, $caretaker['password'])) {
+        return $caretaker;
+    }
+    return false;
+}
+
 }
 ?>

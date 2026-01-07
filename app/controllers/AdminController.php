@@ -10,16 +10,32 @@ class AdminController extends Controller
     private $clientModel;
     private $adminLeaveModel;
 
-    public function __construct()
-    {
-        // Load caretaker model once
-        $this->caretakerModel = $this->model('CaretakerModel');
+   
+     public function __construct() {
+    if (session_status() === PHP_SESSION_NONE) session_start();
+
+    if (!isset($_SESSION['user'])) {
+        header("Location: index.php?url=auth/login");
+        exit;
+    }
+
+     $this->caretakerModel = $this->model('CaretakerModel');
 
         $this->userModel = $this->model('UserModel');
         $this->announcementModel = $this->model('AnnouncementModel');
         $this->clientModel = $this->model('ClientModel');
         $this->adminLeaveModel = $this->model('AdminLeaveModel');
+
+    // Revalidate caretaker from DB
+    $user = $this->userModel->getUserById($_SESSION['user']['id']); // lowercase usage
+    if (!$user) {
+        session_destroy();
+        header("Location: index.php?url=auth/login");
+        exit;
     }
+
+    $_SESSION['user'] = $user;
+}
 
     public function ad_dashboard()
     {

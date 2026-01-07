@@ -17,11 +17,7 @@
 <body>
     <main class="content">
         <section>
-        
-
-    
-
-    <div class="card">
+        <div class="card">
         <div class="card-header">
         <h2 style="color:#1e88e5;">Leave Requests</h2>
 
@@ -47,9 +43,19 @@
                                 <td><?php echo htmlspecialchars($leave['reason']); ?></td>
                                 <td><span class="status <?php echo strtolower($leave['status']); ?>"><?php echo $leave['status']; ?></span></td>
                                 <td>
-                                    <a href="<?php echo URLROOT; ?>/LeaveCRUD/edit/<?php echo $leave['id']; ?>"><i class="bx bx-edit"></i></a> |
-                                    <a href="<?php echo URLROOT; ?>/LeaveCRUD/delete/<?php echo $leave['id']; ?>" onclick="return confirm('Delete this leave request?');"><i class="bx bx-trash"></i></a>
+                                <?php if ($leave['status'] == 'Pending'): ?>
+                                    <a href="<?php echo URLROOT; ?>/LeaveCRUD/edit/<?php echo $leave['id']; ?>">
+                                        <i class="bx bx-edit"></i>
+                                    </a> |
+                                    <a href="<?php echo URLROOT; ?>/LeaveCRUD/delete/<?php echo $leave['id']; ?>"
+                                        onclick="return confirm('Delete this leave request?');">
+                                        <i class="bx bx-trash"></i>
+                                    </a>
+                                <?php else: ?>
+                                    <span style="color: gray; font-style: italic;">Locked</span>
+                                <?php endif; ?>
                                 </td>
+
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>

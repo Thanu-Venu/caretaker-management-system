@@ -1,6 +1,6 @@
 <?php
-
-class CaretakerCRUDController extends Controller {
+session_start();
+class HRCaretakerCRUDController extends Controller {
 
     private $caretakerModel;
 
@@ -10,13 +10,12 @@ class CaretakerCRUDController extends Controller {
 
     // Add caretaker
     public function add() {
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->caretakerModel->addCaretaker($_POST);
-            header("Location: " . URLROOT . "/admin/ad_caretakers");
+            header("Location: " . URLROOT . "/hr/hr_addct");
             exit;
         } else {
-            $this->view("admin/caretaker_add");
+            $this->view("hr/caretaker_add");
         }
     }
 
@@ -24,25 +23,25 @@ class CaretakerCRUDController extends Controller {
     public function edit($id) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->caretakerModel->updateCaretaker($id, $_POST);
-            header("Location: " . URLROOT . "/admin/ad_caretakers");
+            header("Location: " . URLROOT . "/hr/hr_addct");
             exit;
         } else {
             $caretaker = $this->caretakerModel->getCaretakerById($id);
-            $this->view("admin/caretaker_edit", ['caretaker' => $caretaker]);
+            $this->view("hr/caretaker_edit", ['caretaker' => $caretaker]);
         }
     }
 
     // Delete caretaker
     public function delete($id) {
         $this->caretakerModel->deleteCaretaker($id);
-        header("Location: " . URLROOT . "/admin/ad_caretakers");
+        header("Location: " . URLROOT . "/hr/hr_addct");
         exit;
     }
 
     // List all caretakers
     public function list() {
         $caretakers = $this->caretakerModel->getCaretakers();
-        $this->view("admin/ad_caretakers", ['caretakers' => $caretakers]);
+        $this->view("hr/hr_addct", ['caretakers' => $caretakers]);
     }
 }
 ?>

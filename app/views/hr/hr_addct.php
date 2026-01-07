@@ -6,7 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caretaker Management</title>
+  <title>Caregiver Management</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_addct.css">
   <link rel="stylesheet" 
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -16,12 +16,12 @@
         <main class="main-content">
       <section class="caretaker-header">
         <h1>Caregivers</h1>
-        <button class="add-btn">Add Caregiver</button>
+        <button class="add-btn" onclick="window.location.href='/CMA/public/HRCaretakerCRUD/add'">Add Caregiver</button>
       </section>
 
       <div class="search-wrapper">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="Search caregivers">
+        <input type="text" placeholder="Search caregivers" id="searchInput">
       </div>
 
       <section class="table-container">
@@ -36,93 +36,46 @@
             </tr>
           </thead>
           <tbody>
+            <?php if(!empty($data['caretakers'])): ?>
+            <?php foreach($data['caretakers'] as $caretaker): ?>
             <tr>
-              <td>101</td>
-              <td>Ethan Bennett</td>
-              <td>Maid</td>
-              <td><span class="status active">Active</span></td>
+              <td><?= htmlspecialchars($caretaker['id']) ?></td>
+              <td><?= htmlspecialchars($caretaker['name']) ?></td>
+              <td><?= htmlspecialchars($caretaker['service_type']) ?></td>
+              <td>
+                <span class="status <?= $caretaker['status']=='Active'?'active':'inactive' ?>">
+                  <?= htmlspecialchars($caretaker['status']) ?>
+                </span>
+              </td>
               <td class="actions">
-                <i class="bx bx-edit"></i>
-                <i class="bx bx-trash"></i>
+                      <a href="<?php echo URLROOT; ?>/HRCaretakerCRUD/edit/<?php echo $caretaker['id']; ?>"><i class="bx bx-edit"></i></a>              
+                      <a href="<?php echo URLROOT; ?>/HRCaretakerCRUD/delete/<?php echo $caretaker['id']; ?>" onclick="return confirm('Are you sure you want to delete this caretaker?');"><i class="bx bx-trash"></i></a>
+                </a>
               </td>
             </tr>
-            <tr>
-              <td>102</td>
-              <td>Isabella Reed</td>
-              <td>Elder Care</td>
-              <td><span class="status inactive">Inactive</span></td>
-              <td class="actions">
-                <i class="bx bx-edit"></i>
-                <i class="bx bx-trash"></i>
-              </td>
-            </tr>
-              <tr>
-              <td>103</td>
-              <td>Liam Foster</td>
-              <td>Elder Care</td>
-              <td><span class="status active">Active</span></td>
-              <td class="actions">
-                <i class="bx bx-edit"></i>
-                <i class="bx bx-trash"></i>
-              </td>
-            </tr>
-            <tr>
-              <td>104</td>
-              <td>Ava Morgan</td>
-              <td>Maid</td>
-              <td><span class="status active">Active</span></td>
-              <td class="actions">
-                <i class="bx bx-edit"></i>
-                <i class="bx bx-trash"></i>
-              </td>
-            </tr>
-            <tr>
-              <td>105</td>
-              <td>Noah Parker</td>
-              <td>Babysitter</td>
-              <td><span class="status active">Active</span></td>
-              <td class="actions">
-                <i class="bx bx-edit"></i>
-                <i class="bx bx-trash"></i>
-              </td>
-            </tr>
-            <tr>
-              <td>106</td>
-              <td>Isabella Reed</td>
-              <td>Elder Care</td>
-              <td><span class="status inactive">Inactive</span></td>
-              <td class="actions">
-                <i class="bx bx-edit"></i>
-                <i class="bx bx-trash"></i>
-              </td>
-            </tr>
-            <tr>
-              <td>107</td>
-              <td>Jackson Cole</td>
-              <td>Maid</td>
-              <td><span class="status active">Active</span></td>
-              <td class="actions">
-                <i class="bx bx-edit"></i>
-                <i class="bx bx-trash"></i>
-              </td>
-            </tr>
-            <tr>
-              <td>108</td>
-              <td>Mia Fisher</td>
-              <td>Babysitter</td>
-              <td><span class="status active">Active</span></td>
-              <td class="actions">
-                <i class="bx bx-edit"></i>
-                <i class="bx bx-trash"></i>
-              </td>
-            </tr>
-         
-            <!-- Add other caretaker rows here -->
+          <?php endforeach; ?>
+          <?php else: ?>
+          <tr>
+            <td colspan="5" style="text-align:center;">No caregivers found</td>
+          </tr>
+          <?php endif; ?>
           </tbody>
         </table>
       </section>
     </main>
   </div>
+
+<!-- Optional JS for search filter -->
+<script>
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('keyup', function() {
+  const filter = this.value.toLowerCase();
+  document.querySelectorAll('tbody tr').forEach(row => {
+    row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
+  });
+});
+</script>
+
 </body>
 </html>
 
