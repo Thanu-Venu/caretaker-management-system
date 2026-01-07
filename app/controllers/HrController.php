@@ -1,5 +1,8 @@
 <?php
 class HrController extends Controller {
+
+    private $userModel;
+
     private $caretakerModel;
     private $userModel;
 
@@ -14,8 +17,28 @@ class HrController extends Controller {
         $this->userModel = $this->model('UserModel');
         $this->clientModel = $this->model('ClientModel');
         $this->hrLeaveModel = $this->model('HRLeaveModel');
+    } 
+
+    public function __construct() {
+    if (session_status() === PHP_SESSION_NONE) session_start();
+
+    if (!isset($_SESSION['user'])) {
+        header("Location: index.php?url=auth/login");
+        exit;
+    }
+    $this->userModel = $this->model('UserModel');
+        
+
+    // Revalidate caretaker from DB
+    $user = $this->userModel->getUserById($_SESSION['user']['id']); // lowercase usage
+    if (!$user) {
+        session_destroy();
+        header("Location: index.php?url=auth/login");
+        exit;
     }
 
+    $_SESSION['user'] = $user;
+}
     public function hr_dashboard() {
         $this->view("hr/hr_dashboard");
     }

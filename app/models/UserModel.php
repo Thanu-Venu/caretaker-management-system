@@ -44,5 +44,17 @@ class UserModel {
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
+
+    public function login($email, $password) {
+    $stmt = $this->conn->prepare("SELECT * FROM users WHERE email=?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $user = $stmt->get_result()->fetch_assoc();
+    if ($user && password_verify($password, $user['password'])) {
+        return $user;
+    }
+    return false;
+}
+
 }
 ?>
