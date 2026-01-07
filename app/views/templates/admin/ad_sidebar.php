@@ -33,7 +33,7 @@
       <li><a href="http://localhost/CMA/public?url=admin/ad_reports"><i class='bx bx-bar-chart'></i> Reports</a></li>
 
       <li><a href="http://localhost/CMA/public?url=admin/ad_settings"><i class='bx bx-cog'></i> Settings</a></li>
-      <li class="logout"><a href="http://localhost/CMA/public"><i class="bx bx-log-out"></i> Logout</a></li>
+      <li class="logout"><a href="<?= URLROOT ?>/index.php?url=auth/logout"><i class="bx bx-log-out"></i> Logout</a></li>
 
     </ul>
   </aside>

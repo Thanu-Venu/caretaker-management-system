@@ -11,11 +11,13 @@ class AdminLeaveModel {
 
     // Get all leaves submitted by caretakers
     public function getAllLeaves() {
-        $sql = "SELECT l.*, s.name AS caretaker_name
-                FROM leaves l
-                JOIN staff s ON l.user_id = s.id
-                WHERE s.role = 'caretaker'
-                ORDER BY l.start_date DESC";
+        $sql = "
+    SELECT l.*, c.name AS caretaker_name
+    FROM leaves l
+    JOIN caretakers c ON l.user_id = c.id
+    ORDER BY l.start_date DESC
+";
+
         $result = $this->conn->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }

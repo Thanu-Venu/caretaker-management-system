@@ -40,12 +40,10 @@
       <li><a href="http://localhost/CMA/public?url=hr/hr_reports"><i class='bx bx-bar-chart'></i> <span>Reports</span></a></li>
       <li><a href="http://localhost/CMA/public?url=hr/hr_settings"><i class='bx bx-cog'></i> <span>Settings</span></a></li>
 
-      <li class="logout"><a href="http://localhost/CMA/public"><i class='bx bx-log-out'></i> <span>Logout</span></a></li>
+      <li class="logout"><a href="<?= URLROOT ?>/index.php?url=auth/logout"><i class='bx bx-log-out'></i> <span>Logout</span></a></li>
     </ul>
   </div>
 
-  <!-- Optional main-content wrapper (if your pages use it) -->
-  <!-- <div class="main-content"> ... page content ... </div> -->
 
  
  <script>

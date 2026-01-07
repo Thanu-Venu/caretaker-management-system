@@ -20,7 +20,7 @@
       <li><a href="http://localhost/CMA/public?url=caretaker/ct_reviews"><i class='bx bxs-message-dots'></i><span class="link_name">Reviews</span></a></li>
       <li><a href="http://localhost/CMA/public?url=caretaker/ct_reports"><i class='bx bxs-report'></i><span class="link_name">Reports</span></a></li>
       <li><a href="http://localhost/CMA/public?url=caretaker/ct_settings"><i class='bx bxs-cog'></i><span class="link_name">Settings</span></a></li>
-      <li class="logout"><a href="http://localhost/CMA/public"><i class='bx bx-log-out'></i><span class="link_name">Logout</span></a></li>
+      <li class="logout"><a href="<?= URLROOT ?>/index.php?url=auth/logout"><i class='bx bx-log-out'></i><span class="link_name">Logout</span></a></li>
 
     </ul>
   </div>
