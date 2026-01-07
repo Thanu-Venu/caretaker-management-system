@@ -13,6 +13,7 @@
 <body>
 <div class="main-content">
     <h1>Pending Service Requests</h1>
+    <div class="table-container">
     <table class="requests-table">
         <thead>
             <tr>
@@ -65,6 +66,7 @@
             </tr>
         </tbody>
     </table>
+</div>
 </div>
 
 <!-- Modal -->

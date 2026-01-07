@@ -1,39 +1,53 @@
-.main-content {
-  margin-left: 250px; /* match your sidebar */
-  padding: 20px 40px;
-  min-height: 100vh;
-  background: #f4f6f8;
+*{
+    font-family: 'Poppins', Arial, sans-serif;
+    font-weight: 500;
 }
 
-/* Header */
-.dashboard-header h1 {
-   color: #1E88E5;
-  margin-bottom: 20px;
-  font-size: 28px;
+body {
+    background: #f4f7fb;
+}
+
+.main-content {
+  margin-left: 270px; /* match your sidebar */
+  margin-right: 20px;
+  padding: 20px;
+  flex: 1;
 }
 
 /* KPI Cards */
 .kpi-cards {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 20px;
+  margin-bottom: 30px;
+  padding: 0;
 }
 
 .kpi-card {
-  flex: 1;
-  min-width: 200px;
-  background: #fff;
-  border-radius: 10px;
+  background: white;
   padding: 20px;
-  text-align: center;
+  border-radius: 10px;
+  font-size: 20px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  position: relative;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.kpi-card h3 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1565c0;
+}
+
+.kpi-card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .kpi-card p {
   font-size: 24px;
-  font-weight: 600;
-  margin: 10px 0;
+  font-weight: bold;
+  margin: 8px 0;
 }
 
 .kpi-card .view-link {
@@ -47,7 +61,7 @@
 }
 
 .charts-section {
-    margin-top: 20px;
+  margin-top: 20px;
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
@@ -56,13 +70,25 @@
 .chart-card {
   flex: 1;
   min-width: 300px;
-  background: #fff;
+  background: white;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
   align-items: center; /* center the canvas */
+}
+
+.chart-card h3 {
+  font-size: 28px;
+  font-weight: 550;
+  margin-bottom: 15px;
+  color: #1e88e5;
+}
+
+.chart-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .chart-card canvas {
@@ -82,15 +108,17 @@
   gap: 20px;
   margin-top: 30px;
   flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
 .pending-card {
   flex: 1;
   min-width: 300px;
-  background: #fff;
+  background: white;
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding-top: 0;
 }
 
 .pending-card ul {
@@ -101,5 +129,17 @@
 
 .pending-card ul li {
   margin-bottom: 10px;
-  font-size: 14px;
+  font-size: 16px;
+}
+
+.pending-card h3 {
+  font-size: 28px;
+  font-weight: 550;
+  margin-bottom: 15px;
+  color: #1e88e5;
+}
+
+.pending-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }

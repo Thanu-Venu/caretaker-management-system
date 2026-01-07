@@ -12,9 +12,7 @@
 </head>
 <body>
 <main class="main-content">
-    <br>
     <h1>Complaints Management</h1>
-    <p class="subtitle">Manage and resolve client complaints efficiently.</p>
 
     <div class="table-container">
       <table>

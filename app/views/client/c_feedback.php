@@ -1,46 +1,55 @@
 <?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caretaker Feedback</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_feedback.css">
+  <title>My Feedback</title>
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_feedback_table.css">
 </head>
 <body>
-  <div class="app">
-    <!-- Main Content -->
-    <main class="content">
-      <button id="openModalBtn">Give Feedback</button>
-    </main>
-  </div>
 
-  <!-- Feedback Modal -->
-  <div id="feedbackModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h3>Caretaker feedback</h3>
-      <p>Please rate your experience below</p>
+<div class="main-content">
 
-      <!-- Star Rating -->
-      <div class="stars" id="stars">
-        <span data-value="1">&#9733;</span>
-        <span data-value="2">&#9733;</span>
-        <span data-value="3">&#9733;</span>
-        <span data-value="4">&#9733;</span>
-        <span data-value="5">&#9733;</span>
-      </div>
-      <p id="ratingText">0/5 stars</p>
+    <h2>My Feedback</h2>
 
-      <!-- Feedback Input -->
-      <label for="feedback">Additional feedback</label>
-      <textarea id="feedback" rows="3" placeholder="Write your feedback..."></textarea>
+    <a href="index.php?url=feedback/create" class="btn-add">+ Add Feedback</a>
 
-      <button id="submitBtn">Submit feedback</button>
-    </div>
-  </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Caretaker</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
 
-  <script src="<?php echo URLROOT; ?>/public/js/client/c_feedback.js"></script>
+        <tbody>
+            <?php foreach($feedbacks as $fb): ?>
+            <tr>
+                <td><?= $fb['caretaker_name'] ?></td>
+                <td><?= $fb['rating'] ?>/5</td>
+                <td><?= $fb['comment'] ?></td>
+                <td><?= $fb['created_at'] ?></td>
+
+                <td>
+                    <a href="index.php?url=feedback/edit/<?= $fb['id'] ?>" class="btn-edit">Edit</a>
+                    <a href="index.php?url=feedback/delete/<?= $fb['id'] ?>" class="btn-delete"
+                        onclick="return confirm('Delete this feedback?')">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+
+    </table>
+
+</div>
+
 </body>
 </html>

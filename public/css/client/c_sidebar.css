@@ -6,7 +6,7 @@ body {
 /* === SIDEBAR BASE === */
 .sidebar {
   width: 240px;
-  height: 90vh;
+  height: 100vh;
   background: linear-gradient(180deg, #1E88E5, #00BFA5);
   color: #fff;
   padding: 0 0;

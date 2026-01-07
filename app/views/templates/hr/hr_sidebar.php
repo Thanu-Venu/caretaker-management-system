@@ -24,10 +24,10 @@
       <li><a href="http://localhost/CMA/public?url=hr/hr_dashboard"><i class='bx bx-home'></i> <span>Dashboard</span></a></li>
 
       <li class="submenu">
-        <a href="#" class="dropdown-btn"><i class='bx bx-group'></i> <span>Caretakers</span> <i class='bx bx-chevron-down arrow'></i></a>
+        <a href="#" class="dropdown-btn"><i class='bx bx-group'></i> <span>Caregivers</span> <i class='bx bx-chevron-down arrow'></i></a>
         <ul class="dropdown-container">
-          <li><a href="http://localhost/CMA/public?url=hr/hr_addct">Add Caretaker</a></li>
-          <li><a href="http://localhost/CMA/public?url=hr/hr_managect">Manage Caretakers</a></li>
+          <li><a href="http://localhost/CMA/public?url=hr/hr_addct">Add Caregivers</a></li>
+          <li><a href="http://localhost/CMA/public?url=hr/hr_managect">Manage Caregivers</a></li>
         </ul>
       </li>
 

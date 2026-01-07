@@ -9,8 +9,9 @@
   <title>Caretaker Feedback</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_reviews.css">
 </head>
+
 <body>
-  <div class="main-content">
+<div class="main-content">
     <h2>Client Feedback & Ratings</h2>
 
     <div class="feedback-table-container">
@@ -24,34 +25,30 @@
             <th>Feedback</th>
           </tr>
         </thead>
+
         <tbody>
-          <!-- Dummy data -->
-          <tr>
-            <td>Mrs. Johnson</td>
-            <td>Elder Care</td>
-            <td>2025-08-20</td>
-            <td>⭐ 5</td>
-            <td>Excellent care, very patient and attentive!</td>
-          </tr>
-          <tr>
-            <td>The Smith Family</td>
-            <td>Babysitting</td>
-            <td>2025-08-15</td>
-            <td>⭐ 4</td>
-            <td>Good service, arrived on time and friendly.</td>
-          </tr>
-          <tr>
-            <td>Mr. Davis</td>
-            <td>Cleaning & Maid</td>
-            <td>2025-08-10</td>
-            <td>⭐ 5</td>
-            <td>Very professional and thorough with cleaning.</td>
-          </tr>
+          <?php if (!empty($feedbacks)): ?>
+            <?php foreach($feedbacks as $fb): ?>
+              <tr>
+                <td><?= $fb['client_name'] ?></td>
+                <td><?= $fb['service'] ?? 'N/A' ?></td>
+                <td><?= $fb['created_at'] ?></td>
+
+                <td>⭐ <?= $fb['rating'] ?></td>
+
+                <td><?= $fb['comment'] ?></td>
+              </tr>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <tr><td colspan="5" style="text-align:center;">No feedback yet</td></tr>
+          <?php endif; ?>
         </tbody>
+
       </table>
     </div>
-  </div>
+</div>
 
-  <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_reviews.js"></script>
+<script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_reviews.js"></script>
+
 </body>
 </html>

@@ -3,108 +3,106 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leave Management</title>
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_leave.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leave Management</title>
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_leave.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
 </head>
+
 <body>
-    <main class="content">
-        <h1>Leave Management</h1>
+  <main class="content">
+    <section>
+      <h1>Leave Management</h1>
 
-        <div class="filter-section">
-            <div class="filter-group">
-                <select class="filter-select">
-                    <option disabled selected>Select Status</option>
-                    <option>Pending</option>
-                    <option>Approved</option>
-                    <option>Rejected</option>
-                </select>
-                <div class="select-arrow"></div>
-            </div>
-            <button class="apply-filters-btn">Apply Filters</button>
-            <button class="cancel-filters-btn">Cancel Filters</button>
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <div class="filter-group">
+          <label for="type">Type</label>
+          <select id="type" onchange="filterTable()">
+            <option value="All">All</option>
+            <option value="Vacation">Vacation</option>
+            <option value="Sick Leave">Sick Leave</option>
+            <option value="Personal Leave">Personal Leave</option>
+            <option value="Maternity Leave">Maternity Leave</option>
+          </select>
         </div>
+        <div class="filter-group">
+          <label for="status">Status</label>
+          <select id="status" onchange="filterTable()">
+            <option value="All">All</option>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
 
-        <h2>Leave Requests</h2>
+      <!-- Leave Requests Table -->
+      <div class="table-container">
+        <table class="leave-table" id="leaveTable">
+          <thead>
+            <tr>
+              <th>Caregiver Name</th>
+              <th>Leave Type</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php if (!empty($data['leaves'])): ?>
+              <?php foreach ($data['leaves'] as $leave): ?>
+                <tr>
+                  <td><?= htmlspecialchars($leave['caretaker_name']) ?></td>
+                  <td><?= htmlspecialchars($leave['leave_type']) ?></td>
+                  <td><?= htmlspecialchars($leave['start_date']) ?></td>
+                  <td><?= htmlspecialchars($leave['end_date']) ?></td>
+                  <td><span
+                      class="status <?= strtolower($leave['status']) ?>"><?= htmlspecialchars($leave['status']) ?></span>
+                  </td>
+                  <td>
+                    <?php if ($leave['status'] == 'Pending'): ?>
+                      <a href="<?= URLROOT ?>/Admin/update_leave_status/<?= $leave['id'] ?>/Approved"
+                        onclick="return confirm('Approve this leave?')" class="approve-btn"><i class='bx bx-check-circle' style="color:green;"></i></a>
+                      <a href="<?= URLROOT ?>/Admin/update_leave_status/<?= $leave['id'] ?>/Rejected"
+                        onclick="return confirm('Reject this leave?')" class="reject-btn"><i class='bx bx-x-circle' style="color:red;"></i></a>
 
-        <table class="leave-table">
-            <thead>
-                <tr>
-                    <th>Caregiver ID</th>
-                    <th>Caregiver Name</th>
-                    <th>Leave Type</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <?php endif; ?>
+                  </td>
                 </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>101</td>
-                    <td>Emily Carter</td>
-                    <td>Vacation</td>
-                    <td>2024-07-15</td>
-                    <td>2024-07-20</td>
-                    <td><span class="status pending">Pending</span></td>
-                    <td>
-                        <button class="action-btn approve-btn">Approve</button>
-                        <button class="action-btn reject-btn">Reject</button>
-    
-                </tr>
-                <tr>
-                    <td>102</td>
-                    <td>David Lee</td>
-                    <td>Sick Leave</td>
-                    <td>2024-07-10</td>
-                    <td>2024-07-12</td>
-                    <td><span class="status approved">Approved</span></td>
-                    <td>
-                        <button class="action-btn view-btn">View</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>103</td>
-                    <td>Sarah Jones</td>
-                    <td>Personal Leave</td>
-                    <td>2024-07-22</td>
-                    <td>2024-07-25</td>
-                    <td><span class="status pending">Pending</span></td>
-                    <td>
-                        <button class="action-btn approve-btn">Approve</button>
-                        <button class="action-btn reject-btn">Reject</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>104</td>
-                    <td>Michael Brown</td>
-                    <td>Vacation</td>
-                    <td>2024-08-05</td>
-                    <td>2024-08-10</td>
-                    <td><span class="status rejected">Rejected</span></td>
-                    <td>
-                        <button class="action-btn view-btn">View</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>105</td>
-                    <td>Jessica Wilson</td>
-                    <td>Maternity Leave</td>
-                    <td>2024-09-01</td>
-                    <td>2024-12-01</td>
-                    <td><span class="status pending">Pending</span></td>
-                    <td>
-                        <button class="action-btn approve-btn">Approve</button>
-                        <button class="action-btn reject-btn">Reject</button>
-                    </td>
-                </tr>
-            </tbody>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <tr>
+                <td colspan="6">No leave requests found.</td>
+              </tr>
+            <?php endif; ?>
+          </tbody>
         </table>
-    </main>
+      </div>
+    </section>
+  </main>
 
-<script src="<?php echo URLROOT; ?>/public/js/hr/hr_leave.js"></script>
+  <script>
+    function filterTable() {
+      const typeFilter = document.getElementById('type').value.toLowerCase();
+      const statusFilter = document.getElementById('status').value.toLowerCase();
+
+      document.querySelectorAll('#leaveTable tbody tr').forEach(row => {
+        const type = row.cells[1].innerText.toLowerCase();
+        const status = row.cells[4].innerText.toLowerCase();
+
+        const typeMatch = typeFilter === 'all' || type === typeFilter;
+        const statusMatch = statusFilter === 'all' || status === statusFilter;
+
+        row.style.display = (typeMatch && statusMatch) ? '' : 'none';
+      });
+    }
+  </script>
 </body>
+
 </html>
