@@ -39,7 +39,7 @@ class ClientModel {
 
  public function updateClient($id, $data) {
         $stmt = $this->conn->prepare("UPDATE clients SET name=?,email=?,phone=? WHERE id=?");
-        $stmt->bind_param("ssssi", $data['name'],$data['email'],$data['phone'],$id);
+        $stmt->bind_param("sssi", $data['name'],$data['email'],$data['phone'],$id);
         return $stmt->execute();
     }
 

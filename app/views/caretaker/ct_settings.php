@@ -1,10 +1,10 @@
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-
 <?php
-$user = $data['user'] ?? [];
+if (isset($data['user'])) {
+    $user = $data['user'];
+}
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,35 +23,27 @@ $user = $data['user'] ?? [];
     <section class="card profile">
       <h3>Profile Details</h3>
       <div class="profile-body">
-        <img id="profileImg" src="<?php echo URLROOT; ?>/public/images/<?= !empty($user['profilePic']) ? htmlspecialchars($user['profilePic']) : 'find.png'; ?>" alt="Profile">
+        <img id="profileImg" src="<?php echo URLROOT; ?>/public/images/find.png" alt="Profile">
         <div class="pro-section">
-          <form method="POST" action="<?php echo URLROOT; ?>/CaretakerProfileController/save" enctype="multipart/form-data">
-            <label>Full Name
-                <input type="text" name="name" id="name" value="<?= htmlspecialchars($user['name'] ?? ''); ?>" required>
-            </label>
-
-            <label>Email
-                <input type="email" name="email" id="email" value="<?= htmlspecialchars($user['email'] ?? ''); ?>" readonly>
-            </label>
-
-            <label>Phone Number
-                <input type="text" name="phone" id="phone" value="<?= htmlspecialchars($user['phone'] ?? ''); ?>" required>
-            </label>
-
-            <label>Experience
-                <input type="text" name="experience" id="experience" value="<?= htmlspecialchars($user['experience'] ?? ''); ?>" required>
-            </label>
-
-            <label>Qualifications
-                <input type="text" name="qualifications" id="qualifications" value="<?= htmlspecialchars($user['qualifications'] ?? ''); ?>" required>
-            </label>
-
-            <label>Profile Picture
-                <input type="file" name="profileFile" id="profileFile" accept="image/*">
-            </label>
-
-            <button type="submit" class="btn-save">Save Profile</button>
-          </form>
+          <label>Full Name
+            <input type="text" name="name" id="name" placeholder="Sarah Johnson" required>
+          </label><br>
+          <label>Email
+            <input type="email" name="email" id="email" value="<?= htmlspecialchars($user['email']); ?>" readonly>
+          </label><br>
+          <label>Phone Number
+            <input type="text" name="phone" id="phone" placeholder="+94 712345678" required>
+          </label><br>
+          <label>Experience
+            <input type="text" name="experience" id="experience" placeholder="8 years" required>
+          </label><br>
+          <label>Qualifications
+            <input type="text" name="qualifications" id="qualifications" placeholder="Certified Elder Care Specialist" required>
+          </label><br>
+          <label>Profile Picture
+            <input type="file" name="profile_image" id="profileFile" accept="image/*">
+          </label><br><br>
+          <button id="saveProfile" class="btn-save">Save Profile</button>
         </div>
       </div>
     </section>
@@ -59,15 +51,15 @@ $user = $data['user'] ?? [];
     <!-- Password Settings -->
     <section class="card">
       <h3>Change Password</h3>
-      <form id="passwordForm" method="POST" action="<?php echo URLROOT; ?>/CaretakerProfileController/changePassword">
+      <form id="passwordForm">
         <label>Current Password
-          <input type="password" name="current_password" placeholder="Current password" required>
+          <input type="password" placeholder="Current password" required>
         </label>
         <label>New Password
-          <input type="password" name="new_password" placeholder="New password" required>
+          <input type="password" placeholder="New password" required>
         </label>
         <label>Confirm New Password
-          <input type="password" name="confirm_password" placeholder="Confirm password" required>
+          <input type="password" placeholder="Confirm password" required>
         </label>
         <button type="submit" class="btn-save">Update Password</button>
       </form>
@@ -76,24 +68,22 @@ $user = $data['user'] ?? [];
     <!-- Notifications -->
     <section class="card">
       <h3>Notification Settings</h3>
-      <form id="notificationForm" method="POST" action="<?php echo URLROOT; ?>/CaretakerProfileController/saveNotifications">
-        <div class="notif-option">
-          <label>Booking Updates
-            <input type="checkbox" name="booking_updates" <?= !empty($user['booking_updates']) ? 'checked' : ''; ?>>
-          </label>
-        </div>
-        <div class="notif-option">
-          <label>Leave Approval Updates
-            <input type="checkbox" name="leave_updates" <?= !empty($user['leave_updates']) ? 'checked' : ''; ?>>
-          </label>
-        </div>
-        <div class="notif-option">
-          <label>Promotions / Announcements
-            <input type="checkbox" name="promotions" <?= !empty($user['promotions']) ? 'checked' : ''; ?>>
-          </label>
-        </div>
-        <button class="btn-save" type="submit">Save Notification Settings</button>
-      </form>
+      <div class="notif-option">
+        <label>Booking Updates
+          <input type="checkbox" checked>
+        </label>
+      </div>
+      <div class="notif-option">
+        <label>Leave Approval Updates
+          <input type="checkbox" checked>
+        </label>
+      </div>
+      <div class="notif-option">
+        <label>Promotions / Announcements
+          <input type="checkbox">
+        </label>
+      </div>
+      <button class="btn-save">Save Notification Settings</button>
     </section>
 
   </div>

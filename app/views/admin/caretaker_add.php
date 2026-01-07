@@ -30,7 +30,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
             <input type="text" name="phone" required placeholder="Enter phone number">
 
             <label>Service Type</label>
-            <select name="service_typea" required>
+            <select name="service_type" required>
                 <option value="">Select service</option>
                 <option value="Elder Care">Elder Care</option>
                 <option value="Maid">Maid</option>
