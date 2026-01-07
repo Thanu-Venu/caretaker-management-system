@@ -63,5 +63,18 @@ class ClientModel {
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
+    public function login($email, $password) {
+    $stmt = $this->conn->prepare("SELECT * FROM clients WHERE email=?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $client = $stmt->get_result()->fetch_assoc();
+    if ($client && password_verify($password, $client['password'])) {
+        return $client;
+    }
+    return false;
+}
+
+
+    
 }
 ?>

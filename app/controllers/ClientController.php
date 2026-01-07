@@ -1,7 +1,30 @@
 <?php
-session_start();
+
 
 class ClientController extends Controller {
+
+    public function __construct() {
+    if (session_status() === PHP_SESSION_NONE) session_start();
+
+    if (!isset($_SESSION['user'])) {
+        header("Location: index.php?url=auth/login");
+        exit;
+    }
+
+    // Re-validate user from database
+    $clientModel = $this->model('ClientModel');
+    $user = $clientModel->getClientById($_SESSION['user']['id']);
+
+    if (!$user) { // user deleted
+        session_destroy();
+        header("Location: index.php?url=auth/login");
+        exit;
+    }
+
+    // Update session with latest data
+    $_SESSION['user'] = $user;
+}
+
 
     public function c_dashboard() {
         $this->view("client/c_dashboard");
@@ -81,18 +104,16 @@ class ClientController extends Controller {
     }
 
      public function c_settings() {
-        if (!isset($_SESSION['user'])) {
-        
+    if (!isset($_SESSION['user'])) {
         header("Location: index.php?url=auth/login");
         exit;
     }
 
-    $user = $_SESSION['user'];
+    $user = $_SESSION['user']; // <--- assign it here
 
-    // pass user info to the view
     $this->view("client/c_settings", ['user' => $user]);
-      
-    }
+}
+
 
      public function c_contactCT() {
         $this->view("client/c_contactCT");
