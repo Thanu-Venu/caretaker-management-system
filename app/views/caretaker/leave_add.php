@@ -21,7 +21,8 @@
         <option value="">Select Type</option>
         <option value="Vacation">Vacation</option>
         <option value="Sick Leave">Sick Leave</option>
-        <option value="Personal">Personal</option>
+        <option value="Personal Leave">Personal Leave</option>
+        <option value="Maternity Leave">Maternity Leave</option>
       </select>
 
       <div class="row">
