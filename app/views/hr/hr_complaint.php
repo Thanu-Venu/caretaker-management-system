@@ -12,15 +12,15 @@
 </head>
 <body>
 <main class="main-content">
-    <br>
     <h1>Complaints Management</h1>
+
     <div class="table-container">
       <table>
         <thead>
           <tr>
             <th>Complaint ID</th>
             <th>Client Name</th>
-            <th>Caregiver Name</th>
+            <th>Caretaker Name</th>
             <th>Category</th>
             <th>Details</th>
             <th>Complaint_Date</th>
