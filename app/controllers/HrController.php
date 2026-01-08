@@ -4,7 +4,7 @@ class HrController extends Controller {
     private $userModel;
 
     private $caretakerModel;
-    private $userModel;
+    
 
     private $clientModel;
     private $hrLeaveModel;
@@ -17,9 +17,9 @@ class HrController extends Controller {
         $this->userModel = $this->model('UserModel');
         $this->clientModel = $this->model('ClientModel');
         $this->hrLeaveModel = $this->model('HRLeaveModel');
-    } 
+    
 
-    public function __construct() {
+    
     if (session_status() === PHP_SESSION_NONE) session_start();
 
     if (!isset($_SESSION['user'])) {
@@ -88,9 +88,25 @@ class HrController extends Controller {
         $this->view("hr/hr_reports");
     }
 
-     public function hr_settings() {
-        $this->view("hr/hr_settings");
+      public function hr_settings() {
+    // Session already started in constructor
+    if (!isset($_SESSION['user'])) {
+        header("Location: " . URLROOT . "/auth/login");
+        exit;
     }
+
+    // Optional: allow only hr role
+    if ($_SESSION['user']['role'] !== 'Manager') {
+        die("Access denied. Only HR can access this page.");
+    }
+
+    // Use session user directly
+    $user = $_SESSION['user'];
+
+    $this->view('hr/hr_settings', ['user' => $user]);
+}
+
+
 
     public function hr_announcement() {
     $announcementModel = $this->model('AnnouncementModel');
