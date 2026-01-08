@@ -62,6 +62,63 @@ class CaretakerModel {
         return $stmt->execute();
     }
 
+
+
+
+
+
+
+     public function updateProfileCaretaker($id, $data) {
+
+        $stmt = $this->conn->prepare(
+            "UPDATE caretakers SET 
+                name = ?, 
+                email = ?, 
+                phone = ?,  
+                experience = ?, 
+                qualifications = ?,
+                profile_image = ?
+             WHERE id = ?"
+        );
+
+        $stmt->bind_param(
+            "ssssssi",
+            $data['name'],
+            $data['email'],
+            $data['phone'],
+            $data['experience'],
+            $data['qualifications'],
+            $data['profile_image'],
+            $id
+        );
+
+        return $stmt->execute();
+    }
+
+     public function updateCaretakerPassword($id, $hashedPassword) {
+
+        $stmt = $this->conn->prepare(
+            "UPDATE caretakers 
+             SET password = ?
+             WHERE id = ?"
+        );
+
+        $stmt->bind_param("si", $hashedPassword, $id);
+
+        return $stmt->execute();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     public function login($email, $password) {
     $stmt = $this->conn->prepare("SELECT * FROM caretakers WHERE email=?");
     $stmt->bind_param("s", $email);
