@@ -22,7 +22,7 @@
 
   <!-- Welcome -->
   <section class="welcome">
-    <h1>Welcome back, </h1>
+    <h1>Welcome back, <?= htmlspecialchars($_SESSION['user']['name']); ?>! </h1>
     <p>Here’s what’s happening with your care services</p>
   </section>
 
