@@ -45,7 +45,7 @@
       
       </li>
 
-      <li class="logout"><a href="http://localhost/CMA/public"><i class="bx bx-log-out"></i> Logout</a></li>
+      <li class="logout"><a href="<?= URLROOT ?>/index.php?url=auth/logout"><i class="bx bx-log-out"></i> Logout</a></li>
     </ul>
   </div>
 

@@ -1,12 +1,30 @@
 <?php
-session_start();
+
 class CaretakerController extends Controller {
 
     private $leaveModel;
-
+    private $caretakerModel;
      public function __construct() {
-        $this->leaveModel = $this->model('LeaveModel');
+    if (session_status() === PHP_SESSION_NONE) session_start();
+
+    if (!isset($_SESSION['user'])) {
+        header("Location: index.php?url=auth/login");
+        exit;
     }
+
+    $this->leaveModel = $this->model('LeaveModel');
+    $this->caretakerModel = $this->model('CaretakerModel'); // lowercase property
+
+    // Revalidate caretaker from DB
+    $user = $this->caretakerModel->getCaretakerById($_SESSION['user']['id']); // lowercase usage
+    if (!$user) {
+        session_destroy();
+        header("Location: index.php?url=auth/login");
+        exit;
+    }
+
+    $_SESSION['user'] = $user;
+}
 
     public function ct_dashboard() {
         $this->view("caretaker/ct_dashboard");
