@@ -65,5 +65,12 @@ class HrController extends Controller {
      public function hr_settings() {
         $this->view("hr/hr_settings");
     }
+
+    public function hr_announcement() {
+    $announcementModel = $this->model('AnnouncementModel');
+    $announcements = $announcementModel->getUserAnnouncements();
+
+    $this->view("hr/hr_announcement", $announcements);
+    }
     
 }
