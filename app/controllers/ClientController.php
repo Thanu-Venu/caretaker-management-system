@@ -2,7 +2,7 @@
 
 
 class ClientController extends Controller {
-
+     private $clientModel;
     public function __construct() {
     if (session_status() === PHP_SESSION_NONE) session_start();
 
@@ -12,8 +12,8 @@ class ClientController extends Controller {
     }
 
     // Re-validate user from database
-    $clientModel = $this->model('ClientModel');
-    $user = $clientModel->getClientById($_SESSION['user']['id']);
+    $this->clientModel = $this->model('ClientModel');
+    $user = $this->clientModel->getClientById($_SESSION['user']['id']);
 
     if (!$user) { // user deleted
         session_destroy();
@@ -104,15 +104,60 @@ class ClientController extends Controller {
     }
 
      public function c_settings() {
-    if (!isset($_SESSION['user'])) {
-        header("Location: index.php?url=auth/login");
-        exit;
+       if (!isset($_SESSION['user'])) {
+          header("Location: index.php?url=auth/login");
+          exit;
+               }
+
+      $user = $_SESSION['user']; // <--- assign it here
+
+      $this->view("client/c_settings", ['user' => $user]);
     }
 
-    $user = $_SESSION['user']; // <--- assign it here
+     public function editClientDetails()
+    {
+        if (!isset($_SESSION['user'])) {
+            header("Location: index.php?url=auth/login");
+            exit;
+        }
 
-    $this->view("client/c_settings", ['user' => $user]);
-}
+        $user = $_SESSION['user'];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->clientModel->updateClient($user['id'], $_POST);
+
+            $_SESSION['user'] = $this->clientModel->getClientById($user['id']);
+
+             $_SESSION['success'] = "Profile updated successfully!";
+            header("Location: index.php?url=Client/c_settings");
+            exit();
+        }
+    }
+
+    public function editPasswordDetails()
+    {
+        if (!isset($_SESSION['user'])) {
+            header("Location: index.php?url=auth/login");
+            exit;
+        }
+
+        $user = $_SESSION['user'];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($_POST['new-password'] !== $_POST['confirm-password']) {
+                die("Error: Passwords do not match.");
+            }
+
+            $_POST['password'] = password_hash($_POST['new-password'], PASSWORD_DEFAULT);
+
+            $this->clientModel->updateClientPassword($user['id'], $_POST['password']);
+
+
+             $_SESSION['success'] = "Password updated successfully!";
+            header("Location: index.php?url=Client/c_settings");
+            exit();
+        }
+    }
 
 
      public function c_contactCT() {
