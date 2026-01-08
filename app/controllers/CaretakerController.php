@@ -82,7 +82,84 @@ class CaretakerController extends Controller {
      }
 
 
-     
+     public function editCaretakerDetails() {
+
+    if (!isset($_SESSION['user'])) {
+        header("Location: index.php?url=Auth/login");
+        exit;
+    }
+
+    $user = $_SESSION['user'];
+
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+        // KEEP OLD IMAGE
+        $profileImage = $user['profile_image'] ?? 'default.png';
+
+        // IF NEW IMAGE SELECTED
+        if (!empty($_FILES['profile_image']['name'])) {
+
+            $fileName = time() . "_" . basename($_FILES['profile_image']['name']);
+
+            // Save inside public/uploads
+            $targetPath = APPROOT . "/../public/uploads/" . $fileName;
+
+            if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetPath)) {
+                $profileImage = $fileName;
+            }
+        }
+
+        // Add new image name to POST data
+        $_POST['profile_image'] = $profileImage;
+
+        // Update DB
+        $this->caretakerModel->updateProfileCaretaker($user['id'], $_POST);
+
+        // Refresh session user
+        $_SESSION['user'] = $this->caretakerModel->getCaretakerById($user['id']);
+
+        $_SESSION['success'] = "Profile updated successfully!";
+        header("Location: index.php?url=Caretaker/ct_settings");
+        exit();
+    }
+}
+
+
+
+     public function editPasswordDetails() {
+
+        if (!isset($_SESSION['user'])) {
+            header("Location: index.php?url=Auth/login");
+            exit();
+        }
+
+        $user = $_SESSION['user'];
+
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+            $newPassword     = $_POST['new-password'];
+            $confirmPassword = $_POST['confirm-password'];
+
+            if ($newPassword !== $confirmPassword) {
+                $_SESSION['error'] = "Passwords do not match!";
+                header("Location: index.php?url=Caretaker/ct_settings");
+                exit();
+            }
+
+            // Hash new password
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+            // Update DB
+            $this->caretakerModel->updateCaretakerPassword($user['id'], $hashedPassword);
+
+            // Success
+            $_SESSION['success'] = "Password updated successfully!";
+            header("Location: index.php?url=Caretaker/c_settings");
+            exit();
+        }
+    }
+
+
 
       public function ct_reviews() {
          $this->view("caretaker/ct_reviews");

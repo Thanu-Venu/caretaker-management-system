@@ -1,3 +1,4 @@
+
 <?php  
 include_once APPROOT . "/views/templates/admin/ad_header.php"; 
 include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; 
@@ -44,7 +45,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
           <?php foreach($data['caretakers'] as $caretaker): ?>
             <tr>
               <td><?= htmlspecialchars($caretaker['name']) ?></td>
-              <td><?= htmlspecialchars($caretaker['service_type']) ?></td>
+              <td><?= htmlspecialchars($caretaker['service_type'] ?? '') ?></td>
               <td>
                 <span class="status <?= $caretaker['status']=='Active'?'active':'inactive' ?>">
                   <?= htmlspecialchars($caretaker['status']) ?>
