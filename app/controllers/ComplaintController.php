@@ -1,6 +1,6 @@
 <?php
 require_once "../app/models/ComplaintModel.php";
-session_start();
+
 
 class ComplaintController
 {

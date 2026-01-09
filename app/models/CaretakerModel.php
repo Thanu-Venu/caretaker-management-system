@@ -50,10 +50,85 @@ class CaretakerModel {
         return $stmt->execute();
     }
 
+     public function updateCaretakerDetails($id, $data) {
+        $stmt = $this->conn->prepare("UPDATE caretakers SET name=?,email=?,phone=? WHERE id=?");
+        $stmt->bind_param("sssi", $data['name'],$data['email'],$data['phone'],$id);
+        return $stmt->execute();
+    }
+
     public function deleteCaretaker($id) {
         $stmt = $this->conn->prepare("DELETE FROM caretakers WHERE id=?");
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
+
+
+
+
+
+
+
+     public function updateProfileCaretaker($id, $data) {
+
+        $stmt = $this->conn->prepare(
+            "UPDATE caretakers SET 
+                name = ?, 
+                email = ?, 
+                phone = ?,  
+                experience = ?, 
+                qualifications = ?,
+                profile_image = ?
+             WHERE id = ?"
+        );
+
+        $stmt->bind_param(
+            "ssssssi",
+            $data['name'],
+            $data['email'],
+            $data['phone'],
+            $data['experience'],
+            $data['qualifications'],
+            $data['profile_image'],
+            $id
+        );
+
+        return $stmt->execute();
+    }
+
+     public function updateCaretakerPassword($id, $hashedPassword) {
+
+        $stmt = $this->conn->prepare(
+            "UPDATE caretakers 
+             SET password = ?
+             WHERE id = ?"
+        );
+
+        $stmt->bind_param("si", $hashedPassword, $id);
+
+        return $stmt->execute();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    public function login($email, $password) {
+    $stmt = $this->conn->prepare("SELECT * FROM caretakers WHERE email=?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $caretaker = $stmt->get_result()->fetch_assoc();
+    if ($caretaker && password_verify($password, $caretaker['password'])) {
+        return $caretaker;
+    }
+    return false;
+}
+
 }
 ?>
