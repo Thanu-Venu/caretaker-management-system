@@ -26,7 +26,7 @@
       
       <li><a href="http://localhost/CMA/public?url=admin/ad_users"><i class='bx bx-group'></i> Staff</a></li>
 
-      <li><a href="http://localhost/CMA/public?url=admin/ad_announcement"><i class='bx bx-microphone'></i> Announcements</a></li>
+      <li><a href="http://localhost/CMA/public?url=admin/ad_announcement"><i class='bx bxs-megaphone'></i> Announcements</a></li>
       <li><a href="http://localhost/CMA/public?url=admin/ad_history"><i class='bx bx-history'></i> History</a></li>
       
       

@@ -74,6 +74,14 @@ class ClientModel {
     return false;
 }
 
+public function getClientByName($name) {
+    $stmt = $this->conn->prepare("SELECT * FROM clients WHERE name=? LIMIT 1");
+    $stmt->bind_param("s", $name);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+
 
     
 }

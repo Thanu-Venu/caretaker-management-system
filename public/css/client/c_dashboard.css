@@ -1,127 +1,143 @@
-/* Dashboard Layout */
+/* ===================== Reset & Base ===================== */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', Arial, Helvetica, sans-serif;
+  background-color: #f5f7fa;
+  color: #333;
+}
+
 .client-dashboard {
-  font-family: Arial, Helvetica, sans-serif;
   margin-left: 270px;
   margin-right: 20px;
-  padding-left: 20px;
+  padding: 25px 30px;
   flex: 1;
-  background: white;
-  
+  background-color: #fdfdfd;
 }
 
-/* Welcome */
+/* ===================== Welcome Section ===================== */
 .welcome {
-  margin-bottom: 25px;
-  text-align: left;
+  margin-bottom: 30px;
 }
 .welcome h1 {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 700;
   color: #1e88e5;
+  margin-bottom: 6px;
 }
 .welcome p {
-  color: #666;
+  color: #6c757d;
   font-size: 18px;
-  margin-top: 6px;
+  line-height: 1.5;
 }
 
-/* Stats Cards */
+/* ===================== Stats Cards ===================== */
 .stats-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 22px;
-  margin-bottom: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 25px;
+  margin-bottom: 50px;
 }
 
 .stats-cards h2 {
   grid-column: 1 / -1;
-  margin: 10px 0 10px;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 600;
   color: #333;
+  margin-bottom: 15px;
 }
 
 .stats-cards .card {
   background: #fff;
   padding: 28px;
-  border-radius: 16px;
+  border-radius: 18px;
   text-align: center;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  transition: all 0.35s ease;
   border: 1px solid rgba(0,0,0,0.05);
 }
 .stats-cards .card:hover {
-  transform: translateY(-8px);
-  background: linear-gradient(135deg, #e3f2fd, #ffffff);
+  transform: translateY(-10px) scale(1.02);
+  background: linear-gradient(145deg, #e3f2fd, #ffffff);
 }
 
 .stats-cards h3 {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 700;
+  margin: 12px 0 6px;
   color: #111;
-  margin: 10px 0;
 }
 
 .stats-cards p {
-  font-size: 14px;
-  color: #666;
+  font-size: 15px;
+  color: #777;
+  margin: 0;
 }
 
 .action1 i {
-  font-size: 36px;
-  padding: 14px;
-  border-radius: 12px;
-  background: #e8f4ff;
+  font-size: 40px;
+  padding: 16px;
+  border-radius: 14px;
+  background: #e3f2fd;
   color: #0d89ec;
+  transition: transform 0.3s;
+}
+.action1 i:hover {
+  transform: scale(1.1);
 }
 
-/* Quick Actions */
+/* ===================== Quick Actions ===================== */
 .quick-actions h2 {
-  margin: 20px 0 18px;
-  font-size: 22px;
+  margin: 25px 0 20px;
+  font-size: 24px;
   font-weight: 600;
   color: #333;
 }
 
 .quick-actions .actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 25px;
 }
 
 .action {
   background: #fff;
-  padding: 30px;
-  border-radius: 16px;
+  padding: 28px;
+  border-radius: 18px;
   text-align: center;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+  transition: all 0.35s ease;
   border: 1px solid rgba(0,0,0,0.04);
 }
 .action:hover {
-  transform: translateY(-6px);
-  background: linear-gradient(135deg, #f1faff, #ffffff);
+  transform: translateY(-8px) scale(1.03);
+  background: linear-gradient(145deg, #f1faff, #ffffff);
 }
 .action i {
-  font-size: 34px;
+  font-size: 36px;
   margin-bottom: 14px;
-  padding: 14px;
+  padding: 16px;
   border-radius: 50%;
   background: #e6f2ff;
   color: #0d89ec;
+  transition: transform 0.3s;
+}
+.action i:hover {
+  transform: rotate(15deg) scale(1.1);
 }
 .action h3 {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
   margin-bottom: 6px;
+  color: #333;
 }
 
-/* Recent Bookings */
+/* ===================== Recent Bookings ===================== */
 .recent-bookings h2 {
-  margin: 35px 0 20px;
-  font-size: 22px;
+  margin: 40px 0 20px;
+  font-size: 24px;
   font-weight: 600;
   color: #333;
 }
@@ -130,19 +146,19 @@
   display: flex;
   align-items: center;
   background: #fff;
-  padding: 18px 22px;
-  margin-bottom: 15px;
-  border-radius: 14px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+  padding: 20px 25px;
+  margin-bottom: 18px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.06);
   transition: transform 0.3s, box-shadow 0.3s;
 }
 .booking:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.09);
 }
 .booking img {
-  width: 58px;
-  height: 58px;
+  width: 60px;
+  height: 60px;
   object-fit: cover;
   border-radius: 50%;
   margin-right: 18px;
@@ -151,14 +167,15 @@
 .booking h3 {
   font-size: 16px;
   font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .booking .status {
   margin-left: auto;
-  padding: 6px 14px;
-  border-radius: 22px;
+  padding: 7px 16px;
+  border-radius: 24px;
   font-size: 13px;
   font-weight: bold;
+  transition: all 0.3s;
 }
 .status.confirmed {
   background: #e0f7e9;
@@ -169,10 +186,10 @@
   color: #856404;
 }
 
-/* Notifications */
+/* ===================== Notifications ===================== */
 .recent-notifications h2 {
-  margin: 35px 0 20px;
-  font-size: 22px;
+  margin: 40px 0 20px;
+  font-size: 24px;
   font-weight: 600;
   color: #333;
 }
@@ -181,28 +198,32 @@
   display: flex;
   align-items: flex-start;
   background: #fff;
-  padding: 20px 22px;
-  border-radius: 14px;
-  margin-bottom: 15px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+  padding: 20px 24px;
+  border-radius: 16px;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.06);
   transition: transform 0.3s, box-shadow 0.3s;
 }
 .notification:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.09);
 }
 .notification i {
-  font-size: 32px;
+  font-size: 34px;
   margin-right: 16px;
-  padding: 12px;
+  padding: 14px;
   border-radius: 50%;
   background: #e8f3ff;
   color: #0d89ec;
+  transition: transform 0.3s;
+}
+.notification i:hover {
+  transform: scale(1.15) rotate(-10deg);
 }
 .notification h4 {
   font-size: 15px;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 .notification p {
   font-size: 14px;
@@ -214,4 +235,24 @@
   color: #999;
 }
 
+/* ===================== Responsive ===================== */
+@media (max-width: 1024px) {
+  .client-dashboard {
+    margin-left: 0;
+    padding: 20px;
+  }
 
+  .stats-cards, .quick-actions {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .profile-body, .booking, .notification {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .booking img, .notification i {
+    margin-bottom: 10px;
+  }
+}
