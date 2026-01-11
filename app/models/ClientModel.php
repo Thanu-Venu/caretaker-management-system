@@ -86,6 +86,156 @@ class ClientModel {
     return false;
 }
 
+// Get caretaker by ID
+ // 1️⃣ Get caretaker details (with selected fields and default rating)
+    public function getCaretakerById($id)
+    {
+        $sql = "SELECT 
+                    id,
+                    name,
+                    service_type,
+                    location,
+                    IFNULL(rating, 'N/A') AS rating
+                FROM caretakers
+                WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    // 2️⃣ Create booking
+    public function createBooking($data)
+{
+    $sql = "INSERT INTO bookings 
+    (client_id, caretaker_id, service_type, basis, duration, preferred_time, booking_date, service_location, customization, total_payment, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    $stmt = $this->conn->prepare($sql);
+
+    $stmt->bind_param(
+        "iississssds",
+        $data['client_id'],
+        $data['caretaker_id'],
+        $data['service_type'],
+        $data['basis'],
+        $data['duration'],
+        $data['preferred_time'],
+        $data['booking_date'],
+        $data['service_location'],
+        $data['customization'],
+        $data['total_payment'],
+        $data['status']
+    );
+
+    if ($stmt->execute()) {
+        return $this->conn->insert_id; // ✅ RETURN BOOKING ID
+    }
+
+    return false;
+}
+
+
+
+public function getBookingById($bookingId) {
+    $sql = "SELECT 
+                b.id AS booking_id,
+                b.booking_date,
+                b.preferred_time,
+                b.basis,
+                b.duration,
+                b.service_type,
+                b.total_payment,
+                b.status,
+                c.name AS caretaker_name
+            FROM bookings b
+            JOIN caretakers c ON b.caretaker_id = c.id
+            WHERE b.id = ?";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $bookingId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+
+// Fetch Upcoming Bookings
+public function getUpcomingBookings($clientId) {
+    $sql = "SELECT 
+                b.id AS booking_id,
+                b.booking_date,
+                b.preferred_time,
+                b.duration,
+                b.basis,
+                b.service_type,
+                b.status,
+                c.name AS caretaker_name
+            FROM bookings b
+            JOIN caretakers c ON b.caretaker_id = c.id
+            WHERE b.client_id = ? AND b.status != 'Cancelled'
+            ORDER BY b.booking_date ASC";
+    
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $clientId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+
+public function getPastBookings($clientId) {
+    $sql = "SELECT 
+                b.id AS booking_id,
+                b.booking_date,
+                b.preferred_time,
+                b.duration,
+                b.basis,
+                b.service_type,
+                b.status,
+                c.name AS caretaker_name
+            FROM bookings b
+            JOIN caretakers c ON b.caretaker_id = c.id
+            WHERE b.client_id = ? AND (b.status = 'Completed' OR b.status = 'Cancelled')
+            ORDER BY b.booking_date DESC";
+    
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $clientId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+public function getCancelledBookingsByClient($clientId) {
+    $sql = "SELECT b.id, b.service_type, b.basis, b.duration, b.preferred_time, 
+                   b.booking_date, b.service_location, b.customization, b.status,
+                   b.cancellation_reason,
+                   c.name AS caretaker_name
+            FROM bookings b
+            JOIN caretakers c ON b.caretaker_id = c.id
+            WHERE b.client_id = ? AND b.status = 'Cancelled'
+            ORDER BY b.booking_date DESC";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $clientId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+
+
+
+    // 3️⃣ Send notification to HR
+    public function sendNotificationToHR($data) {
+        $sql = "INSERT INTO c_notifications (message, role) VALUES (?, ?)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ss", $data['message'], $data['role']);
+        return $stmt->execute();
+    }
+    
+
+
+
+
+
+
 
     
 }
