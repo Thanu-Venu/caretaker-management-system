@@ -23,12 +23,13 @@
 
           <div class="filter-group">
             <label for="serviceFilter">Service Type</label>
-            <select id="serviceFilter">
-              <option value="">All Services</option>
-              <option value="Elderly Care">Elderly Care</option>
-              <option value="Child Care">Baby Sitting</option>
-              <option value="Maid">Maid services</option>
-            </select>
+<select id="serviceFilter">
+  <option value="">All Services</option>
+  <option value="Elder Care">Elderly Care</option>   <!-- matches data-service -->
+  <option value="Babysitter">Baby Sitting</option>     <!-- text = display, value = real service -->
+  <option value="Maid">Maid services</option>         <!-- text = display, value = real service -->
+</select>
+
           </div>
 
 
@@ -71,8 +72,60 @@
     <!-- Search Results -->
     <section>
 
-      <h2 class="two">Available Caretakers</h2>
-      <div id="caretakersList" class="caretakers"></div>
+
+
+      <section>
+  <h2 class="two">Available Caretakers</h2>
+
+  <div id="caretakersList" class="caretakers">
+
+    <?php if (!empty($data['caretakers'])): ?>
+      <?php foreach ($data['caretakers'] as $ct): ?>
+
+        <div class="card"
+             data-service="<?= htmlspecialchars($ct['service_type']) ?>"
+             data-location="<?= htmlspecialchars($ct['location']) ?>"
+             data-rating="<?= htmlspecialchars($ct['rating'] ?? 0) ?>">
+
+          <h3><?= htmlspecialchars($ct['name']) ?></h3>
+          <p><?= htmlspecialchars($ct['service_type']) ?> Specialist</p>
+
+          <img 
+  src="<?= URLROOT ?>/uploads/<?= htmlspecialchars($ct['profile_image']) ?>"
+  alt="<?= htmlspecialchars($ct['name']) ?>"
+  onerror="this.src='<?= URLROOT ?>/uploads/default.png';">
+
+
+          <div class="exp-loc">
+            <p>Exp: <?= htmlspecialchars($ct['experience']) ?></p>
+            <p>Location: <?= htmlspecialchars($ct['location']) ?></p>
+          </div>
+
+          <p class="rating">⭐ <?= htmlspecialchars($ct['rating'] ?? 'N/A') ?></p>
+          <p><?= htmlspecialchars($ct['qualifications']) ?></p>
+
+          <div class="card-buttons">
+            <a href="<?= URLROOT ?>/public/?url=client/c_ctprofileview&id=<?= $ct['id'] ?>" class="view-btn">
+              View Profile
+            </a>
+
+            <a href="<?= URLROOT ?>/public/?url=client/c_book&id=<?= $ct['id'] ?>" class="book-btn">
+              Book Now
+            </a>
+          </div>
+
+        </div>
+
+      <?php endforeach; ?>
+    <?php else: ?>
+      <p>No caretakers found.</p>
+    <?php endif; ?>
+
+  </div>
+</section>
+
+
+
     </section>
   </main>
 
