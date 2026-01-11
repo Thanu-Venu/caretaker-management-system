@@ -20,33 +20,31 @@
 
     <!-- Bookings List -->
     <div class="bookings-list">
-        <!-- Booking Card -->
-        <div class="booking-card">
-            <h2>Jane Doe</h2>
-            <p><strong>Service:</strong> Babysitting</p>
-            <p><strong>Date:</strong> 2025-09-10</p>
-            <p><strong>Time:</strong> Morning</p>
-            <p><strong>Duration:</strong> 3 Hours</p>
-            <p><strong>Status:</strong> <span class="status pending">Pending Confirmation</span></p>
-            <div class="card-actions">
-            <button class="cancel-btn">Cancel Booking</button>
+    <?php if (!empty($data['bookings'])): ?>
+        <?php foreach ($data['bookings'] as $b): ?>
+            <div class="booking-card">
+                <h2><?= htmlspecialchars($b['caretaker_name']) ?></h2>
+                <p><strong>Service:</strong> <?= htmlspecialchars($b['service_type']) ?></p>
+                <p><strong>Date:</strong> <?= date('Y-m-d', strtotime($b['booking_date'])) ?></p>
+                <p><strong>Time:</strong> <?= htmlspecialchars($b['preferred_time']) ?></p>
+                <p><strong>Duration:</strong> <?= $b['duration'] . ' ' . $b['basis'] ?></p>
+                <p><strong>Status:</strong> <span class="status <?= strtolower($b['status']) ?>"><?= $b['status'] ?></span></p>
+                <div class="card-actions">
+                    <button class="cancel-btn" data-booking-id="<?= $b['booking_id'] ?>">Cancel Booking</button>
+                    <button class="reschedule-btn" data-booking-id="<?= $b['booking_id'] ?>">Reschedule</button>
+                    <?php if ($b['status'] == 'Pending'): ?>
+                        <button class="payment-btn" data-booking-id="<?= $b['booking_id'] ?>">Proceed to Payment</button>
+                    <?php endif; ?>
+                </div>
             </div>
-        </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p id="noBookings" class="no-bookings">
+            You don’t have any upcoming bookings yet.
+        </p>
+    <?php endif; ?>
+</div>
 
-        <div class="booking-card">
-            <h2>Sam Silva</h2>
-            <p><strong>Service:</strong> Elder Care</p>
-            <p><strong>Date:</strong> 2025-09-15</p>
-            <p><strong>Time:</strong> Evening</p>
-            <p><strong>Duration:</strong> 2 Months</p>
-            <p><strong>Status:</strong> <span class="status confirmed">Confirmed</span></p>
-            <div class="card-actions">
-                <button class="cancel-btn">Cancel Booking</button><br>
-                <button class="reschedule-btn">Reschedule</button><br>
-                <button class="payment-btn" data-booking-id="1">Proceed to Payment</button>
-            </div>
-        </div>
-    </div>
 
     <!-- Reschedule Modal -->
 <div id="rescheduleModal" class="modal">

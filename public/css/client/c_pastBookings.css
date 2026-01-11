@@ -12,12 +12,7 @@
     color: #1e88e5;
 }
 
-/* No bookings text */
-.no-bookings {
-    font-size: 16px;
-    color: #666;
-    display: none;
-}
+
 
 /* Bookings List */
 .bookings-list {
@@ -106,20 +101,6 @@
   align-items: center;
 }
 
-/* Modal background */
-.modal {
-  display: none; 
-  position: fixed; 
-  z-index: 1000; 
-  left: 0; 
-  top: 0;
-  width: 100%; 
-  height: 100%; 
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 /* Modal content box */
 .modal-content {
@@ -230,6 +211,16 @@
   justify-content: flex-end;
   margin-top: 15px;
 }
+
+.no-bookings {
+    text-align: center;
+    font-size: 18px;
+    color: #888;
+    margin-top: 50px;
+    margin-left: 270px; /* only if your layout requires it */
+    display: none; /* hide by default, show via PHP if no bookings */
+}
+
 
 /* Animation for modal */
 @keyframes slideDown {

@@ -1,3 +1,6 @@
+<?php
+$ct = $data['caretaker'];
+?>
 <?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
 <!DOCTYPE html>
@@ -13,51 +16,47 @@
 <body>
 <main class="content">
   <div class="profile-card">
-    <!-- Caretaker Image -->
+
+    <!-- Profile Header -->
     <div class="profile-header">
-      <img src="<?php echo URLROOT; ?>/public/images/find.png" alt="Caretaker Photo" class="profile-img">
+      <img 
+        src="<?= URLROOT ?>/uploads/<?= htmlspecialchars($ct['profile_image']) ?>"
+        alt="<?= htmlspecialchars($ct['name']) ?>"
+        class="profile-img"
+        onerror="this.src='<?= URLROOT ?>/uploads/default.png';"
+      >
+
       <div>
-        <h1>Sarah Johnson</h1>
-        <p class="service-type">Elderly Care</p>
-        <p class="location"><i class="fas fa-map-marker-alt"></i> Jaffna, Sri Lanka</p>
+        <h1><?= htmlspecialchars($ct['name']) ?></h1>
+        <p class="service-type"><?= htmlspecialchars($ct['service_type']) ?></p>
+        <p class="location"><?= htmlspecialchars($ct['location']) ?></p>
       </div>
     </div>
 
     <!-- Profile Details -->
     <div class="profile-details">
+
       <h2>About Me</h2>
-      <p>
-        I have over 5 years of experience in babysitting. I am responsible, caring, 
-        and enjoy working with children. My goal is to provide a safe and fun environment.
-      </p>
+      <p><?= nl2br(htmlspecialchars($ct['qualifications'])) ?></p>
 
       <h2>Experience</h2>
-      <ul>
-        <li>5+ years in babysitting</li>
-        <li>Certified in First Aid & CPR</li>
-        <li>Worked with kids aged 1–12</li>
-      </ul>
+      <p><?= htmlspecialchars($ct['experience']) ?></p>
 
-      <h2>Availability</h2>
-      <p>Morning, Afternoon, and Evening shifts available.</p>
+      <h2>Status</h2>
+      <p><?= htmlspecialchars($ct['status']) ?></p>
 
-      <h2>Ratings & Reviews</h2>
-      <div class="reviews">
-        <p>⭐ 4.7/5 (23 reviews)</p>
-        <div class="review">
-          <strong>Client A:</strong> "Very caring and punctual."
-        </div>
-        <div class="review">
-          <strong>Client B:</strong> "Kids loved her, will book again!"
-        </div>
-      </div>
     </div>
 
     <!-- Actions -->
     <div class="profile-actions">
-      <button class="book-btn" onclick="window.location.href='?url=client/c_book'">Request Booking</button>
+      <a href="<?= URLROOT ?>/public/?url=client/c_book&id=<?= $ct['id'] ?>" 
+         class="book-btn">
+         Request Booking
+      </a>
+
       <button class="back-btn" onclick="window.history.back()">Back</button>
     </div>
+
   </div>
 </main>
 

@@ -15,13 +15,14 @@
       <h2><i class='bx bx-check-square'></i>Booking Submitted Successfully!</h2>
       <p class="subtitle">Your caretaker booking request has been sent.</p>
 
-      <div class="details">
-        <p><strong>Booking ID:</strong> <span id="bookingId">BK12345</span></p>
-        <p><strong>Caretaker:</strong> <span id="caretakerName">John Doe</span></p>
-        <p><strong>Date:</strong> <span id="date">12 Sep 2025</span></p>
-        <p><strong>Time:</strong> <span id="time">10:00 AM</span></p>
-        <p><strong>Status:</strong> <span class="pending">Pending Confirmation</span></p>
-      </div>
+     <div class="details">
+    <p><strong>Booking ID:</strong> <?= $data['booking']['booking_id'] ?></p>
+    <p><strong>Caretaker:</strong> <?= htmlspecialchars($data['booking']['caretaker_name']) ?></p>
+    <p><strong>Date:</strong> <?= date('d M Y', strtotime($data['booking']['booking_date'])) ?></p>
+    <p><strong>Time:</strong> <?= date('h:i A', strtotime($data['booking']['preferred_time'])) ?></p>
+    <p><strong>Status:</strong> <span class="<?= strtolower($data['booking']['status']) ?>"><?= $data['booking']['status'] ?></span></p>
+</div>
+
 
       <div class="actions">
         <button onclick="goToUpcoming()" class="viewbtn">View Upcoming Bookings</button>

@@ -19,76 +19,28 @@
     </p>
 
     <div class="bookings-list">
-        <!-- Completed Booking -->
-        <div class="booking-card completed">
-            <h2>Jane Doe</h2>
-            <p><strong>Service:</strong> Babysitting</p>
-            <p><strong>Date:</strong> 2025-08-15</p>
-            <p><strong>Time:</strong> Morning</p>
-            <p><strong>Duration:</strong> 3 Hours</p>
-            <p><strong>Status:</strong> <span class="status completed">Completed</span></p>
-            <button class="feedback-btn">Give Feedback</button>
-        </div>
+    <?php if (!empty($data['bookings'])): ?>
+        <?php foreach ($data['bookings'] as $b): ?>
+            <div class="booking-card <?= strtolower($b['status']) ?>">
+                <h2><?= htmlspecialchars($b['caretaker_name']) ?></h2>
+                <p><strong>Service:</strong> <?= htmlspecialchars($b['service_type']) ?></p>
+                <p><strong>Date:</strong> <?= date('Y-m-d', strtotime($b['booking_date'])) ?></p>
+                <p><strong>Time:</strong> <?= htmlspecialchars($b['preferred_time']) ?></p>
+                <p><strong>Duration:</strong> <?= $b['duration'] . ' ' . $b['basis'] ?></p>
+                <p><strong>Status:</strong> <span class="status <?= strtolower($b['status']) ?>"><?= $b['status'] ?></span></p>
+                
+                <?php if ($b['status'] === 'Completed'): ?>
+                    <button class="feedback-btn" data-booking-id="<?= $b['booking_id'] ?>">Give Feedback</button>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p id="noPastBookings" class="no-bookings">
+            You don’t have any past bookings yet.
+        </p>
+    <?php endif; ?>
+</div>
 
-        <!-- Cancelled Booking -->
-        <div class="booking-card cancelled">
-            <h2>Sam Silva</h2>
-            <p><strong>Service:</strong> Elder Care</p>
-            <p><strong>Date:</strong> 2025-08-10</p>
-            <p><strong>Time:</strong> Evening</p>
-            <p><strong>Duration:</strong> 2 Days</p>
-            <p><strong>Status:</strong> <span class="status cancelled">Cancelled</span></p>
-        </div>
-
-        <div class="booking-card completed">
-            <h2>David</h2>
-            <p><strong>Service:</strong> Babysitting</p>
-            <p><strong>Date:</strong> 2025-08-15</p>
-            <p><strong>Time:</strong> Morning</p>
-            <p><strong>Duration:</strong> 3 Hours</p>
-            <p><strong>Status:</strong> <span class="status completed">Completed</span></p>
-            <button class="feedback-btn">Give Feedback</button>
-        </div>
-
-        <div class="booking-card cancelled">
-            <h2>Winson</h2>
-            <p><strong>Service:</strong> Elder Care</p>
-            <p><strong>Date:</strong> 2025-08-10</p>
-            <p><strong>Time:</strong> Evening</p>
-            <p><strong>Duration:</strong> 2 Days</p>
-            <p><strong>Status:</strong> <span class="status cancelled">Cancelled</span></p>
-        </div>
-
-        <div class="booking-card completed">
-            <h2>Jane Doe</h2>
-            <p><strong>Service:</strong> Babysitting</p>
-            <p><strong>Date:</strong> 2025-08-15</p>
-            <p><strong>Time:</strong> Morning</p>
-            <p><strong>Duration:</strong> 3 Hours</p>
-            <p><strong>Status:</strong> <span class="status completed">Completed</span></p>
-            <button class="feedback-btn">Give Feedback</button>
-        </div>
-
-        <div class="booking-card completed">
-            <h2>Emily</h2>
-            <p><strong>Service:</strong> Babysitting</p>
-            <p><strong>Date:</strong> 2025-08-15</p>
-            <p><strong>Time:</strong> Morning</p>
-            <p><strong>Duration:</strong> 3 Hours</p>
-            <p><strong>Status:</strong> <span class="status completed">Completed</span></p>
-            <button class="feedback-btn">Give Feedback</button>
-        </div>
-
-        <div class="booking-card cancelled">
-            <h2>John piris</h2>
-            <p><strong>Service:</strong> Elder Care</p>
-            <p><strong>Date:</strong> 2025-08-10</p>
-            <p><strong>Time:</strong> Evening</p>
-            <p><strong>Duration:</strong> 2 Days</p>
-            <p><strong>Status:</strong> <span class="status cancelled">Cancelled</span></p>
-        </div>
-
-    </div>
 
     <!-- Feedback Modal -->
 <div id="feedbackModal" class="modal">

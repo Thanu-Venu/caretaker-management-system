@@ -11,54 +11,83 @@
 </head>
 <body>
   <main class="content">
-    <div class="booking">
-      <h2>Bookings</h2>
-      <p>Welcome back, Emma Thamson!</p>
+  <div class="booking">
+    <h2>Bookings</h2>
 
-      <!-- Buttons -->
-      <div class="top">
-        <button class="up-book active" onclick="showTab('upcoming', event)">Upcoming Bookings</button>
-        <button class="past-book" onclick="showTab('past', event)">Past Bookings</button>
-      </div>
-
-      <!-- Upcoming Bookings Table -->
-      <section class="card">
-        <div id="upcoming" class="tab-content active">
-          <table>
-            <thead>
-              <tr>
-                <th>Client</th>
-                <th>Service</th>
-                <th>Location</th>
-                <th>Date/Time</th>
-                <th>Payment</th>
-              </tr>
-            </thead>
-            <tbody id="upcomingBookings"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- Past Bookings Table -->
-      <section class="card">
-        <div id="past" class="tab-content">
-          <table>
-            <thead>
-              <tr>
-                <th>Client</th>
-                <th>Service</th>
-                <th>Location</th>
-                <th>Date/Time</th>
-                <th>Payment</th>
-              </tr>
-            </thead>
-            <tbody id="pastBookings"></tbody>
-          </table>
-        </div>
-      </section>
-
+    <div class="top">
+      <button class="up-book active" onclick="showTab('upcoming', event)">Upcoming Bookings</button>
+      <button class="past-book" onclick="showTab('past', event)">Past Bookings</button>
     </div>
-  </main>
+
+    <!-- Upcoming -->
+    <section class="card">
+      <div id="upcoming" class="tab-content active">
+        <table>
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Service</th>
+              <th>Location</th>
+              <th>Date / Time</th>
+              <th>Payment</th>
+            </tr>
+          </thead>
+          <tbody>
+<?php if (!empty($data['upcoming'])) : ?>
+    <?php foreach ($data['upcoming'] as $b) : ?>
+        <tr>
+            <td><?= htmlspecialchars($b['client_name']) ?></td>
+            <td><?= htmlspecialchars($b['service_type']) ?></td>
+            <td><?= htmlspecialchars($b['service_location']) ?></td>
+            <td><?= $b['booking_date'] ?> - <?= $b['preferred_time'] ?></td>
+            <td>LKR <?= number_format($b['total_payment'], 2) ?></td>
+        </tr>
+    <?php endforeach; ?>
+<?php else : ?>
+    <tr><td colspan="5">No upcoming bookings</td></tr>
+<?php endif; ?>
+</tbody>
+
+        </table>
+      </div>
+    </section>
+
+    <!-- Past -->
+    <section class="card">
+      <div id="past" class="tab-content">
+        <table>
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Service</th>
+              <th>Location</th>
+              <th>Date / Time</th>
+              <th>Payment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php if (!empty($data['past'])) : ?>
+              <?php foreach ($data['past'] as $b) : ?>
+                <tr>
+                  <td><?= htmlspecialchars($b['client_name']) ?></td>
+                  <td><?= htmlspecialchars($b['service_type']) ?></td>
+                  <td><?= htmlspecialchars($b['service_location']) ?></td>
+                  <td>
+                    <?= $b['start_time'] ?> - <?= $b['end_time'] ?>
+                  </td>
+                  <td>LKR <?= number_format($b['total_payment'], 2) ?></td>
+                </tr>
+              <?php endforeach; ?>
+            <?php else : ?>
+              <tr><td colspan="5">No past bookings</td></tr>
+            <?php endif; ?>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</main>
 
 <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_booking.js"></script>
 </body>
