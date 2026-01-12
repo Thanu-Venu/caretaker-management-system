@@ -1,6 +1,8 @@
 <?php
 class HrController extends Controller {
     private $userModel;
+    private $caretakerModel;
+
 
     public function __construct() {
     if (session_status() === PHP_SESSION_NONE) session_start();
@@ -10,6 +12,8 @@ class HrController extends Controller {
         exit;
     }
     $this->userModel = $this->model('UserModel');
+    $this->caretakerModel = $this->model('CaretakerModel');
+
         
 
     // Revalidate caretaker from DB
@@ -31,12 +35,36 @@ class HrController extends Controller {
     
 
     public function hr_addct() {
-        $this->view("hr/hr_addct");
+        $caretakers = $this->caretakerModel->getCaretakers(); // ✅ use the initialized property
+        $this->view("hr/hr_addct", ['caretakers' => $caretakers]);
     }    
 
     public function hr_managect() {
-        $this->view("hr/hr_managect");
+        $caretakers = $this->caretakerModel->getCaretakersForHR();
+
+        $data = [
+            'caretakers' => $caretakers
+        ];
+
+        $this->view("hr/hr_managect", $data);
     }
+
+    public function updateAvailability() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'id' => $_POST['id'],
+                'availability' => $_POST['availability'],
+                'location' => $_POST['location'],
+                'check_in' => $_POST['check_in'],
+                'check_out' => $_POST['check_out']
+            ];
+
+            $this->caretakerModel->updateAvailability($data);
+            header("Location: index.php?url=hr/hr_managect");
+            exit;
+        }
+    }
+
 
     public function hr_history() {
         $this->view("hr/hr_history");
