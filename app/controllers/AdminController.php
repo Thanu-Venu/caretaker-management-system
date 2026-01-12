@@ -1,4 +1,6 @@
 <?php
+require_once APPROOT . '/models/ComplaintModel.php';
+
 class AdminController extends Controller
 {
 
@@ -10,32 +12,35 @@ class AdminController extends Controller
     private $clientModel;
     private $adminLeaveModel;
 
-   
-     public function __construct() {
-    if (session_status() === PHP_SESSION_NONE) session_start();
+    private $complaintModel;
+    public function __construct()
+    {
+        if (session_status() === PHP_SESSION_NONE)
+            session_start();
 
-    if (!isset($_SESSION['user'])) {
-        header("Location: index.php?url=auth/login");
-        exit;
-    }
+        if (!isset($_SESSION['user'])) {
+            header("Location: index.php?url=auth/login");
+            exit;
+        }
 
-     $this->caretakerModel = $this->model('CaretakerModel');
+        $this->caretakerModel = $this->model('CaretakerModel');
 
         $this->userModel = $this->model('UserModel');
         $this->announcementModel = $this->model('AnnouncementModel');
         $this->clientModel = $this->model('ClientModel');
         $this->adminLeaveModel = $this->model('AdminLeaveModel');
+        $this->complaintModel = $this->model('ComplaintModel');
 
-    // Revalidate caretaker from DB
-    $user = $this->userModel->getUserById($_SESSION['user']['id']); // lowercase usage
-    if (!$user) {
-        session_destroy();
-        header("Location: index.php?url=auth/login");
-        exit;
+        // Revalidate caretaker from DB
+        $user = $this->userModel->getUserById($_SESSION['user']['id']); // lowercase usage
+        if (!$user) {
+            session_destroy();
+            header("Location: index.php?url=auth/login");
+            exit;
+        }
+
+        $_SESSION['user'] = $user;
     }
-
-    $_SESSION['user'] = $user;
-}
 
     public function ad_dashboard()
     {
@@ -43,20 +48,17 @@ class AdminController extends Controller
     }
 
     public function ad_leave()
-{
-    $leaves = $this->adminLeaveModel->getAllLeaves(); // Fetch caretakers' leaves
-    $this->view("admin/ad_leave", ['leaves' => $leaves]);
-}
+    {
+        $leaves = $this->adminLeaveModel->getAllLeaves(); // Fetch caretakers' leaves
+        $this->view("admin/ad_leave", ['leaves' => $leaves]);
+    }
 
-public function update_leave_status($id, $status)
-{
-    $this->adminLeaveModel->updateLeaveStatus($id, $status); // update in DB
-    header('Location: ' . URLROOT . '/admin/ad_leave'); // redirect back to admin leave page
-    exit();
-}
-
-
-
+    public function update_leave_status($id, $status)
+    {
+        $this->adminLeaveModel->updateLeaveStatus($id, $status); // update in DB
+        header('Location: ' . URLROOT . '/admin/ad_leave'); // redirect back to admin leave page
+        exit();
+    }
 
     public function ad_history()
     {
@@ -76,16 +78,11 @@ public function update_leave_status($id, $status)
             'announcements' => $announcements
         ]);
     }
-
-
     public function ad_clients()
     {
         $clients = $this->clientModel->getAllClients();
         $this->view("admin/ad_clients", ['clients' => $clients]);
     }
-
-
-
 
     public function ad_users()
     {
@@ -93,10 +90,14 @@ public function update_leave_status($id, $status)
         $this->view("admin/ad_users", ['users' => $users]);
     }
 
-
     public function ad_feedback()
     {
-        $this->view("admin/ad_feedback");
+        $complaints = $this->complaintModel->getAllComplaints();
+
+        $this->view("admin/ad_feedback", [
+            'complaints' => $complaints,
+            'feedbacks' => []
+        ]);
     }
 
     public function ad_bookings()
@@ -104,24 +105,24 @@ public function update_leave_status($id, $status)
         $this->view("admin/ad_bookings");
     }
 
-   public function ad_settings() {
-    // Session already started in constructor
-    if (!isset($_SESSION['user'])) {
-        header("Location: " . URLROOT . "/auth/login");
-        exit;
+    public function ad_settings()
+    {
+        // Session already started in constructor
+        if (!isset($_SESSION['user'])) {
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
+
+        // Optional: allow only admin role
+        if ($_SESSION['user']['role'] !== 'admin') {
+            die("Access denied. Only admin can access this page.");
+        }
+
+        // Use session user directly
+        $user = $_SESSION['user'];
+
+        $this->view('admin/ad_settings', ['user' => $user]);
     }
-
-    // Optional: allow only admin role
-    if ($_SESSION['user']['role'] !== 'admin') {
-        die("Access denied. Only admin can access this page.");
-    }
-
-    // Use session user directly
-    $user = $_SESSION['user'];
-
-    $this->view('admin/ad_settings', ['user' => $user]);
-}
-
 
     public function ad_reports()
     {
@@ -132,8 +133,5 @@ public function update_leave_status($id, $status)
     {
         $this->view("admin/ad_payments");
     }
-
-
-
 
 }

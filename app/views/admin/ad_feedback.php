@@ -88,25 +88,52 @@
     </div>
   </div>
 
-  <!-- COMPLAINTS TAB (leave for your complaints module) -->
-  <div id="complaintsSection" class="tab-section" style="display:none;">
-      <div class="table-container">
-          <table>
-              <thead>
-                  <tr>
-                      <th>Client</th>
-                      <th>Caregiver</th>
-                      <th>Complaint</th>
-                      <th>Date Filed</th>
-                      <th>Status</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <?php include_once APPROOT."/views/admin/complaints_dummy_or_dynamic.php"; ?>
-              </tbody>
-          </table>
-      </div>
+ <!-- ADMIN – COMPLAINTS TAB (VIEW ONLY) -->
+<div id="complaintsSection" class="tab-section" style="display:none;">
+
+
+  <div class="table-container">
+    <table class="complaint-table">
+      <thead>
+        <tr>
+          <th>Client</th>
+          <th>Caregiver</th>
+          <th>Category</th>
+          <th>Complaint</th>
+          <th>Status</th>
+         
+        </tr>
+      </thead>
+
+      <tbody>
+        <?php if (!empty($complaints)): ?>
+          <?php foreach ($complaints as $c): ?>
+            <tr>
+              <td><?= htmlspecialchars($c['client_name']) ?></td>
+              <td><?= htmlspecialchars($c['caretaker_name']) ?></td>
+              <td><?= htmlspecialchars($c['category']) ?></td>
+              <td><?= htmlspecialchars($c['details']) ?></td>
+              
+
+              <td>
+                <span class="status <?= strtolower(str_replace(' ', '-', $c['status'])) ?>">
+                  <?= $c['status'] ?>
+                </span>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <tr>
+            <td colspan="6" style="text-align:center;">
+              No complaints found
+            </td>
+          </tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
   </div>
+</div>
+
 
 </div>
 
