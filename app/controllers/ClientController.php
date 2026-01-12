@@ -58,6 +58,8 @@ class ClientController extends Controller {
     public function c_feedback() {
         $this->view("client/c_feedback");
     }
+
+
   
 
 
@@ -74,9 +76,9 @@ class ClientController extends Controller {
         $this->view("client/c_paymentSuccess");
     }
 
-    public function c_makePayment() {
+   /* public function c_makePayment() {
         $this->view("client/c_makePayment");
-    }
+    }*/
 
     public function c_complaintReg() {
         $this->view("client/c_complaintReg");
@@ -84,6 +86,7 @@ class ClientController extends Controller {
 
    public function c_pastBookings() {
     $clientId = $_SESSION['user']['id'];
+    
     $bookings = $this->clientModel->getPastBookings($clientId);
 
     $this->view("client/c_pastBookings", ['bookings' => $bookings]);
@@ -96,6 +99,112 @@ class ClientController extends Controller {
 
     $this->view("client/c_upcomingBookings", ['bookings' => $bookings]);
 }
+
+public function upcomingBookings()
+{
+    // Load the model
+    $bookings = $this->clientModel->getBookingsByStatus('upcoming'); // fetch only upcoming bookings
+
+    $data = [
+        'bookings' => $bookings
+    ];
+
+    // Load the view and pass data
+    $this->view('client/upcomingBookings', $data);
+}
+
+
+ /* ================= CANCEL BOOKING ================= */
+public function cancelBooking()
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/client/c_upcomingBookings");
+        exit;
+    }
+
+    $bookingId = $_POST['booking_id'] ?? null;
+    $reason    = $_POST['reason'] ?? '';
+
+    if (!$bookingId || empty($reason)) {
+        header("Location: " . URLROOT . "/client/c_upcomingBookings");
+        exit;
+    }
+
+    // Call model
+    $this->clientModel->cancelBooking($bookingId, $reason);
+
+    // Redirect back to upcoming bookings
+    header("Location: " . URLROOT . "/client/c_upcomingBookings");
+    exit;
+}
+
+
+
+
+
+    /* ================= RESCHEDULE BOOKING ================= */
+   public function rescheduleBooking()
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/client/c_upcomingBookings");
+        exit;
+    }
+
+    $bookingId = $_POST['booking_id'];
+    $newDate   = $_POST['new_date'];
+    $newTime   = $_POST['new_time'];
+    $newDuration = $_POST['new_duration'];
+
+    $this->clientModel->rescheduleBooking($bookingId, $newDate, $newTime, $newDuration);
+
+    // Redirect back to upcoming bookings page
+    header("Location: " . URLROOT . "/client/c_upcomingBookings");
+    exit;
+}
+
+
+
+    /* ================= PAYMENT PAGE ================= */
+    public function c_makePayment()
+    {
+        $bookingId = $_GET['booking_id'] ?? null;
+
+        if (!$bookingId) {
+            header("Location: " . URLROOT . "/client/c_upcomingBookings");
+            exit;
+        }
+
+        $booking = $this->clientModel->getBookingById($bookingId);
+
+        $this->view('client/c_makePayment', [
+            'booking' => $booking
+        ]);
+    }
+
+    public function c_cancelledBookings() {
+    $clientId = $_SESSION['user']['id'];
+    
+    // Use the correct model method
+    $bookings = $this->clientModel->getCancelledBookings($clientId);
+
+    $this->view("client/c_cancelledBookings", ['bookings' => $bookings]);
+}
+
+
+    /* ================= PAYMENT SUCCESS ================= */
+    public function paymentSuccess()
+    {
+        $bookingId = $_GET['booking_id'];
+
+        $this->clientModel->markAsPaid($bookingId);
+
+        header("Location: " . URLROOT . "/client/c_paymentSuccess");
+        exit;
+    }
+
+
+
+
 
     
     public function c_book()
@@ -222,13 +331,9 @@ if ($bookingId) {
     }
 }
 
-    public function c_cancelledBookings() {
-    $clientId = $_SESSION['user']['id'];
-    
-    $bookings = $this->clientModel->getCancelledBookingsByClient($clientId);
 
-    $this->view("client/c_cancelledBookings", ['bookings' => $bookings]);
-}
+
+ 
 
 
     public function c_ctprofileview()

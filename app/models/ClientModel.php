@@ -160,7 +160,16 @@ public function getBookingById($bookingId) {
 
 
 // Fetch Upcoming Bookings
-public function getUpcomingBookings($clientId) {
+public function getUpcomingBookings($clientId)
+{
+     $updateSql = "
+        UPDATE bookings
+        SET status = 'Completed'
+        WHERE booking_date < CURDATE()
+          AND status IN ('Pending','Accepted')
+    ";
+    $this->conn->query($updateSql);
+
     $sql = "SELECT 
                 b.id AS booking_id,
                 b.booking_date,
@@ -172,17 +181,114 @@ public function getUpcomingBookings($clientId) {
                 c.name AS caretaker_name
             FROM bookings b
             JOIN caretakers c ON b.caretaker_id = c.id
-            WHERE b.client_id = ? AND b.status != 'Cancelled'
+            WHERE b.client_id = ?
+              AND b.status IN ('Pending', 'Accepted')
+              AND b.booking_date >= CURDATE()
             ORDER BY b.booking_date ASC";
-    
+
     $stmt = $this->conn->prepare($sql);
     $stmt->bind_param("i", $clientId);
     $stmt->execute();
+
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
 
-public function getPastBookings($clientId) {
+// app/models/ClientModel.php
+public function cancelBooking($booking_id, $reason)
+{
+    $status = "Cancelled";
+    $cancelled_at = date('Y-m-d H:i:s');
+
+    $sql = "UPDATE bookings 
+            SET status = ?, 
+                cancellation_reason = ?, 
+                cancelled_at = ? 
+            WHERE id = ?";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("sssi", $status, $reason, $cancelled_at, $booking_id);
+
+    return $stmt->execute();
+}
+
+
+public function getBookingsByStatus($status)
+{
+    $stmt = $this->conn->prepare("SELECT b.id as booking_id, b.booking_date, b.preferred_time, b.duration, b.basis, b.service_type, c.name as caretaker_name
+                                  FROM bookings b
+                                  JOIN caretakers c ON b.caretaker_id = c.id
+                                  WHERE b.status = ?");
+    $stmt->bind_param("s", $status);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+
+// Get all cancelled bookings for a client
+public function getCancelledBookings($clientId)
+{
+    $sql = "SELECT 
+                b.id AS booking_id,
+                b.booking_date,
+                b.preferred_time,
+                b.basis,
+                b.duration,
+                b.service_type,
+                b.cancellation_reason,
+                b.cancelled_at,
+                c.name AS caretaker_name
+            FROM bookings b
+            JOIN caretakers c ON b.caretaker_id = c.id
+            WHERE b.client_id = ?
+              AND b.cancellation_reason IS NOT NULL
+              AND b.cancellation_reason != ''
+            ORDER BY b.cancelled_at DESC";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param('i', $clientId);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+
+
+
+  public function rescheduleBooking($bookingId, $newDate, $newTime, $newDuration)
+{
+    $sql = "UPDATE bookings
+            SET booking_date = ?,
+                preferred_time = ?,
+                duration = ?
+            WHERE id = ?";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("ssii", $newDate, $newTime, $newDuration, $bookingId);
+    return $stmt->execute();
+}
+
+
+
+   
+    /* ================= MARK AS PAID ================= */
+    public function markAsPaid($bookingId)
+    {
+        $this->conn->query("
+            UPDATE bookings
+            SET status = 'Paid'
+            WHERE booking_id = :booking_id
+        ");
+
+        $this->conn->bind(':booking_id', $bookingId);
+        return $this->conn->execute();
+    }
+
+
+
+public function getPastBookings($clientId)
+{
     $sql = "SELECT 
                 b.id AS booking_id,
                 b.booking_date,
@@ -194,30 +300,19 @@ public function getPastBookings($clientId) {
                 c.name AS caretaker_name
             FROM bookings b
             JOIN caretakers c ON b.caretaker_id = c.id
-            WHERE b.client_id = ? AND (b.status = 'Completed' OR b.status = 'Cancelled')
+            WHERE b.client_id = ?
+              AND b.status = 'Completed'
             ORDER BY b.booking_date DESC";
-    
+
     $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $clientId);
+    $stmt->bind_param('i', $clientId);
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
-public function getCancelledBookingsByClient($clientId) {
-    $sql = "SELECT b.id, b.service_type, b.basis, b.duration, b.preferred_time, 
-                   b.booking_date, b.service_location, b.customization, b.status,
-                   b.cancellation_reason,
-                   c.name AS caretaker_name
-            FROM bookings b
-            JOIN caretakers c ON b.caretaker_id = c.id
-            WHERE b.client_id = ? AND b.status = 'Cancelled'
-            ORDER BY b.booking_date DESC";
 
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $clientId);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
+
+
 
 
 
