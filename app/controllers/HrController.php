@@ -1,8 +1,25 @@
 <?php
 class HrController extends Controller {
+
     private $userModel;
 
-    public function __construct() {
+    private $caretakerModel;
+    
+
+    private $clientModel;
+    private $hrLeaveModel;
+
+    public function __construct()
+    {
+        // Load caretaker model once
+        $this->caretakerModel = $this->model('CaretakerModel');
+
+        $this->userModel = $this->model('UserModel');
+        $this->clientModel = $this->model('ClientModel');
+        $this->hrLeaveModel = $this->model('HRLeaveModel');
+    
+
+    
     if (session_status() === PHP_SESSION_NONE) session_start();
 
     if (!isset($_SESSION['user'])) {
@@ -25,13 +42,15 @@ class HrController extends Controller {
     public function hr_dashboard() {
         $this->view("hr/hr_dashboard");
     }
-        public function hr_complaint() {
+    
+    public function hr_complaint() {
         $this->view("hr/hr_complaint");
     }
     
 
     public function hr_addct() {
-        $this->view("hr/hr_addct");
+        $caretakers = $this->caretakerModel->getCaretakers(); // ✅ use the initialized property
+        $this->view("hr/hr_addct", ['caretakers' => $caretakers]);
     }    
 
     public function hr_managect() {
@@ -43,7 +62,14 @@ class HrController extends Controller {
     }
 
     public function hr_leave() {
-        $this->view("hr/hr_leave");
+        $leaves = $this->hrLeaveModel->getAllLeaves();
+        $this->view("hr/hr_leave", ['leaves' => $leaves]);
+    }
+
+    public function update_leave_status($id, $status) {
+        $this->hrLeaveModel->updateLeaveStatus($id, $status); // update in DB
+        header('Location: ' . URLROOT . '/hr/hr_leave'); // redirect back to admin leave page
+        exit();
     }
     
     public function hr_schedule() {
@@ -62,8 +88,31 @@ class HrController extends Controller {
         $this->view("hr/hr_reports");
     }
 
-     public function hr_settings() {
-        $this->view("hr/hr_settings");
+      public function hr_settings() {
+    // Session already started in constructor
+    if (!isset($_SESSION['user'])) {
+        header("Location: " . URLROOT . "/auth/login");
+        exit;
+    }
+
+    // Optional: allow only hr role
+    if ($_SESSION['user']['role'] !== 'Manager') {
+        die("Access denied. Only HR can access this page.");
+    }
+
+    // Use session user directly
+    $user = $_SESSION['user'];
+
+    $this->view('hr/hr_settings', ['user' => $user]);
+}
+
+
+
+    public function hr_announcement() {
+    $announcementModel = $this->model('AnnouncementModel');
+    $announcements = $announcementModel->getUserAnnouncements();
+
+    $this->view("hr/hr_announcement", $announcements);
     }
     
 }

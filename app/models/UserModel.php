@@ -54,7 +54,21 @@ class UserModel {
         return $user;
     }
     return false;
+    }
+    // In UserModel
+public function updateUserProfile($id, $data) {
+    $stmt = $this->conn->prepare("UPDATE users SET username=?, phone=?, profile_pic=COALESCE(?, profile_pic) WHERE id=?");
+    $stmt->bind_param("sssi", $data['username'], $data['phone'], $data['profile_pic'], $id);
+    return $stmt->execute();
 }
+
+public function updatePassword($id, $hashedPassword) {
+    $stmt = $this->conn->prepare("UPDATE users SET password=? WHERE id=?");
+    $stmt->bind_param("si", $hashedPassword, $id);
+    return $stmt->execute();
+}
+
+
 
 }
 ?>

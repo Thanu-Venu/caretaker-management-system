@@ -22,7 +22,8 @@
 
   <!-- Welcome -->
   <section class="welcome">
-    <h1>Welcome back, John!</h1>
+    <h1>Welcome back, <?php echo htmlspecialchars($_SESSION['user']['name']); ?>!</h1>
+
     <p>Here’s what’s happening with your care services</p>
   </section>
 
