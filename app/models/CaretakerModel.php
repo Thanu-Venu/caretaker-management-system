@@ -119,16 +119,43 @@ class CaretakerModel {
 
 
 
-    public function login($email, $password) {
-    $stmt = $this->conn->prepare("SELECT * FROM caretakers WHERE email=?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $caretaker = $stmt->get_result()->fetch_assoc();
-    if ($caretaker && password_verify($password, $caretaker['password'])) {
-        return $caretaker;
+    public function getActiveCaretakers() {
+        $result = $this->conn->query("SELECT * FROM caretakers WHERE status='Active'");
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
-    return false;
+
+// HR: get caretakers with availability
+public function getCaretakersForHR() {
+    $query = "
+        SELECT id, name, availability, location, check_in, check_out
+        FROM caretakers
+        WHERE status = 'Active'
+        ORDER BY id DESC
+    ";
+    $result = $this->conn->query($query);
+    return $result->fetch_all(MYSQLI_ASSOC);
 }
+
+// HR: update availability
+public function updateAvailability($data) {
+    $stmt = $this->conn->prepare(
+        "UPDATE caretakers 
+         SET availability=?, location=?, check_in=?, check_out=? 
+         WHERE id=?"
+    );
+
+    $stmt->bind_param(
+        "ssssi",
+        $data['availability'],
+        $data['location'],
+        $data['check_in'],
+        $data['check_out'],
+        $data['id']
+    );
+
+    return $stmt->execute();
+}
+
 
 }
 ?>
