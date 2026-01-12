@@ -59,6 +59,48 @@ class ClientController extends Controller {
         $this->view("client/c_feedback");
     }
 
+public function submitFeedback()
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/client/c_pastBookings");
+        exit;
+    }
+
+    $clientModel = $this->model('ClientModel');
+
+    $bookingId = $_POST['booking_Id'];
+    $caretakerId = $clientModel->getCaretakerIdByBooking($bookingId);
+
+    if (!$caretakerId) {
+        $_SESSION['error'] = "Invalid booking.";
+        header("Location: " . URLROOT . "/client/c_pastBookings");
+        exit;
+    }
+
+    // Prevent duplicate feedback
+    if ($clientModel->feedbackExists($bookingId)) {
+        $_SESSION['error'] = "Feedback already submitted.";
+        header("Location: " . URLROOT . "/client/c_pastBookings");
+        exit;
+    }
+
+    $data = [
+        'booking_id'   => $bookingId,
+        'client_id'    => $_SESSION['user']['id'],
+        'caretaker_id' => $caretakerId,
+        'rating'       => $_POST['rating'],
+        'feedback'     => $_POST['feedback']
+    ];
+
+    $clientModel->addFeedback($data);
+
+    $_SESSION['success'] = "Feedback submitted successfully!";
+    header("Location: " . URLROOT . "/client/c_pastBookings");
+    exit;
+}
+
+
+
 
   
 
@@ -85,9 +127,11 @@ class ClientController extends Controller {
     }
 
    public function c_pastBookings() {
+     
     $clientId = $_SESSION['user']['id'];
     
     $bookings = $this->clientModel->getPastBookings($clientId);
+     $bookings = $this->clientModel->getPastBookingsWithFeedback($clientId);
 
     $this->view("client/c_pastBookings", ['bookings' => $bookings]);
 }
@@ -387,25 +431,46 @@ if ($bookingId) {
       $this->view("client/c_settings", ['user' => $user]);
     }
 
-     public function editClientDetails()
-    {
-        if (!isset($_SESSION['user'])) {
-            header("Location: index.php?url=auth/login");
-            exit;
-        }
-
-        $user = $_SESSION['user'];
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->clientModel->updateClient($user['id'], $_POST);
-
-            $_SESSION['user'] = $this->clientModel->getClientById($user['id']);
-
-             $_SESSION['success'] = "Profile updated successfully!";
-            header("Location: index.php?url=Client/c_settings");
-            exit();
-        }
+    public function editClientDetails()
+{
+    if (!isset($_SESSION['user'])) {
+        header("Location: index.php?url=auth/login");
+        exit;
     }
+
+    $user = $_SESSION['user'];
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        // KEEP OLD IMAGE
+        $profileImage = $user['profile_image'] ?? 'default.png';
+
+        // IF NEW IMAGE SELECTED
+        if (!empty($_FILES['profile_image']['name'])) {
+
+            $fileName = time() . "_" . basename($_FILES['profile_image']['name']);
+            $targetPath = APPROOT . "/../public/uploads/" . $fileName;
+
+            if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetPath)) {
+                $profileImage = $fileName;
+            }
+        }
+
+        // ADD IMAGE INTO POST DATA
+        $_POST['profile_image'] = $profileImage;
+
+        // UPDATE CLIENT
+        $this->clientModel->updateClient($user['id'], $_POST);
+
+        // REFRESH SESSION
+        $_SESSION['user'] = $this->clientModel->getClientById($user['id']);
+
+        $_SESSION['success'] = "Profile updated successfully!";
+        header("Location: index.php?url=Client/c_settings");
+        exit();
+    }
+}
+
 
     public function editPasswordDetails()
     {

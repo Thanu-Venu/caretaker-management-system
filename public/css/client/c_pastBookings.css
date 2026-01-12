@@ -228,3 +228,10 @@
   to { transform: translateY(0); opacity: 1; }
 }
 
+.star-filled { color: gold; font-size: 18px; }
+.star-empty { color: #ccc; font-size: 18px; }
+.feedback-text {
+    background: #f9f9f9;
+    padding: 8px;
+    border-radius: 6px;
+}

@@ -26,22 +26,41 @@ class ClientModel {
     /**
      * Get client by ID
      */
-    public function getClientById($id) {
-        $stmt = $this->conn->prepare(
-            "SELECT id, name, email, phone, created_at 
-             FROM clients 
-             WHERE id=?"
-        );
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_assoc();
-    }
+   public function getClientById($id)
+{
+    $stmt = $this->conn->prepare(
+        "SELECT id, name, email, phone, profile_image, created_at 
+         FROM clients 
+         WHERE id=?"
+    );
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
 
- public function updateClient($id, $data) {
-        $stmt = $this->conn->prepare("UPDATE clients SET name=?,email=?,phone=? WHERE id=?");
-        $stmt->bind_param("sssi", $data['name'],$data['email'],$data['phone'],$id);
-        return $stmt->execute();
-    }
+
+public function updateClient($id, $data)
+{
+    $stmt = $this->conn->prepare(
+        "UPDATE clients 
+         SET name=?, email=?, phone=?, profile_image=? 
+         WHERE id=?"
+    );
+
+    $stmt->bind_param(
+        "ssssi",
+        $data['name'],
+        $data['email'],
+        $data['phone'],
+        $data['profile_image'],
+        $id
+    );
+
+    return $stmt->execute();
+}
+
+
+    
 
     public function updateClientPassword($id, $hashedPassword) {
         $stmt = $this->conn->prepare("UPDATE clients SET password=? WHERE id=?");
@@ -311,7 +330,69 @@ public function getPastBookings($clientId)
 }
 
 
+public function addFeedback($data) {
+        $sql = "INSERT INTO feedbacks 
+                (booking_id, client_id, caretaker_id, rating, feedback)
+                VALUES (?, ?, ?, ?, ?)";
 
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param(
+            "iiiis",
+            $data['booking_id'],
+            $data['client_id'],
+            $data['caretaker_id'],
+            $data['rating'],
+            $data['feedback']
+        );
+
+        return $stmt->execute();
+    }
+
+    public function feedbackExists($bookingId) {
+        $stmt = $this->conn->prepare(
+            "SELECT id FROM feedbacks WHERE booking_id = ?"
+        );
+        $stmt->bind_param("i", $bookingId);
+        $stmt->execute();
+        return $stmt->get_result()->num_rows > 0;
+    }
+
+    public function getCaretakerIdByBooking($bookingId)
+{
+    $sql = "SELECT caretaker_id FROM bookings WHERE id = ?";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $bookingId);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+
+    return $result ? $result['caretaker_id'] : null;
+}
+
+public function getPastBookingsWithFeedback($clientId)
+{
+    $sql = "SELECT 
+                b.id AS booking_id,
+                b.booking_date,
+                b.preferred_time,
+                b.duration,
+                b.basis,
+                b.status,
+                c.name AS caretaker_name,
+                c.service_type,
+                f.rating,
+                f.feedback
+            FROM bookings b
+            JOIN caretakers c ON b.caretaker_id = c.id
+            LEFT JOIN feedbacks f ON b.id = f.booking_id
+            WHERE b.client_id = ?
+              AND b.status = 'Completed'
+            ORDER BY b.booking_date DESC";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $clientId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
 
 
 

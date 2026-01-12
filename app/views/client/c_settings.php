@@ -24,10 +24,15 @@ if (isset($data['user'])) {
       <!-- Profile Picture & Info -->
       <section class="card profile">
         <h3>Profile Details</h3>
-        <form id="edit-details-form" action="<?= URLROOT ?>/index.php?url=Client/editClientDetails" method="POST">
+          <form id="edit-details-form"
+                action="<?= URLROOT ?>/index.php?url=Client/editClientDetails"
+                method="POST"
+                enctype="multipart/form-data">
 
           <div class="profile-body">
-            <img id="profileImg" src="<?php echo URLROOT; ?>/public/images/client.png" alt="Profile">
+          <img id="profileImg"
+           src="<?= URLROOT ?>/public/uploads/<?= $user['profile_image'] ?? 'default.png' ?>"
+           alt="Profile">  
             <div class="pro-section">
               <label>Full Name
                 <input type="text" name="name" id="name" value="<?= htmlspecialchars($user['name']); ?>" required>
@@ -40,7 +45,10 @@ if (isset($data['user'])) {
                   value="<?= htmlspecialchars($user['phone']); ?>" required>
               </label><br>
               <label>Profile Picture
-                <input type="file" id="profileFile" accept="image/*">
+              <input type="file"
+                    id="profileFile"
+                    name="profile_image"
+                    accept="image/*">
               </label><br><br>
               <button id="saveProfile" type="submit" form="edit-details-form" class="btn-save">Save Profile</button>
             </div>
