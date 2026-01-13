@@ -1,36 +1,58 @@
-// Profile Save
-document.getElementById("saveProfile").addEventListener("click", () => {
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const phone = document.getElementById("phone").value;
-    const exp = document.getElementById("experience").value;
-    const qual = document.getElementById("qualifications").value;
-    
-    // Dummy save alert
-    alert(`Profile updated!\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nExperience: ${exp}\nQualifications: ${qual}`);
-});
+// Profile Picture Preview
+const profileImg = document.getElementById('profileImg');
+const profileFile = document.getElementById('profileFile');
 
-// Change Password
-document.getElementById("passwordForm").addEventListener("submit", function(e){
-    e.preventDefault();
-    alert("Password updated successfully!");
-});
-
-// Save notification settings
-document.querySelectorAll(".btn-save").forEach(btn => {
-    btn.addEventListener("click", () => {
-        alert("Settings saved!");
-    });
-});
-
-// Preview selected profile image
-document.getElementById("profileFile").addEventListener("change", function(e){
-    const file = e.target.files[0];
-    if(file){
-        const reader = new FileReader();
-        reader.onload = function(event){
-            document.getElementById("profileImg").src = event.target.result;
+if (profileFile) {
+    profileFile.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                profileImg.src = event.target.result; // show preview
+            }
+            reader.readAsDataURL(file);
         }
-        reader.readAsDataURL(file);
-    }
-});
+    });
+}
+
+// Profile Form Submission Validation
+const saveProfileBtn = document.getElementById('saveProfile');
+
+if (saveProfileBtn) {
+    saveProfileBtn.addEventListener('click', function(e) {
+        const name = document.getElementById('name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const experience = document.getElementById('experience').value.trim();
+        const qualifications = document.getElementById('qualifications').value.trim();
+
+        if (!name || !phone || !experience || !qualifications) {
+            e.preventDefault();
+            alert('Please fill all required fields!');
+            return false;
+        }
+
+        // Submit the form
+        saveProfileBtn.closest('form').submit();
+    });
+}
+
+// Optional: Password Form Validation
+const passwordForm = document.getElementById('passwordForm');
+if (passwordForm) {
+    passwordForm.addEventListener('submit', function(e) {
+        const inputs = passwordForm.querySelectorAll('input[type="password"]');
+        if (inputs[1].value !== inputs[2].value) {
+            e.preventDefault();
+            alert("New password and confirm password do not match!");
+        }
+    });
+}
+
+// ----------------------------
+// New Code: Auto-hide success message
+const successMsg = document.getElementById('successMsg');
+if (successMsg) {
+    setTimeout(() => {
+        successMsg.style.display = 'none';
+    }, 3000); // hide after 3 seconds
+}

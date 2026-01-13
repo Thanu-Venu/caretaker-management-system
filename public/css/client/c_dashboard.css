@@ -87,7 +87,18 @@ body, html {
   transform: scale(1.1);
 }
 
-/* ===================== Quick Actions ===================== */
+/* Quick  Actions */
+button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+
 .quick-actions h2 {
   margin: 25px 0 20px;
   font-size: 24px;

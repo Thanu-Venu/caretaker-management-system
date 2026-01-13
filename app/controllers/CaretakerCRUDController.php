@@ -9,16 +9,41 @@ class CaretakerCRUDController extends Controller {
     }
 
     // Add caretaker
-    public function add() {
+    public function add()
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->caretakerModel->addCaretaker($_POST);
-            header("Location: " . URLROOT . "/admin/ad_caretakers");
-            exit;
-        } else {
-            $this->view("admin/caretaker_add");
+        $data = $_POST;
+
+        // default image
+        $data['profile_image'] = 'default.png';
+
+        if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === 0) {
+
+            $uploadDir = APPROOT . '/../public/uploads/';
+
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            $fileName = time() . '_' . basename($_FILES['profile_image']['name']);
+            $targetPath = $uploadDir . $fileName;
+
+            if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetPath)) {
+                $data['profile_image'] = $fileName;
+            }
         }
+
+        $this->caretakerModel->addCaretaker($data);
+
+        header("Location: " . URLROOT . "/admin/ad_caretakers");
+        exit;
     }
+
+    $this->view("admin/caretaker_add");
+}
+
+
 
     // Edit caretaker
     public function edit($id) {
