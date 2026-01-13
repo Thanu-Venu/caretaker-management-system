@@ -13,7 +13,11 @@ body {
     padding: 20px;
     flex: 1; /* so it adjusts with sidebar */
 }
-
+h1{
+  color: #1e88e5;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
 /* Top Cards */
 .stats-cards {
   display: grid;

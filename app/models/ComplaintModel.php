@@ -3,7 +3,7 @@ class ComplaintModel {
     private $db;
 
     public function __construct() {
-        $this->db = new mysqli("localhost", "root", "", "smartcare");
+        $this->db = new mysqli("localhost", "root", "Thanuvenu", "smartcare");
         if($this->db->connect_errno){
             die("Failed to connect to MySQL: " . $this->db->connect_error);
         }
@@ -27,10 +27,18 @@ class ComplaintModel {
         return $result;
     }
 
-    public function getAllComplaints() {
-        $result = $this->db->query("SELECT * FROM complaints ORDER BY Id DESC");
-        return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+    public function getAllComplaints()
+{
+    $sql = "SELECT * FROM complaints ORDER BY Id DESC";
+    $result = $this->db->query($sql);
+
+    if (!$result) {
+        die("SQL Error: " . $this->db->error);
     }
+
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
 
 
     public function getComplaintById($id) {

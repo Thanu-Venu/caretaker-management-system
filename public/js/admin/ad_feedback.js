@@ -1,64 +1,85 @@
-const tabButtons = document.querySelectorAll('.tab-btn');
-const feedbackSection = document.getElementById('feedbackSection');
-const complaintsSection = document.getElementById('complaintsSection');
+// ================= TAB HANDLING =================
+const tabButtons = document.querySelectorAll(".tab-btn");
+const feedbackSection = document.getElementById("feedbackSection");
+const complaintsSection = document.getElementById("complaintsSection");
 
-// Tab switching
+// Function to switch tabs
+function switchTab(tab) {
+  tabButtons.forEach(btn => btn.classList.remove("active"));
+
+  if (tab === "complaints") {
+    document.querySelector('[data-tab="complaints"]').classList.add("active");
+    feedbackSection.style.display = "none";
+    complaintsSection.style.display = "block";
+
+    history.pushState(null, "", "?url=admin/ad_feedback&tab=complaints");
+  } else {
+    document.querySelector('[data-tab="feedback"]').classList.add("active");
+    feedbackSection.style.display = "block";
+    complaintsSection.style.display = "none";
+
+    history.pushState(null, "", "?url=admin/ad_feedback&tab=feedback");
+  }
+}
+
+// Button click events
 tabButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    tabButtons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    if (btn.dataset.tab === "feedback") {
-      feedbackSection.style.display = "block";
-      complaintsSection.style.display = "none";
-      history.pushState(null, "", "?url=admin/ad_feedback");
-    } else {
-      feedbackSection.style.display = "none";
-      complaintsSection.style.display = "block";
-       history.pushState(null, "", "?url=admin/ad_complaints");
-    }
+  btn.addEventListener("click", () => {
+    switchTab(btn.dataset.tab);
   });
 });
+
+// Load correct tab on page refresh
 window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
-  const urlValue = params.get("url");
+  const tab = params.get("tab");
 
-  if (urlValue === "admin/ad_complaints") {
+  if (tab === "complaints") {
     switchTab("complaints");
   } else {
     switchTab("feedback");
   }
 });
-// === Filtering for feedback table ===
+
+
+// ================= FEEDBACK FILTERING =================
 const ratingFilter = document.getElementById("ratingFilter");
 const dateFilter = document.getElementById("dateFilter");
 const table = document.getElementById("feedbackTable");
-const rows = table.querySelectorAll("tbody tr");
 const noResults = document.getElementById("noResults");
 
-function filterTable() {
-  const ratingValue = ratingFilter.value;
-  const dateValue = dateFilter.value;
+if (table) {
+  const rows = table.querySelectorAll("tbody tr");
 
-  let visibleCount = 0;
+  function filterTable() {
+    const ratingValue = ratingFilter.value;
+    const dateValue = dateFilter.value;
 
-  rows.forEach(row => {
-    const rowRating = row.querySelector("td[data-rating]").getAttribute("data-rating");
-    const rowDate = row.querySelector("td[data-date]").getAttribute("data-date");
+    let visibleCount = 0;
 
-    let matchesRating = ratingValue === "" || rowRating === ratingValue;
-    let matchesDate = dateValue === "" || rowDate === dateValue;
+    rows.forEach(row => {
+      const ratingCell = row.querySelector("td[data-rating]");
+      const dateCell = row.querySelector("td[data-date]");
 
-    if (matchesRating && matchesDate) {
-      row.style.display = "";
-      visibleCount++;
-    } else {
-      row.style.display = "none";
-    }
-  });
+      if (!ratingCell || !dateCell) return;
 
-  noResults.style.display = visibleCount === 0 ? "block" : "none";
+      const rowRating = ratingCell.getAttribute("data-rating");
+      const rowDate = dateCell.getAttribute("data-date");
+
+      const matchesRating = ratingValue === "" || rowRating === ratingValue;
+      const matchesDate = dateValue === "" || rowDate === dateValue;
+
+      if (matchesRating && matchesDate) {
+        row.style.display = "";
+        visibleCount++;
+      } else {
+        row.style.display = "none";
+      }
+    });
+
+    noResults.style.display = visibleCount === 0 ? "block" : "none";
+  }
+
+  ratingFilter.addEventListener("change", filterTable);
+  dateFilter.addEventListener("change", filterTable);
 }
-
-ratingFilter.addEventListener("change", filterTable);
-dateFilter.addEventListener("change", filterTable);
