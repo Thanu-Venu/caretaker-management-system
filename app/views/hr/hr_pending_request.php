@@ -26,45 +26,47 @@
                 <th>Action</th>
             </tr>
         </thead>
-        <tbody>
-            <!-- Dummy data -->
-            <tr>
-                <td>101</td>
-                <td>John Doe</td>
-                <td>Elder Care</td>
-                <td>Mary Smith</td>
-                <td>2025-09-12 09:00-13:00</td>
-                <td>Pending</td>
-                <td>
-                    <button class="approve">Approve</button>
-                    <button class="reject">Reject</button>
-                </td>
-            </tr>
-            <tr>
-                <td>102</td>
-                <td>Jane Williams</td>
-                <td>Babysitting</td>
-                <td>David Lee</td>
-                <td>2025-09-13 14:00-18:00</td>
-                <td>Pending</td>
-                <td>
-                    <button class="approve">Approve</button>
-                    <button class="reject">Reject</button>
-                </td>
-            </tr>
-            <tr>
-                <td>103</td>
-                <td>Michael Brown</td>
-                <td>Cleaning & Cooking</td>
-                <td>Lisa Johnson</td>
-                <td>2025-09-14 10:00-15:00</td>
-                <td>Pending</td>
-                <td>
-                    <button class="approve">Approve</button>
-                    <button class="reject">Reject</button>
-                </td>
-            </tr>
-        </tbody>
+     <tbody>
+<?php if (!empty($data['bookings'])): ?>
+    <?php foreach ($data['bookings'] as $b): ?>
+        <tr>
+            <td><?= $b['booking_id'] ?></td>
+            <td><?= htmlspecialchars($b['client_name']) ?></td>
+            <td><?= htmlspecialchars($b['service_type']) ?></td>
+            <td><?= htmlspecialchars($b['caretaker_name']) ?></td>
+            <td><?= $b['booking_date'] ?> (<?= $b['preferred_time'] ?>)</td>
+            <td>
+                <?php 
+                if ($b['status'] === 'Pending') {
+                    echo $b['status'];
+                } else {
+                    echo "<span class='status-{$b['status']}'>{$b['status']}</span>";
+                }
+                ?>
+            </td>
+            <td>
+    <?php if ($b['status'] === 'Pending'): ?>
+        <form method="post" action="<?= URLROOT ?>/hr/updateBookingStatus">
+            <input type="hidden" name="booking_id" value="<?= $b['booking_id'] ?>">
+            <button class="approve" name="action" value="accept">Approve</button>
+            <button class="reject" name="action" value="reject">Reject</button>
+        </form>
+    <?php else: ?>
+        <?= $b['status'] ?>
+    <?php endif; ?>
+</td>
+
+
+        </tr>
+    <?php endforeach; ?>
+<?php else: ?>
+    <tr>
+        <td colspan="7">No bookings</td>
+    </tr>
+<?php endif; ?>
+</tbody>
+
+
     </table>
 </div>
 </div>
@@ -81,6 +83,6 @@
     </div>
 </div>
 
-<script src="<?php echo URLROOT; ?>/public/js/hr/hr_pending_request.js"></script>
+<script src="<?php echo URLROOT; ?>/public/js/hr/hr_pending_reques.js"></script>
 </body>
 </html>
