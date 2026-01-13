@@ -505,7 +505,12 @@ if ($bookingId) {
      public function c_complaintlist() {
         $this->view("client/c_complaintlist");
     }
+ public function c_announcement() {
+    $announcementModel = $this->model('AnnouncementModel');
+    $announcements = $announcementModel->getClientAnnouncements();
 
+    $this->view("client/c_announcement", $announcements);
+    }
 
 
    

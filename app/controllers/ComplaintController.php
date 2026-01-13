@@ -1,14 +1,17 @@
 <?php
 require_once "../app/models/ComplaintModel.php";
-
+require_once "../app/models/NotificationModel.php";
+require_once "../app/models/ClientModel.php";
 
 class ComplaintController
 {
     private $complaintModel;
-
+    private $clientModel;
     public function __construct()
     {
         $this->complaintModel = new ComplaintModel();
+        $this->clientModel = new ClientModel();
+
     }
 
     // Show the complaint form
@@ -153,10 +156,10 @@ class ComplaintController
         $complaints = $this->complaintModel->getComplaintsByClient($client_name);
 
         include_once APPROOT . "/views/templates/client/c_header.php";
-    include_once APPROOT . "/views/templates/client/c_sidebar.php";
+        include_once APPROOT . "/views/templates/client/c_sidebar.php";
 
-    // Then include main complaint list
-    include_once APPROOT . "/views/client/c_complaintlist.php";
+        // Then include main complaint list
+        include_once APPROOT . "/views/client/c_complaintlist.php";
     }
 
 
@@ -210,15 +213,55 @@ class ComplaintController
     }
 
     public function complaintlist()
-{
-    $client_name = $_SESSION['user']['name'];
-    $complaints = $this->complaintModel->getComplaintsByClient($client_name);
+    {
+        $client_name = $_SESSION['user']['name'];
+        $complaints = $this->complaintModel->getComplaintsByClient($client_name);
 
-    include_once APPROOT . "/views/templates/client/c_header.php";
-    include_once APPROOT . "/views/templates/client/c_sidebar.php";
-    include_once APPROOT . "/views/client/c_complaintlist.php";
-}
+        include_once APPROOT . "/views/templates/client/c_header.php";
+        include_once APPROOT . "/views/templates/client/c_sidebar.php";
+        include_once APPROOT . "/views/client/c_complaintlist.php";
+    }
 
+    public function updateStatus()
+    {
+        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Manager') {
+            echo "<script>alert('Unauthorized');</script>";
+            exit;
+        }
+
+        $id = (int) $_POST['Id'];
+        $status = $_POST['status'];
+
+        if (!$id || !$status) {
+            echo "<script>alert('Invalid data');</script>";
+            exit;
+        }
+
+        // Update status
+        $this->complaintModel->updateComplaintStatus($id, $status);
+
+        // Get complaint to notify client
+        $complaint = $this->complaintModel->getComplaintById($id);
+
+        // Make sure you have the client's ID
+        $client_name = $complaint['client_name'];
+        $client = $this->clientModel->getClientByName($client_name); // Or find by email
+        $client_id = $client['id'] ?? null;
+
+        if ($client_id) {
+            $notifModel = new NotificationModel();
+            $notifModel->addNotification(
+                $client_id,           // user_id
+                'client',             // user_role
+                "Complaint Status Update",  // title
+                "Your complaint #{$id} status changed to '{$status}'",  // message
+                URLROOT . "/public/index.php?url=Complaint/myComplaints" // optional link
+            );
+        }
+
+        header("Location: " . URLROOT . "/public/index.php?url=Complaint/index");
+        exit;
+    }
 
 
 

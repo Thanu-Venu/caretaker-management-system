@@ -19,8 +19,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
     <textarea name="message" placeholder="Message" required></textarea>
     <select name="target_role" required>
         <option value="All">All</option>
-        <option value="admin">Admin</option>
-        <option value="Manager">Manager</option>
+        <option value="Users">Admin/Hr</option>
         <option value="Caretaker">Caretaker</option>
         <option value="Client">Client</option>
     </select>

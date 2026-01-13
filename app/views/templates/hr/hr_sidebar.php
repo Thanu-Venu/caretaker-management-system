@@ -38,6 +38,7 @@
       <li><a href="http://localhost/CMA/public?url=hr/hr_feedback"><i class='bx bx-message'></i> <span>Feedback</span></a></li>
       <li><a href="http://localhost/CMA/public?url=hr/hr_history"><i class='bx bx-history'></i> <span>History</span></a></li>
       <li><a href="http://localhost/CMA/public?url=hr/hr_reports"><i class='bx bx-bar-chart'></i> <span>Reports</span></a></li>
+      <li><a href="http://localhost/CMA/public?url=hr/hr_announcement"><i class='bx bxs-megaphone'></i> <span>Announcement</span></a></li>
       <li><a href="http://localhost/CMA/public?url=hr/hr_settings"><i class='bx bx-cog'></i> <span>Settings</span></a></li>
 
       <li class="logout"><a href="<?= URLROOT ?>/index.php?url=auth/logout"><i class='bx bx-log-out'></i> <span>Logout</span></a></li>

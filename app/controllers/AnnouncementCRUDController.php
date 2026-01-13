@@ -62,5 +62,9 @@ class AnnouncementCRUDController extends Controller {
         header("Location: " . URLROOT . "/AnnouncementCRUD/list");
         exit;
     }
+
+
 }
+
+
 ?>
