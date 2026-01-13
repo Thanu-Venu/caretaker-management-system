@@ -9,20 +9,26 @@
   <title>SmartCare Dashboard</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_complaints.css">
 </head>
-<body>
+<body>9
     <div class="main-content">
   <h1>Register a Complaint</h1>
 
   <form id="complaintForm">
-    <label for="clientName">Select Client</label>
-    <select id="clientName" required>
-      <option value="">-- Select Client --</option>
-      <option value="mrs_johnson">Mrs Johnson</option>
-      <option value="smith_family">The Smith Family</option>
-      <option value="mr_davis">Mr Davis</option>
-    </select>
+      <label for="clientSelect">Client Name</label>
+   <select id="clientSelect" name="client_id" required>
+    <option value="">-- Select Client --</option>
+
+    <?php foreach ($data['clients'] as $client): ?>
+        <option value="<?= $client['id'] ?>">
+            <?= $client['name'] ?>
+        </option>
+    <?php endforeach; ?>
+</select>
+
+
 
     <label for="serviceType">Service Type</label>
+   
     <select id="serviceType" required>
       <option value="">-- Select Service --</option>
       <option value="elder_care">Elder Care</option>

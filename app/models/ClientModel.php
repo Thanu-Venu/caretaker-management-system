@@ -74,6 +74,23 @@ class ClientModel {
     return false;
 }
 
+public function getClientDetails($client_id) {
+    $query = "SELECT id, name, service_type, date_of_service 
+              FROM clients 
+              WHERE id = ?";
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bind_param("i", $client_id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+
+public function getAllClient() {
+    $query = "SELECT id, name FROM clients";
+    $result = $this->conn->query($query);
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
 
     
 }

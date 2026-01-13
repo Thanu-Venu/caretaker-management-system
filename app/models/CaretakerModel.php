@@ -2,7 +2,7 @@
 require_once APPROOT . '/core/Database.php';
 
 class CaretakerModel {
-    private $conn;
+    private $conn;  
 
     public function __construct() {
         $db = new Database();
@@ -43,7 +43,6 @@ class CaretakerModel {
  }
 
 
-
     public function updateCaretaker($id, $data) {
         $stmt = $this->conn->prepare("UPDATE caretakers SET name=?,email=?,phone=?,service_type=?,status=? WHERE id=?");
         $stmt->bind_param("sssssi", $data['name'],$data['email'],$data['phone'],$data['service_type'],$data['status'],$id);
@@ -61,9 +60,6 @@ class CaretakerModel {
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
-
-
-
 
 
 
@@ -108,14 +104,12 @@ class CaretakerModel {
         return $stmt->execute();
     }
 
-
-
-
-
-
-
-
-
+    public function getLeavesByUser($userId) {
+    $stmt = $this->conn->prepare("SELECT * FROM leaves WHERE user_id = ? ORDER BY start_date DESC");
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
 
 
 
@@ -130,5 +124,36 @@ class CaretakerModel {
     return false;
 }
 
+
+
+
+
+  public function addComplaint($data) {
+    $query = "INSERT INTO ct_complaints 
+             (caretaker_id, client_name, service_type, date_of_service, description, status)
+              VALUES (?, ?, ?, ?, ?, 'Pending')";
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bind_param("issss",
+        $data['caretaker_id'],
+        $data['client_name'],
+        $data['service_type'],
+        $data['date_of_service'],
+        $data['description']
+    );
+
+    return $stmt->execute();
 }
+
+   public function getAllComplaints() {
+    $query = "SELECT client_name, service_type, date_of_service, description, status
+              FROM ct_complaints
+              ORDER BY id DESC";
+
+    $result = $this->conn->query($query);
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+}
+
 ?>

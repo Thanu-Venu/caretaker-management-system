@@ -1,5 +1,6 @@
 
 
+
 // Example caretaker profile  data
 let caretaker = {
   name: "Sarah Johnson",

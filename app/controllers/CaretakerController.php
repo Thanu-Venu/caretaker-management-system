@@ -4,6 +4,9 @@ class CaretakerController extends Controller {
 
     private $leaveModel;
     private $caretakerModel;
+     private $clientModel;
+    private $complaintModel;
+
      public function __construct() {
     if (session_status() === PHP_SESSION_NONE) session_start();
 
@@ -14,6 +17,8 @@ class CaretakerController extends Controller {
 
     $this->leaveModel = $this->model('LeaveModel');
     $this->caretakerModel = $this->model('CaretakerModel'); // lowercase property
+     $this->clientModel = $this->model("ClientModel");
+    $this->complaintModel = $this->model("ComplaintModel");
 
     // Revalidate caretaker from DB
     $user = $this->caretakerModel->getCaretakerById($_SESSION['user']['id']); // lowercase usage
@@ -27,8 +32,17 @@ class CaretakerController extends Controller {
 }
 
     public function ct_dashboard() {
+         $userId = $_SESSION['user']['id'];
+    $leaves = $this->leaveModel->getLeavesByUser($userId);
+    $this->view("caretaker/ct_dashboard", ['leaves' => $leaves]);
         $this->view("caretaker/ct_dashboard");
     }
+
+    
+
+   
+
+
 
      public function ct_editprofile() {
         $this->view("caretaker/ct_editprofile");
@@ -61,8 +75,39 @@ class CaretakerController extends Controller {
      }
 
      public function ct_complaints() {
-         $this->view("caretaker/ct_complaints");
+         $clients = $this->clientModel->getAllClient();
+    $complaints = $this->caretakerModel->getAllComplaints();
+
+    $this->view('caretaker/ct_complaints', [
+        'clients' => $clients,
+        'complaints' => $complaints
+    ]);
+         
+         
      }
+     public function getClientInfo() {
+    if (isset($_POST['client_id'])) {
+        $client = $this->clientModel->getClientDetails($_POST['client_id']);
+        echo json_encode($client);
+    }
+}
+ public function addComplaint() {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        $data = [
+            'caretaker_id' => $_SESSION['user']['id'],
+            'client_name' => $_POST['client_name'],
+            'service_type' => $_POST['service_type'],
+            'date_of_service' => $_POST['date_of_service'],
+            'description' => $_POST['description']
+        ];
+
+        $this->caretakerModel->addComplaint($data);
+
+        echo "success";
+    }
+}
+
 
      public function ct_reports() {
          $this->view("caretaker/ct_reports");
@@ -154,7 +199,7 @@ class CaretakerController extends Controller {
 
             // Success
             $_SESSION['success'] = "Password updated successfully!";
-            header("Location: index.php?url=Caretaker/c_settings");
+            header("Location: index.php?url=Caretaker/ct_settings");
             exit();
         }
     }
@@ -164,5 +209,32 @@ class CaretakerController extends Controller {
       public function ct_reviews() {
          $this->view("caretaker/ct_reviews");
      }
-    
+     
+
+    public function index() {
+        $clients = $this->clientModel->getAllClient();
+        $complaints = $this->complaintModel->getAllComplaints();
+
+        $this->view('caretaker/complaints', [
+            'clients' => $clients,
+            'complaints' => $complaints
+        ]);
+    }
+
+    public function submit() {
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+            $data = [
+                'client_id' => $_POST['client_id'],
+                'service_type' => $_POST['service_type'],
+                'date_of_service' => $_POST['date_of_service'],
+                'description' => $_POST['description'],
+                'caretaker_id' => $_SESSION['user']['id']
+            ];
+
+            $this->complaintModel->addComplaint($data);
+
+            header("Location: " . URLROOT . "/complaint/index");
+        }
+    }
 }
