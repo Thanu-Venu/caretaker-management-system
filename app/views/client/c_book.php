@@ -1,3 +1,4 @@
+
 <?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
 
@@ -16,20 +17,19 @@
         <h1>Book Your Caretaker</h1>
 
         <?php
-        $id = $_GET['id'] ?? '';
-        $name = $_GET['name'] ?? 'Unknown';
-        $service = $_GET['service'] ?? 'Not Selected';
-        $location = $_GET['location'] ?? 'Not Provided';
-        $rating = $_GET['rating'] ?? '';
+          $ct = $data['caretaker'];
         ?>
 
+
+
         <!-- Caretaker Profile Summary -->
-        <section class="caretaker-summary">
-            <h2><?php echo htmlspecialchars($name); ?></h2>
-            <p><strong>Service:</strong> <?php echo htmlspecialchars($service); ?></p>
-            <p><strong>Location:</strong> <?php echo htmlspecialchars($location); ?></p>
-            <p><strong>Rating:</strong> ⭐ <?php echo htmlspecialchars($rating); ?></p>
-        </section>
+      <section class="caretaker-summary">
+           <h2><?= htmlspecialchars($ct['name']) ?></h2>
+          <p><strong>Service:</strong> <?= htmlspecialchars($ct['service_type']) ?></p>
+          <p><strong>Location:</strong> <?= htmlspecialchars($ct['location']) ?></p>
+           <p><strong>Rating:</strong> ⭐ <?= htmlspecialchars($ct['rating'] ?? 'N/A') ?></p>
+      </section>
+
 
         <!-- Base Price Display -->
         <div class="form-group">
@@ -38,58 +38,92 @@
             <p>Warning-The base price will differ according to preffered time</p>
         </div>
 
-        <!-- Booking Form -->
-        <section class="booking-form">
-            <form id="bookingForm">
+          <!-- ================= Booking Form ================= -->
+    <section class="booking-form">
+        <form id="bookingForm" method="POST" action="<?= URLROOT ?>/client/bookCaretaker">
 
-                <!-- Basis -->
-                <div class="form-group">
-                    <label for="basis">Select Basis</label>
-                    <select id="basis" name="basis" required>
-                        <option value="">-- Select --</option>
-                    </select>
-                </div>
+    <!-- Hidden caretaker ID -->
+    <input type="hidden" name="caretaker_id" value="<?= $data['caretaker']['id'] ?>">
 
-                <!-- Duration -->
-                <div class="form-group">
-                    <label for="duration">Duration</label>
-                    <input type="number" id="duration" name="duration" min="1" placeholder="Enter duration" required>
-                </div>
+    <!-- Hidden service type -->
+    <input type="hidden" name="service_type" value="<?= $data['caretaker']['service_type'] ?>">
+    <input type="hidden" name="total_payment" id="total_payment" value="0">
 
-                <!-- Date -->
-                <div class="form-group">
-                    <label for="date">Preferred Date</label>
-                    <input type="date" id="date" name="date" required>
-                </div>
 
-                <!-- Time -->
-                <div class="form-group">
-                    <label for="preferredTime">Preferred Time</label>
-                    <select id="preferredTime" required>
-                        <option value="">Select Time</option>
-                    </select>
-                </div>
+    <!-- Basis -->
+    <div class="form-group">
+        <label for="basis">Select Basis</label>
+        <select id="basis" name="basis" required>
+            <option value="">-- Select --</option>
+            <?php foreach($data['serviceOptions'][$data['caretaker']['service_type']] as $basis): ?>
+                <option value="<?= $basis ?>"><?= $basis ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
 
-                <div class="form-group">
-                    <label for="serviceLocation">Service Location</label>
-                    <textarea id="serviceLocation" name="serviceLocation" placeholder="Enter Your Service Location"></textarea>
-                </div>
+    <!-- Duration -->
+    <div class="form-group">
+        <label for="duration">Duration</label>
+        <input type="number" id="duration" name="duration" min="1" required>
+    </div>
 
-                <div class="form-group">
-                    <label for="customization">Any Customization</label>
-                    <textarea id="customization" name="customization" placeholder="Enter any specific requests"></textarea>
-                </div>
+    <!-- Booking Date -->
+    <div class="form-group">
+        <label for="date">Preferred Date</label>
+        <input type="date" id="date" name="booking_date" required>
+    </div>
 
-                <!-- Price Calculation -->
-                <div class="price-box">
-                    <p><strong>Estimated Price:</strong> <span id="price">0</span> LKR</p>
-                </div>
-                <div class="form-group">
-                    <span id="availabilityMsg"></span>
-                </div>
+    <!-- Preferred Time -->
+    <div class="form-group">
+        <label for="preferredTime">Preferred Time</label>
+        <select id="preferredTime" name="preferred_time" required>
+            <option value="">Select Time</option>
+            <?php
+            $timeOptions = [
+                "Elder Care" => ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)", "Night (6pm - 10pm)"],
+                "Babysitter"   => ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)"],
+                "Maid"         => ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)"],
+                "Disability Support" => ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)"]
+            ];
 
-                <button id="bookBtn" disabled>Request Booking</button>
-        </section>
+            foreach($timeOptions[$data['caretaker']['service_type']] as $time): ?>
+                <option value="<?= $time ?>"><?= $time ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+    <!-- Service Location -->
+    <div class="form-group">
+        <label for="serviceLocation">Service Location</label>
+        <textarea id="serviceLocation" name="service_location" placeholder="Enter service location"></textarea>
+    </div>
+
+    <!-- Customization -->
+    <div class="form-group">
+        <label for="customization">Any Customization</label>
+        <textarea id="customization" name="customization" placeholder="Enter any specific requests"></textarea>
+    </div>
+
+    <!-- Price -->
+    <div class="price-box">
+        <p><strong>Estimated Price:</strong>
+        <span id="price">0</span> LKR
+        </p>
+    </div>
+
+    <!-- Availability -->
+    <div class="form-group">
+        <span id="availabilityMsg"></span>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" id="bookBtn">
+        Request Booking
+    </button>
+
+</form>
+
+    </section>
         <!-- Alternative Caretakers -->
         <section id="otherCaretakers">
             <h3>Other Available Caretakers</h3>
@@ -98,13 +132,12 @@
         </div>
         </section>
 
-        </form>
-        </section>
+        
     </main>
 
-    <script>
-        const serviceType = "<?php echo $service; ?>";
-    </script>
+   <script>
+  const serviceType = "<?= htmlspecialchars($ct['service_type'], ENT_QUOTES) ?>";
+</script>
     <script src="<?php echo URLROOT; ?>/public/js/client/c_book.js"></script>
 </body>
 

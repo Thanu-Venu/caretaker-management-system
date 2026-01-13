@@ -2,6 +2,7 @@
 class HrController extends Controller {
 
     private $userModel;
+    private $hrModel;
 
     private $caretakerModel;
     
@@ -27,6 +28,7 @@ class HrController extends Controller {
         exit;
     }
     $this->userModel = $this->model('UserModel');
+    $this->hrModel   = $this->model('HrModel'); 
         
 
     // Revalidate caretaker from DB
@@ -76,9 +78,41 @@ class HrController extends Controller {
         $this->view("hr/hr_schedule");
     }
 
-    public function hr_pending_request() {
-        $this->view("hr/hr_pending_request");
+   public function hr_pending_request()
+{
+    $hrModel = $this->model('HrModel');
+    $bookings = $hrModel->getAllBookings();
+
+    $this->view('hr/hr_pending_request', [
+        'bookings' => $bookings
+    ]);
+}
+
+public function updateBookingStatus() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/hr/hr_pending_request");
+        exit;
     }
+
+    $bookingId = $_POST['booking_id'] ?? null;
+    $action    = $_POST['action'] ?? null;
+
+    if (!$bookingId || !$action) {
+        header("Location: " . URLROOT . "/hr/hr_pending_request");
+        exit;
+    }
+
+    $status = ($action === 'accept') ? 'Accepted' : 'Rejected';
+
+    // Call the model to update the booking status
+    $this->hrModel->updateBookingStatus($bookingId, $status);
+
+    // Redirect back to the pending requests page
+    header("Location: " . URLROOT . "/hr/hr_pending_request");
+    exit;
+}
+
+
 
      public function hr_feedback() {
         $this->view("hr/hr_feedback");

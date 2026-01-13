@@ -1,61 +1,63 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const feedbackModal = document.getElementById("feedbackModal");
+
+    const modal = document.getElementById("feedbackModal");
     const closeBtn = document.querySelector(".feedback-close");
     const cancelBtn = document.getElementById("cancelFeedback");
-    const feedbackForm = document.getElementById("feedbackForm");
+
+    const bookingIdInput = document.getElementById("bookingId");
+    const caretakerIdInput = document.getElementById("caretakerId");
+    const ratingInput = document.getElementById("ratingInput");
+
     const stars = document.querySelectorAll(".stars span");
     const ratingText = document.getElementById("ratingText");
+
     let rating = 0;
 
-    // Open modal for each feedback button
-    document.querySelectorAll(".feedback-btn").forEach(button => {
-        button.addEventListener("click", (e) => {
-            const bookingId = e.target.dataset.bookingId;
-            document.getElementById("bookingId").value = bookingId;
-            feedbackModal.style.display = "flex";
+    /* OPEN MODAL */
+    document.querySelectorAll(".feedback-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+
+            const card = btn.closest(".booking-card");
+
+            bookingIdInput.value = card.dataset.bookingId;
+            caretakerIdInput.value = card.dataset.caretakerId;
+
+            modal.style.display = "flex";
         });
     });
 
-    // Close modal
-    closeBtn.addEventListener("click", () => {
-        feedbackModal.style.display = "none";
-    });
-    cancelBtn.addEventListener("click", () => {
-        feedbackModal.style.display = "none";
-    });
+    /* CLOSE MODAL */
+    closeBtn.onclick = cancelBtn.onclick = () => {
+        resetForm();
+        modal.style.display = "none";
+    };
 
-    // Close modal if click outside content
-    window.addEventListener("click", (e) => {
-        if (e.target === feedbackModal) {
-            feedbackModal.style.display = "none";
+    window.onclick = (e) => {
+        if (e.target === modal) {
+            resetForm();
+            modal.style.display = "none";
         }
-    });
+    };
 
-    // Star rating
+    /* STAR RATING */
     stars.forEach((star, index) => {
         star.addEventListener("click", () => {
             rating = index + 1;
-            stars.forEach((s, i) => s.classList.toggle("active", i < rating));
-            ratingText.textContent = `${rating}/5 stars`;
+            ratingInput.value = rating;
+
+            stars.forEach((s, i) => {
+                s.classList.toggle("active", i < rating);
+            });
+
+            ratingText.textContent = rating + " / 5";
         });
     });
 
-    // Submit feedback
-    feedbackForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const bookingId = document.getElementById("bookingId").value;
-        const feedbackText = document.getElementById("feedback").value.trim();
-
-        if (!rating) {
-            alert("Please select a rating!");
-            return;
-        }
-
-        alert(`Feedback submitted for booking ${bookingId}!\nRating: ${rating}/5\nFeedback: ${feedbackText}`);
-        feedbackForm.reset();
+    function resetForm() {
         rating = 0;
+        ratingInput.value = "";
+        ratingText.textContent = "0 / 5";
         stars.forEach(s => s.classList.remove("active"));
-        ratingText.textContent = "0/5 stars";
-        feedbackModal.style.display = "none";
-    });
+        document.getElementById("feedback").value = "";
+    }
 });
