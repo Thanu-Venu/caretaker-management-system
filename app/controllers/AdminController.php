@@ -102,7 +102,8 @@ class AdminController extends Controller
 
     public function ad_bookings()
     {
-        $this->view("admin/ad_bookings");
+        $bookings=$this->clientModel->getAllBookingsAdmin();
+        $this->view("admin/ad_bookings", ['bookings' => $bookings]);
     }
 
     public function ad_settings()
