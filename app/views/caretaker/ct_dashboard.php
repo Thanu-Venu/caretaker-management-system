@@ -110,10 +110,19 @@
           <tr><th>Dates</th><th>Reason</th><th>Status</th></tr>
         </thead>
         <tbody>
-          <tr><td>Jan 15–17, 2024</td><td>Personal</td><td><span class="status approved">Approved</span></td></tr>
-          <tr><td>Dec 1–7, 2024</td><td>Holiday</td><td><span class="status approved">Approved</span></td></tr>
-          <tr><td>Nov 15, 2024</td><td>Medical</td><td><span class="status approved">Approved</span></td></tr>
-        </tbody>
+<?php foreach($data['leaves'] as $leave): ?>
+<tr>
+    <td><?= date("M d", strtotime($leave['start_date'])) ?> – <?= date("M d", strtotime($leave['end_date'])) ?></td>
+    <td><?= htmlspecialchars($leave['reason']) ?></td>
+    <td>
+        <span class="status <?= strtolower($leave['status']) ?>">
+            <?= $leave['status'] ?>
+        </span>
+    </td>
+</tr>
+<?php endforeach; ?>
+</tbody>
+
       </table>
        <div class="button-cont">
       <button class="btn-small">See All</button>

@@ -2,7 +2,7 @@
 require_once APPROOT . '/core/Database.php';
 
 class CaretakerModel {
-    private $conn;
+    private $conn;  
 
     public function __construct() {
         $db = new Database();
@@ -45,6 +45,7 @@ class CaretakerModel {
 
     return $stmt->execute();
  }
+
 
 
 
@@ -91,6 +92,7 @@ class CaretakerModel {
             $data['status'],
             $id
         );
+
     }
 
     return $stmt->execute();
@@ -108,9 +110,6 @@ class CaretakerModel {
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
-
-
-
 
 
 
@@ -241,43 +240,80 @@ public function getPastBookings($caretakerId) {
 
 
 
-    public function getActiveCaretakers() {
-        $result = $this->conn->query("SELECT * FROM caretakers WHERE status='Active'");
-        return $result->fetch_all(MYSQLI_ASSOC);
+    public function login($email, $password) {
+    $stmt = $this->conn->prepare("SELECT * FROM caretakers WHERE email=?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $caretaker = $stmt->get_result()->fetch_assoc();
+    if ($caretaker && password_verify($password, $caretaker['password'])) {
+        return $caretaker;
     }
-
-// HR: get caretakers with availability
-public function getCaretakersForHR() {
-    $query = "
-        SELECT id, name, availability, location, check_in, check_out
-        FROM caretakers
-        WHERE status = 'Active'
-        ORDER BY id DESC
-    ";
-    $result = $this->conn->query($query);
-    return $result->fetch_all(MYSQLI_ASSOC);
+    return false;
 }
 
-// HR: update availability
-public function updateAvailability($data) {
+public function getClientsByCaretaker($caretakerId)
+{
+    $sql = "SELECT 
+                b.id AS booking_id,
+                b.client_id,
+                c.name AS client_name,
+                b.service_type,
+                b.booking_date,
+                b.preferred_time
+            FROM bookings b
+            JOIN clients c ON b.client_id = c.id
+            WHERE b.caretaker_id = ?
+            ORDER BY b.booking_date DESC";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param('i', $caretakerId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+ public function addComplaint($data) {
     $stmt = $this->conn->prepare(
-        "UPDATE caretakers 
-         SET availability=?, location=?, check_in=?, check_out=? 
-         WHERE id=?"
+        "INSERT INTO ct_complaints (client_id, caretaker_id, service_type, service_date, description, status) 
+         VALUES (?, ?, ?, ?, ?, 'Pending')"
     );
 
     $stmt->bind_param(
-        "ssssi",
-        $data['availability'],
-        $data['location'],
-        $data['check_in'],
-        $data['check_out'],
-        $data['id']
+        "iisss",
+        $data['client_id'],
+        $data['caretaker_id'],
+        $data['service_type'],
+        $data['service_date'],
+        $data['description']
     );
 
     return $stmt->execute();
 }
+  
+
+
+public function getCaretakerFeedbacks($caretakerId)
+{
+    $sql = "SELECT 
+                cl.name AS client_name,
+                b.service_type AS service,
+                f.rating,
+                f.feedback AS comment,
+                f.created_at
+            FROM feedbacks f
+            JOIN clients cl ON f.client_id = cl.id
+            JOIN bookings b ON f.booking_id = b.id
+            WHERE f.caretaker_id = ?
+            ORDER BY f.created_at DESC";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $caretakerId);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
 
 
 }
+
 ?>

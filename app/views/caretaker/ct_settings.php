@@ -65,15 +65,18 @@ if (isset($data['user'])) {
     <!-- Password Settings -->
     <section class="card">
       <h3>Change Password</h3>
-      <form id="passwordForm">
+     <form id="passwordForm"
+      action="<?= URLROOT ?>/index.php?url=Caretaker/editPasswordDetails"
+      method="post">
+
         <label>Current Password
-          <input type="password" placeholder="Current password" required>
+          <input type="password" name="current-password" placeholder="Current password" required>
         </label>
         <label>New Password
-          <input type="password" placeholder="New password" required>
+          <input type="password"name="new-password"  placeholder="New password" required>
         </label>
         <label>Confirm New Password
-          <input type="password" placeholder="Confirm password" required>
+          <input type="password"  name="confirm-password" placeholder="Confirm password" required>
         </label>
         <button type="submit" class="btn-save">Update Password</button>
       </form>

@@ -40,3 +40,34 @@ document.getElementById("complaintForm").addEventListener("submit", function(e){
 
 // Initial render
 renderComplaints();
+document.getElementById("clientSelect").addEventListener("change", function () {
+    let client_id = this.value;
+
+    if (client_id !== "") {
+        fetch("<?php echo URLROOT; ?>/caretaker/getClientInfo", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "client_id=" + client_id
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("serviceType").value = data.service_type;
+            document.getElementById("dateOfService").value = data.date_of_service;
+        });
+    }
+});
+document.getElementById("complaintForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    let formData = new FormData(this);
+
+    fetch("<?php echo URLROOT; ?>/caretaker/addComplaint", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.text())
+    .then(result => {
+        alert("Complaint Submitted Successfully!");
+        location.reload();
+    });
+});
