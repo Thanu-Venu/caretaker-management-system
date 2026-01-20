@@ -2,7 +2,7 @@
 class AdminSettingsController extends Controller
 {
     private $userModel;
-
+    private $historyModel;
     public function __construct()
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
@@ -14,7 +14,7 @@ class AdminSettingsController extends Controller
         }
 
         $this->userModel = $this->model('UserModel');
-
+        $this->historyModel = $this->model('HistoryModel');
         // Re-fetch user from DB
         $user = $this->userModel->getUserById($_SESSION['user']['id']);
         if (!$user) {
@@ -53,6 +53,7 @@ class AdminSettingsController extends Controller
     $userId = $_SESSION['user']['id'];
     $userModel = $this->model('UserModel');
 
+
     // Prepare data array
     $data = [
         'username' => $_POST['username'] ?? '',
@@ -82,6 +83,14 @@ class AdminSettingsController extends Controller
 
     // Update user in DB
     $userModel->updateUserProfile($userId, $data);
+    $this->historyModel->log([
+    'user_id' => $_SESSION['user']['id'],
+    'username' => $_SESSION['user']['username'],
+    'role' => 'admin',
+    'action' => 'Updated admin profile details',
+    'section' => 'Settings'
+]);
+
 
     // Re-fetch updated user data
     $user = $userModel->getUserById($userId);
@@ -118,9 +127,19 @@ class AdminSettingsController extends Controller
             $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
             $this->userModel->updatePassword($userId, $hashedPassword);
 
+            $this->historyModel->log([
+                'user_id' => $_SESSION['user']['id'],
+                'username' => $_SESSION['user']['username'],
+                'role' => 'admin',
+                'action' => 'Changed admin account password',
+                'section' => 'Settings'
+            ]);
+
+
             $_SESSION['flash_success'] = "Password updated successfully!";
             header('Location: ' . URLROOT . '/adminsettings');
             exit();
         }
+
     }
 }

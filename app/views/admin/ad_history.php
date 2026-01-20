@@ -13,33 +13,6 @@
 
   <main class="content">
       <h1>Logs</h1>
-      <div class="filters">
-        <label for="rolFilter">User Role</label>
-        <select id="roleFilter" onchange="filterLogs()">
-          <option value="">All</option>
-          <option value="Admin">Admin</option>
-          <option value="Manager">HR Manager</option>
-          <option value="Caregiver">Caregiver</option>
-          <option value="Client">Client</option>
-        </select>
-
-        <label for="userFilter">Username</label>
-        <select id="userFilter" onchange="filterLogs()">
-          <option value="">All</option>
-        </select>
-
-        <label for="dateFilter">Date Range</label>
-        <select id="dateFilter" onchange="filterLogs()">
-          <option value="">All</option> 
-         <option value="asc">Ascending</option>
-          <option value="desc">Descending</option>
-        </select>  
-
-        <label for="actionFilter">Action Type</label>
-       <select id="actionFilter" onchange="filterLogs()">
-          <option value="">All</option>
-        </select>
-      </div>  
   <div class="container">
     <section>
       <table id="logTable">
@@ -52,14 +25,28 @@
             <th>Affected Section</th>
           </tr>
         </thead>
-        <tbody>
-          <!-- Data filled by JS -->
-        </tbody>
+       <tbody>
+  <?php if (!empty($data['logs'])): ?>
+    <?php foreach ($data['logs'] as $log): ?>
+      <tr>
+        <td><?= htmlspecialchars($log['created_at']) ?></td>
+        <td><?= htmlspecialchars($log['username']) ?></td>
+        <td><?= htmlspecialchars($log['role']) ?></td>
+        <td><?= htmlspecialchars($log['action']) ?></td>
+        <td><?= htmlspecialchars($log['section']) ?></td>
+      </tr>
+    <?php endforeach; ?>
+  <?php else: ?>
+    <tr>
+      <td colspan="5" style="text-align:center;">No admin logs found</td>
+    </tr>
+  <?php endif; ?>
+</tbody>
+
       </table>
     </section>
   </div>
   </main>
 
-  <script src="<?php echo URLROOT; ?>/public/js/admin/ad_history.js"></script>
 </body>
 </html>
