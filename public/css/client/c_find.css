@@ -109,6 +109,9 @@ h3 {
   padding: 15px;
   border: 1px solid #CCC;
   width:300px;
+  display: flex;
+  flex-direction: column;
+  padding-right: 25px;
   
 }
 
@@ -152,7 +155,9 @@ h3 {
   display: flex;
   justify-content: right;
   gap: 20px;         /* space between buttons */
-    /* space above buttons */
+    margin-top: auto;  /* space above buttons */
+    
+
 }
 
 .card-buttons button {

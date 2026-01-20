@@ -19,21 +19,19 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
     <textarea name="message" placeholder="Message" required></textarea>
     <select name="target_role" required>
         <option value="All">All</option>
-        <option value="admin">Admin</option>
-        <option value="Manager">Manager</option>
+        <option value="Users">Admin/Hr</option>
         <option value="Caretaker">Caretaker</option>
         <option value="Client">Client</option>
     </select>
     <button type="submit">Add Announcement</button>
 </form>
 
-<table border="1" width="100%">
+<table border="1" width="100%" style="margin-left: 300px;">
     <thead>
         <tr>
             <th>Title</th>
             <th>Message</th>
             <th>Target</th>
-            <th>Created By</th>
             <th>Created At</th>
             <th>Actions</th>
         </tr>
@@ -45,12 +43,11 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
                     <td><?= htmlspecialchars($ann['title']) ?></td>
                     <td><?= htmlspecialchars($ann['message']) ?></td>
                     <td><?= htmlspecialchars($ann['target_role']) ?></td>
-                    <td><?= htmlspecialchars($ann['created_by_name'] ?? '') ?></td>
                     <td><?= htmlspecialchars($ann['created_at']) ?></td>
                     <td>
-                        <a href="<?= URLROOT ?>/AnnouncementCRUD/edit/<?= $ann['id'] ?>">Edit</a>
+                        <a href="<?= URLROOT ?>/AnnouncementCRUD/edit/<?= $ann['id'] ?>"><i class="bx bx-edit" style="font-size: 20px;"></i></a>
                         <a href="<?= URLROOT ?>/AnnouncementCRUD/delete/<?= $ann['id'] ?>"
-                           onclick="return confirm('Delete this announcement?')">Delete</a>
+                           onclick="return confirm('Delete this announcement?')"><i class="bx bx-trash" style="font-size: 20px;"></i></a>
                     </td>
                 </tr>
             <?php endforeach; ?>

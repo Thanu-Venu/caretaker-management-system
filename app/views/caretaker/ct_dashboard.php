@@ -17,8 +17,8 @@
 
   <!-- Welcome -->
   <section class="welcome">
-    <h1>Welcome back, Sarah!</h1>
-    <p>Manage your bookings and availability</p>
+    <h1>Welcome back, <?php echo htmlspecialchars($_SESSION['user']['name']); ?></h1>
+    
   </section>
 
   <!-- Dashboard Layout -->

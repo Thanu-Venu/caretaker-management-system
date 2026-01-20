@@ -1,24 +1,26 @@
-// Tab navigation
-function openTab(evt, tabName) {
-  const tabContents = document.querySelectorAll(".tab-content");
-  tabContents.forEach(tc => tc.classList.remove("active"));
-
-  const tabLinks = document.querySelectorAll(".tab-link");
-  tabLinks.forEach(tl => tl.classList.remove("active"));
-
-  document.getElementById(tabName).classList.add("active");
-  evt.currentTarget.classList.add("active");
-}
-
-// Dummy form submission handlers
-document.getElementById("profileForm").addEventListener("submit", function(e){
-  e.preventDefault();
-  alert("Profile changes saved!");
+// Profile Save
+document.getElementById("saveProfile").addEventListener("click", () => {
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const phone = document.getElementById("phone").value;
+    const exp = document.getElementById("experience").value;
+    const qual = document.getElementById("qualifications").value;
+    
+    // Dummy save alert
+    alert(`Profile updated!\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nExperience: ${exp}\nQualifications: ${qual}`);
 });
 
+// Change Password
 document.getElementById("passwordForm").addEventListener("submit", function(e){
-  e.preventDefault();
-  alert("Password changed successfully!");
+    e.preventDefault();
+    alert("Password updated successfully!");
+});
+
+// Save notification settings
+document.querySelectorAll(".btn-save").forEach(btn => {
+    btn.addEventListener("click", () => {
+        alert("Settings saved!");
+    });
 });
 
 document.getElementById("preferencesForm").addEventListener("submit", function(e){

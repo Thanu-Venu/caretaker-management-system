@@ -29,6 +29,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
     <input type="text" placeholder="Search caregivers" id="searchInput">
   </div>
 
+
   <!-- Caretaker Table -->
   <div class="table-container">
     <table>

@@ -15,7 +15,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
 <main class="main-content">
     <section class="form-section">
         <h1>Add Caregiver</h1>
-        <form method="POST" class="caretaker-form">
+        <form method="POST" class="caretaker-form" enctype="multipart/form-data">
             <label>Name</label>
             <input type="text" name="name" required placeholder="Enter full name">
 
@@ -29,8 +29,20 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
             <label>Phone</label>
             <input type="text" name="phone" required placeholder="Enter phone number">
 
+            <label>Experience</label>
+            <input type="text" name="experience" required placeholder="Enter experience">
+
+            <label>Location</label>
+            <input type="text" name="location" required placeholder="Enter location">
+
+            <label>Qualifications</label>
+            <input type="text" name="qualifications" required placeholder="Enter qualifications">
+            <label>Profile Picture
+            <input type="file" id="profileFile" name="profile_image" accept="image/*">
+          </label>
+
             <label>Service Type</label>
-            <select name="service_typea" required>
+            <select name="service_type" required>
                 <option value="">Select service</option>
                 <option value="Elder Care">Elder Care</option>
                 <option value="Maid">Maid</option>
@@ -43,7 +55,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
                 <option value="Inactive">Inactive</option>
             </select>
 
-            <button type="submit" class="submit-btn" window.location.href='/CMA/public/caretakerCRUD/list'>Add Caregiver</button>
+            <button type="submit" class="submit-btn" >Add Caregiver</button>
         </form>
     </section>
 </main>
