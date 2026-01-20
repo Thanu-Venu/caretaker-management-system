@@ -13,6 +13,8 @@ class AdminController extends Controller
     private $adminLeaveModel;
 
     private $complaintModel;
+
+    private $feedbackModel;
     public function __construct()
     {
         if (session_status() === PHP_SESSION_NONE)
@@ -30,7 +32,7 @@ class AdminController extends Controller
         $this->clientModel = $this->model('ClientModel');
         $this->adminLeaveModel = $this->model('AdminLeaveModel');
         $this->complaintModel = $this->model('ComplaintModel');
-
+        $this->feedbackModel = $this->model('FeedbackModel');
         // Revalidate caretaker from DB
         $user = $this->userModel->getUserById($_SESSION['user']['id']); // lowercase usage
         if (!$user) {
@@ -93,10 +95,11 @@ class AdminController extends Controller
     public function ad_feedback()
     {
         $complaints = $this->complaintModel->getAllComplaints();
+        $feedbacks = $this->feedbackModel->getAll();
 
         $this->view("admin/ad_feedback", [
             'complaints' => $complaints,
-            'feedbacks' => []
+            'feedbacks' => $feedbacks
         ]);
     }
 
