@@ -27,10 +27,18 @@ class ComplaintModel {
         return $result;
     }
 
-    public function getAllComplaints() {
-        $result = $this->db->query("SELECT * FROM complaints ORDER BY Id DESC");
-        return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+    public function getAllComplaints()
+{
+    $sql = "SELECT * FROM complaints ORDER BY Id DESC";
+    $result = $this->db->query($sql);
+
+    if (!$result) {
+        die("SQL Error: " . $this->db->error);
     }
+
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
 
 
     public function getComplaintById($id) {
@@ -73,20 +81,22 @@ public function updateComplaint($id, $client_name, $caretaker_name, $category, $
 public function deleteComplaintById($id)
 {
     $stmt = $this->db->prepare("DELETE FROM complaints WHERE Id = ?");
-    $stmt->bind_param("i", $id);
+    $stmt->bind_param("i", $id);   // ✅ FIXED
     return $stmt->execute();
 }
+
 
 
 public function getComplaintsByClient($client_name)
 {
     $query = "SELECT * FROM complaints WHERE client_name = ?";
     $stmt = $this->db->prepare($query);
-    $stmt->bind_param("s", $client_name);
+    $stmt->bind_param("s", $client_name); // ✅ FIXED
     $stmt->execute();
     $result = $stmt->get_result();
     return $result->fetch_all(MYSQLI_ASSOC);
 }
+
 
 public function updateComplaintByClient($id, $details)
 {
@@ -101,6 +111,24 @@ public function deleteComplaintByClient($id)
     $query = "DELETE FROM complaints WHERE Id = ? AND status != 'Approved'";
     $stmt = $this->db->prepare($query);
     $stmt->bind_param("i", $id);
+    return $stmt->execute();
+}
+
+public function updateComplaintStatus($id, $status)
+{
+    $stmt = $this->db->prepare(
+        "UPDATE complaints SET status = ? WHERE Id = ?"
+    );
+    $stmt->bind_param("si", $status, $id);
+    return $stmt->execute();
+}
+
+public function addNotification($user_name, $message)
+{
+    $stmt = $this->db->prepare(
+        "INSERT INTO notifications (user_name, message) VALUES (?, ?)"
+    );
+    $stmt->bind_param("ss", $user_name, $message);
     return $stmt->execute();
 }
 

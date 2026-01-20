@@ -30,6 +30,23 @@ $caretaker = $data['caretaker'];
   <label for="phone">Phone</label>
   <input type="text" name="phone" id="phone" value="<?php echo htmlspecialchars($caretaker['phone']); ?>" required>
 
+
+   <label>Experience</label>
+      <input type="text" name="experience"
+        value="<?= htmlspecialchars($caretaker['experience']); ?>" required>
+
+      <label>Location</label>
+      <input type="text" name="location"
+        value="<?= htmlspecialchars($caretaker['location']); ?>" required>
+
+      <label>Qualifications</label>
+      <input type="text" name="qualifications"
+        value="<?= htmlspecialchars($caretaker['qualifications']); ?>" required>
+
+      <label>Profile Picture</label>
+      <input type="file" name="profile_image" accept="image/*">
+
+
   <label for="service_type">Service Type</label>
   <select name="service_type" id="service_type" required>
     <option value="Elder Care" <?php if($caretaker['service_type']=='Elder Care') echo 'selected'; ?>>Elder Care</option>

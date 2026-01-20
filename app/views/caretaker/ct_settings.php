@@ -24,9 +24,11 @@ if (isset($data['user'])) {
       <h3>Profile Details</h3>
       <form id="edit-details-form" action="<?= URLROOT ?>/index.php?url=Caretaker/editCaretakerDetails" method="post" enctype="multipart/form-data" >
       <div class="profile-body">
-      <img id="profileImg" 
-     src="<?= URLROOT ?>/public/uploads/<?= $user['profile_image'] ?? 'default.png' ?>" 
-     alt="Profile">
+      <img 
+        src="<?= URLROOT ?>/public /uploads/<?= $user['profile_image'] ?: 'default.png' ?>" 
+        alt="Profile"
+        onerror="this.src='<?= URLROOT ?>/public/uploads/default.png';">
+
 
         <div class="pro-section">
           <label>Full Name
@@ -36,22 +38,24 @@ if (isset($data['user'])) {
             <input type="email" id="email" name="email"  value="<?= htmlspecialchars($user['email']); ?>">
           </label><br>
           <label>Phone Number
-            <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($user['phone']); ?>" placeholder="+94 712345678" >
+            <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($user['phone']); ?>"  >
           </label><br>
           <label>Experience
               <input type="text" id="experience" name="experience"
                     value="<?= htmlspecialchars($user['experience'] ?? ''); ?>"
-                    placeholder="8 years">
+                    ">
+            </label>
+            <label>Location
+              <input type="text" id="location" name="location"
+                    value="<?= htmlspecialchars($user['location'] ?? ''); ?>"
+                    >
             </label>
 
             <label>Qualifications
               <input type="text" id="qualifications" name="qualifications"
                     value="<?= htmlspecialchars($user['qualifications'] ?? ''); ?>"
-                    placeholder="Certified Elder Care Specialist">
+                    >
             </label><br>
-          <label>Profile Picture
-            <input type="file" id="profileFile" name="profile_image" accept="image/*">
-          </label><br><br>
           <button id="saveProfile" type="submit" form="edit-details-form" class="btn-save">Save Profile</button>
         </div>
       </div>
