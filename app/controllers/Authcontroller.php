@@ -111,7 +111,7 @@ class AuthController extends Controller
 
      // Logout
     public function logout() {
-        session_start();              // Start session if not already started
+        if (session_status() === PHP_SESSION_NONE) session_start();              // Start session if not already started
         $_SESSION = [];               // Clear all session variables
         session_unset();              // Unset session variables
         session_destroy();            // Destroy the session

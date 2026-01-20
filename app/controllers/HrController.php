@@ -2,18 +2,8 @@
 class HrController extends Controller {
 
     private $userModel;
-    private $hrModel;
-
     private $caretakerModel;
-    
 
-    private $clientModel;
-    private $hrLeaveModel;
-
-    public function __construct()
-    {
-        // Load caretaker model once
-        $this->caretakerModel = $this->model('CaretakerModel');
 
         $this->userModel = $this->model('UserModel');
         $this->clientModel = $this->model('ClientModel');
@@ -28,7 +18,8 @@ class HrController extends Controller {
         exit;
     }
     $this->userModel = $this->model('UserModel');
-    $this->hrModel   = $this->model('HrModel'); 
+    $this->caretakerModel = $this->model('CaretakerModel');
+
         
 
     // Revalidate caretaker from DB
@@ -56,8 +47,31 @@ class HrController extends Controller {
     }    
 
     public function hr_managect() {
-        $this->view("hr/hr_managect");
+        $caretakers = $this->caretakerModel->getCaretakersForHR();
+
+        $data = [
+            'caretakers' => $caretakers
+        ];
+
+        $this->view("hr/hr_managect", $data);
     }
+
+    public function updateAvailability() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'id' => $_POST['id'],
+                'availability' => $_POST['availability'],
+                'location' => $_POST['location'],
+                'check_in' => $_POST['check_in'],
+                'check_out' => $_POST['check_out']
+            ];
+
+            $this->caretakerModel->updateAvailability($data);
+            header("Location: index.php?url=hr/hr_managect");
+            exit;
+        }
+    }
+
 
     public function hr_history() {
         $this->view("hr/hr_history");
