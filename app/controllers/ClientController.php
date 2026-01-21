@@ -3,6 +3,8 @@
 
 class ClientController extends Controller {
      private $clientModel;
+     private $notificationModel;
+
     public function __construct() {
     if (session_status() === PHP_SESSION_NONE) session_start();
 
@@ -13,6 +15,7 @@ class ClientController extends Controller {
 
     // Re-validate user from database
     $this->clientModel = $this->model('ClientModel');
+    $this->notificationModel = $this->model('NotificationModel');
     $user = $this->clientModel->getClientById($_SESSION['user']['id']);
 
     if (!$user) { // user deleted
@@ -93,6 +96,15 @@ public function submitFeedback()
     ];
 
     $clientModel->addFeedback($data);
+// ✅ Notify ALL admins about new feedback
+$this->notificationModel->notifyAdmins(
+    "New Feedback",
+    "New feedback received (Booking ID: {$bookingId}, Rating: {$data['rating']}).",
+    URLROOT . "/admin/ad_feedback"
+    // If your admin URLs use front controller:
+    // URLROOT . "/public/index.php?url=admin/ad_feedback"
+);
+
 
     $_SESSION['success'] = "Feedback submitted successfully!";
     header("Location: " . URLROOT . "/client/c_pastBookings");
@@ -352,6 +364,18 @@ public function bookCaretaker()
         ];
 
         $bookingId = $this->clientModel->createBooking($bookingData);
+      
+
+
+// ✅ Notify ALL admins
+    $this->notificationModel->notifyAdmins(
+        "New Booking",
+        "New booking placed (Booking ID: $bookingId) by client ID $client_id.",
+        URLROOT . "/admin/ad_bookings"
+        // If your routing uses index.php?url then use:
+        // URLROOT . "/public/index.php?url=admin/ad_bookings"
+    );
+
 
 if ($bookingId) {
     // Send notification to HR

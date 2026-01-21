@@ -3,9 +3,12 @@
 class FeedbackController extends Controller {
 
     private $feedbackModel;
+    private $notifModel;
+
 
     public function __construct() {
         $this->feedbackModel = new FeedbackModel();
+        $this->notifModel = new NotificationModel();
     }
 
     // -------------------------------
@@ -63,6 +66,14 @@ class FeedbackController extends Controller {
             ];
 
             $this->feedbackModel->create($data);
+            // ✅ Notify ALL admins
+        $this->notifModel->notifyAdmins(
+            "New Feedback",
+            "New feedback received (Client ID: {$data['client_id']}, Caretaker ID: {$data['caretaker_id']}, Rating: {$data['rating']}).",
+            URLROOT . "/admin/ad_feedback"
+            // If your routes use index.php?url :
+            // URLROOT . "/public/index.php?url=admin/ad_feedback"
+        );
 
             header("Location: " . URLROOT . "/feedback/index/" . $data['client_id']);
             exit;
