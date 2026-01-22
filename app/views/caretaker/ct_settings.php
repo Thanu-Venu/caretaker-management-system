@@ -79,26 +79,7 @@ if (isset($data['user'])) {
       </form>
     </section>
 
-    <!-- Notifications -->
-    <section class="card">
-      <h3>Notification Settings</h3>
-      <div class="notif-option">
-        <label>Booking Updates
-          <input type="checkbox" checked>
-        </label>
-      </div>
-      <div class="notif-option">
-        <label>Leave Approval Updates
-          <input type="checkbox" checked>
-        </label>
-      </div>
-      <div class="notif-option">
-        <label>Promotions / Announcements
-          <input type="checkbox">
-        </label>
-      </div>
-      <button class="btn-save">Save Notification Settings</button>
-    </section>
+    
 
   </div>
 </div>

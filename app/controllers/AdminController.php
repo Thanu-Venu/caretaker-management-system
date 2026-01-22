@@ -104,10 +104,24 @@ public function update_leave_status($id, $status)
         $this->view("admin/ad_bookings");
     }
 
-    public function ad_settings()
-    {
-        $this->view("admin/ad_settings");
+   public function ad_settings() {
+    // Session already started in constructor
+    if (!isset($_SESSION['user'])) {
+        header("Location: " . URLROOT . "/auth/login");
+        exit;
     }
+
+    // Optional: allow only admin role
+    if ($_SESSION['user']['role'] !== 'admin') {
+        die("Access denied. Only admin can access this page.");
+    }
+
+    // Use session user directly
+    $user = $_SESSION['user'];
+
+    $this->view('admin/ad_settings', ['user' => $user]);
+}
+
 
     public function ad_reports()
     {

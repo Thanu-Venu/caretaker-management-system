@@ -62,5 +62,37 @@ class AnnouncementModel {
         );
         return $stmt->execute();
     }
+public function getCaretakerAnnouncements()
+{
+    $stmt = $this->conn->prepare(
+        "SELECT * FROM announcements
+         WHERE target_role IN ('caretaker', 'All')
+         ORDER BY created_at DESC"
+    );
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+public function getClientAnnouncements()
+{
+    $stmt = $this->conn->prepare(
+        "SELECT * FROM announcements
+         WHERE target_role IN ('client', 'All')
+         ORDER BY created_at DESC"
+    );
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+    public function getUserAnnouncements()
+{
+    $stmt = $this->conn->prepare(
+        "SELECT * FROM announcements
+         WHERE target_role IN ('users', 'All')
+         ORDER BY created_at DESC"
+    );
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
 }
 ?>

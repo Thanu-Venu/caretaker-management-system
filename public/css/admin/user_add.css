@@ -37,7 +37,7 @@ body {
 /* ===== Input Fields ===== */
 .form-section input,
 .form-section select {
-    width: 600px;
+    width: 100%;
     padding: 10px 1px;
     margin-bottom: 20px;
     border: 1px solid #ccc;

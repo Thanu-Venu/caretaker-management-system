@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 class HRCaretakerCRUDController extends Controller {
 
     private $caretakerModel;

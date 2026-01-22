@@ -106,5 +106,23 @@ public function deleteComplaintByClient($id)
     return $stmt->execute();
 }
 
+public function updateComplaintStatus($id, $status)
+{
+    $stmt = $this->db->prepare(
+        "UPDATE complaints SET status = ? WHERE Id = ?"
+    );
+    $stmt->bind_param("si", $status, $id);
+    return $stmt->execute();
+}
+
+public function addNotification($user_name, $message)
+{
+    $stmt = $this->db->prepare(
+        "INSERT INTO notifications (user_name, message) VALUES (?, ?)"
+    );
+    $stmt->bind_param("ss", $user_name, $message);
+    return $stmt->execute();
+}
+
 }
 ?>
