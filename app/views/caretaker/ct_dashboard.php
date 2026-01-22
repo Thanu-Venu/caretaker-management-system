@@ -28,24 +28,29 @@
     <section class="card profile">
       <h3>Profile Overview</h3>
       <div class="profile-body">
-        <img src="<?php echo URLROOT; ?>/public/images/find.png" alt="Profile">
+        <img src="<?= URLROOT ?>/public/uploads/<?= $data['caretaker']['profile_image'] ?>" alt="Profile">
         <div>
           <div class="profile-header">
-            <h4>Sarah Johnson <br><span class="rating">⭐ 4.9 (127 views)</span>
-              <button class="btn-verify">Elder Care Specialist</button>
-            </h4>
+           <h4>
+    <?= htmlspecialchars($data['caretaker']['name']) ?>
+    <br>
+    <span class="rating">⭐ <?= $data['caretaker']['rating'] ?? '0.0' ?> (<?= $data['caretaker']['views'] ?? 0 ?> views)</span>
+    <button class="btn-verify">
+        <?= htmlspecialchars($data['caretaker']['service_type']) ?>
+    </button>
+</h4>
             
            <button   onclick="openProfile()" class="btn"  >Edit profile</button>
           </div>
           
-          <p class="profile-desc">Experienced elder care specialist with 8 years of compassionate service.<br>
-             Specialized in medication management, mobility assistance, and companionship care.</p>
+          <p class="profile-desc">
+    <?= nl2br(htmlspecialchars($data['caretaker']['qualifications'])) ?>
+</p>
           <div class="tags">
-            <span class="tag">Elder Care</span>
-            <span class="tag">Medication Management</span>
-            <span class="tag">Mobility assistance</span>
-            <span class="tag">Companionship</span><br>
-          </div>
+    <span class="tag"><?= htmlspecialchars($data['caretaker']['service_type']) ?></span>
+    <span class="tag"><?= htmlspecialchars($data['caretaker']['experience']) ?> Years Experience</span>
+    <span class="tag"><?= htmlspecialchars($data['caretaker']['location']) ?></span>
+</div>
         </div>
       </div>
     </section>
@@ -72,11 +77,27 @@
         <thead>
           <tr><th>Client</th><th>Date & Time</th><th>Service</th><th>Location</th><th>Payment</th></tr>
         </thead>
-        <tbody>
-          <tr><td>Mrs Johnson</td><td>2024-01-20<br>9:00 AM - 1:00 PM</td><td><span class="badge">Elder Care</span></td><td>Vavuniya</td><td>700</td></tr>
-          <tr><td>The Smith Family</td><td>2024-01-20<br>6:00 AM - 1:00 PM</td><td><span class="badge">Elder Care</span></td><td>Jaffna</td><td>2000</td></tr>
-          <tr><td>Mr Davis</td><td>2024-01-20<br>8:00 AM - 5:00 PM</td><td><span class="badge">Elder Care</span></td><td>Colombo</td><td>1000</td></tr>
-        </tbody>
+       <tbody>
+    <?php if (empty($data['upcoming'])): ?>
+        <tr>
+            <td colspan="5" style="text-align:center;">No upcoming bookings</td>
+        </tr>
+    <?php else: ?>
+        <?php foreach ($data['upcoming'] as $b): ?>
+            <tr>
+                <td><?= htmlspecialchars($b['client_name']) ?></td>
+                <td>
+                    <?= htmlspecialchars($b['booking_date']) ?><br>
+                    <?= htmlspecialchars($b['preferred_time']) ?>
+                </td>
+                <td><span ><?= htmlspecialchars($b['service_type']) ?></span></td>
+                <td><?= htmlspecialchars($b['service_location']) ?></td>
+                <td><?= htmlspecialchars($b['total_payment']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</tbody>
+
       </table>
      
        <div class="button-cont">

@@ -223,7 +223,7 @@ public function getPastBookings($caretakerId) {
                 c.name AS client_name
             FROM bookings b
             JOIN clients c ON c.id = b.client_id
-            WHERE b.caretaker_id = ? AND b.status = 'Accepted' AND b.booking_date < CURDATE()
+            WHERE b.caretaker_id = ? AND b.status = 'Completed' AND b.booking_date < CURDATE()
             ORDER BY b.booking_date DESC";
     
     $stmt = $this->conn->prepare($sql);
@@ -289,6 +289,20 @@ public function getClientsByCaretaker($caretakerId)
     return $stmt->execute();
 }
   
+public function getResolvedComplaintsByCaretaker($caretaker_id)
+{
+    $stmt = $this->conn->prepare(
+        "SELECT * FROM ct_complaints 
+         WHERE caretaker_id = ? AND status = 'Resolved'
+         ORDER BY service_date DESC"
+    );
+
+    $stmt->bind_param("i", $caretaker_id);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
 
 
 public function getCaretakerFeedbacks($caretakerId)

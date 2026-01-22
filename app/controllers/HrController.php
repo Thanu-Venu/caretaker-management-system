@@ -2,8 +2,19 @@
 class HrController extends Controller {
 
     private $userModel;
-    private $caretakerModel;
+    private $hrModel;
 
+    private $caretakerModel;
+    private $complaintModel; 
+    
+
+    private $clientModel;
+    private $hrLeaveModel;
+
+    public function __construct()
+    {
+        // Load caretaker model once
+        $this->caretakerModel = $this->model('CaretakerModel');
 
         $this->userModel = $this->model('UserModel');
         $this->clientModel = $this->model('ClientModel');
@@ -18,8 +29,7 @@ class HrController extends Controller {
         exit;
     }
     $this->userModel = $this->model('UserModel');
-    $this->caretakerModel = $this->model('CaretakerModel');
-
+    $this->hrModel   = $this->model('HrModel'); 
         
 
     // Revalidate caretaker from DB
@@ -47,31 +57,8 @@ class HrController extends Controller {
     }    
 
     public function hr_managect() {
-        $caretakers = $this->caretakerModel->getCaretakersForHR();
-
-        $data = [
-            'caretakers' => $caretakers
-        ];
-
-        $this->view("hr/hr_managect", $data);
+        $this->view("hr/hr_managect");
     }
-
-    public function updateAvailability() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'id' => $_POST['id'],
-                'availability' => $_POST['availability'],
-                'location' => $_POST['location'],
-                'check_in' => $_POST['check_in'],
-                'check_out' => $_POST['check_out']
-            ];
-
-            $this->caretakerModel->updateAvailability($data);
-            header("Location: index.php?url=hr/hr_managect");
-            exit;
-        }
-    }
-
 
     public function hr_history() {
         $this->view("hr/hr_history");
@@ -126,6 +113,29 @@ public function updateBookingStatus() {
     exit;
 }
 
+public function updateComplaintStatus() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/hr/hr_complaint");
+        exit;
+    }
+
+    $complaintId = $_POST['complaint_id'] ?? null;
+    $action    = $_POST['action'] ?? null;
+
+    if (!$complaintId || !$action) {
+        header("Location: " . URLROOT . "/hr/hr_complaint");
+        exit;
+    }
+
+    $status = ($action === 'accept') ? 'Accepted' : 'Rejected';
+
+    // Call the model to update the complaint status
+    $this->hrModel->updateComplaintStatus($complaintId, $status);
+
+    // Redirect back to the pending requests page
+    header("Location: " . URLROOT . "/hr/hr_complaint");
+    exit;
+}
 
 
      public function hr_feedback() {

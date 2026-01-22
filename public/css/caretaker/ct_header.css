@@ -139,18 +139,23 @@
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+.profile-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.profile-img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
     cursor: pointer;
-}
-
-.profile-wrapper i {
-    font-size: 26px;
-    color: #374151;
-}
-
-.profile-wrapper span {
-    font-size: 15px;
-    font-weight: 500;
-    color: #fff;
 }
 
 /* SHOW DROPDOWN */

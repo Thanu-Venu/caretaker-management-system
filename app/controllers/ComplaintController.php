@@ -57,14 +57,16 @@ class ComplaintController
 
     public function index()
     {
+         $complaintModel = new ComplaintModel();
         $complaints = $this->complaintModel->getAllComplaints();
+            $data['ct_complaints'] = $complaintModel->getCaretakerComplaints();
 
-        // echo '<pre>';
-        // var_dump($complaints[0] ?? $complaints);
-        // echo '</pre>';
-        // exit;
         include_once "../app/views/hr/hr_complaint.php";
+    
+
     }
+    
+
 
 
     // inside ComplaintController class
@@ -222,6 +224,9 @@ class ComplaintController
         include_once APPROOT . "/views/client/c_complaintlist.php";
     }
 
+
+
+
     public function updateStatus()
     {
         if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Manager') {
@@ -245,7 +250,7 @@ class ComplaintController
 
         // Make sure you have the client's ID
         $client_name = $complaint['client_name'];
-        $client = $this->clientModel->getClientByName($client_name); // Or find by email
+        $client = $this->clientModel->getClientById($client_name); // Or find by email
         $client_id = $client['id'] ?? null;
 
         if ($client_id) {
@@ -262,6 +267,31 @@ class ComplaintController
         header("Location: " . URLROOT . "/public/index.php?url=Complaint/index");
         exit;
     }
+
+    public function updateCaretakerComplaintStatus()
+{
+    if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Manager') {
+        echo "<script>alert('Unauthorized');</script>";
+        exit;
+    }
+
+    $complaint_id = (int)$_POST['complaint_id'];
+    $status = $_POST['action']; // Pending / In Progress / Resolved
+
+    if (!$complaint_id || !$status) {
+        echo "<script>alert('Invalid data');</script>";
+        exit;
+    }
+
+    $this->complaintModel->updateCaretakerComplaintStatus($complaint_id, $status);
+
+    // Redirect back to HR complaints page
+    header("Location: " . URLROOT . "/public/index.php?url=Complaint/index");
+    exit;
+}
+
+
+
 
 
 

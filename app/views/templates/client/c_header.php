@@ -14,6 +14,8 @@ $notifications = $notifModel->getNotifications($user_id, $user_role);
 $unreadCount   = $notifModel->countUnread($user_id, $user_role);
 
 $user_display = $_SESSION['user']['name'] ?? $_SESSION['user']['username'];
+
+$profilePic = $_SESSION['user']['profile_image'] ?? 'default.png';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,11 +70,15 @@ $user_display = $_SESSION['user']['name'] ?? $_SESSION['user']['username'];
             </div>
         </div>
 
-        <!-- Profile -->
-        <div class="profile-wrapper">
-            <i class="fa-solid fa-user-circle"></i>
-            <span><?= htmlspecialchars($user_display) ?></span>
-        </div>
+
+                    <!-- Profile -->
+            <div class="profile-wrapper">
+                <a href="http://localhost/CMA/public?url=client/c_settings" class="profile-link">
+                    <img src="<?= URLROOT ?>/public/uploads/<?= htmlspecialchars($profilePic) ?>" class="profile-img"
+                        alt="Profile">
+                    <span><?= htmlspecialchars($user_display) ?></span>
+                </a>
+            </div>
 
     </div>
 </header>

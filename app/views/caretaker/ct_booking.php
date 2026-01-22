@@ -39,7 +39,9 @@
             <td><?= htmlspecialchars($b['client_name']) ?></td>
             <td><?= htmlspecialchars($b['service_type']) ?></td>
             <td><?= htmlspecialchars($b['service_location']) ?></td>
-            <td><?= $b['booking_date'] ?> - <?= $b['preferred_time'] ?></td>
+            <td>
+              <?= $b['booking_date'] ?> - <?= $b['preferred_time'] ?>
+             </td>
             <td>LKR <?= number_format($b['total_payment'], 2) ?></td>
         </tr>
     <?php endforeach; ?>
@@ -73,7 +75,8 @@
                   <td><?= htmlspecialchars($b['service_type']) ?></td>
                   <td><?= htmlspecialchars($b['service_location']) ?></td>
                   <td>
-                    <?= $b['start_time'] ?> - <?= $b['end_time'] ?>
+                   <?= $b['booking_date'] ?> - <?= $b['preferred_time'] ?>
+
                   </td>
                   <td>LKR <?= number_format($b['total_payment'], 2) ?></td>
                 </tr>

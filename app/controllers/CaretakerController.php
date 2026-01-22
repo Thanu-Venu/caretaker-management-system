@@ -104,17 +104,22 @@ class CaretakerController extends Controller {
          $this->view("caretaker/ct_leaveHistory");
      }
 
-     public function ct_complaints()
+ public function ct_complaints()
 {
     $caretakerId = $_SESSION['user']['id'];
 
     $caretakerModel = $this->model('CaretakerModel');
     $clients = $caretakerModel->getClientsByCaretaker($caretakerId);
 
+    // Fetch only resolved complaints for this caretaker
+    $resolvedComplaints = $this->complaintModel->getResolvedCaretakerComplaints($caretakerId);
+
     $this->view("caretaker/ct_complaints", [
-        'clients' => $clients
+        'clients' => $clients,
+        'resolvedComplaints' => $resolvedComplaints // pass to view
     ]);
 }
+
 
 public function saveComplaint() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -312,5 +317,16 @@ public function saveComplaint() {
 
             header("Location: " . URLROOT . "/complaint/index");
         }
+    }
+
+
+
+
+
+    public function ct_announcement() {
+    $announcementModel = $this->model('AnnouncementModel');
+    $announcements = $announcementModel->getCaretakerAnnouncements();
+
+    $this->view("caretaker/ct_announcement", $announcements);
     }
 }
