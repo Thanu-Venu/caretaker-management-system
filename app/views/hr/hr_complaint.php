@@ -26,10 +26,12 @@
       <tr>
         <th>ID</th>
         <th>Caretaker</th>
+        <th>Client</th>
         <th>Category</th>
         <th>Details</th>
         <th>Date</th>
         <th>Status</th>
+        <th>Actions</th>
       </tr>
     </thead>
    <tbody>
@@ -37,22 +39,35 @@
     <?php foreach ($data['ct_complaints'] as $c): ?>
         <tr>
             <td><?= $c['complaint_id'] ?></td>
-            <td><?= $c['caretaker_id'] ?></td>
+            <td><?= $c['caretaker_name'] ?></td>
+            <td><?= $c['client_name'] ?></td>
             <td><?= $c['service_type'] ?></td>
             <td><?= $c['description'] ?></td>
             <td><?= $c['service_date'] ?></td>
             <td><?= $c['status'] ?></td>
+            <td>
+                <form method="POST" action="<?= URLROOT ?>/Complaint/updateCaretakerComplaintStatus">
+                    <input type="hidden" name="complaint_id" value="<?= $c['complaint_id'] ?>">
+                    <select name="action">
+                        <option value="Pending" <?= $c['status']=="Pending"?'selected':'' ?>>Pending</option>
+                        <option value="In Progress" <?= $c['status']=="In Progress"?'selected':'' ?>>In Progress</option>
+                        <option value="Resolved" <?= $c['status']=="Resolved"?'selected':'' ?>>Resolved</option>
+                    </select>
+                    <button class="btn-update">Update</button>
+                </form>
+            </td>
         </tr>
     <?php endforeach; ?>
 <?php else: ?>
     <tr>
-        <td colspan="6">No caretaker complaints</td>
+        <td colspan="8">No caretaker complaints</td>
     </tr>
 <?php endif; ?>
-</tbody>
-
-  </table>
+   </tbody>
+</table>
 </section>
+
+
 
 <!-- CLIENT COMPLAINTS -->
 <section class="card tab-content" id="c_complaint">

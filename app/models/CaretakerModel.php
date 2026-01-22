@@ -289,6 +289,20 @@ public function getClientsByCaretaker($caretakerId)
     return $stmt->execute();
 }
   
+public function getResolvedComplaintsByCaretaker($caretaker_id)
+{
+    $stmt = $this->conn->prepare(
+        "SELECT * FROM ct_complaints 
+         WHERE caretaker_id = ? AND status = 'Resolved'
+         ORDER BY service_date DESC"
+    );
+
+    $stmt->bind_param("i", $caretaker_id);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
 
 
 public function getCaretakerFeedbacks($caretakerId)

@@ -131,34 +131,50 @@ public function addNotification($user_name, $message)
     $stmt->bind_param("ss", $user_name, $message);
     return $stmt->execute();
 }
-  // Fetch caretaker complaints
-    public function getCaretakerComplaints()
-    {
-        $stmt = $this->db->prepare(
-            "SELECT 
-                complaint_id,
-                caretaker_id,
-                service_type,
-                service_date,
-                description,
-                status
-            FROM ct_complaints
-            ORDER BY created_at DESC"
-        );
+  // Fetch caretaker complaints// Fetch caretaker complaints for HR
+public function getCaretakerComplaints()
+{
+    $sql = "SELECT cc.complaint_id, cc.caretaker_id, cc.client_id, cc.service_type, cc.service_date, cc.description, cc.status,
+                   c.name AS client_name, ct.name AS caretaker_name
+            FROM ct_complaints cc
+            LEFT JOIN clients c ON cc.client_id = c.id
+            LEFT JOIN caretakers ct ON cc.caretaker_id = ct.id
+            ORDER BY cc.created_at DESC";
 
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    }
-    
-    public function updatect_ComplaintStatus($id, $status)
+    $result = $this->db->query($sql);
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+// Update status for caretaker complaint
+public function updateCaretakerComplaintStatus($complaint_id, $status)
 {
     $stmt = $this->db->prepare(
         "UPDATE ct_complaints SET status = ? WHERE complaint_id = ?"
     );
-
-    $stmt->bind_param("si", $status, $id);
+    $stmt->bind_param("si", $status, $complaint_id);
     return $stmt->execute();
 }
+
+// In ComplaintModel.php
+public function getResolvedCaretakerComplaints($caretaker_id) {
+    $stmt = $this->db->prepare("
+        SELECT cc.complaint_id, cc.caretaker_id, cc.client_id, cc.service_type, cc.service_date, cc.description, cc.status,
+               c.name AS client_name, ct.name AS caretaker_name
+        FROM ct_complaints cc
+        LEFT JOIN clients c ON cc.client_id = c.id
+        LEFT JOIN caretakers ct ON cc.caretaker_id = ct.id
+        WHERE cc.caretaker_id = ? AND cc.status = 'Resolved'
+        ORDER BY cc.created_at DESC
+    ");
+    $stmt->bind_param("i", $caretaker_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+// Fetch resolved complaints for a specific caretaker
+
+
 
 
 

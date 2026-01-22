@@ -55,20 +55,35 @@
   </form>
 
   <h2>Past Complaints</h2>
-  <table class="complaint-table">
+<table class="complaint-table">
     <thead>
-      <tr>
-        <th>Client</th>
-        <th>Service</th>
-        <th>Date</th>
-        <th>Description</th>
-        <th>Status</th>
-      </tr>
+        <tr>
+            <th>Client</th>
+            <th>Service</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Status</th>
+        </tr>
     </thead>
     <tbody id="complaintTableBody">
-      <!-- Populated dynamically -->
+        <?php if (!empty($data['resolvedComplaints'])): ?>
+            <?php foreach ($data['resolvedComplaints'] as $c): ?>
+                <tr>
+                    <td><?= htmlspecialchars($c['client_name']) ?></td>
+                    <td><?= htmlspecialchars($c['service_type']) ?></td>
+                    <td><?= htmlspecialchars($c['service_date']) ?></td>
+                    <td><?= htmlspecialchars($c['description']) ?></td>
+                    <td><?= htmlspecialchars($c['status']) ?></td>
+                </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="5">No resolved complaints yet</td>
+            </tr>
+        <?php endif; ?>
     </tbody>
-  </table>
+</table>
+
 </div>
 <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_complaints.js"></script>
 </body>

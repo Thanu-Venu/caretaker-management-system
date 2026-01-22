@@ -113,6 +113,29 @@ public function updateBookingStatus() {
     exit;
 }
 
+public function updateComplaintStatus() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/hr/hr_complaint");
+        exit;
+    }
+
+    $complaintId = $_POST['complaint_id'] ?? null;
+    $action    = $_POST['action'] ?? null;
+
+    if (!$complaintId || !$action) {
+        header("Location: " . URLROOT . "/hr/hr_complaint");
+        exit;
+    }
+
+    $status = ($action === 'accept') ? 'Accepted' : 'Rejected';
+
+    // Call the model to update the complaint status
+    $this->hrModel->updateComplaintStatus($complaintId, $status);
+
+    // Redirect back to the pending requests page
+    header("Location: " . URLROOT . "/hr/hr_complaint");
+    exit;
+}
 
 
      public function hr_feedback() {
