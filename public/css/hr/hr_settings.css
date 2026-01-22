@@ -94,7 +94,22 @@ input[type="file"] {
     box-sizing: border-box;
 }
 
-input[readonly] {
-    background-color: #f0f0f0;
-    cursor: not-allowed;
+.profile-info {
+  padding: 20px;
+}
+
+.info-group {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.info-group label {
+  font-weight: bold;
+  width: 150px;
+  display: inline-block;
+}
+
+.info-group span {
+  color: #333;
 }
