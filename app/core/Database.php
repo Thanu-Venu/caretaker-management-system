@@ -4,7 +4,11 @@ class Database {
 
     public function __construct() {
 
+
         $this->conn = new mysqli("localhost", "root", "", "smartcare");
+
+
+     
 
         $host = "localhost";
         $user = "root";

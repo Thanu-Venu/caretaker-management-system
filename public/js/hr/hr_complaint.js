@@ -30,3 +30,22 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
+
+
+function showTab(tabId, event) {
+  // Hide all tabs
+  document.querySelectorAll(".tab-content").forEach(tab => {
+    tab.classList.remove("active");
+  });
+
+  // Remove active class from buttons
+  document.querySelectorAll(".top button").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  // Show selected tab
+  document.getElementById(tabId).classList.add("active");
+
+  // Activate clicked button
+  event.target.classList.add("active");
+}

@@ -2,7 +2,7 @@
 require_once APPROOT . '/core/Database.php';
 
 class CaretakerModel {
-    private $conn;
+    private $conn;  
 
     public function __construct() {
         $db = new Database();
@@ -10,21 +10,10 @@ class CaretakerModel {
     }
 
     /** @return array */
-   public function getCaretakers() {
-    $sql = "
-        SELECT 
-            c.*,
-           COALESCE(ROUND(AVG(f.rating), 1)) AS rating
-        FROM caretakers c
-        LEFT JOIN feedbacks f 
-            ON c.id = f.caretaker_id
-        GROUP BY c.id
-    ";
-
-    $result = $this->conn->query($sql);
-    return $result->fetch_all(MYSQLI_ASSOC);
-}
-
+    public function getCaretakers() {
+        $result = $this->conn->query("SELECT * FROM caretakers");
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
 
     public function getCaretakerById($id) {
         $stmt = $this->conn->prepare("SELECT * FROM caretakers WHERE id=?");
@@ -56,6 +45,7 @@ class CaretakerModel {
 
     return $stmt->execute();
  }
+
 
 
 
@@ -102,6 +92,7 @@ class CaretakerModel {
             $data['status'],
             $id
         );
+
     }
 
     return $stmt->execute();
@@ -119,9 +110,6 @@ class CaretakerModel {
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
-
-
-
 
 
 
@@ -235,13 +223,32 @@ public function getPastBookings($caretakerId) {
                 c.name AS client_name
             FROM bookings b
             JOIN clients c ON c.id = b.client_id
-            WHERE b.caretaker_id = ? AND b.status = 'completed' AND b.booking_date < CURDATE()
+            WHERE b.caretaker_id = ? AND b.status = 'Completed' AND b.booking_date < CURDATE()
             ORDER BY b.booking_date DESC";
     
     $stmt = $this->conn->prepare($sql);
     $stmt->bind_param("i", $caretakerId);
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+
+
+
+
+
+
+
+
+    public function login($email, $password) {
+    $stmt = $this->conn->prepare("SELECT * FROM caretakers WHERE email=?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $caretaker = $stmt->get_result()->fetch_assoc();
+    if ($caretaker && password_verify($password, $caretaker['password'])) {
+        return $caretaker;
+    }
+    return false;
 }
 
 public function getClientsByCaretaker($caretakerId)
@@ -281,6 +288,22 @@ public function getClientsByCaretaker($caretakerId)
 
     return $stmt->execute();
 }
+  
+public function getResolvedComplaintsByCaretaker($caretaker_id)
+{
+    $stmt = $this->conn->prepare(
+        "SELECT * FROM ct_complaints 
+         WHERE caretaker_id = ? AND status = 'Resolved'
+         ORDER BY service_date DESC"
+    );
+
+    $stmt->bind_param("i", $caretaker_id);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+
 
 public function getCaretakerFeedbacks($caretakerId)
 {
@@ -303,22 +326,8 @@ public function getCaretakerFeedbacks($caretakerId)
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
-// Get bookings for the logged-in caretaker
 
 
-
-
-
-    public function login($email, $password) {
-    $stmt = $this->conn->prepare("SELECT * FROM caretakers WHERE email=?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $caretaker = $stmt->get_result()->fetch_assoc();
-    if ($caretaker && password_verify($password, $caretaker['password'])) {
-        return $caretaker;
-    }
-    return false;
 }
 
-}
 ?>

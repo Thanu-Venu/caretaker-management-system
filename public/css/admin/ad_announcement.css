@@ -1,115 +1,200 @@
 /* ========================
-   General Styles
+   Global / Reset
 ======================== */
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f6f8;
-    color: #333;
-}
-
-h2 {
-    text-align: center;
-    margin-top: 20px;
+    background: linear-gradient(180deg, #f4f6f8, #eef2f6);
     color: #2c3e50;
 }
 
 /* ========================
-   Form Styles
+   Headings
 ======================== */
-form {
-    width: 90%;
-    max-width: 700px;
-    margin: 20px auto;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    background-color: #fff;
-    padding: 15px 20px;
-    border-radius: 8px;
-    box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
-}
-
-form input[type="text"], 
-form select {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    flex: 1 1 150px;
-    font-size: 14px;
-}
-
-form button {
-    padding: 10px 20px;
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    flex: 0 0 auto;
-    font-size: 14px;
-    transition: background 0.3s;
-}
-
-form button:hover {
-    background-color: #2980b9;
+h2 {
+    text-align: center;
+    margin: 30px 0 10px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #2665bb;
 }
 
 /* ========================
-   Table Styles
+   Form Container
+======================== */
+form {
+    width: 90%;
+    max-width: 750px;
+    margin: 25px auto;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    background: #ffffff;
+    padding: 20px 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+form:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* ========================
+   Inputs & Select
+======================== */
+form input[type="text"],
+form select {
+    padding: 11px 14px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    flex: 1 1 180px;
+    font-size: 14px;
+    background-color: #f9fafb;
+    transition: all 0.2s ease;
+}
+
+form input::placeholder {
+    color: #9ca3af;
+}
+
+form input:focus,
+form select:focus {
+    outline: none;
+    background-color: #ffffff;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+}
+
+/* ========================
+   Button
+======================== */
+form button {
+    padding: 11px 22px;
+    background: linear-gradient(135deg, #3498db, #2563eb);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    flex: 0 0 auto;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+}
+
+form button:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+}
+
+form button:active {
+    transform: scale(0.97);
+}
+
+/* ========================
+   Table
 ======================== */
 table {
+
     width: 90%;
-    max-width: 1000px;
-    margin: 20px auto;
+    max-width: 1050px;
+    margin: 25px auto;
     border-collapse: collapse;
-    background-color: #fff;
-    border-radius: 8px;
+    background-color: #ffffff;
+    border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
-table th, table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-    font-size: 14px;
-}
-
+/* Table Header */
 table th {
-    background-color: #3498db;
-    color: #fff;
-    font-weight: 500;
+    background: linear-gradient(135deg, #3498db, #2563eb);
+    color: #ffffff;
+    padding: 14px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Table Cells */
+table td {
+    padding: 13px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #374151;
+}
+
+/* Row Hover */
+table tr {
+    transition: background 0.2s ease;
 }
 
 table tr:hover {
-    background-color: #f1f1f1;
+    background-color: #f9fafb;
 }
 
+/* ========================
+   Action Links
+======================== */
 table td a {
     text-decoration: none;
-    color: #e74c3c;
-    font-weight: bold;
-    transition: color 0.3s;
+    color: #ef4444;
+    font-weight: 600;
+    transition: color 0.2s ease;
 }
 
 table td a:hover {
-    color: #c0392b;
+    color: #b91c1c;
+}
+
+/* ========================
+   Empty State (Optional)
+======================== */
+.no-data {
+    text-align: center;
+    padding: 25px;
+    color: #6b7280;
+    font-size: 14px;
 }
 
 /* ========================
    Responsive
 ======================== */
 @media screen and (max-width: 768px) {
+    h2 {
+        font-size: 22px;
+    }
+
     form {
         flex-direction: column;
         gap: 15px;
+        padding: 20px;
     }
 
-    table, table th, table td {
-        font-size: 12px;
+    form input,
+    form select,
+    form button {
+        width: 100%;
+    }
+
+    table {
+        width: 95%;
+    }
+
+    table th,
+    table td {
+        font-size: 13px;
+        padding: 10px;
     }
 }

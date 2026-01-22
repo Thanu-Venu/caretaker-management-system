@@ -1,6 +1,5 @@
 <?php
 
-
 class ClientController extends Controller {
      private $clientModel;
     public function __construct() {

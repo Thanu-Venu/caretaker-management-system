@@ -36,47 +36,36 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>101</td>
-            <td>Emily Carter</td>
-            <td><span class="status available">Available</span></td>
-            <td>123 Maple Street, Anytown</td>
-            <td>08:00 AM</td>
-            <td>04:00 PM</td>
-          </tr>
-          <tr>
-            <td>102</td>
-            <td>David Lee</td>
-            <td><span class="status duty">On Duty</span></td>
-            <td>456 Oak Avenue, Anytown</td>
-            <td>09:00 AM</td>
-            <td>05:00 PM</td>
-          </tr>
-          <tr>
-            <td>103</td>
-            <td>Sarah Johnson</td>
-            <td><span class="status unavailable">Unavailable</span></td>
-            <td>789 Pine Lane, Anytown</td>
-            <td>N/A</td>
-            <td>N/A</td>
-          </tr>
-          <tr>
-            <td>104</td>
-            <td>Michael Brown</td>
-            <td><span class="status leave">On Leave</span></td>
-            <td>101 Elm Road, Anytown</td>
-            <td>N/A</td>
-            <td>N/A</td>
-          </tr>
-          <tr>
-            <td>105</td>
-            <td>Jessica Wilson</td>
-            <td><span class="status available">Available</span></td>
-            <td>222 Cedar Court, Anytown</td>
-            <td>08:30 AM</td>
-            <td>04:30 PM</td>
-          </tr>
-        </tbody>
+        <?php if (!empty($data['caretakers'])): ?>
+        <?php foreach ($data['caretakers'] as $ct): ?>
+        <tr>
+          <td><?php echo $ct['id']; ?></td>
+          <td><?php echo htmlspecialchars($ct['name']); ?></td>
+
+          <td>
+            <span class="status 
+            <?php
+              if ($ct['availability'] == 'Available') echo 'available';
+              elseif ($ct['availability'] == 'On Duty') echo 'duty';
+              elseif ($ct['availability'] == 'Unavailable') echo 'unavailable';
+              else echo 'leave';
+            ?>">
+            <?php echo $ct['availability']; ?>
+            </span>
+          </td>
+
+          <td><?php echo $ct['location'] ?? 'N/A'; ?></td>
+          <td><?php echo $ct['check_in'] ?? 'N/A'; ?></td>
+          <td><?php echo $ct['check_out'] ?? 'N/A'; ?></td>
+      </tr>
+      <?php endforeach; ?>  
+      <?php else: ?>
+      <tr>
+        <td colspan="6">No caregivers found</td>
+      </tr>
+      <?php endif; ?>
+      </tbody>
+
       </table>
     </div>
   </div>

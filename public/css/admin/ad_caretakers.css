@@ -122,24 +122,7 @@ tbody tr:hover {
   transition: color 0.3s ease;
   font-size: 18px;
 }
-<<<<<<< HEAD
 .actions i:hover {
-=======
-
-.actions .bx-show {
-    color: #333;
-}
-
-.actions .bx-edit {
-  color: #007bff;
-}
-
-.actions .bx-trash {
-    color: red;
-}
-
-.actions .bx-show:hover {
->>>>>>> 54bb2ecc0700a189964a6d2d44b5aef46cdcc4cc
   color: #000;
 }
 

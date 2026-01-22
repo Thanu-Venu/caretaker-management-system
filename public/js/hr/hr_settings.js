@@ -23,14 +23,7 @@ document.querySelectorAll(".btn-save").forEach(btn => {
     });
 });
 
-// Preview selected profile image
-document.getElementById("profileFile").addEventListener("change", function(e){
-    const file = e.target.files[0];
-    if(file){
-        const reader = new FileReader();
-        reader.onload = function(event){
-            document.getElementById("profileImg").src = event.target.result;
-        }
-        reader.readAsDataURL(file);
-    }
+document.getElementById("preferencesForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  alert("Preferences saved!");
 });
