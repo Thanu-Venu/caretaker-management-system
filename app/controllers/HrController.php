@@ -5,6 +5,7 @@ class HrController extends Controller {
     private $hrModel;
 
     private $caretakerModel;
+    private $complaintModel; 
     
 
     private $clientModel;

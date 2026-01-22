@@ -3,7 +3,7 @@ class ComplaintModel {
     private $db;
 
     public function __construct() {
-        $this->db = new mysqli("localhost", "root", "Thanuvenu", "smartcare");
+        $this->db = new mysqli("localhost", "root", "", "smartcare");
         if($this->db->connect_errno){
             die("Failed to connect to MySQL: " . $this->db->connect_error);
         }
@@ -131,6 +131,36 @@ public function addNotification($user_name, $message)
     $stmt->bind_param("ss", $user_name, $message);
     return $stmt->execute();
 }
+  // Fetch caretaker complaints
+    public function getCaretakerComplaints()
+    {
+        $stmt = $this->db->prepare(
+            "SELECT 
+                complaint_id,
+                caretaker_id,
+                service_type,
+                service_date,
+                description,
+                status
+            FROM ct_complaints
+            ORDER BY created_at DESC"
+        );
+
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+    
+    public function updatect_ComplaintStatus($id, $status)
+{
+    $stmt = $this->db->prepare(
+        "UPDATE ct_complaints SET status = ? WHERE complaint_id = ?"
+    );
+
+    $stmt->bind_param("si", $status, $id);
+    return $stmt->execute();
+}
+
+
 
 }
 ?>

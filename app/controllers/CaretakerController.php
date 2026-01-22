@@ -31,12 +31,29 @@ class CaretakerController extends Controller {
     $_SESSION['user'] = $user;
 }
 
-    public function ct_dashboard() {
-         $userId = $_SESSION['user']['id'];
+   public function ct_dashboard() 
+{
+    $userId = $_SESSION['user']['id'];
+
+    // Get caretaker details
+    $caretakerModel = $this->model('CaretakerModel');
+    $caretaker = $caretakerModel->getCaretakerById($userId);
+
+    // Leaves
     $leaves = $this->leaveModel->getLeavesByUser($userId);
-    $this->view("caretaker/ct_dashboard", ['leaves' => $leaves]);
-        $this->view("caretaker/ct_dashboard");
-    }
+
+    // Upcoming Bookings
+    $upcoming = $caretakerModel->getUpcomingBookings($userId);
+
+    // Pass everything to view
+    $this->view("caretaker/ct_dashboard", [
+        'caretaker' => $caretaker,
+        'leaves' => $leaves,
+        'upcoming' => $upcoming
+    ]);
+}
+
+
 
     
 
@@ -63,8 +80,21 @@ class CaretakerController extends Controller {
 
      
      public function ct_booking() {
-         $this->view("caretaker/ct_booking");
-     }
+    $user = $_SESSION['user'];
+    $caretakerId = $user['id'];
+
+    $caretakerModel = $this->model('CaretakerModel');
+
+    // Fetch bookings directly from DB
+    $upcoming = $caretakerModel->getUpcomingBookings($caretakerId);
+    $past = $caretakerModel->getPastBookings($caretakerId);
+
+    // Just pass the booking_date and preferred_time as they are
+    $this->view('caretaker/ct_booking', [
+        'upcoming' => $upcoming,
+        'past' => $past
+    ]);
+}
 
      public function ct_schedule() {
          $this->view("caretaker/ct_schedule");
@@ -74,17 +104,48 @@ class CaretakerController extends Controller {
          $this->view("caretaker/ct_leaveHistory");
      }
 
-     public function ct_complaints() {
-         $clients = $this->clientModel->getAllClient();
-    $complaints = $this->caretakerModel->getAllComplaints();
+     public function ct_complaints()
+{
+    $caretakerId = $_SESSION['user']['id'];
 
-    $this->view('caretaker/ct_complaints', [
-        'clients' => $clients,
-        'complaints' => $complaints
+    $caretakerModel = $this->model('CaretakerModel');
+    $clients = $caretakerModel->getClientsByCaretaker($caretakerId);
+
+    $this->view("caretaker/ct_complaints", [
+        'clients' => $clients
     ]);
+}
+
+public function saveComplaint() {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $data = [
+            'client_id' => $_POST['client_id'],
+            'caretaker_id' => $_SESSION['user']['id'], // from logged-in caretaker
+            'service_type' => $_POST['service_type'],
+            'service_date' => $_POST['service_date'],
+            'description' => $_POST['description']
+        ];
+
+        $result = $this->caretakerModel->addComplaint($data);
+
+        if ($result) {
+            $_SESSION['success'] = "Complaint registered successfully!";
+        } else {
+            $_SESSION['error'] = "Error saving complaint!";
+        }
+
+        // Redirect back to complaints page
+        header("Location: " . URLROOT . "/caretaker/ct_complaints");
+        exit;
+    }
+}
+
+
+
+
+
          
-         
-     }
+     
      public function getClientInfo() {
     if (isset($_POST['client_id'])) {
         $client = $this->clientModel->getClientDetails($_POST['client_id']);
@@ -106,6 +167,8 @@ class CaretakerController extends Controller {
 
         echo "success";
     }
+
+    
 }
 
 
@@ -206,10 +269,23 @@ class CaretakerController extends Controller {
 
 
 
-      public function ct_reviews() {
-         $this->view("caretaker/ct_reviews");
-     }
-     
+
+     public function ct_reviews()
+{
+    if (!isset($_SESSION['user'])) {
+        header("Location: " . URLROOT . "/auth/login");
+        exit;
+    }
+
+    $caretakerId = $_SESSION['user']['id'];
+
+    $caretakerModel = $this->model('CaretakerModel');
+    $feedbacks = $caretakerModel->getCaretakerFeedbacks($caretakerId);
+
+    $this->view("caretaker/ct_reviews", [
+        'feedbacks' => $feedbacks
+    ]);
+}
 
     public function index() {
         $clients = $this->clientModel->getAllClient();
@@ -236,5 +312,12 @@ class CaretakerController extends Controller {
 
             header("Location: " . URLROOT . "/complaint/index");
         }
+    }
+
+    public function ct_announcement() {
+    $announcementModel = $this->model('AnnouncementModel');
+    $announcements = $announcementModel->getCaretakerAnnouncements();
+
+    $this->view("caretaker/ct_announcement", $announcements);
     }
 }

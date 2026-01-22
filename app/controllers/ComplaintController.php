@@ -57,14 +57,36 @@ class ComplaintController
 
     public function index()
     {
+         $complaintModel = new ComplaintModel();
         $complaints = $this->complaintModel->getAllComplaints();
+            $data['ct_complaints'] = $complaintModel->getCaretakerComplaints();
+
+
 
         // echo '<pre>';
         // var_dump($complaints[0] ?? $complaints);
         // echo '</pre>';
         // exit;
         include_once "../app/views/hr/hr_complaint.php";
+    
+
     }
+    
+public function accept($id)
+{
+    $complaintModel = new ComplaintModel();
+    $complaintModel->updatect_ComplaintStatus($id, 'In Progress');
+
+    header("Location: /hrComplaint/index");
+}
+
+public function resolve($id)
+{
+    $complaintModel = new ComplaintModel();
+    $complaintModel->updatect_ComplaintStatus($id, 'Resolved');
+
+    header("Location: /hrComplaint/index");
+}
 
 
     // inside ComplaintController class
@@ -245,7 +267,7 @@ class ComplaintController
 
         // Make sure you have the client's ID
         $client_name = $complaint['client_name'];
-        $client = $this->clientModel->getClientByName($client_name); // Or find by email
+        $client = $this->clientModel->getClientById($client_name); // Or find by email
         $client_id = $client['id'] ?? null;
 
         if ($client_id) {

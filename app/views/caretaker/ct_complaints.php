@@ -9,38 +9,47 @@
   <title>SmartCare Dashboard</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_complaints.css">
 </head>
-<body>9
+<body>
     <div class="main-content">
   <h1>Register a Complaint</h1>
 
-  <form id="complaintForm">
-      <label for="clientSelect">Client Name</label>
-   <select id="clientSelect" name="client_id" required>
+  <form id="complaintForm" action="<?php echo URLROOT; ?>/caretaker/saveComplaint" method="POST">
+    <label for="clientName">Select Client</label>
+   <select id="clientName" name="client_id" required>
     <option value="">-- Select Client --</option>
 
     <?php foreach ($data['clients'] as $client): ?>
-        <option value="<?= $client['id'] ?>">
-            <?= $client['name'] ?>
+        <option 
+            value="<?= $client['client_id']; ?>" 
+             data-booking-id="<?= $client['booking_id']; ?>"
+            data-booking-date="<?= $client['booking_date']; ?>"
+            data-time="<?= $client['preferred_time']; ?>"
+            data-service="<?= $client['service_type']; ?>"
+        >
+            <?= htmlspecialchars($client['client_name']); ?>
         </option>
     <?php endforeach; ?>
+
 </select>
 
 
 
     <label for="serviceType">Service Type</label>
-   
-    <select id="serviceType" required>
-      <option value="">-- Select Service --</option>
-      <option value="elder_care">Elder Care</option>
-      <option value="maid_service">Maid Service</option>
-      <option value="babysitting">Babysitting</option>
+    <select id="serviceType" name="service_type" required>
+      <option value="">-- Select Service Type --</option>
+       <option value="Elder Care">Elder Care</option>
+       <option value="Maid">Maid Service</option>
+       <option value="Babysitter">Babysitting</option>
     </select>
 
+    </select>
+  
+
     <label for="dateOfService">Date of Service</label>
-    <input type="date" id="dateOfService" required>
+    <input type="date" id="dateOfService" name="service_date" >
 
     <label for="complaintDesc">Complaint Description</label>
-    <textarea id="complaintDesc" placeholder="Describe the issue..." required></textarea>
+    <textarea id="complaintDesc" name="description" placeholder="Describe the issue..." required></textarea>
 
     <button type="submit" class="btn-submit">Submit Complaint</button>
   </form>

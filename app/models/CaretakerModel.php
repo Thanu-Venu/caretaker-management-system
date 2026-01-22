@@ -48,8 +48,6 @@ class CaretakerModel {
 
 
 
-  
-
 
     public function updateCaretaker($id, $data, $profileImage = null)
 {
@@ -225,7 +223,7 @@ public function getPastBookings($caretakerId) {
                 c.name AS client_name
             FROM bookings b
             JOIN clients c ON c.id = b.client_id
-            WHERE b.caretaker_id = ? AND b.status = 'Accepted' AND b.booking_date < CURDATE()
+            WHERE b.caretaker_id = ? AND b.status = 'Completed' AND b.booking_date < CURDATE()
             ORDER BY b.booking_date DESC";
     
     $stmt = $this->conn->prepare($sql);
@@ -253,7 +251,66 @@ public function getPastBookings($caretakerId) {
     return false;
 }
 
+public function getClientsByCaretaker($caretakerId)
+{
+    $sql = "SELECT 
+                b.id AS booking_id,
+                b.client_id,
+                c.name AS client_name,
+                b.service_type,
+                b.booking_date,
+                b.preferred_time
+            FROM bookings b
+            JOIN clients c ON b.client_id = c.id
+            WHERE b.caretaker_id = ?
+            ORDER BY b.booking_date DESC";
 
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param('i', $caretakerId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+ public function addComplaint($data) {
+    $stmt = $this->conn->prepare(
+        "INSERT INTO ct_complaints (client_id, caretaker_id, service_type, service_date, description, status) 
+         VALUES (?, ?, ?, ?, ?, 'Pending')"
+    );
+
+    $stmt->bind_param(
+        "iisss",
+        $data['client_id'],
+        $data['caretaker_id'],
+        $data['service_type'],
+        $data['service_date'],
+        $data['description']
+    );
+
+    return $stmt->execute();
+}
+  
+
+
+public function getCaretakerFeedbacks($caretakerId)
+{
+    $sql = "SELECT 
+                cl.name AS client_name,
+                b.service_type AS service,
+                f.rating,
+                f.feedback AS comment,
+                f.created_at
+            FROM feedbacks f
+            JOIN clients cl ON f.client_id = cl.id
+            JOIN bookings b ON f.booking_id = b.id
+            WHERE f.caretaker_id = ?
+            ORDER BY f.created_at DESC";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $caretakerId);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
 
 
 
