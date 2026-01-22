@@ -25,30 +25,31 @@
             <th>Feedback</th>
           </tr>
         </thead>
+<tbody>
+<?php if (!empty($data['feedbacks'])) : ?>
+    <?php foreach ($data['feedbacks'] as $fb) : ?>
+        <tr>
+            <td><?= htmlspecialchars($fb['client_name']) ?></td>
+            <td><?= htmlspecialchars($fb['service']) ?></td>
+            <td><?= date('Y-m-d', strtotime($fb['created_at'])) ?></td>
+            <td>⭐ <?= htmlspecialchars($fb['rating']) ?></td>
+            <td><?= htmlspecialchars($fb['comment']) ?></td>
+        </tr>
+    <?php endforeach; ?>
+<?php else : ?>
+    <tr>
+        <td colspan="5" style="text-align:center;">No feedback yet</td>
+    </tr>
+<?php endif; ?>
+</tbody>
 
-        <tbody>
-          <?php if (!empty($feedbacks)): ?>
-            <?php foreach($feedbacks as $fb): ?>
-              <tr>
-                <td><?= $fb['client_name'] ?></td>
-                <td><?= $fb['service'] ?? 'N/A' ?></td>
-                <td><?= $fb['created_at'] ?></td>
 
-                <td>⭐ <?= $fb['rating'] ?></td>
-
-                <td><?= $fb['comment'] ?></td>
-              </tr>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <tr><td colspan="5" style="text-align:center;">No feedback yet</td></tr>
-          <?php endif; ?>
-        </tbody>
 
       </table>
     </div>
 </div>
 
-<script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_reviews.js"></script>
+<script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_review.js"></script>
 
 </body>
 </html>

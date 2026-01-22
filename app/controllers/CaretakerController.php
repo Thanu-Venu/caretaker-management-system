@@ -72,6 +72,10 @@ class CaretakerController extends Controller {
      public function ct_schedule() {
          $this->view("caretaker/ct_schedule");
      }
+
+
+
+
      
      public function ct_leaveHistory() {
          $this->view("caretaker/ct_leaveHistory");
@@ -178,8 +182,22 @@ class CaretakerController extends Controller {
 
 
 
-      public function ct_reviews() {
-         $this->view("caretaker/ct_reviews");
-     }
+     public function ct_reviews()
+{
+    if (!isset($_SESSION['user'])) {
+        header("Location: " . URLROOT . "/auth/login");
+        exit;
+    }
+
+    $caretakerId = $_SESSION['user']['id'];
+
+    $caretakerModel = $this->model('CaretakerModel');
+    $feedbacks = $caretakerModel->getCaretakerFeedbacks($caretakerId);
+
+    $this->view("caretaker/ct_reviews", [
+        'feedbacks' => $feedbacks
+    ]);
+}
+
     
 }

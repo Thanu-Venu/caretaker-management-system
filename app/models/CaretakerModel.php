@@ -10,10 +10,21 @@ class CaretakerModel {
     }
 
     /** @return array */
-    public function getCaretakers() {
-        $result = $this->conn->query("SELECT * FROM caretakers");
-        return $result->fetch_all(MYSQLI_ASSOC);
-    }
+   public function getCaretakers() {
+    $sql = "
+        SELECT 
+            c.*,
+           COALESCE(ROUND(AVG(f.rating), 1)) AS rating
+        FROM caretakers c
+        LEFT JOIN feedbacks f 
+            ON c.id = f.caretaker_id
+        GROUP BY c.id
+    ";
+
+    $result = $this->conn->query($sql);
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
 
     public function getCaretakerById($id) {
         $stmt = $this->conn->prepare("SELECT * FROM caretakers WHERE id=?");
@@ -224,7 +235,7 @@ public function getPastBookings($caretakerId) {
                 c.name AS client_name
             FROM bookings b
             JOIN clients c ON c.id = b.client_id
-            WHERE b.caretaker_id = ? AND b.status = 'Accepted' AND b.booking_date < CURDATE()
+            WHERE b.caretaker_id = ? AND b.status = 'completed' AND b.booking_date < CURDATE()
             ORDER BY b.booking_date DESC";
     
     $stmt = $this->conn->prepare($sql);
@@ -234,8 +245,28 @@ public function getPastBookings($caretakerId) {
 }
 
 
+public function getCaretakerFeedbacks($caretakerId)
+{
+    $sql = "SELECT 
+                cl.name AS client_name,
+                b.service_type AS service,
+                f.rating,
+                f.feedback AS comment,
+                f.created_at
+            FROM feedbacks f
+            JOIN clients cl ON f.client_id = cl.id
+            JOIN bookings b ON f.booking_id = b.id
+            WHERE f.caretaker_id = ?
+            ORDER BY f.created_at DESC";
 
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $caretakerId);
+    $stmt->execute();
 
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+// Get bookings for the logged-in caretaker
 
 
 
