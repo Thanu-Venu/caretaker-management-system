@@ -31,4 +31,18 @@ class HistoryModel {
     $result = $this->conn->query($sql);
     return $result->fetch_all(MYSQLI_ASSOC);
   }
+
+  public function getRecentLogs($limit = 8)
+{
+    $stmt = $this->conn->prepare("
+        SELECT action, section, username, created_at
+        FROM history_logs
+        ORDER BY created_at DESC
+        LIMIT ?
+    ");
+    $stmt->bind_param("i", $limit);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
 }

@@ -28,4 +28,10 @@ class AdminLeaveModel {
         $stmt->bind_param("si", $status, $leave_id);
         return $stmt->execute();
     }
+
+    public function countPendingLeaves()
+{
+    $result = $this->conn->query("SELECT COUNT(*) AS total FROM leaves WHERE status='pending'");
+    return $result->fetch_assoc()['total'] ?? 0;
+}
 }

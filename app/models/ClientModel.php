@@ -418,18 +418,88 @@ public function getAllBookingsAdmin()
             FROM bookings b
             JOIN clients cl ON b.client_id = cl.id
             JOIN caretakers ct ON b.caretaker_id = ct.id
-            ORDER BY b.booking_date DESC";
+            ORDER BY b.id ASC";
 
     $result = $this->conn->query($sql);
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
+public function countClients()
+{
+    $result = $this->conn->query("SELECT COUNT(*) AS total FROM clients");
+    return $result->fetch_assoc()['total'] ?? 0;
+}
 
+public function countUpcomingBookings()
+{
+    // adjust column names: booking_date / start_date etc.
+    $stmt = $this->conn->prepare("SELECT COUNT(*) AS total FROM bookings WHERE booking_date >= CURDATE()");
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc()['total'] ?? 0;
+}
 
+/*public function getMonthlyPaymentsTotal()
+{
+    // If you have a payments table, use that instead.
+    // Example assumes bookings has amount + booking_date
+    $stmt = $this->conn->prepare("
+        SELECT COALESCE(SUM(amount), 0) AS total
+        FROM bookings
+        WHERE YEAR(booking_date)=YEAR(CURDATE())
+          AND MONTH(booking_date)=MONTH(CURDATE())
+          AND status='paid'
+    ");
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc()['total'] ?? 0;
+}*/
 
+public function getBookingsLast4Weeks()
+{
+    // Returns labels + values
+    $stmt = $this->conn->prepare("
+        SELECT YEARWEEK(booking_date, 1) as yw, COUNT(*) as total
+        FROM bookings
+        WHERE booking_date >= DATE_SUB(CURDATE(), INTERVAL 28 DAY)
+        GROUP BY yw
+        ORDER BY yw ASC
+    ");
+    $stmt->execute();
+    $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
+    $labels = [];
+    $values = [];
+    foreach ($rows as $r) {
+        $labels[] = "Week " . $r['yw'];
+        $values[] = (int)$r['total'];
+    }
+    return ['labels' => $labels, 'values' => $values];
+}
 
+public function getClientEngagementLast6Months()
+{
+    $stmt = $this->conn->prepare("
+        SELECT 
+            DATE_FORMAT(booking_date, '%Y-%m') AS ym,
+            DATE_FORMAT(MIN(booking_date), '%b') AS mon,
+            COUNT(*) AS total
+        FROM bookings
+        WHERE booking_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+        GROUP BY ym
+        ORDER BY ym ASC
+    ");
 
-    
+    $stmt->execute();
+    $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+    $labels = [];
+    $values = [];
+    foreach ($rows as $r) {
+        $labels[] = $r['mon'];          // Jan, Feb, ...
+        $values[] = (int)$r['total'];
+    }
+
+    return ['labels' => $labels, 'values' => $values];
+}
+
 }
 ?>

@@ -252,5 +252,12 @@ public function getPastBookings($caretakerId) {
     return false;
 }
 
+public function countCaretakers()
+{
+    $result = $this->conn->query("SELECT COUNT(*) AS total FROM caretakers");
+    return $result->fetch_assoc()['total'] ?? 0;
+}
+
+
 }
 ?>
