@@ -65,39 +65,21 @@ if (isset($data['user'])) {
     <!-- Password Settings -->
     <section class="card">
       <h3>Change Password</h3>
-      <form id="passwordForm">
+     <form id="passwordForm"
+      action="<?= URLROOT ?>/index.php?url=Caretaker/editPasswordDetails"
+      method="post">
+
         <label>Current Password
-          <input type="password" placeholder="Current password" required>
+          <input type="password" name="current-password" placeholder="Current password" required>
         </label>
         <label>New Password
-          <input type="password" placeholder="New password" required>
+          <input type="password"name="new-password"  placeholder="New password" required>
         </label>
         <label>Confirm New Password
-          <input type="password" placeholder="Confirm password" required>
+          <input type="password"  name="confirm-password" placeholder="Confirm password" required>
         </label>
         <button type="submit" class="btn-save">Update Password</button>
       </form>
-    </section>
-
-    <!-- Notifications -->
-    <section class="card">
-      <h3>Notification Settings</h3>
-      <div class="notif-option">
-        <label>Booking Updates
-          <input type="checkbox" checked>
-        </label>
-      </div>
-      <div class="notif-option">
-        <label>Leave Approval Updates
-          <input type="checkbox" checked>
-        </label>
-      </div>
-      <div class="notif-option">
-        <label>Promotions / Announcements
-          <input type="checkbox">
-        </label>
-      </div>
-      <button class="btn-save">Save Notification Settings</button>
     </section>
 
   </div>

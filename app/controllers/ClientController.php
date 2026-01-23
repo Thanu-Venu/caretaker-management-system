@@ -1,6 +1,5 @@
 <?php
 
-
 class ClientController extends Controller {
      private $clientModel;
      private $notificationModel;
