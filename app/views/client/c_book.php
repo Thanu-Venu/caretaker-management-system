@@ -40,7 +40,7 @@
 
           <!-- ================= Booking Form ================= -->
     <section class="booking-form">
-        <form id="bookingForm" method="POST" action="<?= URLROOT ?>/client/bookCaretaker">
+  <form id="bookingForm" method="POST" action="<?= URLROOT ?>/client/bookCaretaker">
 
     <!-- Hidden caretaker ID -->
     <input type="hidden" name="caretaker_id" value="<?= $data['caretaker']['id'] ?>">

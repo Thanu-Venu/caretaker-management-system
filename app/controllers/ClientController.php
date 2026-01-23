@@ -186,21 +186,52 @@ public function cancelBooking()
 
 
     /* ================= RESCHEDULE BOOKING ================= */
-   public function rescheduleBooking()
+  public function rescheduleBooking()
 {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         header("Location: " . URLROOT . "/client/c_upcomingBookings");
         exit;
     }
 
-    $bookingId = $_POST['booking_id'];
-    $newDate   = $_POST['new_date'];
-    $newTime   = $_POST['new_time'];
-    $newDuration = $_POST['new_duration'];
+    $bookingId    = $_POST['booking_id'];
+    $newDate      = $_POST['new_date'];
+    $newTime      = $_POST['new_time'];
+    $newDuration  = $_POST['new_duration'];
 
-    $this->clientModel->rescheduleBooking($bookingId, $newDate, $newTime, $newDuration);
+    // 🔹 Price rates
+    $priceRates = [
+        "Hourly"  => 500,
+        "Daily"   => 3000,
+        "Weekly"  => 15000,
+        "Monthly" => 40000,
+        "Yearly"  => 450000
+    ];
 
-    // Redirect back to upcoming bookings page
+    // 🔹 Time modifiers
+    $timePriceModifier = [
+        "Full Time (8am - 5pm)" => 1.0,
+        "Morning (8am - 12pm)"  => 0.6,
+        "Evening (1pm - 5pm)"   => 0.6,
+        "Night (6pm - 10pm)"    => 0.8
+    ];
+
+    // 🔹 Get booking basis from DB
+    $booking = $this->clientModel->getBookingById($bookingId);
+    $basis = $booking['basis'];
+
+    // 🔹 Calculate new payment
+    $modifier = $timePriceModifier[$newTime] ?? 1;
+    $totalPayment = ($priceRates[$basis] ?? 0) * $newDuration * $modifier;
+
+    // 🔹 Update booking
+    $this->clientModel->rescheduleBooking(
+        $bookingId,
+        $newDate,
+        $newTime,
+        $newDuration,
+        $totalPayment
+    );
+
     header("Location: " . URLROOT . "/client/c_upcomingBookings");
     exit;
 }
@@ -327,7 +358,7 @@ public function bookCaretaker()
             "Full Time (8am - 5pm)" => 1.0,
             "Morning (8am - 12pm)"  => 0.6,
             "Evening (1pm - 5pm)"   => 0.6,
-            "Night (6pm - 10pm)"    => 1.2
+            "Night (6pm - 10pm)"    => 0.8
         ];
 
         $modifier = $timePriceModifier[$preferred_time] ?? 1;

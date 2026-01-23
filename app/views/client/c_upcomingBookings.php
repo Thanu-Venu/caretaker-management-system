@@ -77,7 +77,7 @@
         <span class="close" onclick="closeRescheduleModal()">&times;</span>
         <h2>Reschedule Booking</h2>
 
-        <form method="POST" action="<?= URLROOT ?>/client/rescheduleBooking">
+ <form method="POST" action="<?= URLROOT ?>/client/rescheduleBooking">
     <input type="hidden" name="booking_id" id="rescheduleBookingId">
 
     <label>New Date</label>

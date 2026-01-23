@@ -166,6 +166,7 @@ public function getBookingById($bookingId) {
                 b.duration,
                 b.service_type,
                 b.total_payment,
+                b.created_at,
                 b.status,
                 c.name AS caretaker_name
             FROM bookings b
@@ -275,18 +276,18 @@ public function getCancelledBookings($clientId)
 
 
 
-  public function rescheduleBooking($bookingId, $newDate, $newTime, $newDuration)
+  public function rescheduleBooking($id, $date, $time, $duration, $payment)
 {
-    $sql = "UPDATE bookings
-            SET booking_date = ?,
-                preferred_time = ?,
-                duration = ?
-            WHERE id = ?";
+    $stmt = $this->conn->prepare("
+        UPDATE bookings 
+        SET booking_date = ?, preferred_time = ?, duration = ?, total_payment = ?
+        WHERE id = ?
+    ");
 
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("ssii", $newDate, $newTime, $newDuration, $bookingId);
+    $stmt->bind_param("ssidi", $date, $time, $duration, $payment, $id);
     return $stmt->execute();
 }
+
 
 
 

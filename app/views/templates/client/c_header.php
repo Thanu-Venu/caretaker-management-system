@@ -70,14 +70,9 @@ $profilePic = $_SESSION['user']['profile_image'] ?? 'default.png';
             </div>
         </div>
 
-<<<<<<< HEAD
-        <!-- Profile -->
-        <div class="profile-wrapper">
-=======
 
                     <!-- Profile -->
             <div class="profile-wrapper">
->>>>>>> 58459bff94d97c6fd334bb40076891703f7bd6af
                 <a href="http://localhost/CMA/public?url=client/c_settings" class="profile-link">
                     <img src="<?= URLROOT ?>/public/uploads/<?= htmlspecialchars($profilePic) ?>" class="profile-img"
                         alt="Profile">
