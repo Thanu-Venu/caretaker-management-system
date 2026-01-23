@@ -406,6 +406,23 @@ public function getPastBookingsWithFeedback($clientId)
         return $stmt->execute();
     }
     
+public function getAllBookingsAdmin()
+{
+    $sql = "SELECT
+                b.id AS booking_id,
+                cl.name AS client_name,
+                ct.name AS caretaker_name,
+                b.service_type,
+                b.booking_date,
+                b.status
+            FROM bookings b
+            JOIN clients cl ON b.client_id = cl.id
+            JOIN caretakers ct ON b.caretaker_id = ct.id
+            ORDER BY b.booking_date DESC";
+
+    $result = $this->conn->query($sql);
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
 
 
 

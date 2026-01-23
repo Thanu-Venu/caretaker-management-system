@@ -1,84 +1,157 @@
 <?php
+require_once APPROOT . '/core/Database.php';
 
 class FeedbackModel {
-    private $db;
+
+    private $conn;
 
     public function __construct() {
-        $this->db = new Database;
+        $db = new Database();
+        $this->conn = $db->conn;
     }
 
-    // Get all feedback (Admin + HR)
+    /* ===============================
+       ADMIN / HR – GET ALL FEEDBACKS
+    =============================== */
     public function getAll() {
-        $sql = "SELECT feedback.*, 
-                       clients.name AS client_name, 
-                       caretakers.name AS caretaker_name
-                FROM feedback
-                JOIN clients ON feedback.client_id = clients.id
-                JOIN caretakers ON feedback.caretaker_id = caretakers.id
-                ORDER BY feedback.created_at DESC";
+        $sql = "SELECT 
+                    f.id,
+                    f.booking_id,
+                    f.rating,
+                    f.feedback,
+                    f.created_at,
+                    c.name AS client_name,
+                    ct.name AS caretaker_name
+                FROM feedbacks f
+                JOIN clients c ON f.client_id = c.id
+                JOIN caretakers ct ON f.caretaker_id = ct.id
+                ORDER BY f.created_at DESC";
 
-        $result = $this->db->conn->query($sql);
+        $result = $this->conn->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    // Caretaker-specific feedback list
-    public function getByCaretaker($caretaker_id) {
-        $sql = "SELECT feedback.*, clients.name AS client_name
-                FROM feedback
-                JOIN clients ON feedback.client_id = clients.id
-                WHERE caretaker_id = $caretaker_id
-                ORDER BY created_at DESC";
-
-        return $this->db->conn->query($sql)->fetch_all(MYSQLI_ASSOC);
+    /* ===============================
+       CLIENT – GET OWN FEEDBACKS
+    =============================== */
+    public function getByClient($clientId) {
+        $stmt = $this->conn->prepare(
+            "SELECT 
+                f.id,
+                f.booking_id,
+                f.rating,
+                f.feedback,
+                f.created_at,
+                ct.name AS caretaker_name
+             FROM feedbacks f
+             JOIN caretakers ct ON f.caretaker_id = ct.id
+             WHERE f.client_id = ?
+             ORDER BY f.created_at DESC"
+        );
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    // Get client feedback list
-    public function getByClient($client_id) {
-        $sql = "SELECT feedback.*, 
-                       caretakers.name AS caretaker_name
-                FROM feedback
-                JOIN caretakers ON feedback.caretaker_id = caretakers.id
-                WHERE client_id = $client_id
-                ORDER BY created_at DESC";
-
-        return $this->db->conn->query($sql)->fetch_all(MYSQLI_ASSOC);
+    /* ===============================
+       CARETAKER – GET OWN FEEDBACKS
+    =============================== */
+    public function getByCaretaker($caretakerId) {
+        $stmt = $this->conn->prepare(
+            "SELECT 
+                f.id,
+                f.booking_id,
+                f.rating,
+                f.feedback,
+                f.created_at,
+                c.name AS client_name
+             FROM feedbacks f
+             JOIN clients c ON f.client_id = c.id
+             WHERE f.caretaker_id = ?
+             ORDER BY f.created_at DESC"
+        );
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    // Get one feedback
+    /* ===============================
+       GET SINGLE FEEDBACK
+    =============================== */
     public function getById($id) {
-        $sql = "SELECT * FROM feedback WHERE id = $id";
-        return $this->db->conn->query($sql)->fetch_assoc();
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM feedbacks WHERE id = ?"
+        );
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
     }
 
-    // Insert new feedback
+    /* ===============================
+       CREATE FEEDBACK
+    =============================== */
     public function create($data) {
-        $client_id = $data['client_id'];
-        $caretaker_id = $data['caretaker_id'];
-        $service = $data['service'];
-        $rating = $data['rating'];
-        $comment = $data['comment'];
+        $stmt = $this->conn->prepare(
+            "INSERT INTO feedbacks 
+            (booking_id, client_id, caretaker_id, rating, feedback)
+            VALUES (?, ?, ?, ?, ?)"
+        );
 
-        $sql = "INSERT INTO feedback (client_id, caretaker_id, service, rating, comment)
-                VALUES ('$client_id', '$caretaker_id', '$service', '$rating', '$comment')";
+        $stmt->bind_param(
+            "iiiis",
+            $data['booking_id'],
+            $data['client_id'],
+            $data['caretaker_id'],
+            $data['rating'],
+            $data['feedback']
+        );
 
-        return $this->db->conn->query($sql);
+        if ($stmt->execute()) {
+            return $this->conn->insert_id; // ✅ return feedback ID
+        }
+        return false;
     }
 
-    // Update
+    /* ===============================
+       UPDATE FEEDBACK
+    =============================== */
     public function update($id, $data) {
-        $rating = $data['rating'];
-        $comment = $data['comment'];
+        $stmt = $this->conn->prepare(
+            "UPDATE feedbacks
+             SET rating = ?, feedback = ?
+             WHERE id = ?"
+        );
 
-        $sql = "UPDATE feedback 
-                SET rating='$rating', comment='$comment'
-                WHERE id = '$id'";
+        $stmt->bind_param(
+            "isi",
+            $data['rating'],
+            $data['feedback'],
+            $id
+        );
 
-        return $this->db->conn->query($sql);
+        return $stmt->execute();
     }
 
-    // Delete
+    /* ===============================
+       DELETE FEEDBACK
+    =============================== */
     public function delete($id) {
-        $sql = "DELETE FROM feedback WHERE id = $id";
-        return $this->db->conn->query($sql);
+        $stmt = $this->conn->prepare(
+            "DELETE FROM feedbacks WHERE id = ?"
+        );
+        $stmt->bind_param("i", $id);
+        return $stmt->execute();
+    }
+
+    /* ===============================
+       CHECK IF FEEDBACK EXISTS (PER BOOKING)
+    =============================== */
+    public function feedbackExists($bookingId) {
+        $stmt = $this->conn->prepare(
+            "SELECT id FROM feedbacks WHERE booking_id = ?"
+        );
+        $stmt->bind_param("i", $bookingId);
+        $stmt->execute();
+        return $stmt->get_result()->num_rows > 0;
     }
 }

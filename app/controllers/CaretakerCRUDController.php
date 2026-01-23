@@ -3,9 +3,10 @@
 class CaretakerCRUDController extends Controller {
 
     private $caretakerModel;
-
+    private $historyModel;
     public function __construct() {
         $this->caretakerModel = $this->model('CaretakerModel');
+        $this->historyModel = $this->model('HistoryModel');
     }
 
     // Add caretaker
@@ -35,6 +36,14 @@ class CaretakerCRUDController extends Controller {
         }
 
         $this->caretakerModel->addCaretaker($data);
+            $this->historyModel->log([
+                'user_id' => $_SESSION['user']['id'],
+                'username' => $_SESSION['user']['username'],
+                'role' => 'admin',
+                'action' => "Added caretaker: " . ($data['name'] ?? 'Unknown'),
+                'section' => "Caretakers"
+            ]);
+
 
         header("Location: " . URLROOT . "/admin/ad_caretakers");
         exit;
@@ -49,6 +58,14 @@ class CaretakerCRUDController extends Controller {
     public function edit($id) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->caretakerModel->updateCaretaker($id, $_POST);
+            $this->historyModel->log([
+                'user_id' => $_SESSION['user']['id'],
+                'username' => $_SESSION['user']['username'],
+                'role' => 'admin',
+                'action' => "Updated caretaker (ID: $id)",
+                'section' => "Caretakers"
+            ]);
+
             header("Location: " . URLROOT . "/admin/ad_caretakers");
             exit;
         } else {
@@ -60,6 +77,14 @@ class CaretakerCRUDController extends Controller {
     // Delete caretaker
     public function delete($id) {
         $this->caretakerModel->deleteCaretaker($id);
+        $this->historyModel->log([
+            'user_id' => $_SESSION['user']['id'],
+            'username' => $_SESSION['user']['username'],
+            'role' => 'admin',
+            'action' => "Deleted caretaker (ID: $id)",
+            'section' => "Caretakers"
+        ]);
+
         header("Location: " . URLROOT . "/admin/ad_caretakers");
         exit;
     }
