@@ -300,4 +300,13 @@ tbody td:nth-child(2){
   .card .value{
     font-size: 24px;
   }
+
+}
+
+@media (max-width: 900px){
+  .admin-dashboard{
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 14px !important;
+  }
 }
