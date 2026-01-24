@@ -39,7 +39,7 @@
       <textarea name="reason" placeholder="Enter reason for leave..." required></textarea>
 
       <button type="submit" class="submit-btn">Submit Request</button>
-      <a href="<?php echo URLROOT; ?>/leaveController/index" class="cancel-btn">Cancel</a>
+      <a href="<?php echo URLROOT; ?>/leaveCRUD/index" class="cancel-btn">Cancel</a>
     </form>
   </section>
 </main>

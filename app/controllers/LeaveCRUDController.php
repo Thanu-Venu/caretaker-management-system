@@ -111,4 +111,22 @@ class LeaveCRUDController extends Controller {
         header("Location: " . URLROOT . "/LeaveCRUD/index");
         exit;
     }
+
+    public function ct_dashboard() {
+
+    if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
+        die("Caretaker not logged in");
+    }
+
+    $userId = $_SESSION['user']['id'];
+
+    // LOAD LEAVES
+    $leaveModel = $this->model('LeaveModel');
+    $leaves = $leaveModel->getLeavesByUser($userId);
+
+    $this->view('caretaker/ct_dashboard', [
+        'leaves' => $leaves
+    ]);
+}
+
 }

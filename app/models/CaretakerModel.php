@@ -2,7 +2,7 @@
 require_once APPROOT . '/core/Database.php';
 
 class CaretakerModel {
-    private $conn;
+    private $conn;  
 
     public function __construct() {
         $db = new Database();
@@ -45,6 +45,7 @@ class CaretakerModel {
 
     return $stmt->execute();
  }
+
 
 
 
@@ -91,6 +92,7 @@ class CaretakerModel {
             $data['status'],
             $id
         );
+
     }
 
     return $stmt->execute();
@@ -108,9 +110,6 @@ class CaretakerModel {
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
-
-
-
 
 
 
@@ -224,7 +223,7 @@ public function getPastBookings($caretakerId) {
                 c.name AS client_name
             FROM bookings b
             JOIN clients c ON c.id = b.client_id
-            WHERE b.caretaker_id = ? AND b.status = 'Accepted' AND b.booking_date < CURDATE()
+            WHERE b.caretaker_id = ? AND b.status = 'Completed' AND b.booking_date < CURDATE()
             ORDER BY b.booking_date DESC";
     
     $stmt = $this->conn->prepare($sql);
@@ -258,6 +257,63 @@ public function countCaretakers()
     return $result->fetch_assoc()['total'] ?? 0;
 }
 
+public function addComplaint($data) {
+    $stmt = $this->conn->prepare(
+        "INSERT INTO ct_complaints (client_id, caretaker_id, service_type, service_date, description, status) 
+         VALUES (?, ?, ?, ?, ?, 'Pending')"
+    );
+
+    $stmt->bind_param(
+        "iisss",
+        $data['client_id'],
+        $data['caretaker_id'],
+        $data['service_type'],
+        $data['service_date'],
+        $data['description']
+    );
+
+    return $stmt->execute();
+}
+  
+public function getResolvedComplaintsByCaretaker($caretaker_id)
+{
+    $stmt = $this->conn->prepare(
+        "SELECT * FROM ct_complaints 
+         WHERE caretaker_id = ? AND status = 'Resolved'
+         ORDER BY service_date DESC"
+    );
+
+    $stmt->bind_param("i", $caretaker_id);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+
+
+public function getCaretakerFeedbacks($caretakerId)
+{
+    $sql = "SELECT 
+                cl.name AS client_name,
+                b.service_type AS service,
+                f.rating,
+                f.feedback AS comment,
+                f.created_at
+            FROM feedbacks f
+            JOIN clients cl ON f.client_id = cl.id
+            JOIN bookings b ON f.booking_id = b.id
+            WHERE f.caretaker_id = ?
+            ORDER BY f.created_at DESC";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $caretakerId);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+
 
 }
+
 ?>
