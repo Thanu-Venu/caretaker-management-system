@@ -13,7 +13,7 @@
 
 <body>
   <main class="content">
-    <h1>Find the Perfect Caretaker</h1>
+    <h1>Find the Perfect Caregiver</h1>
     <p>Browse our qualified professionals and book the care you need</p>
 
     <!-- Search Filters -->
@@ -42,6 +42,13 @@
               <option value="Colombo">Colombo</option>
               <option value="Kandy">Kandy</option>
               <option value="Matara">Matara</option>
+              <option value="Galle">Galle</option>
+              <option value="Anuradhapura">Anuradhapura</option>
+              <option value="Trincomalee">Trincomalee</option>
+              <option value="Batticaloa">Batticaloa</option>
+              <option value="Negombo">Negombo</option>
+              <option value="Nuwara Eliya">Nuwara Eliya</option>
+              <option value="Vavuniya">Vavuniya</option>
             </select>
           </div>
         </div>
@@ -75,7 +82,7 @@
 
 
   <section>
-   <h2 class="two">All Caretakers</h2>
+   <h2 class="two">All Caregivers</h2>
 <p class="hint">Availability depends on your selected date and period. Click “Book Now” to check availability.</p>
 
     <div id="caretakersList" class="caretakers">
@@ -114,7 +121,7 @@
             </a>
 
            <a href="<?= URLROOT ?>/public/?url=client/c_book&id=<?= $ct['id'] ?>" class="book-btn">
-  Check Availability
+              Book Now
 </a>
 
           </div>

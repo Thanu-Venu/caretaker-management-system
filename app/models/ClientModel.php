@@ -125,58 +125,35 @@ public function updateClient($id, $data)
     }
 
     // 2️⃣ Create booking
-  public function createBooking($data)
+    public function createBooking($data)
 {
-    $sql = "INSERT INTO bookings
-        (
-            client_id, caretaker_id, service_type, basis, duration, preferred_time,
-            booking_date, end_date,
-            district, street, address_line1, address_line2, postal_code,
-            customization, total_payment, status
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO bookings 
+    (client_id, caretaker_id, service_type, basis, duration, preferred_time, booking_date, service_location, customization, total_payment, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $this->conn->prepare($sql);
 
-    // Safe defaults
-    $district      = $data['district'] ?? '';
-    $street        = $data['street'] ?? '';
-    $address_line1 = $data['address_line1'] ?? '';
-    $address_line2 = $data['address_line2'] ?? null;
-    $postal_code   = $data['postal_code'] ?? null;
-    $customization = $data['customization'] ?? '';
-
-    // Types:
-    // i i s s i s s s s s s s s d s
     $stmt->bind_param(
-        "iississsssssssds",
-        $data['client_id'],        // i
-        $data['caretaker_id'],     // i
-        $data['service_type'],     // s
-        $data['basis'],            // s
-        $data['duration'],         // i
-        $data['preferred_time'],   // s
-        $data['booking_date'],     // s
-        $data['end_date'],         // s
-        $district,                 // s
-        $street,                   // s
-        $address_line1,            // s
-        $address_line2,            // s (nullable)
-        $postal_code,              // s (nullable)
-        $customization,            // s
-        $data['total_payment'],    // d
-        $data['status']            // s
+        "iississssds",
+        $data['client_id'],
+        $data['caretaker_id'],
+        $data['service_type'],
+        $data['basis'],
+        $data['duration'],
+        $data['preferred_time'],
+        $data['booking_date'],
+        $data['service_location'],
+        $data['customization'],
+        $data['total_payment'],
+        $data['status']
     );
 
     if ($stmt->execute()) {
-        return $this->conn->insert_id;
+        return $this->conn->insert_id; // ✅ RETURN BOOKING ID
     }
 
     return false;
 }
-
-
-
 
 
 
@@ -207,7 +184,7 @@ public function getUpcomingBookings($clientId)
      $updateSql = "
         UPDATE bookings
         SET status = 'Completed'
-        WHERE end_date < CURDATE()
+        WHERE booking_date < CURDATE()
           AND status IN ('Pending','Accepted')
     ";
     $this->conn->query($updateSql);
@@ -225,7 +202,7 @@ public function getUpcomingBookings($clientId)
             JOIN caretakers c ON b.caretaker_id = c.id
             WHERE b.client_id = ?
               AND b.status IN ('Pending', 'Accepted')
-              AND b.end_date >= CURDATE()
+              AND b.booking_date >= CURDATE()
             ORDER BY b.booking_date ASC";
 
     $stmt = $this->conn->prepare($sql);
@@ -315,17 +292,17 @@ public function getCancelledBookings($clientId)
 
    
     /* ================= MARK AS PAID ================= */
-    /* ================= MARK AS PAID ================= */
-public function markAsPaid($bookingId)
-{
-    $sql = "UPDATE bookings SET status = 'Paid' WHERE id = ?";
+    public function markAsPaid($bookingId)
+    {
+        $this->conn->query("
+            UPDATE bookings
+            SET status = 'Paid'
+            WHERE booking_id = :booking_id
+        ");
 
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $bookingId);
-
-    return $stmt->execute();
-}
-
+        $this->conn->bind(':booking_id', $bookingId);
+        return $this->conn->execute();
+    }
 
 
 
@@ -524,147 +501,5 @@ public function getClientEngagementLast6Months()
     return ['labels' => $labels, 'values' => $values];
 }
 
-public function calcEndDate(string $startDate, string $basis, int $duration): string
-{
-    $dt = new DateTime($startDate);
-    $duration = max(1, (int)$duration);
-
-    switch ($basis) {
-        case 'Hourly':
-        case 'Daily':
-            // treat duration as number of days
-            $dt->modify('+' . ($duration - 1) . ' days');
-            break;
-
-        case 'Monthly':
-            $dt->modify('+' . $duration . ' months');
-            $dt->modify('-1 day');
-            break;
-
-        case 'Yearly':
-            $dt->modify('+' . $duration . ' years');
-            $dt->modify('-1 day');
-            break;
-
-        default:
-            // fallback: 1 day
-            break;
-    }
-
-    return $dt->format('Y-m-d');
 }
-
-public function isCaretakerAvailable(int $caretakerId, string $reqStart, string $reqEnd): bool
-{
-    // 1) caretaker must be Active
-    $stmt = $this->conn->prepare("SELECT status FROM caretakers WHERE id=?");
-    $stmt->bind_param("i", $caretakerId);
-    $stmt->execute();
-    $ct = $stmt->get_result()->fetch_assoc();
-
-    if (!$ct || $ct['status'] !== 'Active') return false;
-
-    // 2) booking conflicts (Pending, Accepted)
-    $sqlBookings = "SELECT COUNT(*) AS total
-                    FROM bookings
-                    WHERE caretaker_id = ?
-                      AND status IN ('Pending','Accepted')
-                      AND NOT (end_date < ? OR booking_date > ?)";
-
-    $stmt = $this->conn->prepare($sqlBookings);
-    $stmt->bind_param("iss", $caretakerId, $reqStart, $reqEnd);
-    $stmt->execute();
-    $b = $stmt->get_result()->fetch_assoc();
-    if (($b['total'] ?? 0) > 0) return false;
-
-    // 3) leave conflicts (Pending, Approved)
-    $sqlLeaves = "SELECT COUNT(*) AS total
-                  FROM leaves
-                  WHERE user_id = ?
-                    AND status IN ('Pending','Approved')
-                    AND NOT (end_date < ? OR start_date > ?)";
-
-    $stmt = $this->conn->prepare($sqlLeaves);
-    $stmt->bind_param("iss", $caretakerId, $reqStart, $reqEnd);
-    $stmt->execute();
-    $l = $stmt->get_result()->fetch_assoc();
-    if (($l['total'] ?? 0) > 0) return false;
-
-    return true;
-}
-public function getCaretakersWithAvailability(string $reqStart, string $reqEnd, ?string $serviceType = null, ?string $location = null): array
-{
-    // fetch all active caretakers (optionally filter by service/location)
-    $sql = "SELECT * FROM caretakers WHERE status='Active'";
-    $params = [];
-    $types = "";
-
-    if ($serviceType) { $sql .= " AND service_type=?"; $types .= "s"; $params[] = $serviceType; }
-    if ($location)    { $sql .= " AND location LIKE ?"; $types .= "s"; $params[] = "%$location%"; }
-
-    $sql .= " ORDER BY rating DESC, created_at DESC";
-
-    $stmt = $this->conn->prepare($sql);
-    if (!empty($params)) $stmt->bind_param($types, ...$params);
-    $stmt->execute();
-    $all = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-
-    $available = [];
-    $unavailable = [];
-
-    foreach ($all as $ct) {
-        $isFree = $this->isCaretakerAvailable((int)$ct['id'], $reqStart, $reqEnd); // call the function above (same model or share via helper)
-        $ct['is_available'] = $isFree;
-
-        if ($isFree) $available[] = $ct;
-        else $unavailable[] = $ct;
-    }
-
-    return ['available' => $available, 'unavailable' => $unavailable];
-}
-
-public function getAlternativeCaretakers(
-    int $excludeCaretakerId,
-    string $serviceType,
-    string $reqStart,
-    string $reqEnd,
-    ?string $location = null,
-    int $limit = 6
-): array {
-    // base query: active + same service type + not the current caretaker
-    $sql = "SELECT id, name, service_type, location, experience, qualifications, profile_image, rating
-            FROM caretakers
-            WHERE status='Active'
-              AND service_type = ?
-              AND id <> ?";
-
-    $types = "si";
-    $params = [$serviceType, $excludeCaretakerId];
-
-    // optional: prefer same location
-    if (!empty($location)) {
-        $sql .= " AND location LIKE ?";
-        $types .= "s";
-        $params[] = "%$location%";
-    }
-
-    // order by rating then newest
-    $sql .= " ORDER BY rating DESC, created_at DESC";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param($types, ...$params);
-    $stmt->execute();
-    $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-
-    // filter by availability (bookings + leaves overlap)
-    $available = [];
-    foreach ($rows as $ct) {
-        if ($this->isCaretakerAvailable((int)$ct['id'], $reqStart, $reqEnd)) {
-            $available[] = $ct;
-            if (count($available) >= $limit) break;
-        }
-    }
-
-    return $available;
-}
-
-}
+?>

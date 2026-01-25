@@ -251,27 +251,13 @@ public function getPastBookings($caretakerId) {
     return false;
 }
 
-public function getClientsByCaretaker($caretakerId)
+public function countCaretakers()
 {
-    $sql = "SELECT 
-                b.id AS booking_id,
-                b.client_id,
-                c.name AS client_name,
-                b.service_type,
-                b.booking_date,
-                b.preferred_time
-            FROM bookings b
-            JOIN clients c ON b.client_id = c.id
-            WHERE b.caretaker_id = ?
-            ORDER BY b.booking_date DESC";
-
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param('i', $caretakerId);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $result = $this->conn->query("SELECT COUNT(*) AS total FROM caretakers");
+    return $result->fetch_assoc()['total'] ?? 0;
 }
 
- public function addComplaint($data) {
+public function addComplaint($data) {
     $stmt = $this->conn->prepare(
         "INSERT INTO ct_complaints (client_id, caretaker_id, service_type, service_date, description, status) 
          VALUES (?, ?, ?, ?, ?, 'Pending')"
@@ -325,12 +311,9 @@ public function getCaretakerFeedbacks($caretakerId)
 
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
-public function countCaretakers()
-{
-    $result = $this->conn->query("SELECT COUNT(*) AS total FROM caretakers");
-    return $result->fetch_assoc()['total'] ?? 0;
-}
+
 
 
 }
 
+?>
