@@ -306,7 +306,7 @@ class ClientController extends Controller
         $this->view('client/c_book', [
             'caretaker' => $caretaker,
             'serviceOptions' => $serviceOptions,
-            
+
         ]);
     }
 
@@ -331,11 +331,11 @@ class ClientController extends Controller
         $duration = (int) ($_POST['duration'] ?? 0);
         $preferred_time = $_POST['preferred_time'] ?? '';
         $booking_date = $_POST['booking_date'] ?? '';
-$district = $ct['location']; // TRUST DB, not user input
-$street = $_POST['street'] ?? '';
-$address_line1 = $_POST['address_line1'] ?? '';
-$address_line2 = $_POST['address_line2'] ?? '';
-$postal_code = $_POST['postal_code'] ?? '';
+        $district = $ct['location']; // TRUST DB, not user input
+        $street = $_POST['street'] ?? '';
+        $address_line1 = $_POST['address_line1'] ?? '';
+        $address_line2 = $_POST['address_line2'] ?? '';
+        $postal_code = $_POST['postal_code'] ?? '';
         $customization = $_POST['customization'] ?? '';
         $caretaker_id = (int) ($_POST['caretaker_id'] ?? 0);
         $client_id = (int) ($_SESSION['user']['id'] ?? 0);
@@ -347,17 +347,17 @@ $postal_code = $_POST['postal_code'] ?? '';
         }
 
         $caretakerDistrict = strtolower(trim($ct['location'] ?? ''));
-$clientDistrict = strtolower(trim($district));
+        $clientDistrict = strtolower(trim($district));
 
-if ($caretakerDistrict && $clientDistrict && $caretakerDistrict !== $clientDistrict) {
-    $_SESSION['error'] = "This caretaker is available only in " . ($ct['location'] ?? 'their district') . ".";
-    header("Location: " . URLROOT . "/public/?url=client/c_book&id=" . $caretaker_id);
-    exit;
-}
+        if ($caretakerDistrict && $clientDistrict && $caretakerDistrict !== $clientDistrict) {
+            $_SESSION['error'] = "This caretaker is available only in " . ($ct['location'] ?? 'their district') . ".";
+            header("Location: " . URLROOT . "/public/?url=client/c_book&id=" . $caretaker_id);
+            exit;
+        }
 
 
         // ✅ Fetch caretaker from DB (do NOT trust POST service_type)
-        
+
         $service_type = $ct['service_type'];
 
         // ✅ 3-day rule
@@ -416,22 +416,22 @@ if ($caretakerDistrict && $clientDistrict && $caretakerDistrict !== $clientDistr
         }
 
         $bookingData = [
-    'client_id' => $client_id,
-    'caretaker_id' => $caretaker_id,
-    'service_type' => $service_type,
-    'basis' => $basis,
-    'duration' => $duration,
-    'preferred_time' => $preferred_time,
-    'booking_date' => $booking_date,
-    'district' => $district,
-    'street' => $street,
-    'address_line1' => $address_line1,
-    'address_line2' => $address_line2,
-    'postal_code' => $postal_code,
-    'total_payment' => $total_payment,
-    'end_date' => $end_date,
-    'status' => 'Pending'
-];
+            'client_id' => $client_id,
+            'caretaker_id' => $caretaker_id,
+            'service_type' => $service_type,
+            'basis' => $basis,
+            'duration' => $duration,
+            'preferred_time' => $preferred_time,
+            'booking_date' => $booking_date,
+            'district' => $district,
+            'street' => $street,
+            'address_line1' => $address_line1,
+            'address_line2' => $address_line2,
+            'postal_code' => $postal_code,
+            'total_payment' => $total_payment,
+            'end_date' => $end_date,
+            'status' => 'Pending'
+        ];
 
 
         $bookingId = $this->clientModel->createBooking($bookingData);
@@ -453,8 +453,8 @@ if ($caretakerDistrict && $clientDistrict && $caretakerDistrict !== $clientDistr
             'role' => 'HR'
         ]);
 
-header("Location: " . URLROOT . "/public/?url=client/c_bookingConfirm&booking_id=" . $bookingId);
-exit;
+        header("Location: " . URLROOT . "/public/?url=client/c_bookingConfirm&booking_id=" . $bookingId);
+        exit;
 
         exit;
     }

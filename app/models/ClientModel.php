@@ -125,29 +125,47 @@ public function updateClient($id, $data)
     }
 
     // 2️⃣ Create booking
-   public function createBooking($data)
+  public function createBooking($data)
 {
-    $sql = "INSERT INTO bookings 
-        (client_id, caretaker_id, service_type, basis, duration, preferred_time, booking_date, end_date, service_location, customization, total_payment, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO bookings
+        (
+            client_id, caretaker_id, service_type, basis, duration, preferred_time,
+            booking_date, end_date,
+            district, street, address_line1, address_line2, postal_code,
+            customization, total_payment, status
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $this->conn->prepare($sql);
 
-    // 12 placeholders → 12 bind vars → 12 type letters
+    // Safe defaults
+    $district      = $data['district'] ?? '';
+    $street        = $data['street'] ?? '';
+    $address_line1 = $data['address_line1'] ?? '';
+    $address_line2 = $data['address_line2'] ?? null;
+    $postal_code   = $data['postal_code'] ?? null;
+    $customization = $data['customization'] ?? '';
+
+    // Types:
+    // i i s s i s s s s s s s s d s
     $stmt->bind_param(
-        "iississsssis",
-        $data['client_id'],          // i
-        $data['caretaker_id'],       // i
-        $data['service_type'],       // s
-        $data['basis'],              // s
-        $data['duration'],           // i
-        $data['preferred_time'],     // s
-        $data['booking_date'],       // s
-        $data['end_date'],           // s
-        $data['service_location'],   // s
-        $data['customization'],      // s
-        $data['total_payment'],      // i (or use d)
-        $data['status']              // s
+        "iississsssssssds",
+        $data['client_id'],        // i
+        $data['caretaker_id'],     // i
+        $data['service_type'],     // s
+        $data['basis'],            // s
+        $data['duration'],         // i
+        $data['preferred_time'],   // s
+        $data['booking_date'],     // s
+        $data['end_date'],         // s
+        $district,                 // s
+        $street,                   // s
+        $address_line1,            // s
+        $address_line2,            // s (nullable)
+        $postal_code,              // s (nullable)
+        $customization,            // s
+        $data['total_payment'],    // d
+        $data['status']            // s
     );
 
     if ($stmt->execute()) {
@@ -156,6 +174,7 @@ public function updateClient($id, $data)
 
     return false;
 }
+
 
 
 
