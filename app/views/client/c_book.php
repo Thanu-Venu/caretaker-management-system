@@ -1,144 +1,194 @@
+<?php
+// Header & Sidebar
+include_once APPROOT . "/views/templates/client/c_header.php";
+include_once APPROOT . "/views/templates/client/c_sidebar.php";
 
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
+// Safely extract data
+$ct = $data['caretaker'] ?? [];
+
+$serviceOptions     = $data['serviceOptions'] ?? [];
+$servicePriceRates  = $data['servicePriceRates'] ?? [];
+$timePriceModifier  = $data['timePriceModifier'] ?? [];
+?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Caretaker</title>
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_book.css">
+    <link rel="stylesheet" href="<?= URLROOT; ?>/public/css/client/c_book.css">
 </head>
 
 <body>
-    <main class="content">
-        <h1>Book Your Caretaker</h1>
+<main class="content">
 
-        <?php
-          $ct = $data['caretaker'];
-        ?>
+<?php
+// 🚨 HARD STOP if caretaker data missing (prevents blank page)
+if (empty($ct) || empty($ct['id'])) {
+    echo '<div class="alert error">Caretaker data not loaded. Please go back and select a caretaker again.</div>';
+    echo '</main></body></html>';
+    exit;
+}
+?>
 
+<h1>Book Your Caretaker</h1>
 
+<?php if (!empty($_SESSION['error'])): ?>
+    <div class="alert error">
+        <?= htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?>
+    </div>
+<?php endif; ?>
 
-        <!-- Caretaker Profile Summary -->
-      <section class="caretaker-summary">
-           <h2><?= htmlspecialchars($ct['name']) ?></h2>
-          <p><strong>Service:</strong> <?= htmlspecialchars($ct['service_type']) ?></p>
-          <p><strong>Location:</strong> <?= htmlspecialchars($ct['location']) ?></p>
-           <p><strong>Rating:</strong> ⭐ <?= htmlspecialchars($ct['rating'] ?? 'N/A') ?></p>
-      </section>
+<!-- ================= CARETAKER SUMMARY ================= -->
+<section class="caretaker-summary">
+    <h2><?= htmlspecialchars($ct['name'] ?? 'N/A') ?></h2>
+    <p><strong>Service:</strong> <?= htmlspecialchars($ct['service_type'] ?? 'N/A') ?></p>
+    <p><strong>Location:</strong> <?= htmlspecialchars($ct['location'] ?? 'N/A') ?></p>
+    <p><strong>Rating:</strong> ⭐ <?= htmlspecialchars($ct['rating'] ?? 'N/A') ?></p>
+</section>
 
+<!-- ================= BASE PRICE ================= -->
+<div class="form-group">
+    <label>Base Price:</label>
+    <span id="basePrice">Select a basis to see price</span>
+    <p class="hint">Final price depends on duration and preferred time.</p>
+</div>
 
-        <!-- Base Price Display -->
-        <div class="form-group">
-            <label>Base Price:</label>
-            <span id="basePrice">Select a service to see price</span>
-            <p>Warning-The base price will differ according to preffered time</p>
-        </div>
+<!-- ================= BOOKING FORM ================= -->
+<section class="booking-form">
+<form id="bookingForm" method="POST" action="<?= URLROOT ?>/public/?url=client/bookCaretaker">
 
-          <!-- ================= Booking Form ================= -->
-    <section class="booking-form">
-        <form id="bookingForm" method="POST" action="<?= URLROOT ?>/client/bookCaretaker">
-
-    <!-- Hidden caretaker ID -->
-    <input type="hidden" name="caretaker_id" value="<?= $data['caretaker']['id'] ?>">
-
-    <!-- Hidden service type -->
-    <input type="hidden" name="service_type" value="<?= $data['caretaker']['service_type'] ?>">
+    <input type="hidden" name="caretaker_id" value="<?= (int)$ct['id'] ?>">
     <input type="hidden" name="total_payment" id="total_payment" value="0">
+    <input type="hidden" name="end_date" id="end_date" value="">
 
-
-    <!-- Basis -->
+    <!-- ===== BASIS ===== -->
     <div class="form-group">
         <label for="basis">Select Basis</label>
         <select id="basis" name="basis" required>
             <option value="">-- Select --</option>
-            <?php foreach($data['serviceOptions'][$data['caretaker']['service_type']] as $basis): ?>
-                <option value="<?= $basis ?>"><?= $basis ?></option>
-            <?php endforeach; ?>
+
+            <?php
+            $serviceType = $ct['service_type'] ?? '';
+            $bases = $serviceOptions[$serviceType] ?? [];
+            ?>
+
+            <?php if (!empty($bases)): ?>
+                <?php foreach ($bases as $b): ?>
+                    <option value="<?= htmlspecialchars($b, ENT_QUOTES) ?>">
+                        <?= htmlspecialchars($b) ?>
+                    </option>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <option value="">No basis options available</option>
+            <?php endif; ?>
         </select>
     </div>
 
-    <!-- Duration -->
+    <!-- ===== DURATION ===== -->
     <div class="form-group">
         <label for="duration">Duration</label>
         <input type="number" id="duration" name="duration" min="1" required>
     </div>
 
-    <!-- Booking Date -->
+    <!-- ===== DATE ===== -->
     <div class="form-group">
-        <label for="date">Preferred Date</label>
-        <input type="date" id="date" name="booking_date" required>
+        <label for="date">Preferred Start Date</label>
+        <?php $minDate = date('Y-m-d', strtotime('+3 days')); ?>
+        <input type="date" id="date" name="booking_date" min="<?= $minDate ?>" required>
+        <small class="hint">Bookings must be made at least 3 days in advance.</small>
     </div>
 
-    <!-- Preferred Time -->
+    <!-- ===== TIME ===== -->
     <div class="form-group">
         <label for="preferredTime">Preferred Time</label>
         <select id="preferredTime" name="preferred_time" required>
             <option value="">Select Time</option>
+
             <?php
             $timeOptions = [
-                "Elder Care" => ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)", "Night (6pm - 10pm)"],
-                "Babysitter"   => ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)"],
-                "Maid"         => ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)"],
-                "Disability Support" => ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)"]
+                "Elder Care" => [
+                    "Full Time (8am - 5pm)",
+                    "Morning (8am - 12pm)",
+                    "Evening (1pm - 5pm)",
+                    "Night (6pm - 10pm)"
+                ],
+                "Babysitter" => [
+                    "Full Time (8am - 5pm)",
+                    "Morning (8am - 12pm)",
+                    "Evening (1pm - 5pm)"
+                ],
+                "Maid" => [
+                    "Full Time (8am - 5pm)",
+                    "Morning (8am - 12pm)",
+                    "Evening (1pm - 5pm)"
+                ]
+                
             ];
 
-            foreach($timeOptions[$data['caretaker']['service_type']] as $time): ?>
-                <option value="<?= $time ?>"><?= $time ?></option>
-            <?php endforeach; ?>
+            $times = $timeOptions[$serviceType] ?? [];
+            ?>
+
+            <?php if (!empty($times)): ?>
+                <?php foreach ($times as $t): ?>
+                    <option value="<?= htmlspecialchars($t, ENT_QUOTES) ?>">
+                        <?= htmlspecialchars($t) ?>
+                    </option>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <option value="">No time options available</option>
+            <?php endif; ?>
         </select>
     </div>
 
-    <!-- Service Location -->
+    <!-- ===== LOCATION ===== -->
     <div class="form-group">
         <label for="serviceLocation">Service Location</label>
         <textarea id="serviceLocation" name="service_location" placeholder="Enter service location"></textarea>
     </div>
 
-    <!-- Customization -->
+    <!-- ===== CUSTOMIZATION ===== -->
     <div class="form-group">
         <label for="customization">Any Customization</label>
-        <textarea id="customization" name="customization" placeholder="Enter any specific requests"></textarea>
+        <textarea id="customization" name="customization" placeholder="Special requests (optional)"></textarea>
     </div>
 
-    <!-- Price -->
+    <!-- ===== PRICE ===== -->
     <div class="price-box">
-        <p><strong>Estimated Price:</strong>
-        <span id="price">0</span> LKR
-        </p>
+        <p><strong>Estimated Price:</strong> <span id="price">0</span> LKR</p>
     </div>
 
-    <!-- Availability -->
-    <div class="form-group">
+    <!-- ===== AVAILABILITY ===== -->
+    <div id="availabilityBox" class="availability-box" style="display:none;">
         <span id="availabilityMsg"></span>
     </div>
 
-    <!-- Submit Button -->
-    <button type="submit" id="bookBtn">
-        Request Booking
-    </button>
+    <!-- ===== BUTTONS ===== -->
+    <div class="btn-row">
+        <button type="button" id="checkBtn" class="secondary-btn">Check Availability</button>
+        <button type="submit" id="bookBtn" class="primary-btn" disabled>Request Booking</button>
+    </div>
 
 </form>
+</section>
 
-    </section>
-        <!-- Alternative Caretakers -->
-        <section id="otherCaretakers">
-            <h3>Other Available Caretakers</h3>
-            <div class="caretaker-grid">
-        <div class="caretaker-card"></div>
-        </div>
-        </section>
+<!-- ===== ALTERNATIVES ===== -->
+<section id="otherCaretakers" style="display:none;">
+    <h3>Other Available Caretakers</h3>
+    <div class="caretaker-grid" id="altGrid"></div>
+</section>
 
-        
-    </main>
+</main>
 
-   <script>
-  const serviceType = "<?= htmlspecialchars($ct['service_type'], ENT_QUOTES) ?>";
+<script>
+    const URLROOT = "<?= URLROOT ?>";
+    const SERVICE_TYPE = "<?= htmlspecialchars($serviceType, ENT_QUOTES) ?>";
+    const SERVICE_PRICE_RATES = <?= json_encode($servicePriceRates) ?>;
+    const TIME_MODIFIERS = <?= json_encode($timePriceModifier) ?>;
 </script>
-    <script src="<?php echo URLROOT; ?>/public/js/client/c_book.js"></script>
-</body>
 
+<script src="<?= URLROOT ?>/public/js/client/c_book.js"></script>
+
+</body>
 </html>

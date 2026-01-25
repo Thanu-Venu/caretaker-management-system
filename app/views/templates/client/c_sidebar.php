@@ -5,8 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Client Dashboard Sidebar</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_sidebar.css">
-  <!-- Boxicons -->
+  <link rel="stylesheet" href="<?php echo URLROOT;?>/public/css/client/c_sidebar.css">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -52,7 +51,7 @@
 
       </li>
 
-      <li class="logout"><a href="<?= URLROOT ?>/index.php?url=auth/logout"><i class="bx bx-log-out"></i> Logout</a>
+      <li class="logout"><a href="<?= URLROOT?>/index.php?url=auth/logout"><i class="bx bx-log-out"></i> Logout</a>
       </li>
     </ul>
   </div>

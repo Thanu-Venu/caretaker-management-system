@@ -75,7 +75,9 @@
 
 
   <section>
-   <h2 class="two">Available Caretakers</h2>
+   <h2 class="two">All Caretakers</h2>
+<p class="hint">Availability depends on your selected date and period. Click “Book Now” to check availability.</p>
+
     <div id="caretakersList" class="caretakers">
 
      <?php if (!empty($data['caretakers'])): ?>
@@ -111,9 +113,10 @@
               View Profile
             </a>
 
-            <a href="<?= URLROOT ?>/public/?url=client/c_book&id=<?= $ct['id'] ?>" class="book-btn">
-              Book Now
-            </a>
+           <a href="<?= URLROOT ?>/public/?url=client/c_book&id=<?= $ct['id'] ?>" class="book-btn">
+  Check Availability
+</a>
+
           </div>
 
         </div>
