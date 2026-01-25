@@ -297,24 +297,16 @@ class ClientController extends Controller
 
         $serviceOptions = [
             "Elder Care" => ["Monthly", "Yearly"],
-            "Babysitter" => ["Daily", "Weekly", "Monthly", "Yearly"],
-            "Maid" => ["Hourly", "Daily", "Weekly", "Monthly", "Yearly"],
-            "Disability Support" => ["Daily", "Weekly", "Monthly"]
+            "Babysitter" => ["Daily", "Monthly", "Yearly"],
+            "Maid" => ["Hourly", "Daily", "Monthly", "Yearly"],
         ];
 
-        $priceRates = [
-            "Hourly" => 500,
-            "Daily" => 3000,
-            "Weekly" => 15000,
-            "Monthly" => 40000,
-            "Yearly" => 450000
-        ];
 
         // ✅ THIS WAS MISSING (this is why page was blank)
         $this->view('client/c_book', [
             'caretaker' => $caretaker,
             'serviceOptions' => $serviceOptions,
-            'priceRates' => $priceRates
+            
         ]);
     }
 
@@ -326,28 +318,46 @@ class ClientController extends Controller
             exit;
         }
 
-        $basis = $_POST['basis'] ?? '';
-        $duration = (int) ($_POST['duration'] ?? 0);
-        $preferred_time = $_POST['preferred_time'] ?? '';
-        $booking_date = $_POST['booking_date'] ?? '';
-        $service_location = $_POST['service_location'] ?? '';
-        $customization = $_POST['customization'] ?? '';
         $caretaker_id = (int) ($_POST['caretaker_id'] ?? 0);
-        $client_id = (int) ($_SESSION['user']['id'] ?? 0);
 
-        if (!$caretaker_id || !$client_id || !$basis || $duration <= 0 || !$preferred_time || !$booking_date) {
-            $_SESSION['error'] = "Please fill all required fields.";
-            header("Location: " . URLROOT . "/public/?url=client/c_book&id=" . $caretaker_id);
-            exit;
-        }
-
-        // ✅ Fetch caretaker from DB (do NOT trust POST service_type)
         $ct = $this->clientModel->getCaretakerById($caretaker_id);
         if (!$ct) {
             $_SESSION['error'] = "Caretaker not found.";
             header("Location: " . URLROOT . "/client/c_find");
             exit;
         }
+
+        $basis = $_POST['basis'] ?? '';
+        $duration = (int) ($_POST['duration'] ?? 0);
+        $preferred_time = $_POST['preferred_time'] ?? '';
+        $booking_date = $_POST['booking_date'] ?? '';
+$district = $ct['location']; // TRUST DB, not user input
+$street = $_POST['street'] ?? '';
+$address_line1 = $_POST['address_line1'] ?? '';
+$address_line2 = $_POST['address_line2'] ?? '';
+$postal_code = $_POST['postal_code'] ?? '';
+        $customization = $_POST['customization'] ?? '';
+        $caretaker_id = (int) ($_POST['caretaker_id'] ?? 0);
+        $client_id = (int) ($_SESSION['user']['id'] ?? 0);
+
+        if (!$caretaker_id || !$client_id || !$basis || $duration <= 0 || !$preferred_time || !$booking_date || !$district || !$address_line1) {
+            $_SESSION['error'] = "Please fill all required fields.";
+            header("Location: " . URLROOT . "/public/?url=client/c_book&id=" . $caretaker_id);
+            exit;
+        }
+
+        $caretakerDistrict = strtolower(trim($ct['location'] ?? ''));
+$clientDistrict = strtolower(trim($district));
+
+if ($caretakerDistrict && $clientDistrict && $caretakerDistrict !== $clientDistrict) {
+    $_SESSION['error'] = "This caretaker is available only in " . ($ct['location'] ?? 'their district') . ".";
+    header("Location: " . URLROOT . "/public/?url=client/c_book&id=" . $caretaker_id);
+    exit;
+}
+
+
+        // ✅ Fetch caretaker from DB (do NOT trust POST service_type)
+        
         $service_type = $ct['service_type'];
 
         // ✅ 3-day rule
@@ -406,19 +416,23 @@ class ClientController extends Controller
         }
 
         $bookingData = [
-            'client_id' => $client_id,
-            'caretaker_id' => $caretaker_id,
-            'service_type' => $service_type,
-            'basis' => $basis,
-            'duration' => $duration,
-            'preferred_time' => $preferred_time,
-            'booking_date' => $booking_date,
-            'service_location' => $service_location,
-            'customization' => $customization,
-            'total_payment' => $total_payment,
-            'end_date' => $end_date,
-            'status' => 'Pending'
-        ];
+    'client_id' => $client_id,
+    'caretaker_id' => $caretaker_id,
+    'service_type' => $service_type,
+    'basis' => $basis,
+    'duration' => $duration,
+    'preferred_time' => $preferred_time,
+    'booking_date' => $booking_date,
+    'district' => $district,
+    'street' => $street,
+    'address_line1' => $address_line1,
+    'address_line2' => $address_line2,
+    'postal_code' => $postal_code,
+    'total_payment' => $total_payment,
+    'end_date' => $end_date,
+    'status' => 'Pending'
+];
+
 
         $bookingId = $this->clientModel->createBooking($bookingData);
 

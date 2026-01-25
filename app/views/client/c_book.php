@@ -144,8 +144,25 @@ if (empty($ct) || empty($ct['id'])) {
 
     <!-- ===== LOCATION ===== -->
     <div class="form-group">
-        <label for="serviceLocation">Service Location</label>
-        <textarea id="serviceLocation" name="service_location" placeholder="Enter service location"></textarea>
+        <label>District</label>
+    <input type="text"
+           name="district"
+           value="<?= htmlspecialchars($ct['location'] ?? '') ?>"
+           readonly>
+
+
+<label>Street</label>
+<input type="text" name="street" placeholder="e.g., Galle Road">
+
+<label>Address Line 1</label>
+<input type="text" name="address_line1" required placeholder="No, Street, Area">
+
+<label>Address Line 2 (optional)</label>
+<input type="text" name="address_line2" placeholder="Landmark / Apartment">
+
+<label>Postal Code (optional)</label>
+<input type="text" name="postal_code" placeholder="e.g., 10300">
+
     </div>
 
     <!-- ===== CUSTOMIZATION ===== -->
