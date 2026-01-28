@@ -48,9 +48,35 @@ class AdminController extends Controller
     }
 
     public function ad_dashboard()
-    {
-        $this->view("admin/ad_dashboard");
-    }
+{
+    // Top stats
+    $totalCaregivers = $this->caretakerModel->countCaretakers();
+    $totalClients    = $this->clientModel->countClients();
+    $upcomingBookings= $this->clientModel->countUpcomingBookings(); 
+    $pendingLeaves   = $this->adminLeaveModel->countPendingLeaves();
+    //$monthlyPayments = $this->clientModel->getMonthlyPaymentsTotal(); // implement based on your payments table (or bookings)
+
+    // Recent activity (history table)
+    $recentLogs = $this->historyModel->getRecentLogs(8); // last 8
+
+    // Charts data (example: last 4 weeks bookings, last 6 months engagement)
+    $bookingStats = $this->clientModel->getBookingsLast4Weeks();     // labels + values
+    $engagement   = $this->clientModel->getClientEngagementLast6Months(); // labels + values
+
+    $this->view("admin/ad_dashboard", [
+        'stats' => [
+            'totalCaregivers' => $totalCaregivers,
+            'totalClients' => $totalClients,
+            'upcomingBookings' => $upcomingBookings,
+            'pendingLeaves' => $pendingLeaves,
+            //'monthlyPayments' => $monthlyPayments,
+        ],
+        'recentLogs' => $recentLogs,
+        'bookingStats' => $bookingStats,
+        'engagement' => $engagement
+    ]);
+}
+
 
     public function ad_leave()
     {

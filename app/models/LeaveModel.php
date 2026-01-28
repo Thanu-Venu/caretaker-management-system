@@ -105,4 +105,7 @@ class LeaveModel {
         $stmt->bind_param("si", $status, $id);
         return $stmt->execute();
     }
+
+    
+
 }
