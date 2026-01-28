@@ -45,7 +45,7 @@ class ClientController extends Controller {
    public function c_find()
 {
     $caretakerModel = $this->model('CaretakerModel');
-    $caretakers = $caretakerModel->getCaretakers();
+    $caretakers = $caretakerModel->getAvailableCaretakers();
 
     $this->view("client/c_find", [
         'caretakers' => $caretakers
@@ -202,7 +202,6 @@ public function cancelBooking()
     $priceRates = [
         "Hourly"  => 500,
         "Daily"   => 3000,
-        "Weekly"  => 15000,
         "Monthly" => 40000,
         "Yearly"  => 450000
     ];
@@ -309,16 +308,15 @@ public function cancelBooking()
     // 5️⃣ Define service-dependent options
     $serviceOptions = [
         "Elder Care" => ["Monthly", "Yearly"],
-        "Babysitter"   => ["Daily", "Weekly", "Monthly", "Yearly"],
-        "Maid"         => ["Hourly", "Daily", "Weekly", "Monthly", "Yearly"],
-        "Disability Support" => ["Daily", "Weekly", "Monthly"]
+        "Babysitter"   => ["Daily", "Monthly", "Yearly"],
+        "Maid"         => ["Hourly", "Daily", "Monthly", "Yearly"],
+        "Disability Support" => ["Daily",  "Monthly"]
     ];
 
     // 6️⃣ Define base price rates
     $priceRates = [
         "Hourly"  => 500,
         "Daily"   => 3000,
-        "Weekly"  => 15000,
         "Monthly" => 40000,
         "Yearly"  => 450000
     ];
@@ -349,7 +347,6 @@ public function bookCaretaker()
         $priceRates = [
             "Hourly"  => 500,
             "Daily"   => 3000,
-            "Weekly"  => 15000,
             "Monthly" => 40000,
             "Yearly"  => 450000
         ];

@@ -22,6 +22,8 @@ class CaretakerModel {
         return $stmt->get_result()->fetch_assoc();
     }
 
+
+
    public function addCaretaker($data) {
     $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
 
@@ -181,6 +183,26 @@ public function getCaretakersFiltered($service, $location)
 
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+public function getAvailableCaretakers()
+{
+    $sql = "
+        SELECT 
+            c.*,
+            ROUND(AVG(f.rating), 1) AS rating
+        FROM caretakers c
+        LEFT JOIN feedbacks f ON f.caretaker_id = c.id
+        WHERE c.id NOT IN (
+            SELECT caretaker_id
+            FROM bookings
+            WHERE status IN ('Pending', 'Accepted')
+        )
+        GROUP BY c.id
+    ";
+
+    $result = $this->conn->query($sql);
+    return $result->fetch_all(MYSQLI_ASSOC);
 }
 
 

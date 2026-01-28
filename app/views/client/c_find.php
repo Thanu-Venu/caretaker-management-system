@@ -102,7 +102,10 @@
           </div>
 
         
-          <p class="rating">⭐ <?= htmlspecialchars($ct['rating'] ?? 'N/A') ?></p>
+          <p class="rating">
+           ⭐ <?= $ct['rating'] !== null ? htmlspecialchars($ct['rating']) : 'N/A' ?>
+          </p>
+
           <p><?= htmlspecialchars($ct['qualifications']) ?></p>
       
 

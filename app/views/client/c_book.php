@@ -69,9 +69,14 @@
 
     <!-- Booking Date -->
     <div class="form-group">
-        <label for="date">Preferred Date</label>
-        <input type="date" id="date" name="booking_date" required>
-    </div>
+    <label for="date">Preferred Date / Start Date</label>
+    <input type="date" id="date" name="booking_date" required>
+
+    <small class="date-note">
+        Bookings can be scheduled only from <strong>5 days after today</strong>.
+    </small>
+</div>
+
 
     <!-- Preferred Time -->
     <div class="form-group">
