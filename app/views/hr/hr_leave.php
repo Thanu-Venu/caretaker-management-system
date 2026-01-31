@@ -67,10 +67,15 @@
                   </td>
                   <td>
                     <?php if ($leave['status'] == 'Pending'): ?>
-                      <a href="<?= URLROOT ?>/Admin/update_leave_status/<?= $leave['id'] ?>/Approved"
-                        onclick="return confirm('Approve this leave?')" class="approve-btn"><i class='bx bx-check-circle' style="color:green;"></i></a>
-                      <a href="<?= URLROOT ?>/Admin/update_leave_status/<?= $leave['id'] ?>/Rejected"
-                        onclick="return confirm('Reject this leave?')" class="reject-btn"><i class='bx bx-x-circle' style="color:red;"></i></a>
+                      <a href="<?= URLROOT; ?>/public/?url=HrLeave/approve_form/<?= $leave['id'] ?>" class="approve-btn">
+                        <i class='bx bx-check-circle' style="color:green;"></i>
+                      </a>
+
+                      <a href="<?= URLROOT; ?>/public/?url=HrLeave/reject/<?= $leave['id'] ?>"
+                        onclick="return confirm('Reject this leave?')" class="reject-btn">
+                        <i class='bx bx-x-circle' style="color:red;"></i>
+                      </a>
+
 
                     <?php endif; ?>
                   </td>
