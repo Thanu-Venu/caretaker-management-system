@@ -80,12 +80,18 @@ h1 {
   
 }
 
-h3 {
+h2 {
   font-size: 18px;
   font-weight: 600;
   color: black;
 }
 
+p.hint {
+  font-size: 14px;
+  color: #555;
+  margin-left: 50px;
+  margin-bottom: 20px;
+}
 .two{
   margin-bottom: 40px;
   font-size: 22px;
