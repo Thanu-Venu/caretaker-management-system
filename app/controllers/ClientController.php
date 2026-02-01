@@ -25,9 +25,22 @@ class ClientController extends Controller {
 }
 
 
-    public function c_dashboard() {
-        $this->view("client/c_dashboard");
-    }
+   public function c_dashboard()
+{
+    $clientId = $_SESSION['user']['id'];
+
+    $data = [
+        'activeBookings' => $this->clientModel->getActiveBookingsCount($clientId),
+        'caretakers'     => $this->clientModel->getAssignedCaretakersCount($clientId),
+        'totalSpent'     => $this->clientModel->getTotalSpent($clientId),
+        'avgRating'      => $this->clientModel->getAverageRatingGiven($clientId),
+        'recentBookings' => $this->clientModel->getRecentBookings($clientId),
+        'notifications'  => $this->clientModel->getClientNotifications($clientId)
+    ];
+
+    $this->view("client/c_dashboard", $data);
+}
+
      public function c_profile() {
     
     if (!isset($_SESSION['user'])) {

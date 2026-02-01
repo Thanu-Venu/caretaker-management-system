@@ -409,10 +409,95 @@ public function getPastBookingsWithFeedback($clientId)
     
 
 
+    public function getActiveBookingsCount($clientId)
+{
+    $sql = "SELECT COUNT(*) AS total
+            FROM bookings
+            WHERE client_id = ?
+              AND status IN ('Pending', 'Accepted')";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $clientId);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_assoc()['total'];
+}
+
+ public function getAssignedCaretakersCount($clientId)
+{
+    $sql = "SELECT COUNT(DISTINCT caretaker_id) AS total
+            FROM bookings
+            WHERE client_id = ?
+              AND status IN ('Pending', 'Accepted', 'Completed')";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $clientId);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_assoc()['total'];
+}
+
+public function getTotalSpent($clientId)
+{
+    $sql = "SELECT COALESCE(SUM(total_payment),0) AS total
+            FROM bookings
+            WHERE client_id = ?
+              AND status IN ('Paid', 'Completed')";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $clientId);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_assoc()['total'];
+}
 
 
+public function getAverageRatingGiven($clientId)
+{
+    $sql = "SELECT ROUND(AVG(rating),1) AS avg_rating
+            FROM feedbacks
+            WHERE client_id = ?";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $clientId);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_assoc()['avg_rating'];
+}
 
 
+public function getRecentBookings($clientId)
+{
+    $sql = "SELECT 
+                b.booking_date,
+                b.preferred_time,
+                b.duration,
+                b.status,
+                b.service_type,
+                c.name AS caretaker_name
+            FROM bookings b
+            JOIN caretakers c ON b.caretaker_id = c.id
+            WHERE b.client_id = ?
+            ORDER BY b.created_at DESC
+            LIMIT 3";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $clientId);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+public function getClientNotifications($clientId)
+{
+    $sql = "SELECT message, created_at
+            FROM c_notifications
+            WHERE role = 'Client'
+            ORDER BY created_at DESC
+            LIMIT 3";
+
+    return $this->conn->query($sql)->fetch_all(MYSQLI_ASSOC);
+}
 
     
 }

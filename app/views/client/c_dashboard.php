@@ -33,29 +33,33 @@
       <div class="action1">
         <i class='bx bx-book'></i>
       </div>
-        <h3>5</h3>
-        <p>Active Bookings</p>
+        <h3><?= $data['activeBookings']; ?></h3>
+         <p>Active Bookings</p>
+
     </div>
     <div class="card">
       <div class="action1">
        <i class='bx bx-user'></i>
        </div>
-        <h3>3</h3>
+        <h3><?= $data['caretakers']; ?></h3>
         <p>Assigned Caretakers</p>
+
     </div>
     <div class="card">
       <div class="action1">
         <i class='bx bx-money'></i>
         </div>
-        <h3>LKR 170,250</h3>
-        <p>Total Spent</p>
+         <h3>LKR <?= number_format($data['totalSpent']); ?></h3>
+         <p>Total Spent</p>
+
     </div>
     <div class="card">
       <div class="action1">
         <i class='bx bx-star' ></i>
         </div>
-        <h3>4.8</h3>
-        <p>Avg Rating Given</p>
+         <h3><?= $data['avgRating'] ?? '0.0'; ?></h3>
+         <p>Avg Rating Given</p>
+
     </div>
 </div>
 
@@ -100,63 +104,42 @@
     </div>
   </section>
 
-  <!-- Recent Bookings -->
-  <section class="recent-bookings">
-    <h2>Recent Bookings</h2>
-    <div class="booking">
-      <img src="../public/images/find.png" alt="">
-      <div>
-        <h3>Elderly Care with Sarah Johnson</h3>
-        <p>12/15/2024 at 12:00 PM • 4 hours</p>
-      </div>
-      <span class="status confirmed">Confirmed</span>
-    </div>
-    <div class="booking">
-      <img src="../public/images/find.png" alt="">
-      <div>
-        <h3>Medical Care with Michael Chen</h3>
-        <p>12/18/2024 at 07:30 PM • 2 hours</p>
-      </div>
-      <span class="status confirmed">Confirmed</span>
-    </div>
-    <div class="booking">
-      <img src="../public/images/find.png" alt="">
-      <div>
-        <h3>Child Care with Emily Rodriguez</h3>
-        <p>12/20/2024 at 01:30 PM • 5 hours</p>
-      </div>
-      <span class="status pending">Pending</span>
-    </div>
-  </section>
+ <section class="recent-bookings">
+  <h2>Recent Bookings</h2>
 
-  <!-- Recent Notifications -->
+  <?php foreach ($data['recentBookings'] as $booking): ?>
+    <div class="booking">
+      <img src="../public/images/find.png" alt="">
+      <div>
+        <h3><?= $booking['service_type']; ?> with <?= $booking['caretaker_name']; ?></h3>
+        <p>
+          <?= date('m/d/Y', strtotime($booking['booking_date'])); ?>
+          at <?= $booking['preferred_time']; ?>
+          • <?= $booking['duration']; ?> hours
+        </p>
+      </div>
+      <span class="status <?= strtolower($booking['status']); ?>">
+        <?= $booking['status']; ?>
+      </span>
+    </div>
+  <?php endforeach; ?>
+</section>
+
+
   <section class="recent-notifications">
-    <h2>Recent Notifications</h2>
+  <h2>Recent Notifications</h2>
+
+  <?php foreach ($data['notifications'] as $note): ?>
     <div class="notification">
-      <i class='bx bx-calendar-check'></i>
+      <i class='bx bx-bell'></i>
       <div>
-        <h4>Booking Confirmed</h4>
-        <p>Your booking with Sarah Johnson has been confirmed for Dec 15, 2024.</p>
+        <p><?= $note['message']; ?></p>
       </div>
-      <span>2 hours ago</span>
+      <span><?= date("h:i A", strtotime($note['created_at'])); ?></span>
     </div>
-    <div class="notification">
-      <i class='bx bx-credit-card'></i>
-      <div>
-        <h4>Payment Processed</h4>
-        <p>Payment of LKR 45,000 has been successfully processed.</p>
-      </div>
-      <span>1 day ago</span>
-    </div>
-    <div class="notification">
-      <i class='bx bx-alarm'></i>
-      <div>
-        <h4>Upcoming Appointment</h4>
-        <p>You have an appointment with Michael Chen tomorrow at 7:30 PM.</p>
-      </div>
-      <span>2 days ago</span>
-    </div>
-  </section>
+  <?php endforeach; ?>
+</section>
+
 
 </div>
  <!-- your existing content -->

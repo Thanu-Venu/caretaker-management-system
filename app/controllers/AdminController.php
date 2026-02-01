@@ -18,7 +18,7 @@ class AdminController extends Controller
         if (session_status() === PHP_SESSION_NONE)
             session_start();
 
-        if (!isset($_SESSION['user'])) {
+        if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role']!=='admin'){
             header("Location: index.php?url=auth/login");
             exit;
         }

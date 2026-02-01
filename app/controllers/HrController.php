@@ -24,10 +24,10 @@ class HrController extends Controller {
     
     if (session_status() === PHP_SESSION_NONE) session_start();
 
-    if (!isset($_SESSION['user'])) {
-        header("Location: index.php?url=auth/login");
-        exit;
-    }
+     if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role']!=='Manager'){
+            header("Location: index.php?url=auth/login");
+            exit;
+        }
     $this->userModel = $this->model('UserModel');
     $this->hrModel   = $this->model('HrModel'); 
         
