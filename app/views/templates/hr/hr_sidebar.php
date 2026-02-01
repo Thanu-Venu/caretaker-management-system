@@ -33,7 +33,7 @@
 
       <li><a href="http://localhost/CMA/public?url=hr/hr_pending_request"><i class="fas fa-hourglass-half"></i> <span>Pending Request</span></a></li>
       <li><a href="http://localhost/CMA/public?url=hr/hr_schedule"><i class='bx bx-calendar'></i> <span>Schedule</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=hr/hr_leave"><i class='bx bx-time'></i> <span>Leave</span></a></li>
+      <li><a href="http://localhost/CMA/public?url=HrLeave/index"><i class='bx bx-time'></i> <span>Leave</span></a></li>
       <li><a href="http://localhost/CMA/public/index.php?url=Complaint/index"><i class='bx bx-error'></i> <span>Complaints</span></a></li>
       <li><a href="http://localhost/CMA/public?url=hr/hr_feedback"><i class='bx bx-message'></i> <span>Feedback</span></a></li>
       <li><a href="http://localhost/CMA/public?url=hr/hr_history"><i class='bx bx-history'></i> <span>History</span></a></li>

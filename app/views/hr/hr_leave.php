@@ -88,6 +88,54 @@
             <?php endif; ?>
           </tbody>
         </table>
+       
+
+        <?php
+$page = $data['page'] ?? 1;
+$totalPages = $data['totalPages'] ?? 1;
+
+function pageUrl($p) {
+    $params = $_GET;
+    $params['page'] = $p;
+    $params['url']  = 'HrLeave/index';
+    return URLROOT . "/public/?" . http_build_query($params);
+}
+
+?>
+<?php if ($totalPages > 1): ?>
+  
+  <div class="pagination">
+    <!-- Prev -->
+    <a class="pg <?= ($page <= 1) ? 'disabled' : '' ?>" 
+       href="<?= ($page <= 1) ? '#' : pageUrl($page - 1) ?>">Prev</a>
+
+    <?php
+      // show compact pages like: 1 2 3 4 ... last
+      $start = max(1, $page - 2);
+      $end   = min($totalPages, $page + 2);
+
+      if ($start > 1) {
+        echo '<a class="pg" href="'.pageUrl(1).'">1</a>';
+        if ($start > 2) echo '<span class="dots">...</span>';
+      }
+
+      for ($i = $start; $i <= $end; $i++) {
+        $active = ($i == $page) ? 'active' : '';
+        echo '<a class="pg '.$active.'" href="'.pageUrl($i).'">'.$i.'</a>';
+      }
+
+      if ($end < $totalPages) {
+        if ($end < $totalPages - 1) echo '<span class="dots">...</span>';
+        echo '<a class="pg" href="'.pageUrl($totalPages).'">'.$totalPages.'</a>';
+      }
+    ?>
+
+    <!-- Next -->
+    <a class="pg <?= ($page >= $totalPages) ? 'disabled' : '' ?>" 
+       href="<?= ($page >= $totalPages) ? '#' : pageUrl($page + 1) ?>">Next</a>
+  </div>
+<?php endif; ?>
+
       </div>
     </section>
   </main>

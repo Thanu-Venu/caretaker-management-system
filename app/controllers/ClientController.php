@@ -143,7 +143,6 @@ class ClientController extends Controller
 
         $clientId = $_SESSION['user']['id'];
 
-        $bookings = $this->clientModel->getPastBookings($clientId);
         $bookings = $this->clientModel->getPastBookingsWithFeedback($clientId);
 
         $this->view("client/c_pastBookings", ['bookings' => $bookings]);
@@ -410,6 +409,7 @@ class ClientController extends Controller
             'postal_code' => $postal_code,
             'total_payment' => $total_payment,
             'end_date' => $end_date,
+            'customization' => $customization,
             'status' => 'Pending'
         ];
 

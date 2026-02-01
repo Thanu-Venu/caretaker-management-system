@@ -113,7 +113,6 @@ class ClientModel {
         $address_line1 = $data['address_line1'] ?? '';
         $address_line2 = $data['address_line2'] ?? '';
         $postal_code   = $data['postal_code'] ?? '';
-
         $customization = $data['customization'] ?? '';
 
         $stmt->bind_param(
@@ -157,6 +156,7 @@ class ClientModel {
                     b.address_line1,
                     b.address_line2,
                     b.postal_code,
+                    b.customization,
                     c.name AS caretaker_name
                 FROM bookings b
                 JOIN caretakers c ON b.caretaker_id = c.id
@@ -187,6 +187,7 @@ class ClientModel {
                     b.basis,
                     b.service_type,
                     b.status,
+                    b.customization,
                     c.name AS caretaker_name
                 FROM bookings b
                 JOIN caretakers c ON b.caretaker_id = c.id
@@ -211,6 +212,7 @@ class ClientModel {
                     b.basis,
                     b.service_type,
                     b.status,
+                    b.customization,
                     c.name AS caretaker_name
                 FROM bookings b
                 JOIN caretakers c ON b.caretaker_id = c.id
@@ -376,7 +378,9 @@ class ClientModel {
                     ct.name AS caretaker_name,
                     b.service_type,
                     b.booking_date,
-                    b.status
+                    b.status,
+                    b.customization
+                    
                 FROM bookings b
                 JOIN clients cl ON b.client_id = cl.id
                 JOIN caretakers ct ON b.caretaker_id = ct.id

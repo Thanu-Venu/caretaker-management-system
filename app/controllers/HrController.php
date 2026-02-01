@@ -79,40 +79,98 @@ class HrController extends Controller {
         $this->view("hr/hr_schedule");
     }
 
-   public function hr_pending_request()
+  public function hr_pending_request()
 {
-    $hrModel = $this->model('HrModel');
-    $bookings = $hrModel->getAllBookings();
+    $perPage = 10;
+
+    $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+    $status = $_GET['status'] ?? 'All';
+
+    $total = $this->hrModel->countBookingsByStatus($status);
+    $totalPages = max(1, (int)ceil($total / $perPage));
+
+    if ($page > $totalPages) $page = $totalPages;
+
+    $offset = ($page - 1) * $perPage;
+
+    $bookings = $this->hrModel->getBookingsPaginatedByStatus(
+        $perPage,
+        $offset,
+        $status
+    );
 
     $this->view('hr/hr_pending_request', [
-        'bookings' => $bookings
+        'bookings' => $bookings,
+        'page' => $page,
+        'totalPages' => $totalPages,
+        'status' => $status
     ]);
 }
 
-public function updateBookingStatus() {
+
+
+public function updateBookingStatus()
+{
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         header("Location: " . URLROOT . "/hr/hr_pending_request");
         exit;
     }
 
-    $bookingId = $_POST['booking_id'] ?? null;
-    $action    = $_POST['action'] ?? null;
+    $bookingId = (int)($_POST['booking_id'] ?? 0);
+    $action    = $_POST['action'] ?? '';
 
     if (!$bookingId || !$action) {
         header("Location: " . URLROOT . "/hr/hr_pending_request");
         exit;
     }
 
-    $status = ($action === 'accept') ? 'Accepted' : 'Rejected';
+    // HR user id
+    $hrId = (int)($_SESSION['user']['id'] ?? 0);
 
-    // Call the model to update the booking status
-    $this->hrModel->updateBookingStatus($bookingId, $status);
+    if ($action === 'accept') {
 
-    // Redirect back to the pending requests page
+        // fee from form (default 0)
+        $customFee = (float)($_POST['customization_fee'] ?? 0);
+
+        // OPTIONAL: if customization text exists => require fee
+        $booking = $this->hrModel->getBookingDetailsForApproval($bookingId);
+        $customText = trim($booking['customization'] ?? '');
+        if ($customText !== '' && $customFee <= 0) {
+            die("Customization fee is required for this booking.");
+        }
+
+        $ok = $this->hrModel->approveBookingAddCustomizationFee($bookingId, $customFee, $hrId);
+
+        if (!$ok) die("Approve failed.");
+
+        // ✅ notify client
+        $clientId = (int)$booking['client_id'];
+        $newTotal = $this->hrModel->getBookingTotal($bookingId);
+
+        $msg = "Your booking #$bookingId was approved.";
+        if ($customFee > 0) {
+            $msg .= " Customization fee: Rs." . number_format($customFee, 2) .
+                    ". New total: Rs." . number_format($newTotal, 2) . ". Make your payment to confirm the booking.";
+            header("Location: " . URLROOT . "/client/c_upcomingBookings");
+        } else {
+            $msg .= " Total: Rs." . number_format($newTotal, 2) . ".";
+        }
+
+        $this->hrModel->notifyUser(
+            $clientId,
+            "client",
+            "Booking Approved",
+            $msg,
+            URLROOT . "/client/c_upcomingBookings"
+        );
+
+    } else {
+        $this->hrModel->updateBookingStatus($bookingId, "Rejected");
+    }
+
     header("Location: " . URLROOT . "/hr/hr_pending_request");
     exit;
 }
-
 public function updateComplaintStatus() {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         header("Location: " . URLROOT . "/hr/hr_complaint");
@@ -127,7 +185,7 @@ public function updateComplaintStatus() {
         exit;
     }
 
-    $status = ($action === 'accept') ? 'Accepted' : 'Rejected';
+    $status = ($action === 'accept') ? 'Approved' : 'Rejected';
 
     // Call the model to update the complaint status
     $this->hrModel->updateComplaintStatus($complaintId, $status);

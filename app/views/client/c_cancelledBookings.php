@@ -14,26 +14,51 @@
 <main class="content">
     <h1>My Cancelled Bookings</h1>
 
-    <div class="cancelled-list">
-<?php if (!empty($data['bookings'])): ?>
-    <?php foreach ($data['bookings'] as $b): ?>
-        <div class="cancelled-card">
-            <h2><?= htmlspecialchars($b['caretaker_name']) ?></h2>
-            <p><strong>Service:</strong> <?= htmlspecialchars($b['service_type']) ?></p>
-            <p><strong>Date:</strong> <?= date('Y-m-d', strtotime($b['booking_date'])) ?></p>
-            <p><strong>Time:</strong> <?= htmlspecialchars($b['preferred_time']) ?></p>
-            <p><strong>Duration:</strong> <?= $b['duration'] . ' ' . $b['basis'] ?></p>
-            <p><strong>Status:</strong> <span class="status cancelled">Cancelled</span></p>
-            <p><strong>Reason:</strong> <?= htmlspecialchars($b['cancellation_reason']) ?></p>
-            <p><strong>Cancelled At:</strong> <?= date('Y-m-d H:i', strtotime($b['cancelled_at'])) ?></p>
-        </div>
-    <?php endforeach; ?>
-<?php else: ?>
-    <p>You have no cancelled bookings.</p>
-<?php endif; ?>
-</div>
+    <?php if (empty($data['bookings'])): ?>
+        <p class="no-bookings">You have no cancelled bookings.</p>
+    <?php else: ?>
 
+    <div class="table-wrapper">
+        <table class="bookings-table">
+            <thead>
+                <tr>
+                    <th>Caretaker</th>
+                    <th>Service</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                    <th>Reason</th>
+                    <th>Cancelled At</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php foreach ($data['bookings'] as $b): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($b['caretaker_name']) ?></td>
+                        <td><?= htmlspecialchars($b['service_type']) ?></td>
+                        <td><?= date('Y-m-d', strtotime($b['booking_date'])) ?></td>
+                        <td><?= htmlspecialchars($b['preferred_time']) ?></td>
+                        <td><?= (int)$b['duration'] . ' ' . htmlspecialchars($b['basis']) ?></td>
+                        <td>
+                            <span class="status cancelled">Cancelled</span>
+                        </td>
+                        <td class="reason-cell">
+                            <?= htmlspecialchars($b['cancellation_reason']) ?>
+                        </td>
+                        <td>
+                            <?= date('Y-m-d H:i', strtotime($b['cancelled_at'])) ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <?php endif; ?>
 </main>
+
 
 <script src="<?php echo URLROOT; ?>/public/js/client/c_cancelledBooking.js"></script>
 </body>

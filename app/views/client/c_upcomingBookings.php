@@ -17,42 +17,56 @@
         <p class="no-bookings">You don’t have any upcoming bookings yet.</p>
     <?php else: ?>
 
-    <div class="bookings-list">
+    <?php if (empty($data['bookings'])): ?>
+    <p class="no-bookings">You don’t have any upcoming bookings yet.</p>
+<?php else: ?>
+
+<div class="table-wrapper">
+<table class="bookings-table">
+    <thead>
+        <tr>
+            <th>Caretaker</th>
+            <th>Service</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Duration</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
         <?php foreach ($data['bookings'] as $b): ?>
-            <div class="booking-card">
+            <tr>
+                <td><?= htmlspecialchars($b['caretaker_name']) ?></td>
+                <td><?= htmlspecialchars($b['service_type']) ?></td>
+                <td><?= date('Y-m-d', strtotime($b['booking_date'])) ?></td>
+                <td><?= htmlspecialchars($b['preferred_time']) ?></td>
+                <td><?= $b['duration'].' '.$b['basis'] ?></td>
 
-                <h2><?= htmlspecialchars($b['caretaker_name']) ?></h2>
-                <p><strong>Service:</strong> <?= htmlspecialchars($b['service_type']) ?></p>
-                <p><strong>Date:</strong> <?= date('Y-m-d', strtotime($b['booking_date'])) ?></p>
-                <p><strong>Time:</strong> <?= htmlspecialchars($b['preferred_time']) ?></p>
-                <p><strong>Duration:</strong> <?= $b['duration'].' '.$b['basis'] ?></p>
-
-                <div class="card-actions">
-                    <!-- CANCEL -->
+                <td class="actions">
                     <button class="cancel-btn"
                         onclick="openCancelModal(<?= $b['booking_id'] ?>)">
-                        Cancel Booking
+                        Cancel
                     </button>
 
-                    <!-- RESCHEDULE -->
                     <button class="reschedule-btn"
                         onclick="openRescheduleModal(<?= $b['booking_id'] ?>)">
-                        Reschedule Booking
+                        Reschedule
                     </button>
 
-                    <!-- PAYMENT -->
                     <a href="<?= URLROOT ?>/client/c_makePayment?booking_id=<?= $b['booking_id'] ?>"
                        class="payment-btn">
-                        Proceed to Payment
+                        Pay
                     </a>
-                </div>
-
-            </div>
+                </td>
+            </tr>
         <?php endforeach; ?>
-    </div>
+    </tbody>
+</table>
+</div>
 
+<?php endif; ?>
     <?php endif; ?>
-</main>
+
 
 <!-- ================= CANCEL MODAL ================= -->
 <div id="cancelModal" class="modal">

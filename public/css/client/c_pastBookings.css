@@ -12,72 +12,62 @@
     color: #1e88e5;
 }
 
+.table-wrapper { overflow-x: auto; }
 
-
-/* Bookings List */
-.bookings-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
+.bookings-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
-/* Booking Card */
-.booking-card {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+.bookings-table th, .bookings-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #eef2f7;
+  text-align: left;
+  vertical-align: top;
 }
 
-.booking-card h2 {
-    margin-bottom: 8px;
-    font-size: 20px;
-    color: #333;
+.bookings-table th {
+  background: #1e88e5;
+  font-weight: 700;
+  color: #fff;
 }
 
-.booking-card p {
-    margin: 6px 0;
-    font-size: 14px;
-    color: #555;
+.bookings-table tr:hover { background: #fafcff; }
+
+.actions { white-space: nowrap; }
+
+.rating-stars { line-height: 1; margin-bottom: 6px; }
+.star-filled { color: #f59e0b; }
+.star-empty { color: #cbd5e1; }
+
+.feedback-mini {
+  max-width: 420px;
+  color: #475569;
+  font-size: 13px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* Status Labels */
-.status {
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 8px;
-    font-size: 13px;
-}
+.no-feedback { color: #94a3b8; font-size: 13px; }
 
-.status.completed {
-    background: #d4edda;
-    color: #155724;
-}
+.done-text { color: #22c55e; font-weight: 700; }
 
-.status.cancelled {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-/* Feedback Button */
 .feedback-btn {
-    margin-top: 12px;
-    padding: 8px 14px;
-    border: none;
-    border-radius: 8px;
-    background: #4a90e2;
-    color: #fff;
-    font-size: 14px;
-    cursor: pointer;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
 }
-
 .feedback-btn:hover {
-    background: #357abd;
-}
-
-.feedback-btn a {
-    color: white;
-    text-decoration: none;
+  background: #1e40af;
 }
 
 /* Responsive */
@@ -212,13 +202,13 @@
   margin-top: 15px;
 }
 
-.no-bookings {
-    text-align: center;
-    font-size: 18px;
-    color: #888;
-    margin-top: 50px;
-    margin-left: 270px; /* only if your layout requires it */
-    display: none; /* hide by default, show via PHP if no bookings */
+.no-bookings{
+  display: block;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  color: #555;
 }
 
 

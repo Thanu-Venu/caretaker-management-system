@@ -1,0 +1,169 @@
+/* ===============================
+   HR Leave Approve Page
+   =============================== */
+
+.content {
+  margin-left: 260px;
+  padding: 30px;
+  background: #f4f6f9;
+  min-height: 100vh;
+  font-family: "Poppins", Arial, sans-serif;
+}
+
+/* Main Card */
+.leave-approve-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 14px;
+  max-width: 950px;
+  margin: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.leave-approve-card h1 {
+  margin-bottom: 15px;
+  font-size: 24px;
+  color: #222;
+}
+
+.leave-info p {
+  margin: 6px 0;
+  color: #444;
+  font-size: 15px;
+}
+
+.leave-info b {
+  color: #111;
+}
+
+/* Divider */
+.hr-divider {
+  margin: 18px 0;
+  border: none;
+  height: 1px;
+  background: #e0e0e0;
+}
+
+/* Affected Bookings Table */
+.booking-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.booking-table th,
+.booking-table td {
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.booking-table thead {
+  background: #4a90e2;
+  color: #fff;
+}
+
+.booking-table tbody tr:nth-child(even) {
+  background: #f9fafc;
+}
+
+.booking-table tbody tr:hover {
+  background: #eef4ff;
+}
+
+/* No booking message */
+.no-bookings {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* Form Section */
+.approve-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  margin-top: 14px;
+  color: #333;
+}
+
+.approve-form select,
+.approve-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: border 0.3s;
+}
+
+.approve-form select:focus,
+.approve-form textarea:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+/* Buttons */
+.action-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.approve-btn {
+  background: #4caf50;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.approve-btn:hover {
+  background: #43a047;
+}
+
+.back-btn {
+  background: #9e9e9e;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 14px;
+  display: inline-block;
+}
+
+.back-btn:hover {
+  background: #7e7e7e;
+}
+
+/* ===============================
+   Responsive
+   =============================== */
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .leave-approve-card {
+    padding: 18px;
+  }
+
+  .booking-table th,
+  .booking-table td {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .approve-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+}

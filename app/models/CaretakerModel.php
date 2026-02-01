@@ -195,7 +195,7 @@ public function getUpcomingBookings($caretakerId) {
                 b.basis,
                 b.duration,
                 b.service_type,
-                b.service_location,
+                b.district,
                 b.total_payment,
                 c.name AS client_name
             FROM bookings b
