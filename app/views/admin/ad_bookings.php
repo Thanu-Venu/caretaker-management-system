@@ -34,11 +34,16 @@
         </div>
         <div class="filter-group">
           <label for="status">Status</label>
-          <select id="status" onchange="filterTable()">
-            <option value="All">All</option>
-            <option value="Pending">Pending</option>
-            <option value="Ongoing">Ongoing</option>
-            <option value="Completed">Completed</option>
+            <select id="status" onchange="filterTable()">
+  <option value="All">All</option>
+  <option value="Pending">Pending</option>
+  <option value="Accepted">Accepted</option>
+  <option value="Rejected">Rejected</option>
+  <option value="Completed">Completed</option>
+  <option value="Cancelled">Cancelled</option>
+
+</select>
+
           </select>
         </div>
       </div>
@@ -48,78 +53,37 @@
         <table class="booking-table" id="bookingTable">
           <thead>
             <tr>
-              <th>Request ID</th>
+              <th>Booking ID</th>
               <th>Client Name</th>
+              <th>Caretaker Name</th>
               <th>Service Type</th>
-              <th>Date</th>
+              <th>Booking Date</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>#12345</td>
-              <td>Emily Carter</td>
-              <td>Elder Care</td>
-              <td>2024-03-15</td>
-              <td><span class="status pending">Pending</span></td>
-            </tr>
-            <tr>
-              <td>#12346</td>
-              <td>David Lee</td>
-              <td>BabySitter</td>
-              <td>2024-03-16</td>
-              <td><span class="status ongoing">Ongoing</span></td>
-            </tr>
-            <tr>
-              <td>#12347</td>
-              <td>Sarah Johnson</td>
-              <td>Maid</td>
-              <td>2024-03-17</td>
-              <td><span class="status completed">Completed</span></td>
-            </tr>
-            <tr>
-              <td>#12348</td>
-              <td>Michael Brown</td>
-              <td>BabySitter</td>
-              <td>2024-03-18</td>
-              <td><span class="status pending">Pending</span></td>
-            </tr>
-            <tr>
-              <td>#12349</td>
-              <td>Jessica Davis</td>
-              <td>Elder Care</td>
-              <td>2024-03-19</td>
-              <td><span class="status ongoing">Ongoing</span></td>
-            </tr>
-            <tr>
-              <td>#12350</td>
-              <td>Kevin Wilson</td>
-              <td>BabySitter</td>
-              <td>2024-03-20</td>
-              <td><span class="status completed">Completed</span></td>
-            </tr>
-            <tr>
-              <td>#12351</td>
-              <td>Amanda Taylor</td>
-              <td>Elder Care</td>
-              <td>2024-03-21</td>
-              <td><span class="status pending">Pending</span></td>
-            </tr>
-            <tr>
-              <td>#12352</td>
-              <td>Brian Clark</td>
-              <td>Maid</td>
-              <td>2024-03-22</td>
-              <td><span class="status ongoing">Ongoing</span></td>
-            </tr>
-            <tr>
-              <td>#12353</td>
-              <td>Melissa White</td>
-              <td>Elder Care</td>
-              <td>2024-03-23</td>
-              <td><span class="status completed">Completed</span></td>
-            </tr>
-          </tbody>
+  <?php if (!empty($data['bookings'])): ?>
+    <?php foreach ($data['bookings'] as $b): ?>
+      <tr>
+        <td><?php echo htmlspecialchars($b['booking_id']); ?></td>
+        <td><?php echo htmlspecialchars($b['client_name']); ?></td>
+        <td><?php echo htmlspecialchars($b['caretaker_name']); ?></td>
+        <td><?php echo htmlspecialchars($b['service_type']); ?></td>
+        <td><?php echo htmlspecialchars($b['booking_date']); ?></td>
+        <td>
+          <span class="status <?php echo strtolower($b['status']); ?>">
+            <?php echo htmlspecialchars($b['status']); ?>
+          </span>
+        </td>
+      </tr>
+    <?php endforeach; ?>
+  <?php else: ?>
+    <tr>
+      <td colspan="5" style="text-align:center;">No bookings found</td>
+    </tr>
+  <?php endif; ?>
+</tbody>
+
         </table>
       </div>
     </div>

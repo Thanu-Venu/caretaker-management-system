@@ -28,4 +28,17 @@ class AdminLeaveModel {
         $stmt->bind_param("si", $status, $leave_id);
         return $stmt->execute();
     }
+
+    public function countPendingLeaves()
+{
+    $stmt = $this->conn->prepare("
+        SELECT COUNT(*) AS total
+        FROM leaves l
+        INNER JOIN caretakers c ON l.user_id = c.id
+        WHERE l.status = 'pending'
+    ");
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_assoc()['total'] ?? 0;
+}
 }

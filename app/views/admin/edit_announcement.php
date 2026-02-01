@@ -30,8 +30,8 @@ $target_role = $announcement['target_role'] ?? '';
     <label>Target Role</label><br>
     <select name="target_role" required>
         <option value="All" <?= $target_role == 'All' ? 'selected' : '' ?>>All</option>
-
         <option value="users" <?= $target_role == 'users' ? 'selected' : '' ?>>Users</option>
+       
         <option value="Caretaker" <?= $target_role == 'Caretaker' ? 'selected' : '' ?>>Caretaker</option>
         <option value="Client" <?= $target_role == 'Client' ? 'selected' : '' ?>>Client</option>
     </select><br><br>

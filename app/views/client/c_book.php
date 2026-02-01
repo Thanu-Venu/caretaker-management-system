@@ -1,4 +1,3 @@
-
 <?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
 
@@ -40,7 +39,7 @@
 
           <!-- ================= Booking Form ================= -->
     <section class="booking-form">
-  <form id="bookingForm" method="POST" action="<?= URLROOT ?>/client/bookCaretaker">
+        <form id="bookingForm" method="POST" action="<?= URLROOT ?>/client/bookCaretaker">
 
     <!-- Hidden caretaker ID -->
     <input type="hidden" name="caretaker_id" value="<?= $data['caretaker']['id'] ?>">
@@ -69,14 +68,9 @@
 
     <!-- Booking Date -->
     <div class="form-group">
-    <label for="date">Preferred Date / Start Date</label>
-    <input type="date" id="date" name="booking_date" required>
-
-    <small class="date-note">
-        Bookings can be scheduled only from <strong>5 days after today</strong>.
-    </small>
-</div>
-
+        <label for="date">Preferred Date</label>
+        <input type="date" id="date" name="booking_date" required>
+    </div>
 
     <!-- Preferred Time -->
     <div class="form-group">

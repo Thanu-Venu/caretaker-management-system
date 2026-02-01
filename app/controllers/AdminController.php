@@ -13,6 +13,10 @@ class AdminController extends Controller
     private $adminLeaveModel;
 
     private $complaintModel;
+
+    private $feedbackModel;
+
+    private $historyModel;
     public function __construct()
     {
         if (session_status() === PHP_SESSION_NONE)
@@ -30,7 +34,8 @@ class AdminController extends Controller
         $this->clientModel = $this->model('ClientModel');
         $this->adminLeaveModel = $this->model('AdminLeaveModel');
         $this->complaintModel = $this->model('ComplaintModel');
-
+        $this->feedbackModel = $this->model('FeedbackModel');
+        $this->historyModel = $this->model('HistoryModel');
         // Revalidate caretaker from DB
         $user = $this->userModel->getUserById($_SESSION['user']['id']); // lowercase usage
         if (!$user) {
@@ -43,9 +48,35 @@ class AdminController extends Controller
     }
 
     public function ad_dashboard()
-    {
-        $this->view("admin/ad_dashboard");
-    }
+{
+    // Top stats
+    $totalCaregivers = $this->caretakerModel->countCaretakers();
+    $totalClients    = $this->clientModel->countClients();
+    $upcomingBookings= $this->clientModel->countUpcomingBookings(); 
+    $pendingLeaves   = $this->adminLeaveModel->countPendingLeaves();
+    //$monthlyPayments = $this->clientModel->getMonthlyPaymentsTotal(); // implement based on your payments table (or bookings)
+
+    // Recent activity (history table)
+    $recentLogs = $this->historyModel->getRecentLogs(8); // last 8
+
+    // Charts data (example: last 4 weeks bookings, last 6 months engagement)
+    $bookingStats = $this->clientModel->getBookingsLast4Weeks();     // labels + values
+    $engagement   = $this->clientModel->getClientEngagementLast6Months(); // labels + values
+
+    $this->view("admin/ad_dashboard", [
+        'stats' => [
+            'totalCaregivers' => $totalCaregivers,
+            'totalClients' => $totalClients,
+            'upcomingBookings' => $upcomingBookings,
+            'pendingLeaves' => $pendingLeaves,
+            //'monthlyPayments' => $monthlyPayments,
+        ],
+        'recentLogs' => $recentLogs,
+        'bookingStats' => $bookingStats,
+        'engagement' => $engagement
+    ]);
+}
+
 
     public function ad_leave()
     {
@@ -53,16 +84,30 @@ class AdminController extends Controller
         $this->view("admin/ad_leave", ['leaves' => $leaves]);
     }
 
-    public function update_leave_status($id, $status)
-    {
-        $this->adminLeaveModel->updateLeaveStatus($id, $status); // update in DB
-        header('Location: ' . URLROOT . '/admin/ad_leave'); // redirect back to admin leave page
-        exit();
-    }
+   public function update_leave_status($id, $status)
+{
+    // 1️⃣ Update DB
+    $this->adminLeaveModel->updateLeaveStatus($id, $status);
+
+    // 2️⃣ Log admin action
+    $this->historyModel->log([
+        'user_id' => $_SESSION['user']['id'],
+        'username' => $_SESSION['user']['username'],   // adjust if needed
+        'role' => $_SESSION['user']['role'],
+        'action' => "Updated leave status to $status (Leave ID: $id)",
+        'section' => "Leaves"
+    ]);
+
+    // 3️⃣ Redirect
+    header('Location: ' . URLROOT . '/admin/ad_leave');
+    exit();
+}
+
 
     public function ad_history()
     {
-        $this->view("admin/ad_history");
+        $logs = $this->historyModel->getAdminLogs();
+        $this->view("admin/ad_history", ['logs' => $logs]);
     }
 
     public function ad_caretakers()
@@ -93,16 +138,18 @@ class AdminController extends Controller
     public function ad_feedback()
     {
         $complaints = $this->complaintModel->getAllComplaints();
+        $feedbacks = $this->feedbackModel->getAll();
 
         $this->view("admin/ad_feedback", [
             'complaints' => $complaints,
-            'feedbacks' => []
+            'feedbacks' => $feedbacks
         ]);
     }
 
     public function ad_bookings()
     {
-        $this->view("admin/ad_bookings");
+        $bookings=$this->clientModel->getAllBookingsAdmin();
+        $this->view("admin/ad_bookings", ['bookings' => $bookings]);
     }
 
     public function ad_settings()

@@ -4,6 +4,36 @@
 <?php if (!empty($_SESSION['flash_message'])): ?>
   <div class="alert success"><?php echo $_SESSION['flash_message']; unset($_SESSION['flash_message']); ?></div>
 <?php endif; ?>
+<?php
+$servicePriceRates = [
+  "Elder Care" => [
+    "Monthly" => 45000,
+    "Yearly"  => 500000
+  ],
+  "Babysitter" => [
+    "Daily"   => 3200,
+    "Monthly" => 42000,
+    "Yearly"  => 480000
+  ],
+  "Maid" => [
+    "Hourly"  => 500,
+    "Daily"   => 3000,
+    "Monthly" => 38000,
+    "Yearly"  => 450000
+  ]
+];
+
+$timePriceModifier = [
+  "Full Time (8am - 5pm)" => 1.0,
+  "Morning (8am - 12pm)"  => 0.6,
+  "Evening (1pm - 5pm)"   => 0.6,
+  "Night (6pm - 10pm)"    => 1.2
+];
+
+function moneyLKR($amount) {
+  return "LKR " . number_format((float)$amount, 0);
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +45,7 @@
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_dashboard.css">
 </head>
 <body>
-<<div class="container">
+<div class="container">
  
 
 <div class="client-dashboard">
@@ -26,15 +56,15 @@
     <p>Here’s what’s happening with your care services</p>
   </section>
 
-  <!-- Stats Cards -->
+<!-- Stats Cards -->
   <div class="stats-cards">
     <h2>Stats Cards</h2>
     <div class="card">
       <div class="action1">
         <i class='bx bx-book'></i>
       </div>
-        <h3><?= $data['activeBookings']; ?></h3>
-         <p>Active Bookings</p>
+       <h3><?= $data['activeBookings']; ?></h3>
+<p>Active Bookings</p>
 
     </div>
     <div class="card">
@@ -42,26 +72,109 @@
        <i class='bx bx-user'></i>
        </div>
         <h3><?= $data['caretakers']; ?></h3>
-        <p>Assigned Caretakers</p>
+<p>Assigned Caretakers</p>
 
     </div>
     <div class="card">
       <div class="action1">
         <i class='bx bx-money'></i>
         </div>
-         <h3>LKR <?= number_format($data['totalSpent']); ?></h3>
-         <p>Total Spent</p>
+        <h3>LKR <?= number_format($data['totalSpent']); ?></h3>
+<p>Total Spent</p>
 
     </div>
     <div class="card">
       <div class="action1">
         <i class='bx bx-star' ></i>
         </div>
-         <h3><?= $data['avgRating'] ?? '0.0'; ?></h3>
-         <p>Avg Rating Given</p>
+        <h3><?= $data['avgRating'] ?? '0.0'; ?></h3>
+<p>Avg Rating Given</p>
 
     </div>
 </div>
+
+<!-- Price Overview -->
+<section class="price-overview">
+  <div class="section-head">
+    <h2>Service Price Overview</h2>
+    <p>Base rates + time modifiers (final price depends on duration and time slot)</p>
+  </div>
+
+  <div class="price-grid">
+
+    <!-- Elder Care -->
+    <div class="card price-card">
+      <div class="price-head">
+        <div class="badge"><i class='bx bx-plus-medical'></i></div>
+        <div>
+          <h3>Elder Care</h3>
+          <p>Monthly / Yearly</p>
+        </div>
+      </div>
+
+      <div class="price-lines">
+        <div class="line"><span>Monthly</span><strong><?= moneyLKR($servicePriceRates["Elder Care"]["Monthly"]) ?></strong></div>
+        <div class="line"><span>Yearly</span><strong><?= moneyLKR($servicePriceRates["Elder Care"]["Yearly"]) ?></strong></div>
+      </div>
+
+      <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find">Book Elder Care</a>
+    </div>
+
+    <!-- Babysitter -->
+    <div class="card price-card">
+      <div class="price-head">
+        <div class="badge"><i class='bx bx-child'></i></div>
+        <div>
+          <h3>Babysitter</h3>
+          <p>Daily / Monthly / Yearly</p>
+        </div>
+      </div>
+
+      <div class="price-lines">
+        <div class="line"><span>Daily</span><strong><?= moneyLKR($servicePriceRates["Babysitter"]["Daily"]) ?></strong></div>
+        <div class="line"><span>Monthly</span><strong><?= moneyLKR($servicePriceRates["Babysitter"]["Monthly"]) ?></strong></div>
+        <div class="line"><span>Yearly</span><strong><?= moneyLKR($servicePriceRates["Babysitter"]["Yearly"]) ?></strong></div>
+      </div>
+
+      <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find">Book Babysitter</a>
+    </div>
+
+    <!-- Maid -->
+    <div class="card price-card">
+      <div class="price-head">
+        <div class="badge"><i class='bx bx-home-heart'></i></div>
+        <div>
+          <h3>Maid</h3>
+          <p>Hourly / Daily / Monthly / Yearly</p>
+        </div>
+      </div>
+
+      <div class="price-lines">
+        <div class="line"><span>Hourly</span><strong><?= moneyLKR($servicePriceRates["Maid"]["Hourly"]) ?></strong></div>
+        <div class="line"><span>Daily</span><strong><?= moneyLKR($servicePriceRates["Maid"]["Daily"]) ?></strong></div>
+        <div class="line"><span>Monthly</span><strong><?= moneyLKR($servicePriceRates["Maid"]["Monthly"]) ?></strong></div>
+        <div class="line"><span>Yearly</span><strong><?= moneyLKR($servicePriceRates["Maid"]["Yearly"]) ?></strong></div>
+      </div>
+
+      <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find">Book Maid</a>
+    </div>
+
+  </div>
+
+  <!-- Time modifier mini card -->
+  <div class="card modifier-card">
+    <div class="modifier-head">
+      <i class='bx bx-time-five'></i>
+      <h3>Time Modifiers</h3>
+    </div>
+    <div class="modifier-grid">
+      <div><span>Morning</span><strong><?= $timePriceModifier["Morning (8am - 12pm)"] ?>x</strong></div>
+      <div><span>Evening</span><strong><?= $timePriceModifier["Evening (1pm - 5pm)"] ?>x</strong></div>
+      <div><span>Full Time</span><strong><?= $timePriceModifier["Full Time (8am - 5pm)"] ?>x</strong></div>
+      <div><span>Night</span><strong><?= $timePriceModifier["Night (6pm - 10pm)"] ?>x</strong></div>
+    </div>
+  </div>
+</section>
 
   <!-- Quick Actions -->
   <section class="quick-actions">
@@ -104,7 +217,7 @@
     </div>
   </section>
 
- <section class="recent-bookings">
+<section class="recent-bookings">
   <h2>Recent Bookings</h2>
 
   <?php foreach ($data['recentBookings'] as $booking): ?>
@@ -126,7 +239,8 @@
 </section>
 
 
-  <section class="recent-notifications">
+
+<section class="recent-notifications">
   <h2>Recent Notifications</h2>
 
   <?php foreach ($data['notifications'] as $note): ?>
@@ -141,8 +255,9 @@
 </section>
 
 
+
 </div>
- <!-- your existing content -->
+ <!-- your existing contzent -->
 </div>
 
 </body>

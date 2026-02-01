@@ -1,3 +1,6 @@
+
+
+
 function applyFilters() {
   const service = document.getElementById("serviceFilter").value.trim();
   const location = document.getElementById("locationFilter").value.trim();
@@ -33,3 +36,4 @@ function clearFilters() {
 document.getElementById("serviceFilter").addEventListener("change", applyFilters);
 document.getElementById("locationFilter").addEventListener("change", applyFilters);
 document.getElementById("ratingFilter").addEventListener("change", applyFilters);
+

@@ -25,7 +25,7 @@ class ClientController extends Controller {
 }
 
 
-   public function c_dashboard()
+    public function c_dashboard()
 {
     $clientId = $_SESSION['user']['id'];
 
@@ -58,12 +58,15 @@ class ClientController extends Controller {
    public function c_find()
 {
     $caretakerModel = $this->model('CaretakerModel');
-    $caretakers = $caretakerModel->getAvailableCaretakers();
+    $caretakers = $caretakerModel->getCaretakers();
 
     $this->view("client/c_find", [
         'caretakers' => $caretakers
     ]);
 }
+
+
+
 
 
   
@@ -199,51 +202,21 @@ public function cancelBooking()
 
 
     /* ================= RESCHEDULE BOOKING ================= */
-  public function rescheduleBooking()
+   public function rescheduleBooking()
 {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         header("Location: " . URLROOT . "/client/c_upcomingBookings");
         exit;
     }
 
-    $bookingId    = $_POST['booking_id'];
-    $newDate      = $_POST['new_date'];
-    $newTime      = $_POST['new_time'];
-    $newDuration  = $_POST['new_duration'];
+    $bookingId = $_POST['booking_id'];
+    $newDate   = $_POST['new_date'];
+    $newTime   = $_POST['new_time'];
+    $newDuration = $_POST['new_duration'];
 
-    // 🔹 Price rates
-    $priceRates = [
-        "Hourly"  => 500,
-        "Daily"   => 3000,
-        "Monthly" => 40000,
-        "Yearly"  => 450000
-    ];
+    $this->clientModel->rescheduleBooking($bookingId, $newDate, $newTime, $newDuration);
 
-    // 🔹 Time modifiers
-    $timePriceModifier = [
-        "Full Time (8am - 5pm)" => 1.0,
-        "Morning (8am - 12pm)"  => 0.6,
-        "Evening (1pm - 5pm)"   => 0.6,
-        "Night (6pm - 10pm)"    => 0.8
-    ];
-
-    // 🔹 Get booking basis from DB
-    $booking = $this->clientModel->getBookingById($bookingId);
-    $basis = $booking['basis'];
-
-    // 🔹 Calculate new payment
-    $modifier = $timePriceModifier[$newTime] ?? 1;
-    $totalPayment = ($priceRates[$basis] ?? 0) * $newDuration * $modifier;
-
-    // 🔹 Update booking
-    $this->clientModel->rescheduleBooking(
-        $bookingId,
-        $newDate,
-        $newTime,
-        $newDuration,
-        $totalPayment
-    );
-
+    // Redirect back to upcoming bookings page
     header("Location: " . URLROOT . "/client/c_upcomingBookings");
     exit;
 }
@@ -321,15 +294,16 @@ public function cancelBooking()
     // 5️⃣ Define service-dependent options
     $serviceOptions = [
         "Elder Care" => ["Monthly", "Yearly"],
-        "Babysitter"   => ["Daily", "Monthly", "Yearly"],
-        "Maid"         => ["Hourly", "Daily", "Monthly", "Yearly"],
-        "Disability Support" => ["Daily",  "Monthly"]
+        "Babysitter"   => ["Daily", "Weekly", "Monthly", "Yearly"],
+        "Maid"         => ["Hourly", "Daily", "Weekly", "Monthly", "Yearly"],
+        "Disability Support" => ["Daily", "Weekly", "Monthly"]
     ];
 
     // 6️⃣ Define base price rates
     $priceRates = [
         "Hourly"  => 500,
         "Daily"   => 3000,
+        "Weekly"  => 15000,
         "Monthly" => 40000,
         "Yearly"  => 450000
     ];
@@ -360,6 +334,7 @@ public function bookCaretaker()
         $priceRates = [
             "Hourly"  => 500,
             "Daily"   => 3000,
+            "Weekly"  => 15000,
             "Monthly" => 40000,
             "Yearly"  => 450000
         ];
@@ -368,7 +343,7 @@ public function bookCaretaker()
             "Full Time (8am - 5pm)" => 1.0,
             "Morning (8am - 12pm)"  => 0.6,
             "Evening (1pm - 5pm)"   => 0.6,
-            "Night (6pm - 10pm)"    => 0.8
+            "Night (6pm - 10pm)"    => 1.2
         ];
 
         $modifier = $timePriceModifier[$preferred_time] ?? 1;

@@ -166,7 +166,6 @@ public function getBookingById($bookingId) {
                 b.duration,
                 b.service_type,
                 b.total_payment,
-                b.created_at,
                 b.status,
                 c.name AS caretaker_name
             FROM bookings b
@@ -276,18 +275,18 @@ public function getCancelledBookings($clientId)
 
 
 
-  public function rescheduleBooking($id, $date, $time, $duration, $payment)
+  public function rescheduleBooking($bookingId, $newDate, $newTime, $newDuration)
 {
-    $stmt = $this->conn->prepare("
-        UPDATE bookings 
-        SET booking_date = ?, preferred_time = ?, duration = ?, total_payment = ?
-        WHERE id = ?
-    ");
+    $sql = "UPDATE bookings
+            SET booking_date = ?,
+                preferred_time = ?,
+                duration = ?
+            WHERE id = ?";
 
-    $stmt->bind_param("ssidi", $date, $time, $duration, $payment, $id);
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("ssii", $newDate, $newTime, $newDuration, $bookingId);
     return $stmt->execute();
 }
-
 
 
 
@@ -408,7 +407,6 @@ public function getPastBookingsWithFeedback($clientId)
     }
     
 
-
     public function getActiveBookingsCount($clientId)
 {
     $sql = "SELECT COUNT(*) AS total
@@ -423,7 +421,8 @@ public function getPastBookingsWithFeedback($clientId)
     return $stmt->get_result()->fetch_assoc()['total'];
 }
 
- public function getAssignedCaretakersCount($clientId)
+
+public function getAssignedCaretakersCount($clientId)
 {
     $sql = "SELECT COUNT(DISTINCT caretaker_id) AS total
             FROM bookings
@@ -449,20 +448,6 @@ public function getTotalSpent($clientId)
     $stmt->execute();
 
     return $stmt->get_result()->fetch_assoc()['total'];
-}
-
-
-public function getAverageRatingGiven($clientId)
-{
-    $sql = "SELECT ROUND(AVG(rating),1) AS avg_rating
-            FROM feedbacks
-            WHERE client_id = ?";
-
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $clientId);
-    $stmt->execute();
-
-    return $stmt->get_result()->fetch_assoc()['avg_rating'];
 }
 
 
@@ -498,6 +483,21 @@ public function getClientNotifications($clientId)
 
     return $this->conn->query($sql)->fetch_all(MYSQLI_ASSOC);
 }
+
+public function getAverageRatingGiven($clientId)
+{
+    $sql = "SELECT ROUND(AVG(rating),1) AS avg_rating
+            FROM feedbacks
+            WHERE client_id = ?";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $clientId);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_assoc()['avg_rating'];
+}
+
+
 
     
 }

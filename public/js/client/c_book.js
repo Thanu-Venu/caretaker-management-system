@@ -1,35 +1,40 @@
-const basisSelect = document.getElementById("basis");
-const durationInput = document.getElementById("duration");
+document.addEventListener("DOMContentLoaded", () => {
+    const basisSelect = document.getElementById("basis");
+    const durationInput = document.getElementById("duration");
+    const preferredTimeSelect = document.getElementById("preferredTime");
+    const priceSpan = document.getElementById("price");
 
-const durationLimits = {
-    "Hourly": 23,
-    "Daily": 30,
-    "Monthly": 11,
-    "Yearly": 5 // change if needed
-};
+    const priceRates = {
+        "Hourly": 500,
+        "Daily": 3000,
+        "Weekly": 15000,
+        "Monthly": 40000,
+        "Yearly": 450000
+    };
 
-basisSelect.addEventListener("change", () => {
-    const basis = basisSelect.value;
+    const timePriceModifier = {
+        "Full Time (8am - 5pm)": 1.0,
+        "Morning (8am - 12pm)": 0.6,
+        "Evening (1pm - 5pm)": 0.6,
+        "Night (6pm - 10pm)": 1.2
+    };
 
-    if (durationLimits[basis]) {
-        durationInput.max = durationLimits[basis];
-        durationInput.value = 1; // reset
-    } else {
-        durationInput.removeAttribute("max");
+    function calculatePrice() {
+        const basis = basisSelect.value;
+        const duration = parseInt(durationInput.value) || 0;
+        const preferredTime = preferredTimeSelect.value;
+
+        if (basis && duration > 0 && preferredTime) {
+            const base = priceRates[basis] || 0;
+            const modifier = timePriceModifier[preferredTime] || 1;
+            const total = base * duration * modifier;
+            priceSpan.textContent = total.toLocaleString(); // show with commas
+        } else {
+            priceSpan.textContent = "0";
+        }
     }
+
+    basisSelect.addEventListener("change", calculatePrice);
+    durationInput.addEventListener("input", calculatePrice);
+    preferredTimeSelect.addEventListener("change", calculatePrice);
 });
-
-const dateInput = document.getElementById("date");
-
-// Get today
-const today = new Date();
-
-// Add 5 days
-today.setDate(today.getDate() + 5);
-
-// Format YYYY-MM-DD
-const minDate = today.toISOString().split("T")[0];
-
-// Set minimum selectable date
-dateInput.setAttribute("min", minDate);
-

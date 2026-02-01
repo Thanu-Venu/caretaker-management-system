@@ -1,4 +1,8 @@
 /* ===================== Reset & Base ===================== */
+* {
+  box-sizing: border-box;
+}
+
 body, html {
   margin: 0;
   padding: 0;
@@ -7,30 +11,45 @@ body, html {
   color: #333;
 }
 
+/* If header/sidebar already add body padding/margins, keep this simple */
+.container {
+  width: 100%;
+}
+
 .client-dashboard {
   margin-left: 270px;
   margin-right: 20px;
   padding: 25px 30px;
   flex: 1;
-  background-color: #fdfdfd;
+  background-color: transparent; /* so the page bg shows nicely */
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }
 
 /* ===================== Welcome Section ===================== */
 .welcome {
-  margin-bottom: 30px;
-}
-.welcome h1 {
-  font-size: 32px;
-  font-weight: 700;
-  color: #1e88e5;
-  margin-bottom: 6px;
-}
-.welcome p {
-  color: #6c757d;
-  font-size: 18px;
-  line-height: 1.5;
+  padding: 18px 20px;
+  border-radius: 18px;
+
 }
 
+.welcome h1 {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1e88e5;
+  margin: 0 0 6px;
+}
+
+.welcome p {
+  color: #6c757d;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+
+}
+
+/* ===================== Cards Base ===================== */
 /* ===================== Stats Cards ===================== */
 .stats-cards {
   display: grid;
@@ -87,111 +106,343 @@ body, html {
   transform: scale(1.1);
 }
 
-/* Quick  Actions */
-button {
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
+/* ===================== Price Overview ===================== */
+.price-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 50px;
 }
 
+.price-overview .section-head {
+  margin-bottom: 20px;
+}
 
+.price-overview .section-head h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
+  margin: 0 0 6px;
+}
+
+.price-overview .section-head p {
+  font-size: 14px;
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Price grid for all services */
+.price-overview .price-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+/* Individual price card */
+.price-card {
+  background: #fff;
+  padding: 18px 16px;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.price-card:hover {
+  transform: translateY(-6px);
+  background: linear-gradient(145deg, #f7fbff, #ffffff);
+  box-shadow: 0 16px 34px rgba(0,0,0,0.12);
+}
+
+/* Header inside price card */
+.price-card .price-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.price-card .price-head .badge {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(30,136,229,0.1);
+  color: #1e88e5;
+  font-size: 22px;
+}
+
+.price-card .price-head h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111;
+}
+
+.price-card .price-head p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: #6c757d;
+}
+
+/* Lines for prices */
+.price-card .price-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.price-card .price-lines .line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.04);
+}
+
+.price-card .price-lines .line span {
+  font-size: 13px;
+  color: #495057;
+}
+
+.price-card .price-lines .line strong {
+  font-size: 14px;
+  color: #111;
+}
+
+/* Ghost Button */
+.price-card .ghost-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  border-radius: 14px;
+  padding: 10px 12px;
+  text-decoration: none;
+  border: 1px solid rgba(30,136,229,0.25);
+  background: rgba(30,136,229,0.08);
+  color: #1e88e5;
+  font-weight: 700;
+  transition: all 0.25s ease;
+}
+
+.price-card .ghost-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(30,136,229,0.12);
+}
+
+/* ===================== Time Modifier Card ===================== */
+.modifier-card {
+  background: #fff;
+  padding: 18px 16px;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+  margin-top: 10px;
+}
+
+.modifier-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.modifier-head i {
+  font-size: 22px;
+  padding: 10px;
+  border-radius: 14px;
+  background: rgba(30,136,229,0.1);
+  color: #1e88e5;
+}
+
+.modifier-head h3 {
+  font-size: 16px;
+  font-weight: 800;
+  margin: 0;
+  color: #111;
+}
+
+.modifier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
+}
+
+.modifier-grid > div {
+  background: rgba(0,0,0,0.04);
+  border-radius: 14px;
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modifier-grid span {
+  font-size: 13px;
+  color: #495057;
+}
+
+.modifier-grid strong {
+  font-size: 14px;
+  color: #111;
+}
+
+/* Responsive adjustments */
+@media (max-width: 700px) {
+  .price-overview .price-grid {
+    grid-template-columns: 1fr;
+  }
+  .modifier-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 450px) {
+  .modifier-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===================== Quick Actions ===================== */
 .quick-actions h2 {
-  margin: 25px 0 20px;
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
+  margin: 10px 0 12px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
 }
 
 .quick-actions .actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
 }
 
 .action {
-  background: #fff;
-  padding: 28px;
+  background: rgba(255,255,255,0.86);
+  padding: 18px 16px;
   border-radius: 18px;
   text-align: center;
   cursor: pointer;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.06);
-  transition: all 0.35s ease;
-  border: 1px solid rgba(0,0,0,0.04);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  border: 1px solid rgba(0,0,0,0.05);
 }
+
 .action:hover {
-  transform: translateY(-8px) scale(1.03);
-  background: linear-gradient(145deg, #f1faff, #ffffff);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 34px rgba(0,0,0,0.10);
+  background: linear-gradient(145deg, #f3f9ff, #ffffff);
 }
+
 .action i {
-  font-size: 36px;
-  margin-bottom: 14px;
-  padding: 16px;
+  font-size: 34px;
+  margin-bottom: 10px;
+  padding: 14px;
   border-radius: 50%;
-  background: #e6f2ff;
-  color: #0d89ec;
-  transition: transform 0.3s;
+  background: rgba(30, 136, 229, 0.10);
+  color: #1e88e5;
+  transition: transform 0.2s ease;
 }
-.action i:hover {
-  transform: rotate(15deg) scale(1.1);
+
+.action:hover i {
+  transform: rotate(10deg) scale(1.06);
 }
+
 .action h3 {
-  font-size: 17px;
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: #333;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: #222;
+}
+
+.action p {
+  margin: 0;
+  font-size: 13px;
+  color: #6c757d;
+}
+
+/* Buttons (limit to your dashboard buttons only) */
+.main-btn, button#bookBtn {
+  background-color: #1e88e5;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 8px;
+  font-weight: 700;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.main-btn:hover, button#bookBtn:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
 }
 
 /* ===================== Recent Bookings ===================== */
 .recent-bookings h2 {
-  margin: 40px 0 20px;
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
+  margin: 10px 0 12px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
 }
 
 .booking {
   display: flex;
   align-items: center;
-  background: #fff;
-  padding: 20px 25px;
-  margin-bottom: 18px;
-  border-radius: 16px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.06);
-  transition: transform 0.3s, box-shadow 0.3s;
+  background: rgba(255,255,255,0.88);
+  padding: 16px 16px;
+  margin-bottom: 12px;
+  border-radius: 18px;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
+
 .booking:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.09);
+  transform: translateY(-5px);
+  box-shadow: 0 16px 34px rgba(0,0,0,0.10);
 }
+
 .booking img {
-  width: 60px;
-  height: 60px;
+  width: 56px;
+  height: 56px;
   object-fit: cover;
   border-radius: 50%;
-  margin-right: 18px;
-  border: 3px solid #0d89ec;
+  margin-right: 14px;
+  border: 3px solid rgba(30, 136, 229, 0.45);
 }
+
 .booking h3 {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 4px;
+  font-size: 15px;
+  font-weight: 800;
+  margin: 0 0 4px;
+  color: #111;
 }
+
+.booking p {
+  margin: 0;
+  font-size: 13px;
+  color: #6c757d;
+}
+
 .booking .status {
   margin-left: auto;
-  padding: 7px 16px;
-  border-radius: 24px;
-  font-size: 13px;
-  font-weight: bold;
-  transition: all 0.3s;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
 }
+
 .status.confirmed {
   background: #e0f7e9;
   color: #2e7d32;
 }
+
 .status.pending {
   background: #fff3cd;
   color: #856404;
@@ -199,71 +450,129 @@ button {
 
 /* ===================== Notifications ===================== */
 .recent-notifications h2 {
-  margin: 40px 0 20px;
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
+  margin: 10px 0 12px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
 }
 
 .notification {
   display: flex;
   align-items: flex-start;
-  background: #fff;
-  padding: 20px 24px;
-  border-radius: 16px;
-  margin-bottom: 18px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.06);
-  transition: transform 0.3s, box-shadow 0.3s;
+  background: rgba(255,255,255,0.88);
+  padding: 16px 16px;
+  border-radius: 18px;
+  margin-bottom: 12px;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
+
 .notification:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.09);
+  transform: translateY(-5px);
+  box-shadow: 0 16px 34px rgba(0,0,0,0.10);
 }
+
 .notification i {
-  font-size: 34px;
-  margin-right: 16px;
-  padding: 14px;
+  font-size: 28px;
+  margin-right: 12px;
+  padding: 12px;
   border-radius: 50%;
-  background: #e8f3ff;
-  color: #0d89ec;
-  transition: transform 0.3s;
+  background: rgba(30, 136, 229, 0.10);
+  color: #1e88e5;
+  transition: transform 0.2s ease;
 }
-.notification i:hover {
-  transform: scale(1.15) rotate(-10deg);
+
+.notification:hover i {
+  transform: scale(1.05) rotate(-6deg);
 }
+
 .notification h4 {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-.notification p {
   font-size: 14px;
-  color: #555;
+  font-weight: 800;
+  margin: 0 0 6px;
+  color: #111;
 }
+
+.notification p {
+  font-size: 13px;
+  color: #6c757d;
+  margin: 0;
+}
+
 .notification span {
   margin-left: auto;
   font-size: 12px;
-  color: #999;
+  color: #99a1aa;
+  white-space: nowrap;
+}
+
+/* ===================== Flash Message (Optional) ===================== */
+.alert.success {
+  margin-left: 270px;
+  margin-right: 20px;
+  margin-top: 12px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: #e0f7e9;
+  color: #2e7d32;
+  font-weight: 700;
+  border: 1px solid rgba(46, 125, 50, 0.2);
 }
 
 /* ===================== Responsive ===================== */
-@media (max-width: 1024px) {
+@media (max-width: 1100px) {
   .client-dashboard {
     margin-left: 0;
-    padding: 20px;
+    margin-right: 0;
+    padding: 18px 16px;
   }
 
-  .stats-cards, .quick-actions {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  .alert.success {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .stats-cards .cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .price-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .modifier-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .quick-actions .actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-@media (max-width: 600px) {
-  .profile-body, .booking, .notification {
-    flex-direction: column;
-    align-items: flex-start;
+
+@media (max-width: 650px) {
+  .stats-cards .cards-grid,
+  .price-grid,
+  .quick-actions .actions {
+    grid-template-columns: 1fr;
   }
 
-  .booking img, .notification i {
-    margin-bottom: 10px;
+  .modifier-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .booking,
+  .notification {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .booking .status {
+    margin-left: 0;
+  }
+
+  .notification span {
+    margin-left: 0;
   }
 }

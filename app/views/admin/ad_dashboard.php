@@ -12,82 +12,75 @@
 <body>
 
 <div class="admin-dashboard">
-<h1>Welcomeback Admin!</h1>
-  <!-- Top Stats Cards -->
-  <div class="stats-cards">
-    <div class="card">
-      <h3>Total Caregivers</h3>
-      <p class="value">120</p>
-      <span class="change positive">+10%</span>
-    </div>
-    <div class="card">
-      <h3>Total Clients</h3>
-      <p class="value">350</p>
-      <span class="change positive">+15%</span>
-    </div>
-    <div class="card">
-      <h3>Upcoming Bookings</h3>
-      <p class="value">45</p>
-      <span class="change positive">+5%</span>
-    </div>
-    <div class="card">
-      <h3>Pending Leave Requests</h3>
-      <p class="value">5</p>
-      <span class="change negative">-2%</span>
-    </div>
-    <div class="card">
-      <h3>Monthly Payments</h3>
-      <p class="value">Rs.25,000</p>
-      <span class="change positive">+8%</span>
-    </div>
+<h1>Welcome back, <?= htmlspecialchars($_SESSION['user']['username'] ?? 'Admin') ?>!</h1>
+
+<div class="stats-cards">
+  <div class="card">
+    <h3>Total Caregivers</h3>
+    <p class="value"><?= (int)$data['stats']['totalCaregivers'] ?></p>
   </div>
+
+  <div class="card">
+    <h3>Total Clients</h3>
+    <p class="value"><?= (int)$data['stats']['totalClients'] ?></p>
+  </div>
+
+  <div class="card">
+    <h3>Upcoming Bookings</h3>
+    <p class="value"><?= (int)$data['stats']['upcomingBookings'] ?></p>
+  </div>
+
+  <div class="card">
+    <h3>Pending Leave Requests</h3>
+    <p class="value"><?= (int)$data['stats']['pendingLeaves'] ?></p>
+  </div>
+
+  <div class="card">
+    <h3>Monthly Payments</h3>
+    <!-- <p class="value">Rs. <?= number_format((float)$data['stats']['monthlyPayments'], 2) ?></p> -->
+     <p class="value">Rs. --</p>
+  </div>
+</div>
 
 
   <!-- Recent Activity -->
-  <div class="recent-activity">
+ <div class="recent-activity">
+  <div class="activity-top">
     <h2>Recent Activity</h2>
+
     <div class="search-bar">
-    <input type="text" placeholder="     Search...">
-    <i class="fas fa-search"></i>
+      <i class='bx bx-search'></i>
+      <input type="text" placeholder="Search activity...">
+    </div>
   </div>
-    
-    <table>
-      <thead>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Activity</th>
+        <th>Date</th>
+        <th>User</th>
+      </tr>
+    </thead>
+
+    <tbody id="activityTable">
+      <?php if (!empty($data['recentLogs'])): ?>
+        <?php foreach ($data['recentLogs'] as $log): ?>
+          <tr>
+            <td><?= htmlspecialchars($log['action']) ?></td>
+            <td><?= htmlspecialchars($log['created_at']) ?></td>
+            <td><?= htmlspecialchars($log['username']) ?></td>
+          </tr>
+        <?php endforeach; ?>
+      <?php else: ?>
         <tr>
-          <th>Activity</th>
-          <th>Date</th>
-          <th>User</th>
+          <td colspan="3">No recent activity found.</td>
         </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>New caregiver added</td>
-          <td>2025-07-26</td>
-          <td>Admin</td>
-        </tr>
-        <tr>
-          <td>Booking confirmed</td>
-          <td>2025-07-25</td>
-          <td>HR</td>
-        </tr>
-        <tr>
-          <td>Payment received</td>
-          <td>2025-07-24</td>
-          <td>HR</td>
-        </tr>
-        <tr>
-          <td>Leave request approved</td>
-          <td>2025-07-23</td>
-          <td>HR</td>
-        </tr>
-        <tr>
-          <td>Client profile updated</td>
-          <td>2025-07-22</td>
-          <td>Admin</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+      <?php endif; ?>
+    </tbody>
+  </table>
+</div>
+
 
   <!-- Analytics Section -->
   <div class="analytics">
@@ -102,6 +95,13 @@
   </div>
 
 </div>
+<script>
+  window.DASHBOARD_DATA = {
+    bookingStats: <?= json_encode($data['bookingStats'] ?? ['labels'=>[], 'values'=>[]]) ?>,
+    engagement: <?= json_encode($data['engagement'] ?? ['labels'=>[], 'values'=>[]]) ?>
+  };
+</script>
+
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <!-- Your custom JS file -->
