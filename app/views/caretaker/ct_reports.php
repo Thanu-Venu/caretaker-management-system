@@ -31,10 +31,10 @@
       </div>
     </div>
   </section>
-
+<br><br>
   <!-- Service Details Table -->
   <section class="report-table-section">
-    <h2>Service Details</h2>
+    <h2>Service Details</h2><br>
     <table class="report-table">
       <thead>
         <tr>
@@ -45,11 +45,20 @@
           <th>Payment(LKR)</th>
         </tr>
       </thead>
-      <tbody id="serviceTableBody">
-        <!-- Populated dynamically -->
-      </tbody>
-    </table>
+     <tbody id="serviceTableBody">
+    <?php foreach ($data["services"] as $service): ?>
+        <tr>
+            <td><?= htmlspecialchars($service['client_name']) ?></td>
+            <td><?= htmlspecialchars($service['service_type']) ?></td>
+            <td><?= htmlspecialchars($service['booking_date']) ?></td>
+            <td><?= htmlspecialchars($service['duration']) ?> hrs</td>
+            <td><?= htmlspecialchars(number_format($service['total_payment'], 2)) ?></td>
+        </tr>
+    <?php endforeach; ?>
+</tbody>
 
+    </table>
+<br>
     <button id="downloadReport" class="btn-download">Download Report</button>
   </section>
 </div>

@@ -96,14 +96,36 @@ class CaretakerController extends Controller {
     ]);
 }
 
-     public function ct_schedule() {
-         $this->view("caretaker/ct_schedule");
-     }
-     
+
+    // Render calendar page
+    public function ct_schedule() {
+        $this->view("caretaker/ct_schedule");
+    }
+
+    // AJAX: Fetch events as JSON
+    public function getScheduleEvents() {
+        if (!isset($_SESSION['user'])) {
+            echo json_encode([]);
+            return;
+        }
+
+        $caretakerId = $_SESSION['user']['id']; // Correct session key
+        $events = $this->caretakerModel->getScheduleByCaretaker($caretakerId);
+
+        header('Content-Type: application/json');
+        echo json_encode($events);
+        exit;
+    }
+
+    
      public function ct_leaveHistory() {
          $this->view("caretaker/ct_leaveHistory");
      }
 
+
+
+
+     
  public function ct_complaints()
 {
     $caretakerId = $_SESSION['user']['id'];
@@ -146,9 +168,6 @@ public function saveComplaint() {
 }
 
 
-
-
-
          
      
      public function getClientInfo() {
@@ -177,9 +196,22 @@ public function saveComplaint() {
 }
 
 
-     public function ct_reports() {
-         $this->view("caretaker/ct_reports");
-     }
+       public function ct_reports() {
+    $user = $_SESSION['user'];
+    $caretakerId = $user['id'];
+
+    $caretakerModel = $this->model('CaretakerModel');
+
+    // Fetch bookings directly from DB
+    $serviceData = $caretakerModel->getServiceReport($caretakerId);
+   
+
+    // Just pass the booking_date and preferred_time as they are
+    $this->view('caretaker/ct_reports', [
+        'services' => $serviceData,
+      
+    ]);
+}
 
       public function ct_settings() {
         if (!isset($_SESSION['user'])) {
