@@ -21,8 +21,8 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
       + Add Announcement
     </a>
   </div>
-
-  <table border="1" width="100%">
+  <div class="table-container">
+  <table>
     <thead>
       <tr>
         <th>Title</th>
@@ -54,6 +54,7 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
       <?php endif; ?>
     </tbody>
   </table>
+  </div>
 </div>
 
 </body>
