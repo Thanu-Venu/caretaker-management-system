@@ -97,3 +97,41 @@ body {
         font-size: 24px;
     }
 }
+
+/* ========================
+   Form Buttons Row
+======================== */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+/* Make both buttons equal width */
+.form-actions .submit-btn,
+.form-actions .btn-cancel {
+    flex: 1;
+    text-align: center;
+}
+
+/* Cancel button style */
+.btn-cancel {
+    background: #e5e7eb;
+    color: #111;
+    font-weight: 600;
+    line-height: 42px; /* aligns text with button height */
+}
+
+/* Hover */
+.btn-cancel:hover {
+    background: #d1d5db;
+}
+
+/* ========================
+   Mobile: stack buttons
+======================== */
+@media (max-width: 500px) {
+    .form-actions {
+        flex-direction: column;
+    }
+}

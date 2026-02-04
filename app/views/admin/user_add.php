@@ -40,7 +40,10 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
         <option value="Inactive">Inactive</option>
       </select>
       <br><br>
-       <button type="submit" class="submit-btn" window.location.href='/CMA/public/userCRUD/list'>Add user</button>
+       <div class="form-actions">
+    <button type="submit" class="submit-btn">Add User</button>
+    <a href="<?= URLROOT ?>/UserCRUD/list" class="btn-cancel">Cancel</a>
+</div>
         </form>
 
       

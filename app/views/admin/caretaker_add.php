@@ -55,7 +55,11 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
                 <option value="Inactive">Inactive</option>
             </select>
 
-            <button type="submit" class="submit-btn" >Add Caregiver</button>
+            <div class="form-actions">
+    <button type="submit" class="submit-btn">Add Caregiver</button>
+    <a href="<?= URLROOT ?>/CaretakerCRUD/list" class="btn-cancel">Cancel</a>
+</div>
+
         </form>
     </section>
 </main>

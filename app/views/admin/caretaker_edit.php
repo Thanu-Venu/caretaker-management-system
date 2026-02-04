@@ -60,8 +60,10 @@ $caretaker = $data['caretaker'];
     <option value="Inactive" <?php if($caretaker['status']=='Inactive') echo 'selected'; ?>>Inactive</option>
   </select>
 
-  <button type="submit">Update Caregiver</button>
-  <a href="<?php echo URLROOT; ?>/admin/ad_caretakers">Cancel</a>
+  <div class="form-actions">
+    <button type="submit" class="submit-btn">Update Caregiver</button>
+    <a href="<?= URLROOT ?>/CaretakerCRUD/list" class="btn-cancel">Cancel</a>
+</div>
 </form>
 
   </section>
