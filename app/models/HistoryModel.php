@@ -45,4 +45,30 @@ class HistoryModel {
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
+public function getLogsPaginated($limit, $offset)
+{
+    $stmt = $this->conn->prepare("
+        SELECT created_at, username, role, action, section
+        FROM history_logs
+        WHERE role = 'admin'
+        ORDER BY created_at DESC
+        LIMIT ? OFFSET ?
+    ");
+    $stmt->bind_param("ii", $limit, $offset);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+
+public function getTotalLogs()
+{
+    $res = $this->conn->query("
+        SELECT COUNT(*) AS total
+        FROM history_logs
+        WHERE role = 'admin'
+    ");
+    return (int) $res->fetch_assoc()['total'];
+}
+
+
 }

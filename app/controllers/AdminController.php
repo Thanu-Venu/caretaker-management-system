@@ -130,10 +130,30 @@ class AdminController extends Controller
 
 
     public function ad_history()
-    {
-        $logs = $this->historyModel->getAdminLogs();
-        $this->view("admin/ad_history", ['logs' => $logs]);
-    }
+{
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    if ($page < 1) $page = 1;
+
+    $limit  = 10; // logs per page
+    $offset = ($page - 1) * $limit;
+
+    $historyModel = $this->model('HistoryModel'); // change to your model name
+
+    $logs = $historyModel->getLogsPaginated($limit, $offset);
+    $totalLogs = $historyModel->getTotalLogs();
+
+    $totalPages = (int) ceil($totalLogs / $limit);
+    if ($totalPages < 1) $totalPages = 1;
+
+    $data = [
+        'logs' => $logs,
+        'currentPage' => $page,
+        'totalPages' => $totalPages
+    ];
+
+    $this->view('admin/ad_history', $data);
+}
+
 
     public function ad_caretakers()
 {
