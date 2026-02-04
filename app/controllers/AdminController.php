@@ -111,10 +111,11 @@ class AdminController extends Controller
     }
 
     public function ad_caretakers()
-    {
-        $caretakers = $this->caretakerModel->getCaretakers(); // ✅ use the initialized property
-        $this->view("admin/ad_caretakers", ['caretakers' => $caretakers]);
-    }
+{
+    header("Location: " . URLROOT . "/CaretakerCRUD/list?page=1");
+    exit;
+}
+
 
     public function ad_announcement()
     {

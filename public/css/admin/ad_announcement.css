@@ -21,7 +21,7 @@ h2 {
     margin: 30px 0 10px;
     font-size: 26px;
     font-weight: 600;
-    color: #2665bb;
+    color: #1e88e5;
 }
 
 /* ========================
@@ -71,7 +71,7 @@ form input:focus,
 form select:focus {
     outline: none;
     background-color: #ffffff;
-    border-color: #3498db;
+    border-color: #1e88e5;
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
 }
 
@@ -80,7 +80,7 @@ form select:focus {
 ======================== */
 form button {
     padding: 11px 22px;
-    background: linear-gradient(135deg, #3498db, #2563eb);
+    background:#1e88e5;
     color: #ffffff;
     border: none;
     border-radius: 8px;
@@ -92,7 +92,7 @@ form button {
 }
 
 form button:hover {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background:#1c80d7;
     transform: translateY(-1px);
     box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
 }
@@ -118,7 +118,7 @@ table {
 
 /* Table Header */
 table th {
-    background: linear-gradient(135deg, #3498db, #2563eb);
+    background: #1e88e5;
     color: #ffffff;
     padding: 14px 16px;
     font-size: 14px;

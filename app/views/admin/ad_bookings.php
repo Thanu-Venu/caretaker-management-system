@@ -37,7 +37,7 @@
             <select id="status" onchange="filterTable()">
   <option value="All">All</option>
   <option value="Pending">Pending</option>
-  <option value="Accepted">Accepted</option>
+  <option value="AwaitingPayment">AwaitingPayment</option>
   <option value="Rejected">Rejected</option>
   <option value="Completed">Completed</option>
   <option value="Cancelled">Cancelled</option>

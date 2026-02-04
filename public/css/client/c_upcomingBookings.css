@@ -273,3 +273,13 @@
   from { transform: translateY(8px) scale(0.98); opacity: 0; }
   to   { transform: translateY(0) scale(1); opacity: 1; }
 }
+
+.payment-deadline{
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #ffe2e2;
+  color: #b30000;
+  font-size: 13px;
+  display: inline-block;
+}
+

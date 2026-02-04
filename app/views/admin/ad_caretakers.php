@@ -23,20 +23,47 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
     <button class="add-btn" onclick="window.location.href='/CMA/public/caretakerCRUD/add'">Add Caregiver</button>
   </section>
 
-  <!-- Search -->
-  <div class="search-wrapper">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <input type="text" placeholder="Search caregivers" id="searchInput">
-  </div>
+ <?php
+$filters = $data['filters'] ?? [];
+?>
 
+<div class="filter-bar">
+  <form method="get" action="<?= URLROOT ?>/CaretakerCRUD/list">
 
-  <!-- Caretaker Table -->
-  <div class="table-container">
+    <select name="service_type">
+      <option value="">All Services</option>
+      <option value="Elder Care" <?= (($filters['service_type'] ?? '')==='Elder Care')?'selected':'' ?>>Elder Care</option>
+      <option value="Babysitter" <?= (($filters['service_type'] ?? '')==='Babysitter')?'selected':'' ?>>Babysitter</option>
+      <option value="Maid" <?= (($filters['service_type'] ?? '')==='Maid')?'selected':'' ?>>Maid</option>
+    </select>
+
+    <select name="status">
+      <option value="">All Status</option>
+      <option value="Active" <?= (($filters['status'] ?? '')==='Active')?'selected':'' ?>>Active</option>
+      <option value="Inactive" <?= (($filters['status'] ?? '')==='Inactive')?'selected':'' ?>>Inactive</option>
+    </select>
+
+    <input type="text" name="location" placeholder="Location"
+           value="<?= htmlspecialchars($filters['location'] ?? '') ?>">
+
+    <input type="text" name="q" placeholder="Search name"
+           value="<?= htmlspecialchars($filters['q'] ?? '') ?>">
+
+    <button type="submit">Apply</button>
+
+    <a class="reset-btn" href="<?= URLROOT ?>/CaretakerCRUD/list">Reset</a>
+  </form>
+</div>
+<div class="table-container">
     <table>
       <thead>
         <tr>
           <th>Name</th>
-          <th>Service</th>
+          <th>Email</th>
+          <th>Service type</th>
+          <th>Experience</th>
+          <th>Location</th>
+          <th>Phone number</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
@@ -46,7 +73,11 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
           <?php foreach($data['caretakers'] as $caretaker): ?>
             <tr>
               <td><?= htmlspecialchars($caretaker['name']) ?></td>
+              <td><?= htmlspecialchars($caretaker['email'] ?? '') ?></td>
               <td><?= htmlspecialchars($caretaker['service_type'] ?? '') ?></td>
+              <td><?= htmlspecialchars($caretaker['experience'] ?? '') ?></td>
+              <td><?= htmlspecialchars($caretaker['location'] ?? '') ?></td>
+              <td><?= htmlspecialchars($caretaker['phone'] ?? '') ?></td>
               <td>
                 <span class="status <?= $caretaker['status']=='Active'?'active':'inactive' ?>">
                   <?= htmlspecialchars($caretaker['status']) ?>
@@ -66,7 +97,26 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
         <?php endif; ?>
       </tbody>
     </table>
+<?php if (($data['totalPages'] ?? 1) > 1): ?>
+  <div class="pagination">
+    <?php for ($p=1; $p <= $data['totalPages']; $p++): ?>
+      <a class="<?= ($p == ($data['page'] ?? 1)) ? 'active' : '' ?>"
+         href="<?= URLROOT ?>/CaretakerCRUD/list?
+            page=<?= $p ?>
+            &service_type=<?= urlencode($filters['service_type'] ?? '') ?>
+            &status=<?= urlencode($filters['status'] ?? '') ?>
+            &location=<?= urlencode($filters['location'] ?? '') ?>
+            &q=<?= urlencode($filters['q'] ?? '') ?>">
+        <?= $p ?>
+      </a>
+    <?php endfor; ?>
+  </div>
+<?php endif; ?>
+
+
     </div>
+   
+
 
 </main>
 
