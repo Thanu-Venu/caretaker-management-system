@@ -14,40 +14,56 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
 <main class="main-content">
   <section class="form-section">
     <h1>Add User</h1>
-    <form method="POST">
+    <form method="POST" class="user-form">
+
+  <div class="form-grid">
+
+    <div class="field">
       <label>Username</label>
       <input type="text" name="username" required placeholder="Enter username">
+    </div>
 
+    <div class="field">
       <label>Email</label>
       <input type="email" name="email" required placeholder="Enter email">
+    </div>
 
+    <div class="field">
       <label>Password</label>
       <input type="password" name="password" required placeholder="Enter password">
+    </div>
 
+    <div class="field">
       <label>Role</label>
       <select name="role" required>
         <option value="">Select Role</option>
         <option value="Admin">Admin</option>
         <option value="Manager">Manager</option>
       </select>
+    </div>
 
+    <div class="field">
       <label>Phone</label>
-            <input type="text" name="phone" required placeholder="Enter phone number">
+      <input type="text" name="phone" required placeholder="Enter phone number">
+    </div>
 
+    <div class="field">
       <label>Status</label>
       <select name="status">
         <option value="Active">Active</option>
         <option value="Inactive">Inactive</option>
       </select>
-      <br><br>
-       <div class="form-actions">
+    </div>
+
+  </div>
+
+  <div class="form-actions">
     <button type="submit" class="submit-btn">Add User</button>
     <a href="<?= URLROOT ?>/UserCRUD/list" class="btn-cancel">Cancel</a>
-</div>
-        </form>
+  </div>
 
-      
-    </form>
+</form>
+
   </section>
 </main>
 </body>
