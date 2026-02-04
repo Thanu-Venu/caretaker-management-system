@@ -79,10 +79,35 @@ class AdminController extends Controller
 
 
     public function ad_leave()
-    {
-        $leaves = $this->adminLeaveModel->getAllLeaves(); // Fetch caretakers' leaves
-        $this->view("admin/ad_leave", ['leaves' => $leaves]);
-    }
+{
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    if ($page < 1) $page = 1;
+
+    $limit  = 10;
+    $offset = ($page - 1) * $limit;
+
+    $type   = $_GET['type'] ?? 'All';
+    $status = $_GET['status'] ?? 'All';
+
+    $leaveModel = $this->model('AdminLeaveModel');
+
+    $leaves = $leaveModel->getLeavesPaginatedFiltered($limit, $offset, $type, $status);
+    $totalLeaves = $leaveModel->getTotalLeavesFiltered($type, $status);
+
+    $totalPages = (int) ceil($totalLeaves / $limit);
+    if ($totalPages < 1) $totalPages = 1;
+
+    $data = [
+        'leaves'       => $leaves,
+        'currentPage'  => $page,
+        'totalPages'   => $totalPages,
+        'selectedType' => $type,
+        'selectedStatus' => $status
+    ];
+
+    $this->view('admin/ad_leave', $data);
+}
+
 
    public function update_leave_status($id, $status)
 {
@@ -147,12 +172,6 @@ class AdminController extends Controller
         ]);
     }
 
-    public function ad_bookings()
-    {
-        $bookings=$this->clientModel->getAllBookingsAdmin();
-        $this->view("admin/ad_bookings", ['bookings' => $bookings]);
-    }
-
     public function ad_settings()
     {
         // Session already started in constructor
@@ -181,5 +200,31 @@ class AdminController extends Controller
     {
         $this->view("admin/ad_payments");
     }
+
+    public function ad_bookings()
+{
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    if ($page < 1) $page = 1;
+
+    $limit  = 10;
+    $offset = ($page - 1) * $limit;
+
+    $clientModel = $this->model('ClientModel'); // or new ClientModel();
+
+    $bookings = $clientModel->getBookingsPaginated($limit, $offset);
+    $totalBookings = $clientModel->getTotalBookings();
+
+    $totalPages = (int) ceil($totalBookings / $limit);
+    if ($totalPages < 1) $totalPages = 1;
+
+    $data = [
+        'bookings'     => $bookings,
+        'currentPage'  => $page,
+        'totalPages'   => $totalPages,
+        'totalRecords' => $totalBookings
+    ];
+
+    $this->view('admin/ad_bookings', $data);
+}
 
 }

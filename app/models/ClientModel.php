@@ -593,5 +593,34 @@ public function getAlternativeCaretakers(
     return $available;
 }
 
+public function getBookingsPaginated($limit, $offset) {
+    $sql = "
+        SELECT 
+            b.id AS booking_id,
+            c.name AS client_name,
+            ct.name AS caretaker_name,
+            b.service_type,
+            b.booking_date,
+            b.status
+        FROM bookings b
+        JOIN clients c ON b.client_id = c.id
+        JOIN caretakers ct ON b.caretaker_id = ct.id
+        ORDER BY b.id DESC
+        LIMIT ? OFFSET ?
+    ";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("ii", $limit, $offset);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+public function getTotalBookings() {
+    $res = $this->conn->query("SELECT COUNT(*) AS total FROM bookings");
+    $row = $res->fetch_assoc();
+    return (int)$row['total'];
+}
+
+
 }
 

@@ -127,3 +127,26 @@ tbody tr:hover {
 .reject-btn i:hover {
     transform: scale(1.2);
 }
+
+.pagination{
+  margin-top: 18px;
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.pagination a{
+  padding:8px 12px;
+  border:1px solid #ccc;
+  border-radius:6px;
+  text-decoration:none;
+  color:#333;
+  background:#fff;
+}
+
+.pagination a.active{
+  background:#2563eb;
+  color:#fff;
+  border-color:#2563eb;
+}
