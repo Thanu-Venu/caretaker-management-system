@@ -39,12 +39,6 @@
                         onclick="openRescheduleModal(<?= $b['booking_id'] ?>)">
                         Reschedule Booking
                     </button>
-
-                    <!-- PAYMENT -->
-                    <a href="<?= URLROOT ?>/client/c_makePayment?booking_id=<?= $b['booking_id'] ?>"
-                       class="payment-btn">
-                        Proceed to Payment
-                    </a>
                 </div>
 
             </div>

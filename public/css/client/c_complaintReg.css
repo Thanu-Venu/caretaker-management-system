@@ -27,7 +27,7 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-h2 {
+.page-wrapper h2 {
     color: #1e88e5;
     margin-bottom: 20px;
     font-size: 24px;
@@ -35,15 +35,15 @@ h2 {
 }
 
 /* ===== FORM ===== */
-label {
+.page-wrapper label {
     display: block;
     margin-bottom: 6px;
     font-weight: 600;
 }
 
-input,
-select,
-textarea {
+.page-wrapper input,
+.page-wrapper select,
+.page-wrapper textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 14px;
@@ -51,11 +51,11 @@ textarea {
     border-radius: 6px;
 }
 
-textarea {
+.page-wrapper textarea {
     resize: vertical;
 }
 
-button {
+.page-wrapper button {
     background: #1e88e5;
     color: white;
     border: none;
@@ -66,48 +66,48 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+.page-wrapper button:hover {
     background: #1a76c7;
 }
 
 /* ===== TABLE ===== */
-table {
+.page-wrapper table {
     width: 100%;
     border-collapse: collapse;
 }
 
-th, td {
+.page-wrapper th, .page-wrapper td {
     padding: 12px 14px;
     border-bottom: 1px solid #e0e0e0;
     text-align: left;
 }
 
-th {
+.page-wrapper th {
     background-color: #1e88e5;
     color: white;
     font-weight: 600;
 }
 
-tr:hover {
+.page-wrapper tr:hover {
     background-color: #f1f1f1;
 }
 
 /* ===== LINKS ===== */
-a {
+.page-wrapper a {
     color: #1e88e5;
     font-weight: 600;
     text-decoration: none;
 }
 
-a:hover {
+.page-wrapper a:hover {
     text-decoration: underline;
 }
 
-em {
+.page-wrapper em {
     color: #888;
 }
 
-p {
+.page-wrapper p {
     color: #555;
     font-size: 15px;
 }

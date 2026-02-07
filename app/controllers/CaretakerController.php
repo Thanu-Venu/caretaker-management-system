@@ -79,17 +79,13 @@ class CaretakerController extends Controller {
 
 
      
-     public function ct_booking() {
-    $user = $_SESSION['user'];
-    $caretakerId = $user['id'];
-
+    public function ct_booking() {
+    $caretakerId = $_SESSION['user']['id'];
     $caretakerModel = $this->model('CaretakerModel');
 
-    // Fetch bookings directly from DB
     $upcoming = $caretakerModel->getUpcomingBookings($caretakerId);
     $past = $caretakerModel->getPastBookings($caretakerId);
 
-    // Just pass the booking_date and preferred_time as they are
     $this->view('caretaker/ct_booking', [
         'upcoming' => $upcoming,
         'past' => $past

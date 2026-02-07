@@ -13,32 +13,70 @@
 <body>
   <div class="container">
 
+    <?php
+      $payments = $data['payments'] ?? [];
+      $totalPayments = 0.0;
+      $completedTotal = 0.0;
+      $pendingTotal = 0.0;
+      $completedCount = 0;
+      $pendingCount = 0;
+      $failedCount = 0;
+      $pendingPayment = null;
+
+      foreach ($payments as $p) {
+        $amount = (float) ($p['amount'] ?? 0);
+        $totalPayments += $amount;
+
+        $status = strtolower($p['status'] ?? '');
+        if ($status === 'approved') {
+          $completedTotal += $amount;
+          $completedCount++;
+        } elseif ($status === 'pending') {
+          $pendingTotal += $amount;
+          $pendingCount++;
+          if ($pendingPayment === null) {
+            $pendingPayment = $p;
+          }
+        } elseif ($status === 'rejected') {
+          $failedCount++;
+        }
+      }
+    ?>
+
     <!-- Title -->
-    <div class="header">
-      <h1>Payment History</h1>
-      <p>Track and manage all your payment transactions.</p>
+    <div class="header-row">
+      <div class="header">
+        <h1>Payment History</h1>
+        <p>Track and manage all your payment transactions.</p>
+      </div>
+
+      <?php if (!empty($pendingPayment)): ?>
+        <div class="payment-action">
+          <a class="payment-btn" href="<?= URLROOT ?>/client/c_payment?booking_id=<?= $pendingPayment['booking_id'] ?>">Proceed to Payment</a>
+        </div>
+      <?php endif; ?>
     </div>
 
     <!-- Summary Cards -->
     <div class="cards">
       <div class="card">
         <h3>Total Payments</h3>
-        <p class="amount">LKR 208,855.00</p>
-        <span>6 transactions</span>
+        <p class="amount">LKR <?= number_format($totalPayments, 2) ?></p>
+        <span><?= count($payments) ?> transactions</span>
       </div>
       <div class="card">
         <h3>Completed</h3>
-        <p class="amount green">LKR 104,500.00</p>
-        <span>4 successful</span>
+        <p class="amount green">LKR <?= number_format($completedTotal, 2) ?></p>
+        <span><?= $completedCount ?> successful</span>
       </div>
       <div class="card">
         <h3>Pending</h3>
-        <p class="amount orange">LKR 104,355.00</p>
-        <span>1 awaiting</span>
+        <p class="amount orange">LKR <?= number_format($pendingTotal, 2) ?></p>
+        <span><?= $pendingCount ?> awaiting</span>
       </div>
       <div class="card">
         <h3>Total Hours</h3>
-        <p class="amount blue">38</p>
+        <p class="amount blue"><?= array_sum(array_map(function ($p) { return (int) ($p['duration'] ?? 0); }, $payments)) ?></p>
         <span>care hours provided</span>
       </div>
     </div>
@@ -78,56 +116,34 @@
         </tr>
       </thead>
       <tbody>
-        <tr data-status="Completed" data-service="BabySitter">
-          <td>PAY-001</td>
-          <td>Sarah Williams</td>
-          <td>BabySitter</td>
-          <td>8h</td>
-          <td>LKR 7500.00/hr</td>
-          <td>LKR 35000.00</td>
-          <td><span class="status completed">Completed</span></td>
-          <td>Jan 15, 2025</td>
-        </tr>
-        <tr data-status="Completed" data-service="Elder Care">
-          <td>PAY-002</td>
-          <td>Maria Rodriguez</td>
-          <td>Elder Care</td>
-          <td>6h</td>
-          <td>LKR 8000.00/hr</td>
-          <td>LKR 90000.00</td>
-          <td><span class="status completed">Completed</span></td>
-          <td>Jan 11, 2025</td>
-        </tr>
-        <tr data-status="Pending" data-service="Maid">
-          <td>PAY-003</td>
-          <td>Lisa Anderson</td>
-          <td>Maid</td>
-          <td>12h</td>
-          <td>LKR 7000.00/hr</td>
-          <td>LKR 50000.00</td>
-          <td><span class="status pending">Pending</span></td>
-          <td>Jan 09, 2025</td>
-        </tr>
-        <tr data-status="Failed" data-service="Elder Care">
-          <td>PAY-004</td>
-          <td>Amanda Garcia</td>
-          <td>Elder Care</td>
-          <td>5h</td>
-          <td>LKR 8500.00/hr</td>
-          <td>LKR 100000.00</td>
-          <td><span class="status failed">Failed</span></td>
-          <td>Jan 04, 2025</td>
-        </tr>
-        <tr data-status="Pending" data-service="Maid">
-          <td>PAY-005</td>
-          <td>Lisa Anderson</td>
-          <td>Maid</td>
-          <td>12h</td>
-          <td>LKR 7000.00/hr</td>
-          <td>LKR 50000.00</td>
-          <td><span class="status pending">Pending</span></td>
-          <td>Jan 01, 2025</td>
-        </tr>
+        <?php if (!empty($payments)): ?>
+          <?php foreach ($payments as $p): ?>
+            <?php
+              $statusRaw = strtolower($p['status'] ?? '');
+              $statusLabel = $statusRaw === 'approved' ? 'Completed' : ($statusRaw === 'pending' ? 'Pending' : 'Failed');
+              $statusClass = $statusRaw === 'approved' ? 'completed' : ($statusRaw === 'pending' ? 'pending' : 'failed');
+              $duration = (int) ($p['duration'] ?? 0);
+              $basis = $p['basis'] ?? '';
+              $totalPayment = (float) ($p['total_payment'] ?? 0);
+              $rate = $duration > 0 ? ($totalPayment / $duration) : 0;
+              $serviceType = $p['service_type'] ?? 'N/A';
+            ?>
+            <tr data-status="<?= htmlspecialchars($statusLabel) ?>" data-service="<?= htmlspecialchars($serviceType) ?>">
+              <td><?= htmlspecialchars($p['id']) ?></td>
+              <td><?= htmlspecialchars($p['caretaker_name'] ?? 'N/A') ?></td>
+              <td><?= htmlspecialchars($serviceType) ?></td>
+              <td><?= $duration . ' ' . htmlspecialchars($basis) ?></td>
+              <td>LKR <?= number_format($rate, 2) ?>/<?= htmlspecialchars($basis) ?></td>
+              <td>LKR <?= number_format((float) ($p['amount'] ?? 0), 2) ?></td>
+              <td><span class="status <?= $statusClass ?>"><?= $statusLabel ?></span></td>
+              <td><?= htmlspecialchars($p['booking_date'] ?? '') ?></td>
+            </tr>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <tr>
+            <td colspan="8" style="text-align:center;">No payments found.</td>
+          </tr>
+        <?php endif; ?>
       </tbody>
     </table>
 
@@ -137,7 +153,7 @@
 
     <!-- Footer -->
     <div class="footer">
-      <p>Showing 1 to 5 of 6 results</p>
+      <p>Showing 1 to <?= count($payments) ?> of <?= count($payments) ?> results</p>
       <div class="pagination">
         <button>&lt; Previous</button>
         <button>Next &gt;</button>

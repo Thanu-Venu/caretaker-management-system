@@ -20,6 +20,27 @@ h1 {
   color: #252424;
 }
 
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.page-header.header-left-cta {
+  justify-content: flex-start;
+  gap: 500px;
+}
+
+.page-header.header-left-cta .book-btn {
+  margin-left: 10px;
+}
+
+.page-header h1 {
+  margin-bottom: 10px;
+}
+
 
 .filters {
   background: white;
@@ -63,8 +84,12 @@ h1 {
   padding: 6px 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  width: 150px; /* consistent smaller width */
-  background: white;
+
+}
+
+.filter-box select:disabled {
+  color: #252424;
+  opacity: 1;
 }
 
 .filter-box button {
@@ -74,6 +99,7 @@ h1 {
   border: none;
   cursor: pointer;
 }
+
 
 .filter-box button:hover {
   background: #1b7ed3;
@@ -134,12 +160,6 @@ p.hint {
   margin-bottom: 10px;
 }
 
-/* Optional: If you want NO cropping at all (full image visible) use this instead:
-.card img {
-  object-fit: contain;
-  background: #f5f5f5;
-}
-*/
 
 /* Card Title */
 .card h3 {
@@ -196,6 +216,8 @@ p.hint {
   font-weight: 600;
   text-decoration: none;
   display: inline-block;
+  border: none;
+  outline: none;
 }
 
 .view-btn {
@@ -206,5 +228,123 @@ p.hint {
 .book-btn {
   background-color: #00bfa5;
   color: white;
+  cursor: pointer;
+}
+/* --------- Overlay (background blur) --------- */
+.overlay {
+    display: none; 
+    position: fixed;
+    top:0; left:0;
+    width:100%; 
+    height:100%;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px); /* blur background */
+    z-index: 900;
+}
+
+
+/* --------- Popup Form Container --------- */
+.popup {
+    display: none;           /* Hidden initially */
+    position: fixed;
+    top: 50%;                /* vertically center */
+    left: 470px;             /* start after sidebar width */
+    width: calc(100% - 270px); /* full width minus sidebar */
+    max-width: 1000px;       /* optional max width */
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;        /* scroll if content too long */
+    transform: translateY(-50%); /* vertically center */
+}
+
+/* Popup Form Title */
+.popup h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1e88e5;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+/* Form Labels */
+.popup label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
+    color: #333;
+}
+
+/* Input Fields & Selects */
+.popup input[type="number"],
+.popup input[type="date"],
+.popup select {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    background-color: #fff;
+}
+
+/* Scrollable preferred time dropdown */
+#preferredTimeSelect {
+    max-height: 120px;  /* max height for scroll */
+    overflow-y: auto;
+}
+
+/* Popup Button */
+.popup button[type="submit"] {
+  width: auto;
+  padding: 12px 84px;
+    border: none;
+    background-color: #1e88e5;
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+  font-size: 17px;
+    transition: 0.3s;
+}
+
+.popup button[type="submit"]:hover {
+    background-color: #1565c0;
+}
+
+.popup-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.popup-actions .cancel-btn {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 12px 84px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 17px;
+}
+
+.popup-actions .cancel-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Optional: Small screens */
+@media (max-width: 480px) {
+    .popup {
+        width: 95%;
+        padding: 20px 15px;
+    }
+}
+
+.hidden {
+    display: none !important;
 }
 

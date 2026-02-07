@@ -49,47 +49,6 @@ if (isset($_SESSION['flash_message'])) {
             </form>
         </div>
 
-        <!-- ================= COMPLAINT LIST ================= -->
-        <div class="complaint-section">
-            <h2>My Complaints</h2>
-
-            <?php if (!empty($complaints)): ?>
-                <table border="1" cellpadding="10" cellspacing="0">
-                    <tr>
-                        <th>ID</th>
-                        <th>Caretaker</th>
-                        <th>Category</th>
-                        <th>Details</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                    </tr>
-
-                    <?php foreach ($complaints as $complaint): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($complaint['Id']) ?></td>
-                            <td><?= htmlspecialchars($complaint['caretaker_name']) ?></td>
-                            <td><?= htmlspecialchars($complaint['category']) ?></td>
-                            <td><?= htmlspecialchars($complaint['details']) ?></td>
-                            <td><?= htmlspecialchars($complaint['status']) ?></td>
-                            <td><?= htmlspecialchars($complaint['complaint_date']) ?></td>
-                            <td>
-                                <?php if ($complaint['status'] != 'Resolved' && $complaint['status'] != 'Closed'): ?>
-                                    <a href="<?= URLROOT ?>/index.php?url=Complaint/clientEdit/<?= $complaint['Id'] ?>">Edit</a>
-                                    |
-                                    <a href="<?= URLROOT ?>/index.php?url=Complaint/clientDelete/<?= $complaint['Id'] ?>"
-                                       onclick="return confirm('Delete this complaint?')">Delete</a>
-                                <?php else: ?>
-                                    <em>Locked</em>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </table>
-            <?php else: ?>
-                <p>No complaints found.</p>
-            <?php endif; ?>
-        </div>
 
     </div>
 </div>

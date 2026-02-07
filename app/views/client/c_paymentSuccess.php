@@ -17,7 +17,8 @@
             </div>
             <h1>Payment Successful!</h1>
             <p>The payment was made successfully!</p>
-            <button class="ok-btn"><a href="http://localhost/CMA/public/?url=client/c_contactCT">OK</a></button>
+            <?php $paymentId = $data['payment_id'] ?? null; ?>
+            <button class="ok-btn"><a href="<?= URLROOT ?>/client/c_contactCT<?= $paymentId ? ('?payment_id=' . urlencode($paymentId)) : '' ?>">OK</a></button>
         </div>
     </div>
 </body>

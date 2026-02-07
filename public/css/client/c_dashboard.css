@@ -244,6 +244,39 @@ body, html {
   margin-top: 10px;
 }
 
+.advance-card {
+  background: #fff;
+  padding: 18px 16px;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.advance-card .price-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.advance-card .line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.04);
+}
+
+.advance-card .line span {
+  font-size: 13px;
+  color: #495057;
+}
+
+.advance-card .line strong {
+  font-size: 13px;
+  color: #111;
+}
+
 .modifier-head {
   display: flex;
   align-items: center;

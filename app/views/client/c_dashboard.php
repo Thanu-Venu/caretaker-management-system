@@ -117,7 +117,7 @@ function moneyLKR($amount) {
         <div class="line"><span>Yearly</span><strong><?= moneyLKR($servicePriceRates["Elder Care"]["Yearly"]) ?></strong></div>
       </div>
 
-      <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find">Book Elder Care</a>
+      <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find1">Book Elder Care</a>
     </div>
 
     <!-- Babysitter -->
@@ -136,7 +136,7 @@ function moneyLKR($amount) {
         <div class="line"><span>Yearly</span><strong><?= moneyLKR($servicePriceRates["Babysitter"]["Yearly"]) ?></strong></div>
       </div>
 
-      <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find">Book Babysitter</a>
+      <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find1">Book Babysitter</a>
     </div>
 
     <!-- Maid -->
@@ -156,7 +156,7 @@ function moneyLKR($amount) {
         <div class="line"><span>Yearly</span><strong><?= moneyLKR($servicePriceRates["Maid"]["Yearly"]) ?></strong></div>
       </div>
 
-      <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find">Book Maid</a>
+      <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find1">Book Maid</a>
     </div>
 
   </div>
@@ -174,6 +174,20 @@ function moneyLKR($amount) {
       <div><span>Night</span><strong><?= $timePriceModifier["Night (6pm - 10pm)"] ?>x</strong></div>
     </div>
   </div>
+
+  <div class="card advance-card">
+    <div class="modifier-head">
+      <i class='bx bx-wallet'></i>
+      <h3>Advance Payment Rules</h3>
+    </div>
+    <div class="price-lines">
+      <div class="line"><span>Hourly</span><strong>Full payment required</strong></div>
+      <div class="line"><span>Daily (lead time)</span><strong>Within 15 days: full payment</strong></div>
+      <div class="line"><span>Daily</span><strong>15+ days: 50% advance</strong></div>
+      <div class="line"><span>Monthly</span><strong>1 month advance for &lt; 6 months; otherwise 3 months</strong></div>
+      <div class="line"><span>Yearly</span><strong>&lt; 1 year: 3 months; 1+ year: 6 months</strong></div>
+    </div>
+  </div>
 </section>
 
   <!-- Quick Actions -->
@@ -183,7 +197,7 @@ function moneyLKR($amount) {
       <div class="action">
         <i class='bx bx-search'></i>
         <h3>   
-          <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_find'">
+          <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_find1'">
            Book New Service
           </button>
         </h3>
@@ -203,7 +217,7 @@ function moneyLKR($amount) {
       <div class="action">
         <i class='bx bx-phone'></i>
          <h3>   
-          <button id="bookBtn" class="main-btn">Contact Caretaker</button>
+          <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_contactCT'">Contact Caretaker</button>
         </h3>      
         <p>Manage your assigned caretaker</p>
       </div>

@@ -12,10 +12,10 @@
 
 .card {
   background: #fff;
-  padding: 25px;
+  padding: 35px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  max-width: 400px;
+  max-width: 550px;
   width: 100%;
   text-align: center;
 }
@@ -23,6 +23,7 @@
 .card h2 {
   color: #00bfa5;
   margin-bottom: 10px;
+  font-size: 24px;
 }
 
 .subtitle {
@@ -31,13 +32,20 @@
 }
 
 .details {
-  text-align: left;
-  margin: 15px 0;
-  font-size: 14px;
+  text-align:center;
+  margin: 25px 0px;
+  font-size: 15px;
   line-height: 1.6;
+  flex-direction: column;
 }
 
+
+
+
 .details strong {
+  width: 120px;         /* same width for all labels */
+  text-align: right;   /* labels end at same line */
+  margin-right: 10px;
   color: #333;
 }
 
@@ -49,7 +57,7 @@
 .actions {
   margin-top: 20px;
   display: flex;
-  gap: 10px;
+  gap: 50px;
   justify-content: center;
 }
 

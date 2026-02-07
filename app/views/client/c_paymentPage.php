@@ -12,11 +12,10 @@
 </head>
 <body></body>
 <div class="content">
-  <h1>Payment Page</h1>
+  <h1>Payment Details</h1>
 
   <!-- Payment Form -->
   <form id="paymentForm">
-    <h2>Payment Details</h2>
 
     <div class="form-group">
       <label for="cardNumber">Card Number</label>

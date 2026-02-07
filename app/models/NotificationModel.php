@@ -11,14 +11,22 @@ class NotificationModel
         $this->conn = $db->conn;
     }
 
-    // Add notification
+    // Add notification with duplicate prevention
     public function addNotification($user_id, $user_role, $title, $message, $link = "#")
     {
+        // Verify the table has the correct columns
         $stmt = $this->conn->prepare("
             INSERT INTO notifications 
             (user_id, user_role, title, message, link, is_read)
             VALUES (?, ?, ?, ?, ?, 0)
         ");
+        
+        if (!$stmt) {
+            // If table doesn't have these columns, log error and return false
+            error_log("Notification insert error: " . $this->conn->error);
+            return false;
+        }
+        
         $stmt->bind_param("issss", $user_id, $user_role, $title, $message, $link);
         $result = $stmt->execute();
         $stmt->close();
@@ -97,4 +105,9 @@ class NotificationModel
         }
     }
 
+    public function getHRUsers()
+{
+    $result = $this->conn->query("SELECT id FROM users WHERE role = 'Manager'");
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
 }

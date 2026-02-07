@@ -327,6 +327,18 @@
   border: 1px solid #ccc;
 }
 
+/* Ensure date picker icon is visible in reschedule modal */
+.modal-content input[type="date"] {
+  appearance: auto;
+  -webkit-appearance: auto;
+  background-color: #fff;
+}
+
+.modal-content input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  cursor: pointer;
+}
+
 /* Buttons */
 .cancel1-btn, .reschedule-btn {
   background-color: #007BFF;
