@@ -5,16 +5,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const confirmYes = document.getElementById("confirmYes");
     const confirmNo = document.getElementById("confirmNo");
 
-    let currentAction = null;
-    let currentRow = null;
+    let currentForm = null;
 
-    // Open modal on button click
-    document.querySelectorAll(".approve, .reject").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            currentRow = e.target.closest("tr");
-            currentAction = e.target.classList.contains("approve") ? "approve" : "reject";
-            modalText.textContent = `Are you sure you want to ${currentAction} this request?`;
+    // Open modal on form submit
+    document.querySelectorAll(".advance-payment-form").forEach(form => {
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            currentForm = form;
             modal.style.display = "block";
         });
     });
@@ -22,16 +19,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // Close modal
     closeBtn.addEventListener("click", () => {
         modal.style.display = "none";
-    });
-    confirmNo.addEventListener("click", () => {
-        modal.style.display = "none";
+        currentForm = null;
     });
 
-    // Confirm action
+    confirmNo.addEventListener("click", () => {
+        modal.style.display = "none";
+        currentForm = null;
+    });
+
+    // Confirm and submit form
     confirmYes.addEventListener("click", () => {
-        if (currentRow) {
-            const statusCell = currentRow.querySelector("td:nth-child(5)");
-            statusCell.textContent = currentAction === "approve" ? "Approved" : "Rejected";
+        if (currentForm) {
+            currentForm.submit();
             modal.style.display = "none";
         }
     });
@@ -40,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("click", (e) => {
         if (e.target === modal) {
             modal.style.display = "none";
+            currentForm = null;
         }
     });
 });

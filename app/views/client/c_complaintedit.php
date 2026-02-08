@@ -1,23 +1,30 @@
 <?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirm Booking</title>
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_complaintedit.css">
+    <title>Edit Complaint</title>
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/client/c_complaintedit.css">
 </head>
-<body></body>
+
+<body>
 <div class="main-content">
-<h2>Edit My Complaint</h2>
+    <h2>Edit My Complaint</h2>
 
-<form method="POST" action="<?= URLROOT ?>/index.php?url=Complaint/clientUpdate">
-    <input type="hidden" name="Id" value="<?= $complaint['Id'] ?>">
+    <?php if (!empty($success)): ?>
+        <p class="success-msg"><?= $success ?></p>
+    <?php endif; ?>
 
-    <label>Details:</label><br>
-    <textarea name="details" required><?= htmlspecialchars($complaint['details']) ?></textarea><br><br>
+    <form method="POST" action="<?= URLROOT ?>/index.php?url=Complaint/clientUpdate/<?= $complaint['Id'] ?>">
+        <input type="hidden" name="Id" value="<?= $complaint['Id'] ?>">
 
-    <button type="submit">Update Complaint</button>
-</form>
+        <label>Details</label>
+        <textarea name="details" required><?= htmlspecialchars($complaint['details']) ?></textarea>
+
+        <button type="submit">Update Complaint</button>
+    </form>
 </div>
+</body>
+</html>

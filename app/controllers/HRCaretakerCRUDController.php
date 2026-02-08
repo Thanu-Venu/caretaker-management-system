@@ -1,4 +1,5 @@
 <?php
+
 class HRCaretakerCRUDController extends Controller {
 
     private $caretakerModel;

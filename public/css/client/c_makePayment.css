@@ -1,94 +1,331 @@
 * {
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: 300;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 85vh;
-    margin-left: 270px;
-    margin-right: 20px;
-    padding: 20px;
-    flex: 1;
+body {
+    font-family: Arial, Helvetica, sans-serif ;
+    background-color: #f5f7fa;
+    color: #333;
 }
 
-/* Main Content */
-.main-content {
-    flex-grow: 1;
-    padding: 20px;
-    background-color: #f4f7f9;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 75vh;    
-}
-
-/* Booking Card */
-.booking-card {
-    background-color: white;
+/* Main Container */
+.payment-container {
+    max-width: 900px;
+    margin: 40px auto;
     padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    max-width: 700px;
-    width: 100%;
-    text-align: center;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
-.booking-card h2 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 25px;
-    color: #444;
-}
-
-.booking-details {
-    text-align: left;
+.payment-container h1 {
+    font-size: 32px;
+    color: #1e88e5;
     margin-bottom: 30px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.payment-container h2 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 600;
+    border-bottom: 2px solid #1e88e5;
+    padding-bottom: 10px;
+}
+
+/* Booking Details Section */
+.booking-details {
+    background-color: #f9f9f9;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    
 }
 
 .detail-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 15px;
-    font-size: 18px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
 }
 
 .detail-row .label {
-    font-weight: 300;
-    color: #666;
+    font-weight: 600;
+    color: #555;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex: 1;
 }
 
 .detail-row .value {
+    font-size: 16px;
+    color: #1e88e5;
     font-weight: 500;
-    color: #333;
+    text-align: right;
+    flex: 1;
 }
 
-.total-cost .value {
-    color: black;
+/* Status Badge */
+.status-requested {
+    display: inline-block;
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-payment_requested {
+    display: inline-block;
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-accepted {
+    display: inline-block;
+    background-color: #d4edda;
+    color: #155724;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Cost Breakdown Section */
+.cost-breakdown {
+    background-color: #f9f9f9;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.cost-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 16px;
+}
+
+.cost-row:last-child {
+    border-bottom: none;
+}
+
+.cost-row .label {
+    font-weight: 500;
+    color: #555;
+}
+
+.cost-row .value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e88e5;
+}
+
+.cost-row.highlight {
+    background-color: #e3f2fd;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 2px solid #1e88e5;
+}
+
+.cost-row.highlight .label {
+    color: #1e88e5;
     font-weight: 700;
 }
 
-.confirm-btn {
-    width: 70%;
-    padding: 15px;
-    background:#1e88e5;
-    color: white;
+.cost-row.highlight .value {
+    color: #1e88e5;
+    font-size: 20px;
+}
+
+/* Payment Form Section */
+.payment-form {
+    background-color: #f9f9f9;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group select,
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+    background-color: white;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+    outline: none;
+    border-color: #1e88e5;
+    box-shadow: 0 0 5px rgba(30, 136, 229, 0.3);
+}
+
+.form-group input:disabled {
+    background-color: #f0f0f0;
+    color: #1e88e5;
+    font-weight: 600;
+}
+
+/* Button Styles */
+.btn {
+    padding: 14px 28px;
     border: none;
     border-radius: 8px;
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s;
-}
-.confirm-btn a {
-    color: white;
+    transition: all 0.3s ease;
     text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    margin-right: 10px;
+    margin-top: 20px;
 }
-.confirm-btn:hover {
-    background: #1a7acd;
-    
-   
+
+.btn-success {
+    background-color: #4caf50;
+    color: white;
+    width: 100%;
+    margin-right: 0;
+}
+
+.btn-success:hover {
+    background-color: #45a049;
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: #999;
+    color: white;
+    width: calc(50% - 5px);
+}
+
+.btn-secondary:hover {
+    background-color: #777;
+    box-shadow: 0 4px 8px rgba(153, 153, 153, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #da190b;
+}
+
+.btn-warning {
+    background-color: #ff9800;
+    color: white;
+}
+
+.btn-warning:hover {
+    background-color: #e68900;
+}
+
+/* Button Container */
+.button-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.button-container .btn-success {
+    flex: 1;
+    margin: 0;
+}
+
+.button-container .btn-secondary {
+    flex: 1;
+    width: auto;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .payment-container {
+        margin: 20px;
+        margin-left: 20px;
+        padding: 20px;
+    }
+
+    .payment-container h1 {
+        font-size: 24px;
+    }
+
+    .detail-row,
+    .cost-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .detail-row .value,
+    .cost-row .value {
+        text-align: left;
+        margin-top: 5px;
+    }
+
+    .btn {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+
+    .button-container .btn-secondary {
+        width: 100%;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .button-container,
+    .payment-form {
+        display: none;
+    }
+
+    .payment-container {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
 }

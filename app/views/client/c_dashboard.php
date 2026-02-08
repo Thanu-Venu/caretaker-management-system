@@ -56,45 +56,41 @@ function moneyLKR($amount) {
     <p>Here’s what’s happening with your care services</p>
   </section>
 
- <!-- Stats Cards -->
-<div class="stats-cards">
-  <h2>Quick Stats</h2>
-
-  <div class="cards-grid">
-
-    <div class="card stat">
-      <div class="icon"><i class='bx bx-book'></i></div>
-      <div class="meta">
-        <h3><?= $activeBookings ?? 0 ?></h3>
-        <p>Active Bookings</p>
+<!-- Stats Cards -->
+  <div class="stats-cards">
+    <h2>Stats Cards</h2>
+    <div class="card">
+      <div class="action1">
+        <i class='bx bx-book'></i>
       </div>
-    </div>
+       <h3><?= $data['activeBookings']; ?></h3>
+<p>Active Bookings</p>
 
-    <div class="card stat">
-      <div class="icon"><i class='bx bx-user'></i></div>
-      <div class="meta">
-        <h3><?= $assignedCaretakers ?? 0 ?></h3>
-        <p>Assigned Caretakers</p>
-      </div>
     </div>
+    <div class="card">
+      <div class="action1">
+       <i class='bx bx-user'></i>
+       </div>
+        <h3><?= $data['caretakers']; ?></h3>
+<p>Assigned Caretakers</p>
 
-    <div class="card stat">
-      <div class="icon"><i class='bx bx-money'></i></div>
-      <div class="meta">
-        <h3><?= isset($totalSpent) ? moneyLKR($totalSpent) : moneyLKR(0) ?></h3>
-        <p>Total Spent</p>
-      </div>
     </div>
+    <div class="card">
+      <div class="action1">
+        <i class='bx bx-money'></i>
+        </div>
+        <h3>LKR <?= number_format($data['totalSpent']); ?></h3>
+<p>Total Spent</p>
 
-    <div class="card stat">
-      <div class="icon"><i class='bx bx-star'></i></div>
-      <div class="meta">
-        <h3><?= $avgRating ?? "0.0" ?></h3>
-        <p>Avg Rating Given</p>
-      </div>
     </div>
+    <div class="card">
+      <div class="action1">
+        <i class='bx bx-star' ></i>
+        </div>
+        <h3><?= $data['avgRating'] ?? '0.0'; ?></h3>
+<p>Avg Rating Given</p>
 
-  </div>
+    </div>
 </div>
 
 <!-- Price Overview -->
@@ -121,7 +117,7 @@ function moneyLKR($amount) {
         <div class="line"><span>Yearly</span><strong><?= moneyLKR($servicePriceRates["Elder Care"]["Yearly"]) ?></strong></div>
       </div>
 
-      <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find">Book Elder Care</a>
+      <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find1">Book Elder Care</a>
     </div>
 
     <!-- Babysitter -->
@@ -140,7 +136,7 @@ function moneyLKR($amount) {
         <div class="line"><span>Yearly</span><strong><?= moneyLKR($servicePriceRates["Babysitter"]["Yearly"]) ?></strong></div>
       </div>
 
-      <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find">Book Babysitter</a>
+      <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find1">Book Babysitter</a>
     </div>
 
     <!-- Maid -->
@@ -160,7 +156,7 @@ function moneyLKR($amount) {
         <div class="line"><span>Yearly</span><strong><?= moneyLKR($servicePriceRates["Maid"]["Yearly"]) ?></strong></div>
       </div>
 
-      <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find">Book Maid</a>
+      <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find1">Book Maid</a>
     </div>
 
   </div>
@@ -178,6 +174,20 @@ function moneyLKR($amount) {
       <div><span>Night</span><strong><?= $timePriceModifier["Night (6pm - 10pm)"] ?>x</strong></div>
     </div>
   </div>
+
+  <div class="card advance-card">
+    <div class="modifier-head">
+      <i class='bx bx-wallet'></i>
+      <h3>Advance Payment Rules</h3>
+    </div>
+    <div class="price-lines">
+      <div class="line"><span>Hourly</span><strong>Full payment required</strong></div>
+      <div class="line"><span>Daily (lead time)</span><strong>Within 15 days: full payment</strong></div>
+      <div class="line"><span>Daily</span><strong>15+ days: 50% advance</strong></div>
+      <div class="line"><span>Monthly</span><strong>1 month advance for &lt; 6 months; otherwise 3 months</strong></div>
+      <div class="line"><span>Yearly</span><strong>&lt; 1 year: 3 months; 1+ year: 6 months</strong></div>
+    </div>
+  </div>
 </section>
 
   <!-- Quick Actions -->
@@ -187,7 +197,7 @@ function moneyLKR($amount) {
       <div class="action">
         <i class='bx bx-search'></i>
         <h3>   
-          <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_find'">
+          <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_find1'">
            Book New Service
           </button>
         </h3>
@@ -207,7 +217,7 @@ function moneyLKR($amount) {
       <div class="action">
         <i class='bx bx-phone'></i>
          <h3>   
-          <button id="bookBtn" class="main-btn">Contact Caretaker</button>
+          <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_contactCT'">Contact Caretaker</button>
         </h3>      
         <p>Manage your assigned caretaker</p>
       </div>
@@ -221,66 +231,47 @@ function moneyLKR($amount) {
     </div>
   </section>
 
-  <!-- Recent Bookings -->
-  <section class="recent-bookings">
-    <h2>Recent Bookings</h2>
-    <div class="booking">
-      <img src="../public/images/find.png" alt="">
-      <div>
-        <h3>Elderly Care with Sarah Johnson</h3>
-        <p>12/15/2024 at 12:00 PM • 4 hours</p>
-      </div>
-      <span class="status confirmed">Confirmed</span>
-    </div>
-    <div class="booking">
-      <img src="../public/images/find.png" alt="">
-      <div>
-        <h3>Medical Care with Michael Chen</h3>
-        <p>12/18/2024 at 07:30 PM • 2 hours</p>
-      </div>
-      <span class="status confirmed">Confirmed</span>
-    </div>
-    <div class="booking">
-      <img src="../public/images/find.png" alt="">
-      <div>
-        <h3>Child Care with Emily Rodriguez</h3>
-        <p>12/20/2024 at 01:30 PM • 5 hours</p>
-      </div>
-      <span class="status pending">Pending</span>
-    </div>
-  </section>
+<section class="recent-bookings">
+  <h2>Recent Bookings</h2>
 
-  <!-- Recent Notifications -->
-  <section class="recent-notifications">
-    <h2>Recent Notifications</h2>
-    <div class="notification">
-      <i class='bx bx-calendar-check'></i>
+  <?php foreach ($data['recentBookings'] as $booking): ?>
+    <div class="booking">
+      <img src="../public/images/find.png" alt="">
       <div>
-        <h4>Booking Confirmed</h4>
-        <p>Your booking with Sarah Johnson has been confirmed for Dec 15, 2024.</p>
+        <h3><?= $booking['service_type']; ?> with <?= $booking['caretaker_name']; ?></h3>
+        <p>
+          <?= date('m/d/Y', strtotime($booking['booking_date'])); ?>
+          at <?= $booking['preferred_time']; ?>
+          • <?= $booking['duration']; ?> hours
+        </p>
       </div>
-      <span>2 hours ago</span>
+      <span class="status <?= strtolower($booking['status']); ?>">
+        <?= $booking['status']; ?>
+      </span>
     </div>
+  <?php endforeach; ?>
+</section>
+
+
+
+<section class="recent-notifications">
+  <h2>Recent Notifications</h2>
+
+  <?php foreach ($data['notifications'] as $note): ?>
     <div class="notification">
-      <i class='bx bx-credit-card'></i>
+      <i class='bx bx-bell'></i>
       <div>
-        <h4>Payment Processed</h4>
-        <p>Payment of LKR 45,000 has been successfully processed.</p>
+        <p><?= $note['message']; ?></p>
       </div>
-      <span>1 day ago</span>
+      <span><?= date("h:i A", strtotime($note['created_at'])); ?></span>
     </div>
-    <div class="notification">
-      <i class='bx bx-alarm'></i>
-      <div>
-        <h4>Upcoming Appointment</h4>
-        <p>You have an appointment with Michael Chen tomorrow at 7:30 PM.</p>
-      </div>
-      <span>2 days ago</span>
-    </div>
-  </section>
+  <?php endforeach; ?>
+</section>
+
+
 
 </div>
- <!-- your existing content -->
+ <!-- your existing contzent -->
 </div>
 
 </body>

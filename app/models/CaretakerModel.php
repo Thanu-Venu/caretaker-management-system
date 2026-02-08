@@ -22,6 +22,8 @@ class CaretakerModel {
         return $stmt->get_result()->fetch_assoc();
     }
 
+
+
    public function addCaretaker($data) {
     $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
 
@@ -45,6 +47,14 @@ class CaretakerModel {
 
     return $stmt->execute();
  }
+
+  private $timeMap = [
+    "Morning (8am - 12pm)" => ["08:00:00", "12:00:00"],
+    "Evening (1pm - 5pm)"  => ["13:00:00", "17:00:00"],
+    "Night (6pm - 10pm)"   => ["18:00:00", "22:00:00"],
+    "Full Time (8am - 5pm)"=> ["08:00:00", "17:00:00"]
+];
+
 
 
 
@@ -183,11 +193,87 @@ public function getCaretakersFiltered($service, $location)
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
+private function getTimeRangeFromString($timeString)
+{
+    $map = [
+        "Morning (8am - 12pm)" => ["08:00:00", "12:00:00"],
+        "Evening (1pm - 5pm)"  => ["13:00:00", "17:00:00"],
+        "Night (6pm - 10pm)"   => ["18:00:00", "22:00:00"],
+        "Full Time (8am - 5pm)"=> ["08:00:00", "17:00:00"]
+    ];
+
+    return $map[$timeString] ?? ["00:00:00", "23:59:59"];
+}
+
+public function getAvailableCaretakers($service, $date, $preferredTime, $basis, $duration)
+{
+    $startDate = $date;
+    if (strtolower($basis) === 'hourly') {
+        $endDate = $date; // hourly bookings only block the same day
+    } else {
+        $endDate = date('Y-m-d', strtotime("+".($duration-1)." days", strtotime($date)));
+    }
+    list($searchStart, $searchEnd) = $this->getTimeRangeFromString($preferredTime);
+
+    $sql = "
+SELECT c.*
+FROM caretakers c
+WHERE c.service_type = ?
+AND NOT EXISTS (
+    SELECT 1 FROM bookings b
+    WHERE b.caretaker_id = c.id
+      AND b.status IN ('Requested','Payment_Requested','Advance_Paid','Accepted','Approved')
+      AND b.booking_date <= ?
+      AND DATE_ADD(b.booking_date, INTERVAL b.duration-1 DAY) >= ?
+      AND (
+          b.basis <> 'hourly'
+          OR (
+              ? <
+              CASE b.preferred_time
+                  WHEN 'Morning (8am - 12pm)' THEN '12:00:00'
+                  WHEN 'Evening (1pm - 5pm)'  THEN '17:00:00'
+                  WHEN 'Night (6pm - 10pm)'   THEN '22:00:00'
+                  WHEN 'Full Time (8am - 5pm)' THEN '17:00:00'
+              END
+              AND
+              ? >
+              CASE b.preferred_time
+                  WHEN 'Morning (8am - 12pm)' THEN '08:00:00'
+                  WHEN 'Evening (1pm - 5pm)'  THEN '13:00:00'
+                  WHEN 'Night (6pm - 10pm)'   THEN '18:00:00'
+                  WHEN 'Full Time (8am - 5pm)' THEN '08:00:00'
+              END
+          )
+      )
+)
+";
+
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("sssss", $service, $startDate, $endDate, $searchStart, $searchEnd);
+
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+
 
 
     // Upcoming bookings
    // Get Upcoming Bookings for Caretaker
 public function getUpcomingBookings($caretakerId) {
+    $updateSql = "
+        UPDATE bookings
+        SET status = 'Completed'
+        WHERE caretaker_id = ?
+          AND booking_date < CURDATE()
+          AND status IN ('Requested','Payment_Requested','Advance_Paid','Accepted')
+    ";
+    $updateStmt = $this->conn->prepare($updateSql);
+    $updateStmt->bind_param("i", $caretakerId);
+    $updateStmt->execute();
+    $updateStmt->close();
+
     $sql = "SELECT 
                 b.id AS booking_id,
                 b.booking_date,
@@ -195,12 +281,18 @@ public function getUpcomingBookings($caretakerId) {
                 b.basis,
                 b.duration,
                 b.service_type,
-                b.service_location,
+                CONCAT(
+                    b.district, ', ',
+                    b.street, ', ',
+                    b.address_line1, ', ',
+                    b.address_line2, ', ',
+                    b.postal_code
+                ) AS service_location,
                 b.total_payment,
                 c.name AS client_name
             FROM bookings b
             JOIN clients c ON c.id = b.client_id
-            WHERE b.caretaker_id = ? AND b.status = 'Accepted' AND b.booking_date >= CURDATE()
+            WHERE b.caretaker_id = ? AND b.status IN ('Accepted','Advance_Paid','Payment_Requested','Requested') AND b.booking_date >= CURDATE()
             ORDER BY b.booking_date ASC";
     
     $stmt = $this->conn->prepare($sql);
@@ -218,7 +310,13 @@ public function getPastBookings($caretakerId) {
                 b.basis,
                 b.duration,
                 b.service_type,
-                b.service_location,
+                CONCAT(
+                    b.district, ', ',
+                    b.street, ', ',
+                    b.address_line1, ', ',
+                    b.address_line2, ', ',
+                    b.postal_code
+                ) AS service_location,
                 b.total_payment,
                 c.name AS client_name
             FROM bookings b
@@ -234,6 +332,39 @@ public function getPastBookings($caretakerId) {
 
 
 
+// Get approved bookings with client details
+public function getApprovedBookingsWithClientDetails($caretakerId) {
+    $sql = "SELECT 
+                b.id AS booking_id,
+                b.booking_date,
+                b.preferred_time,
+                b.basis,
+                b.duration,
+                b.service_type,
+                b.total_payment,
+                b.status,
+                b.district,
+                b.street,
+                b.address_line1,
+                b.address_line2,
+                b.postal_code,
+                c.id AS client_id,
+                c.name AS client_name,
+                c.phone AS client_phone,
+                c.email AS client_email,
+                p.amount AS advance_paid,
+                p.status AS payment_status
+            FROM bookings b
+            JOIN clients c ON b.client_id = c.id
+            LEFT JOIN payments p ON b.id = p.booking_id AND p.payment_type = 'advance'
+            WHERE b.caretaker_id = ? AND b.status = 'Approved'
+            ORDER BY b.booking_date ASC";
+    
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $caretakerId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
 
 
 

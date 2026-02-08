@@ -98,3 +98,7 @@ th {
 tr:hover {
   background: #f1faff;
 }
+
+.booking-row.highlight {
+  background: #e3f2fd;
+}

@@ -31,9 +31,7 @@ body, html {
 .welcome {
   padding: 18px 20px;
   border-radius: 18px;
-  background: #ffffff;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.06);
-  border: 1px solid rgba(0,0,0,0.05);
+
 }
 
 .welcome h1 {
@@ -48,145 +46,155 @@ body, html {
   font-size: 16px;
   line-height: 1.5;
   margin: 0;
+
 }
 
 /* ===================== Cards Base ===================== */
-.card {
-  background: rgba(255, 255, 255, 0.86);
-  border-radius: 18px;
-  border: 1px solid rgba(0,0,0,0.05);
-  box-shadow: 0 10px 26px rgba(0,0,0,0.06);
+/* ===================== Stats Cards ===================== */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 25px;
+  margin-bottom: 50px;
 }
 
-/* ===================== Quick Stats ===================== */
 .stats-cards h2 {
-  font-size: 22px;
+  grid-column: 1 / -1;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.stats-cards .card {
+  background: #fff;
+  padding: 28px;
+  border-radius: 18px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  transition: all 0.35s ease;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+.stats-cards .card:hover {
+  transform: translateY(-10px) scale(1.02);
+  background: linear-gradient(145deg, #e3f2fd, #ffffff);
+}
+
+.stats-cards h3 {
+  font-size: 28px;
   font-weight: 700;
-  margin: 0 0 12px;
-  color: #222;
-}
-
-.stats-cards .cards-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.card.stat {
-  padding: 16px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
-}
-
-.card.stat:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 34px rgba(0,0,0,0.10);
-  background: linear-gradient(145deg, #f3f9ff, #ffffff);
-}
-
-.card.stat .icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  background: rgba(30, 136, 229, 0.10);
-  color: #1e88e5;
-  font-size: 22px;
-  flex: 0 0 auto;
-}
-
-.card.stat .meta h3 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 800;
+  margin: 12px 0 6px;
   color: #111;
 }
 
-.card.stat .meta p {
-  margin: 2px 0 0;
-  font-size: 13px;
-  color: #6c757d;
+.stats-cards p {
+  font-size: 15px;
+  color: #777;
+  margin: 0;
+}
+
+.action1 i {
+  font-size: 40px;
+  padding: 16px;
+  border-radius: 14px;
+  background: #e3f2fd;
+  color: #0d89ec;
+  transition: transform 0.3s;
+}
+.action1 i:hover {
+  transform: scale(1.1);
 }
 
 /* ===================== Price Overview ===================== */
-.price-overview .section-head {
-  margin-top: 6px;
-  margin-bottom: 12px;
+.price-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 50px;
 }
 
-.section-head h2 {
+.price-overview .section-head {
+  margin-bottom: 20px;
+}
+
+.price-overview .section-head h2 {
   font-size: 22px;
   font-weight: 700;
-  margin: 0 0 6px;
   color: #222;
+  margin: 0 0 6px;
 }
 
-.section-head p {
-  margin: 0;
+.price-overview .section-head p {
   font-size: 14px;
   color: #6c757d;
+  margin: 0;
 }
 
-.price-grid {
+/* Price grid for all services */
+.price-overview .price-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
 }
 
+/* Individual price card */
 .price-card {
-  padding: 16px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  background: #fff;
+  padding: 18px 16px;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
 }
 
 .price-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 16px 34px rgba(0,0,0,0.10);
   background: linear-gradient(145deg, #f7fbff, #ffffff);
+  box-shadow: 0 16px 34px rgba(0,0,0,0.12);
 }
 
-.price-head {
+/* Header inside price card */
+.price-card .price-head {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 12px;
 }
 
-.price-head .badge {
+.price-card .price-head .badge {
   width: 46px;
   height: 46px;
   border-radius: 14px;
   display: grid;
   place-items: center;
-  background: rgba(30, 136, 229, 0.10);
+  background: rgba(30,136,229,0.1);
   color: #1e88e5;
   font-size: 22px;
-  flex: 0 0 auto;
 }
 
-.price-head h3 {
+.price-card .price-head h3 {
   margin: 0;
   font-size: 16px;
   font-weight: 800;
   color: #111;
 }
 
-.price-head p {
+.price-card .price-head p {
   margin: 2px 0 0;
   font-size: 13px;
   color: #6c757d;
 }
 
-.price-lines {
+/* Lines for prices */
+.price-card .price-lines {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 12px;
 }
 
-.price-lines .line {
+.price-card .price-lines .line {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -195,68 +203,105 @@ body, html {
   background: rgba(0,0,0,0.04);
 }
 
-.price-lines .line span {
+.price-card .price-lines .line span {
   font-size: 13px;
   color: #495057;
 }
 
-.price-lines .line strong {
+.price-card .price-lines .line strong {
   font-size: 14px;
   color: #111;
 }
 
-/* Buttons */
-.ghost-btn {
+/* Ghost Button */
+.price-card .ghost-btn {
   display: inline-flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   width: 100%;
   border-radius: 14px;
   padding: 10px 12px;
   text-decoration: none;
-  border: 1px solid rgba(30, 136, 229, 0.25);
-  background: rgba(30, 136, 229, 0.08);
+  border: 1px solid rgba(30,136,229,0.25);
+  background: rgba(30,136,229,0.08);
   color: #1e88e5;
   font-weight: 700;
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: all 0.25s ease;
 }
 
-.ghost-btn:hover {
+.price-card .ghost-btn:hover {
   transform: translateY(-2px);
-  background: rgba(30, 136, 229, 0.12);
+  background: rgba(30,136,229,0.12);
 }
 
-/* Time modifier card */
+/* ===================== Time Modifier Card ===================== */
 .modifier-card {
-  margin-top: 14px;
-  padding: 16px;
+  background: #fff;
+  padding: 18px 16px;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+  margin-top: 10px;
+}
+
+.advance-card {
+  background: #fff;
+  padding: 18px 16px;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.advance-card .price-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.advance-card .line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.04);
+}
+
+.advance-card .line span {
+  font-size: 13px;
+  color: #495057;
+}
+
+.advance-card .line strong {
+  font-size: 13px;
+  color: #111;
 }
 
 .modifier-head {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
 .modifier-head i {
   font-size: 22px;
-  color: #1e88e5;
-  background: rgba(30, 136, 229, 0.10);
   padding: 10px;
   border-radius: 14px;
+  background: rgba(30,136,229,0.1);
+  color: #1e88e5;
 }
 
 .modifier-head h3 {
-  margin: 0;
   font-size: 16px;
   font-weight: 800;
+  margin: 0;
   color: #111;
 }
 
 .modifier-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 12px;
 }
 
@@ -277,6 +322,22 @@ body, html {
 .modifier-grid strong {
   font-size: 14px;
   color: #111;
+}
+
+/* Responsive adjustments */
+@media (max-width: 700px) {
+  .price-overview .price-grid {
+    grid-template-columns: 1fr;
+  }
+  .modifier-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 450px) {
+  .modifier-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ===================== Quick Actions ===================== */

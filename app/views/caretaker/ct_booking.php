@@ -14,9 +14,10 @@
   <div class="booking">
     <h2>Bookings</h2>
 
+    <?php $selectedBookingId = isset($_GET['booking_id']) ? (int)$_GET['booking_id'] : null; ?>
     <div class="top">
-      <button class="up-book active" onclick="showTab('upcoming', event)">Upcoming Bookings</button>
-      <button class="past-book" onclick="showTab('past', event)">Past Bookings</button>
+      <button class="up-book active" data-tab="upcoming" onclick="showTab('upcoming', event)">Upcoming Bookings</button>
+      <button class="past-book" data-tab="past" onclick="showTab('past', event)">Past Bookings</button>
     </div>
 
     <!-- Upcoming -->
@@ -34,8 +35,9 @@
           </thead>
           <tbody>
 <?php if (!empty($data['upcoming'])) : ?>
-    <?php foreach ($data['upcoming'] as $b) : ?>
-        <tr>
+  <?php foreach ($data['upcoming'] as $b) : ?>
+    <?php $isSelected = ($selectedBookingId && (int)$b['booking_id'] === $selectedBookingId); ?>
+    <tr class="booking-row<?= $isSelected ? ' highlight' : '' ?>" data-booking-id="<?= (int)$b['booking_id'] ?>">
             <td><?= htmlspecialchars($b['client_name']) ?></td>
             <td><?= htmlspecialchars($b['service_type']) ?></td>
             <td><?= htmlspecialchars($b['service_location']) ?></td>
@@ -70,7 +72,7 @@
           <tbody>
             <?php if (!empty($data['past'])) : ?>
               <?php foreach ($data['past'] as $b) : ?>
-                <tr>
+                <tr class="booking-row" data-booking-id="<?= (int)$b['booking_id'] ?>">
                   <td><?= htmlspecialchars($b['client_name']) ?></td>
                   <td><?= htmlspecialchars($b['service_type']) ?></td>
                   <td><?= htmlspecialchars($b['service_location']) ?></td>

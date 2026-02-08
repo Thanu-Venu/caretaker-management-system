@@ -8,145 +8,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment History</title>
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_payment.css">
-</head>
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_paymentPage.css">
+ </head>
 <body>
-  <div class="container">
 
-    <!-- Title -->
-    <div class="header">
-      <h1>Payment History</h1>
-      <p>Track and manage all your payment transactions.</p>
-    </div>
+<?php
+$booking = $data['booking'] ?? [];
+$calc = $data['payment_calc'] ?? null;
 
-    <!-- Summary Cards -->
-    <div class="cards">
-      <div class="card">
-        <h3>Total Payments</h3>
-        <p class="amount">LKR 208,855.00</p>
-        <span>6 transactions</span>
-      </div>
-      <div class="card">
-        <h3>Completed</h3>
-        <p class="amount green">LKR 104,500.00</p>
-        <span>4 successful</span>
-      </div>
-      <div class="card">
-        <h3>Pending</h3>
-        <p class="amount orange">LKR 104,355.00</p>
-        <span>1 awaiting</span>
-      </div>
-      <div class="card">
-        <h3>Total Hours</h3>
-        <p class="amount blue">38</p>
-        <span>care hours provided</span>
-      </div>
-    </div>
+// Fallback: if controller didn't pass calc, try PaymentController (defensive)
+if (!$calc && file_exists(APPROOT . '/controllers/PaymentController.php')) {
+  require_once APPROOT . '/controllers/PaymentController.php';
+  if (class_exists('PaymentController') && method_exists('PaymentController', 'calculateAdvanceFromBooking')) {
+    $calc = PaymentController::calculateAdvanceFromBooking($booking);
+  }
+}
 
-    <!-- Search & Filters -->
-    <div class="filters">
-      <div class="search-bar">
-        <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="Search by description or payment ID...">
-      </div>
-      <select id="statusFilter">
-        <option value="">All Status</option>
-        <option value="Completed">Completed</option>
-        <option value="Pending">Pending</option>
-        <option value="Failed">Failed</option>
-      </select>
-      <select id="serviceFilter">
-        <option value="">All Services</option>
-        <option value="BabySitter">BabySitter</option>
-        <option value="Elder Care">Elder Care</option>
-        <option value="Maid">Maid</option>
+$advancePayment = isset($calc['advance']) ? $calc['advance'] : (!empty($booking['total_payment']) ? ($booking['total_payment'] * 0.5) : 0);
+?>
+
+<div class="content">
+  <h1>Payment Details</h1>
+
+  <!-- Payment Form -->
+  <form id="paymentForm" method="post" action="<?= URLROOT ?>/client/processPayment">
+    <input type="hidden" name="booking_id" value="<?= $booking['id'] ?? $booking['booking_id'] ?? '' ?>">
+    <input type="hidden" name="client_id" value="<?= $_SESSION['user']['id'] ?? '' ?>">
+    <input type="hidden" name="amount" value="<?= $advancePayment ?>">
+    
+
+    <div class="form-group">
+      <label for="payment_method">Payment Method</label>
+      <select id="payment_method" name="payment_method" required>
+        <option value="">Select Payment Method</option>
+        <option value="credit_card">Credit Card</option>
+        <option value="debit_card">Debit Card</option>
+        <option value="mobile_wallet">Mobile Wallet</option>
+        <option value="bank_transfer">Bank Transfer</option>
       </select>
     </div>
 
-    <!-- Table -->
-    <table id="paymentTable">
-      <thead>
-        <tr>
-          <th>Payment ID</th>
-          <th>Caretaker</th>
-          <th>Service Type</th>
-          <th>Hours</th>
-          <th>Rate</th>
-          <th>Amount</th>
-          <th>Status</th>
-          <th>Service Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="Completed" data-service="BabySitter">
-          <td>PAY-001</td>
-          <td>Sarah Williams</td>
-          <td>BabySitter</td>
-          <td>8h</td>
-          <td>LKR 7500.00/hr</td>
-          <td>LKR 35000.00</td>
-          <td><span class="status completed">Completed</span></td>
-          <td>Jan 15, 2025</td>
-        </tr>
-        <tr data-status="Completed" data-service="Elder Care">
-          <td>PAY-002</td>
-          <td>Maria Rodriguez</td>
-          <td>Elder Care</td>
-          <td>6h</td>
-          <td>LKR 8000.00/hr</td>
-          <td>LKR 90000.00</td>
-          <td><span class="status completed">Completed</span></td>
-          <td>Jan 11, 2025</td>
-        </tr>
-        <tr data-status="Pending" data-service="Maid">
-          <td>PAY-003</td>
-          <td>Lisa Anderson</td>
-          <td>Maid</td>
-          <td>12h</td>
-          <td>LKR 7000.00/hr</td>
-          <td>LKR 50000.00</td>
-          <td><span class="status pending">Pending</span></td>
-          <td>Jan 09, 2025</td>
-        </tr>
-        <tr data-status="Failed" data-service="Elder Care">
-          <td>PAY-004</td>
-          <td>Amanda Garcia</td>
-          <td>Elder Care</td>
-          <td>5h</td>
-          <td>LKR 8500.00/hr</td>
-          <td>LKR 100000.00</td>
-          <td><span class="status failed">Failed</span></td>
-          <td>Jan 04, 2025</td>
-        </tr>
-        <tr data-status="Pending" data-service="Maid">
-          <td>PAY-005</td>
-          <td>Lisa Anderson</td>
-          <td>Maid</td>
-          <td>12h</td>
-          <td>LKR 7000.00/hr</td>
-          <td>LKR 50000.00</td>
-          <td><span class="status pending">Pending</span></td>
-          <td>Jan 01, 2025</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="form-group">
+      <label for="cardNumber">Card Number</label>
+      <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+    </div>
 
-    <p id="noResults" style="display:none; text-align:center; margin-top:20px; color:red;">
-      No matching records found.
-    </p>
-
-    <!-- Footer -->
-    <div class="footer">
-      <p>Showing 1 to 5 of 6 results</p>
-      <div class="pagination">
-        <button>&lt; Previous</button>
-        <button>Next &gt;</button>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="expiry">Expiry Date</label>
+        <input type="text" id="expiry" placeholder="MM/YY" required>
+      </div>
+      <div class="form-group">
+        <label for="cvv">CVV</label>
+        <input type="password" id="cvv" placeholder="123" required>
       </div>
     </div>
 
-  </div>
-
-  <!-- JavaScript -->
-  <script src="<?php echo URLROOT; ?>/public/js/client/c_payment.js"></script>
+    <div class="form-group">
+      <label for="name">Cardholder Name</label>
+      <input type="text" id="name" placeholder="John Doe" required>
+    </div>
+    <div class="form-actions">
+    <button type="submit" class="pay-btn">Proceed to Payment</button>
+    <button type="button" class="cancel-btn" onclick="window.location.href='?url=client/c_paymentHistory'">Cancel</button>
+    </div>
+  </form>
+</div>
 </body>
 </html>
