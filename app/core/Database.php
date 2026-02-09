@@ -7,7 +7,7 @@ class Database {
     $this->conn = new mysqli("localhost", "root", "Thanuvenu", "smartcare");
         $host = "localhost";
         $user = "root";
-        $pass = "Thanuvenu";            
+        $pass = "";            
         $dbname = "smartcare";  
 
         $this->conn = new mysqli($host, $user, $pass, $dbname);

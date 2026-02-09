@@ -38,7 +38,6 @@
                 <th>Preferred Caretaker</th>
                 <th>Date & Time</th>
                 <th>Customization</th>
-                <th>Total Payment</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
@@ -46,57 +45,55 @@
      <tbody>
 <?php if (!empty($data['bookings'])): ?>
     <?php foreach ($data['bookings'] as $b): ?>
-        <tr>
-            <td><?= $b['booking_id'] ?></td>
-            <td><?= htmlspecialchars($b['client_name']) ?></td>
-            <td><?= htmlspecialchars($b['service_type']) ?></td>
-            <td><?= htmlspecialchars($b['caretaker_name']) ?></td>
-            <td><?= $b['booking_date'] ?> (<?= $b['preferred_time'] ?>)</td>
-            <td><?= nl2br(htmlspecialchars($b['customization'])) ?></td>
-            <td>LKR <?= number_format($b['total_payment'] ?? 0, 2) ?></td>
-            <td>
-                <?php 
-                if ($b['status'] === 'Pending') {
-                    echo $b['status'];
-                } else {
-                    echo "<span class='status-{$b['status']}'>{$b['status']}</span>";
-                }
-                ?>
-            </td>
-           <td>
-<?php if ($b['status'] === 'Pending'): ?>
-                <form method="post" action="<?= URLROOT ?>/hr/updateBookingStatus" class="action-form">
-                    <input type="hidden" name="booking_id" value="<?= (int) $b['booking_id'] ?>">
-        
-                    <?php $hasCustomization = !empty(trim($b['customization'] ?? '')); ?>
-        
-                    <?php if ($hasCustomization): ?>
-                        <div class="fee-box">
-                            <label class="fee-label">Customization Fee (LKR)</label>
-                            <input type="number" name="customization_fee" class="fee-input" min="0" step="0.01" value="0" required>
-                        </div>
-                    <?php else: ?>
-                        <input type="hidden" name="customization_fee" value="0">
-                    <?php endif; ?>
-        
-                    <button class="approve" name="action" value="accept">
-                        Approve<?= $hasCustomization ? ' + Fee' : '' ?>
-                    </button>
-        
-                    <button class="reject" name="action" value="reject">Reject</button>
-                </form>
-            <?php else: ?>
-                <?= htmlspecialchars($b['status']) ?>
-            <?php endif; ?>
-        </td>
+                <tr>
+                    <?php
+                        $rawStatus = $b['status'] ?? '';
+                        $status = !empty($rawStatus) ? $rawStatus : 'Requested';
+                    ?>
+                        <td><?= $b['booking_id'] ?></td>
+                        <td><?= htmlspecialchars($b['client_name']) ?></td>
+                        <td><?= htmlspecialchars($b['service_type']) ?></td>
+                        <td><?= htmlspecialchars($b['caretaker_name']) ?></td>
+                        <td><?= $b['booking_date'] ?> (<?= $b['preferred_time'] ?>)</td>
+                        <td>
+                            <?php
+                                $customText = trim($b['customization'] ?? '');
+                                $customHours = (int) ($b['customization_hours'] ?? 0);
+                            ?>
+                            <?= $customText !== '' ? htmlspecialchars($customText) : '—' ?>
+                            <?php if ($customHours > 0): ?>
+                                <div><small>Extra hours: <?= $customHours ?></small></div>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                             <span class="status-<?= strtolower($status) ?>"><?= $status ?></span>
+                        </td>
+                        <td>
+                <?php if (empty($rawStatus)): ?>
+                <span class="badge badge-warning">Requested</span>
+                <?php elseif ($status === 'Requested'): ?>
+     <form method="post" action="<?= URLROOT ?>/hr/requestAdvancePayment" class="advance-payment-form">
+    <input type="hidden" name="booking_id" value="<?= $b['booking_id'] ?>">
+    <input type="hidden" name="client_id" value="<?= $b['client_id'] ?>">
+    <button type="submit" class="btn btn-primary">
+        Request Advance Payment
+    </button>
+</form>
 
+    <?php elseif ($status === 'Payment_Requested'): ?>
+    <span class="badge badge-warning">Waiting for payment</span>
+     <?php else: ?>
+        <span class="status-<?= strtolower($status) ?>"><?= $status ?></span>
+<?php endif; ?>
+
+</td>
 
 
         </tr>
     <?php endforeach; ?>
 <?php else: ?>
     <tr>
-        <td colspan="7">No bookings</td>
+        <td colspan="8">No bookings</td>
     </tr>
 <?php endif; ?>
 </tbody>
@@ -135,7 +132,7 @@
 <div id="confirmModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <p id="modalText">Are you sure?</p>
+        <p id="modalText">Are you sure you want to request advance payment?</p>
         <div class="modal-actions">
             <button id="confirmYes" class="approve">Yes</button>
             <button id="confirmNo" class="reject">No</button>
@@ -143,6 +140,6 @@
     </div>
 </div>
 
-<script src="<?php echo URLROOT; ?>/public/js/hr/hr_pending_reques.js"></script>
+<script src="<?php echo URLROOT; ?>/public/js/hr/hr_pending_request.js"></script>
 </body>
 </html>

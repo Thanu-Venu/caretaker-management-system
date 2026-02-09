@@ -13,35 +13,38 @@
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 </head>
 <body>
-  <div class="main-content">
-    <h1>My Schedule</h1>
-    <div id="calendar"></div>
 
-    <!-- Stylish Modal -->
-    <div id="scheduleModal" class="modal">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h3 id="modalDate">📅 Date</h3>
-          <span class="close">&times;</span>
-        </div>
-        <div class="modal-body">
-          <table id="scheduleTable">
-            <thead>
-              <tr>
-                <th>Client</th>
-                <th>Service</th>
-                <th>Time</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Dynamic Rows -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_schedule.js"></script>
+  <div class="main-content">
+  <h1>My Schedule</h1>
+  <div id="calendar"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const calendarEl = document.getElementById('calendar');
+
+  const calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    height: 'auto',
+    events: {
+      url: "<?= URLROOT ?>/Caretaker/getScheduleEvents",
+      method: "GET"
+    },
+    eventClick: function(info) {
+      alert(
+        "Client: " + info.event.extendedProps.client +
+        "\nService: " + info.event.extendedProps.service +
+        "\nTime: " + info.event.extendedProps.time +
+        "\nStatus: " + info.event.extendedProps.status
+      );
+    }
+  });
+
+  calendar.render();
+});
+</script>
+
+
+
 </body>
 </html>

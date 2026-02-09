@@ -56,9 +56,12 @@ $profilePic = $_SESSION['user']['profile_image'] ?? 'default.png';
                         <li>No notifications</li>
                     <?php else: ?>
                         <?php foreach($notifications as $n): ?>
+                            <?php $notifLink = !empty($n['link']) ? $n['link'] : '#'; ?>
                             <li style="<?= $n['is_read']==0 ? 'font-weight:bold;' : '' ?>">
-                                <?= htmlspecialchars($n['title']) ?><br>
-                                <small><?= htmlspecialchars($n['message']) ?></small>
+                                <a href="<?= htmlspecialchars($notifLink) ?>">
+                                    <?= htmlspecialchars($n['title']) ?><br>
+                                    <small><?= htmlspecialchars($n['message']) ?></small>
+                                </a>
                             </li>
                         <?php endforeach; ?>
                     <?php endif; ?>

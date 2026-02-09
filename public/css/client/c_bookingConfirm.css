@@ -9,9 +9,10 @@
 
 .card {
   background: #fff;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  padding: 35px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-width: 550px;
   width: 100%;
   max-width: none;       /* 🔥 important */
 }
@@ -19,8 +20,8 @@
 
 .card h2 {
   color: #00bfa5;
+  margin-bottom: 10px;
   font-size: 24px;
-  margin-bottom: 8px;
 }
 
 .subtitle {
@@ -38,20 +39,21 @@
 
 
 .details {
-  display: grid;
-  grid-template-columns: 180px auto;
-  row-gap: 12px;
-  column-gap: 20px;
-  font-size: 14px;
-  margin-bottom: 30px;
+  text-align:center;
+  margin: 25px 0px;
+  font-size: 15px;
+  line-height: 1.6;
+  flex-direction: column;
 }
 
-.details p {
-  margin: 0;
-}
+
+
 
 .details strong {
-  color: #444;
+  width: 120px;         /* same width for all labels */
+  text-align: right;   /* labels end at same line */
+  margin-right: 10px;
+  color: #333;
 }
 
 .pending {
@@ -61,7 +63,8 @@
 
 .actions {
   display: flex;
-  gap: 12px;
+  gap: 50px;
+  justify-content: center;
 }
 
 button {

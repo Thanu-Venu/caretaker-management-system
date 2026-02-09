@@ -63,6 +63,24 @@ class ComplaintController
         }
     }
 
+public function complaintReg()
+{
+    // Ensure client is logged in
+    if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+        echo "<script>alert('Please login first'); window.location.href='/CMA/public/index.php?url=auth/login';</script>";
+        exit;
+    }
+
+    $client_name = $_SESSION['user']['name'];
+
+    // Fetch complaints for this client
+    $complaints = $this->complaintModel->getComplaintsByClient($client_name);
+
+    // Load the view with complaints
+    include_once APPROOT . "/views/templates/client/c_header.php";
+    include_once APPROOT . "/views/templates/client/c_sidebar.php";
+    include_once APPROOT . "/views/client/c_complaintReg.php";
+}
 
 
 

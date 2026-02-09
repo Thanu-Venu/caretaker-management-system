@@ -10,6 +10,7 @@ class HrController extends Controller {
 
     private $clientModel;
     private $hrLeaveModel;
+    private $notificationModel;
 
     public function __construct()
     {
@@ -19,15 +20,16 @@ class HrController extends Controller {
         $this->userModel = $this->model('UserModel');
         $this->clientModel = $this->model('ClientModel');
         $this->hrLeaveModel = $this->model('HRLeaveModel');
+        $this->notificationModel = $this->model('NotificationModel');
     
 
     
     if (session_status() === PHP_SESSION_NONE) session_start();
 
-    if (!isset($_SESSION['user'])) {
-        header("Location: index.php?url=auth/login");
-        exit;
-    }
+     if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role']!=='Manager'){
+            header("Location: index.php?url=auth/login");
+            exit;
+        }
     $this->userModel = $this->model('UserModel');
     $this->hrModel   = $this->model('HrModel'); 
         
@@ -107,67 +109,40 @@ class HrController extends Controller {
     ]);
 }
 
+public function requestAdvancePayment() {
 
-
-public function updateBookingStatus()
-{
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         header("Location: " . URLROOT . "/hr/hr_pending_request");
         exit;
     }
 
-    $bookingId = (int)($_POST['booking_id'] ?? 0);
-    $action    = $_POST['action'] ?? '';
+    $booking_id = $_POST['booking_id'] ?? null;
+    $client_id  = $_POST['client_id'] ?? null;
 
-    if (!$bookingId || !$action) {
+    if (!$booking_id || !$client_id) {
+        $_SESSION['error'] = "Invalid booking or client information.";
         header("Location: " . URLROOT . "/hr/hr_pending_request");
         exit;
     }
 
-    // HR user id
-    $hrId = (int)($_SESSION['user']['id'] ?? 0);
+    // 1️⃣ Update booking status
+    $updated = $this->hrModel->requestAdvancePayment($booking_id);
 
-    if ($action === 'accept') {
-
-        // fee from form (default 0)
-        $customFee = (float)($_POST['customization_fee'] ?? 0);
-
-        // OPTIONAL: if customization text exists => require fee
-        $booking = $this->hrModel->getBookingDetailsForApproval($bookingId);
-        $customText = trim($booking['customization'] ?? '');
-        if ($customText !== '' && $customFee <= 0) {
-            die("Customization fee is required for this booking.");
-        }
-
-        $ok = $this->hrModel->approveBookingAddCustomizationFee($bookingId, $customFee, $hrId);
-
-        if (!$ok) die("Approve failed.");
-
-        // ✅ notify client
-        $clientId = (int)$booking['client_id'];
-        $newTotal = $this->hrModel->getBookingTotal($bookingId);
-
-        $msg = "Your booking #$bookingId was approved.";
-        if ($customFee > 0) {
-            $msg .= " Customization fee: Rs." . number_format($customFee, 2) .
-                    ". New total: Rs." . number_format($newTotal, 2) . ". Make your payment to confirm the booking.";
-            header("Location: " . URLROOT . "/client/c_upcomingBookings");
-        } else {
-            $msg .= " Total: Rs." . number_format($newTotal, 2) . ".";
-        }
-
-        $this->hrModel->notifyUser(
-            $clientId,
-            "client",
-            "Booking Approved",
-            $msg,
-            URLROOT . "/client/c_upcomingBookings"
+    if ($updated) {
+        // 2️⃣ Notify client with link to payment page
+        $this->notificationModel->addNotification(
+            $client_id,
+            'client',
+            "Advance Payment Required",
+            "Please pay the advance payment to proceed with your booking.",
+            URLROOT . "/client/c_makePayment?booking_id=" . $booking_id
         );
-
+        $_SESSION['success'] = "Advance payment requested successfully!";
     } else {
-        $this->hrModel->updateBookingStatus($bookingId, "Rejected");
+        $_SESSION['error'] = "Failed to request advance payment. Please try again.";
     }
 
+    // 3️⃣ Redirect HR
     header("Location: " . URLROOT . "/hr/hr_pending_request");
     exit;
 }
@@ -230,5 +205,119 @@ public function updateComplaintStatus() {
 
     $this->view("hr/hr_announcement", $announcements);
     }
+
+    
+
+
+
+
+/* ================= VIEW PENDING PAYMENTS ================= */
+public function pendingPayments() {
+    $clientModel = $this->model('ClientModel');
+    $pendingPayments = $clientModel->getPendingPayments();
+    
+    $this->view('hr/hr_pendingPayments', ['payments' => $pendingPayments]);
+}
+
+/* ================= APPROVE PAYMENT ================= */
+public function approvePayment() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/hr/pendingPayments");
+        exit;
+    }
+
+    $paymentId = $_POST['payment_id'] ?? null;
+    if (!$paymentId) {
+        $_SESSION['error'] = "Invalid payment ID";
+        header("Location: " . URLROOT . "/hr/pendingPayments");
+        exit;
+    }
+
+    $clientModel = $this->model('ClientModel');
+    
+    // Get payment details
+    $payment = $clientModel->getPaymentById($paymentId);
+    
+    if (!$payment) {
+        $_SESSION['error'] = "Payment not found";
+        header("Location: " . URLROOT . "/hr/pendingPayments");
+        exit;
+    }
+
+    // Update payment status to approved
+    $clientModel->updatePaymentStatus($paymentId, 'approved');
+
+    // Update booking status to Accepted
+    $clientModel->updateBookingStatus($payment['booking_id'], 'Accepted');
+
+    // Send notification to caretaker
+    $notifModel = $this->model('NotificationModel');
+    $notifModel->addNotification(
+        $payment['caretaker_id'],
+        'caretaker',
+        'Booking Accepted',
+        "Booking #" . $payment['booking_id'] . " has been accepted after payment approval. Client: " . $payment['client_name'] . ". You can now view the booking details in your Bookings page.",
+        URLROOT . "/caretaker/ct_booking?booking_id=" . $payment['booking_id'] . "&tab=upcoming"
+    );
+
+    $_SESSION['success'] = "Payment approved successfully! Caretaker notified.";
+    header("Location: " . URLROOT . "/hr/pendingPayments");
+    exit;
+}
+
+/* ================= REJECT PAYMENT ================= */
+public function rejectPayment() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/hr/pendingPayments");
+        exit;
+    }
+
+    $paymentId = $_POST['payment_id'] ?? null;
+    $reason = $_POST['reason'] ?? '';
+    
+    if (!$paymentId) {
+        $_SESSION['error'] = "Invalid payment ID";
+        header("Location: " . URLROOT . "/hr/pendingPayments");
+        exit;
+    }
+
+    $clientModel = $this->model('ClientModel');
+    
+    // Get payment details
+    $payment = $clientModel->getPaymentById($paymentId);
+    
+    if (!$payment) {
+        $_SESSION['error'] = "Payment not found";
+        header("Location: " . URLROOT . "/hr/pendingPayments");
+        exit;
+    }
+
+    // Update payment status to rejected
+    $clientModel->updatePaymentStatus($paymentId, 'rejected');
+
+    // Update booking status back to Requested
+    $clientModel->updateBookingStatus($payment['booking_id'], 'Requested');
+
+    // Send notification to client
+    $notifModel = $this->model('NotificationModel');
+    $clientMessage = "Payment for booking #" . $payment['booking_id'] . " has been rejected. Reason: " . $reason . ". Please contact HR for details.";
+    $notifModel->addNotification(
+        $payment['client_id'],
+        'client',
+        'Payment Rejected',
+        $clientMessage,
+        URLROOT . "/client/c_paymentHistory"
+    );
+
+    $_SESSION['success'] = "Payment rejected. Client notified.";
+    header("Location: " . URLROOT . "/hr/pendingPayments");
+    exit;
+}
+
+
+
+
+
+
     
 }

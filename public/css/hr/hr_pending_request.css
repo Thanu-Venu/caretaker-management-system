@@ -76,6 +76,27 @@ button.reject:hover {
     opacity: 0.8;
 }
 
+.advance-payment-form .btn {
+    border: none;
+    border-radius: 12px;
+    padding: 6px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.advance-payment-form .btn-primary {
+    background: #1e88e5;
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(30, 136, 229, 0.25);
+}
+
+.advance-payment-form .btn-primary:hover {
+    transform: translateY(-1px);
+    opacity: 0.95;
+}
+
 /* Modal */
 .modal {
     display: none;

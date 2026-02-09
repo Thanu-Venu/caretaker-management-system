@@ -58,22 +58,17 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
   </div>
 
   <?php
-  $showResults = ($_SERVER['REQUEST_METHOD'] === 'POST');
-  $caretakersToShow = $showResults ? ($data['caretakers'] ?? []) : [];
-  $selectedService = $showResults ? ($_POST['service_type'] ?? '') : '';
+  $caretakersToShow = $data['allCaretakers'] ?? [];
   ?>
 
   <main class="content">
 
-    <div class="page-header">
+    <div class="page-header header-left-cta">
       <div>
         <h1>Find the Perfect Caretaker</h1>
-        <?php if ($showResults): ?>
-          <p>Filtered caretakers based on your booking details</p>
-        <?php else: ?>
-          <p>Search for available caretakers based on your booking details</p>
-        <?php endif; ?>
+        <p>Browse all active caretakers and filter by service, location, and rating</p>
       </div>
+      <button id="openPopupBtn" class="book-btn" type="button">Book Caretaker</button>
     </div>
 
     <div id="resultsSection">
@@ -82,17 +77,15 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
         <div class="filter-box">
 
           <div class="filter-row">
-
             <div class="filter-group">
               <label>Service Type</label>
-              <select id="serviceFilter" disabled>
+              <select id="serviceFilter">
                 <option value="">All Services</option>
-                <option value="Elder Care" <?= $selectedService === 'Elder Care' ? 'selected' : '' ?>>Elder Care</option>
-                <option value="Babysitter" <?= $selectedService === 'Babysitter' ? 'selected' : '' ?>>Babysitter</option>
-                <option value="Maid" <?= $selectedService === 'Maid' ? 'selected' : '' ?>>Maid</option>
+                <option value="Elder Care">Elder Care</option>
+                <option value="Babysitter">Babysitter</option>
+                <option value="Maid">Maid</option>
               </select>
             </div>
-
 
             <div class="filter-group">
               <label>Location</label>
@@ -125,7 +118,7 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
       </section>
 
       <section>
-        <h2 class="two">Available Caretakers</h2>
+        <h2 class="two">All Caretakers</h2>
 
         <div id="caretakersList" class="caretakers">
 
@@ -150,25 +143,12 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
                 <p class="rating">⭐ <?= htmlspecialchars($ct['rating'] ?? 'N/A') ?></p>
                 <p><?= htmlspecialchars($ct['qualifications']) ?></p>
 
-                <div class="card-buttons">
-                  <a href="<?= URLROOT ?>/public/?url=client/c_ctprofileview&id=<?= $ct['id'] ?>" class="view-btn">
-                    View Profile
-                  </a>
-                  <a href="<?= URLROOT ?>/public/?url=client/c_book
-&id=<?= $ct['id'] ?>
-&service_type=<?= urlencode($ct['service_type']) ?>
-&basis=<?= urlencode($_POST['basis'] ?? '') ?>
-&duration=<?= urlencode($_POST['duration'] ?? '') ?>
-&date=<?= urlencode($_POST['start_date'] ?? '') ?>
-&time=<?= urlencode($_POST['preferred_time'] ?? '') ?>"
-class="book-btn">Book Now</a>
-                </div>
 
               </div>
 
             <?php endforeach; ?>
           <?php else: ?>
-            <p>Use the Book Caretaker button to search for availability.</p>
+            <p>No caretakers found.</p>
           <?php endif; ?>
 
         </div>

@@ -106,26 +106,19 @@ class CaretakerController extends Controller
     {
         $caretakerId = $_SESSION['user']['id'];
 
-        $caretakerModel = $this->model('CaretakerModel');
-        $clients = $caretakerModel->getClientsByCaretaker($caretakerId);
+     
+    public function ct_booking() {
+    $caretakerId = $_SESSION['user']['id'];
+    $caretakerModel = $this->model('CaretakerModel');
 
-        $this->view("caretaker/ct_complaints", [
-            'clients' => $clients
-        ]);
-    }
+    $upcoming = $caretakerModel->getUpcomingBookings($caretakerId);
+    $past = $caretakerModel->getPastBookings($caretakerId);
 
-    public function saveComplaint()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'client_id' => $_POST['client_id'],
-                'caretaker_id' => $_SESSION['user']['id'], // from logged-in caretaker
-                'service_type' => $_POST['service_type'],
-                'service_date' => $_POST['service_date'],
-                'description' => $_POST['description']
-            ];
-
-            $result = $this->caretakerModel->addComplaint($data);
+    $this->view('caretaker/ct_booking', [
+        'upcoming' => $upcoming,
+        'past' => $past
+    ]);
+}
 
             if ($result) {
                 $_SESSION['success'] = "Complaint registered successfully!";
