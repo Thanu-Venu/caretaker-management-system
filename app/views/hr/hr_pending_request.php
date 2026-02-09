@@ -14,6 +14,21 @@
 <div class="main-content">
     <h1>Pending Service Requests</h1>
     <div class="table-container">
+    <form method="get" action="<?= URLROOT ?>/hr/hr_pending_request" class="filter-bar">
+    <label for="status">Filter by Status:</label>
+    <select name="status" id="status" onchange="this.form.submit()">
+        <?php
+        $statuses = ['All','Pending','Accepted','Rejected','Cancelled','Completed'];
+        foreach ($statuses as $s):
+        ?>
+            <option value="<?= $s ?>"
+                <?= ($data['status'] === $s) ? 'selected' : '' ?>>
+                <?= $s ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+</form>
+
     <table class="requests-table">
         <thead>
             <tr>
@@ -85,6 +100,31 @@
 
 
     </table>
+    <?php if ($data['totalPages'] > 1): ?>
+<div class="pagination">
+    <?php
+        $current = $data['page'];
+        $status = urlencode($data['status']);
+    ?>
+
+    <?php if ($current > 1): ?>
+        <a href="<?= URLROOT ?>/hr/hr_pending_request?page=<?= $current-1 ?>&status=<?= $status ?>">&laquo;</a>
+    <?php endif; ?>
+
+    <?php for ($i = 1; $i <= $data['totalPages']; $i++): ?>
+        <a class="<?= ($i === $current) ? 'active' : '' ?>"
+           href="<?= URLROOT ?>/hr/hr_pending_request?page=<?= $i ?>&status=<?= $status ?>">
+           <?= $i ?>
+        </a>
+    <?php endfor; ?>
+
+    <?php if ($current < $data['totalPages']): ?>
+        <a href="<?= URLROOT ?>/hr/hr_pending_request?page=<?= $current+1 ?>&status=<?= $status ?>">&raquo;</a>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
+
+
 </div>
 </div>
 

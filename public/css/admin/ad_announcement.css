@@ -1,27 +1,43 @@
-/* ========================
-   Global / Reset
-======================== */
-* {
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(180deg, #f4f6f8, #eef2f6);
-    color: #2c3e50;
-}
 
 /* ========================
-   Headings
+   Page Heading
 ======================== */
 h2 {
     text-align: center;
-    margin: 30px 0 10px;
+    margin: 30px 0 15px;
     font-size: 26px;
     font-weight: 600;
     color: #1e88e5;
+}
+
+/* ========================
+   Buttons (Global)
+======================== */
+.btn-add {
+    padding: 10px 14px;
+    background: #2563eb;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.btn-add:hover {
+    background: #1d4ed8;
+}
+
+.btn-cancel {
+    padding: 10px 14px;
+    background: #e5e7eb;
+    color: #111;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.btn-cancel:hover {
+    background: #d1d5db;
 }
 
 /* ========================
@@ -32,42 +48,51 @@ form {
     max-width: 750px;
     margin: 25px auto;
     display: flex;
-    gap: 12px;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 14px;
 
     background: #ffffff;
-    padding: 20px 25px;
+    padding: 22px 25px;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-form:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.1);
 }
 
 /* ========================
-   Inputs & Select
+   Form Labels
+======================== */
+form label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #374151;
+}
+
+/* ========================
+   Inputs & Select & Textarea
 ======================== */
 form input[type="text"],
+form textarea,
 form select {
     padding: 11px 14px;
     border-radius: 8px;
     border: 1px solid #d1d5db;
-    flex: 1 1 180px;
     font-size: 14px;
     background-color: #f9fafb;
     transition: all 0.2s ease;
+    width: 100%;
 }
 
-form input::placeholder {
+form textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+form input::placeholder,
+form textarea::placeholder {
     color: #9ca3af;
 }
 
 form input:focus,
+form textarea:focus,
 form select:focus {
     outline: none;
     background-color: #ffffff;
@@ -76,70 +101,54 @@ form select:focus {
 }
 
 /* ========================
-   Button
+   Form Buttons
 ======================== */
 form button {
+    align-self: flex-start;
     padding: 11px 22px;
-    background:#1e88e5;
+    background: #1e88e5;
     color: #ffffff;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    flex: 0 0 auto;
     font-size: 14px;
     font-weight: 500;
     transition: all 0.25s ease;
 }
 
 form button:hover {
-    background:#1c80d7;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
-}
-
-form button:active {
-    transform: scale(0.97);
+    background: #1c80d7;
 }
 
 /* ========================
    Table
 ======================== */
+.table-container {
+  overflow-x: auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 15px;
+}
+
 table {
-
-    width: 90%;
-    max-width: 1050px;
-    margin: 25px auto;
-    border-collapse: collapse;
-    background-color: #ffffff;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  border-collapse: collapse;
 }
 
-/* Table Header */
+table th, table td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
 table th {
-    background: #1e88e5;
-    color: #ffffff;
-    padding: 14px 16px;
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+  background: #1e88e5;
+  font-weight: 700;
+  font-size: 18px;
+  color: white;
 }
-
-/* Table Cells */
-table td {
-    padding: 13px 16px;
-    font-size: 14px;
-    border-bottom: 1px solid #f1f5f9;
-    color: #374151;
-}
-
 /* Row Hover */
-table tr {
-    transition: background 0.2s ease;
-}
-
 table tr:hover {
     background-color: #f9fafb;
 }
@@ -149,17 +158,24 @@ table tr:hover {
 ======================== */
 table td a {
     text-decoration: none;
-    color: #ef4444;
+    color: #2563eb;
     font-weight: 600;
-    transition: color 0.2s ease;
 }
 
 table td a:hover {
+    text-decoration: underline;
+}
+
+table td a.delete {
+    color: #ef4444;
+}
+
+table td a.delete:hover {
     color: #b91c1c;
 }
 
 /* ========================
-   Empty State (Optional)
+   Empty State
 ======================== */
 .no-data {
     text-align: center;
@@ -177,15 +193,8 @@ table td a:hover {
     }
 
     form {
-        flex-direction: column;
-        gap: 15px;
+        width: 95%;
         padding: 20px;
-    }
-
-    form input,
-    form select,
-    form button {
-        width: 100%;
     }
 
     table {

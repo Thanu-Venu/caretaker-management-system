@@ -25,11 +25,30 @@ class HrLeaveController extends Controller {
 
     // HR leave list
     public function index() {
-        $this->requireManager();
+    $this->requireManager();
 
-        $leaves = $this->leaveModel->getAllLeaves();
-        $this->view('hr/hr_leave', ['leaves' => $leaves]);
-    }
+    $perPage = 10;
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    if ($page < 1) $page = 1;
+
+    $total = $this->leaveModel->countAllLeaves();
+    $totalPages = max(1, (int)ceil($total / $perPage));
+
+    if ($page > $totalPages) $page = $totalPages;
+
+    $offset = ($page - 1) * $perPage;
+    $rows = $this->leaveModel->getLeavesPage($perPage, $offset);
+
+    $this->view('hr/hr_leave', [
+        'leaves' => $rows,
+        'page' => $page,
+        'perPage' => $perPage,
+        'total' => $total,
+        'totalPages' => $totalPages
+    ]);
+}
+
+
 
     // Show approve screen (choose replacement + see affected bookings)
     public function approve_form($leaveId) {

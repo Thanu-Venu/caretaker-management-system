@@ -7,18 +7,22 @@ class ClientController extends Controller {
 public function __construct() {
     if (session_status() === PHP_SESSION_NONE) session_start();
 
-    if (!isset($_SESSION['user'])) {
-        header("Location: index.php?url=auth/login");
-        exit;
-    }
+        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
 
     $this->clientModel = $this->model('ClientModel');
     $user = $this->clientModel->getClientById($_SESSION['user']['id']);
 
-    if (!$user) {
-        session_destroy();
-        header("Location: index.php?url=auth/login");
-        exit;
+        if (!$user) { // user deleted
+            session_destroy();
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
+
+        // Update session with latest data
+        $_SESSION['user'] = $user;
     }
 
     $_SESSION['user'] = $user;
@@ -57,11 +61,11 @@ public function __construct() {
         exit;
     }
 
-    $user = $_SESSION['user'];
+        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
 
-    // pass user info to the view
-    $this->view("client/c_profile", ['user' => $user]);
-}
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
 
 public function c_find1() {
     $caretakerModel = $this->model('CaretakerModel');
@@ -637,21 +641,19 @@ public function processPayment() {
     }
 
     public function editClientDetails()
-{
-    if (!isset($_SESSION['user'])) {
-        header("Location: index.php?url=auth/login");
-        exit;
-    }
+    {
+        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
 
     $user = $_SESSION['user'];
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        // KEEP OLD IMAGE
-        $profileImage = $user['profile_image'] ?? 'default.png';
+            $profileImage = $user['profile_image'] ?? 'default.png';
 
-        // IF NEW IMAGE SELECTED
-        if (!empty($_FILES['profile_image']['name'])) {
+            if (!empty($_FILES['profile_image']['name'])) {
 
             $fileName = time() . "_" . basename($_FILES['profile_image']['name']);
             $targetPath = APPROOT . "/../public/uploads/" . $fileName;
@@ -670,17 +672,18 @@ public function processPayment() {
         // REFRESH SESSION
         $_SESSION['user'] = $this->clientModel->getClientById($user['id']);
 
-        $_SESSION['success'] = "Profile updated successfully!";
-        header("Location: index.php?url=Client/c_settings");
-        exit();
+            $_SESSION['success'] = "Profile updated successfully!";
+            header("Location: " . URLROOT . "/Client/c_settings");
+            exit();
+        }
     }
 }
 
 
     public function editPasswordDetails()
     {
-        if (!isset($_SESSION['user'])) {
-            header("Location: index.php?url=auth/login");
+        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+            header("Location: " . URLROOT . "/auth/login");
             exit;
         }
 
