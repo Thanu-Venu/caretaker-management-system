@@ -31,6 +31,7 @@
               <th>Caregiver ID</th>
               <th>Name</th>
               <th>Service</th>
+              <th>Location</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -42,6 +43,7 @@
               <td><?= htmlspecialchars($caretaker['id']) ?></td>
               <td><?= htmlspecialchars($caretaker['name']) ?></td>
               <td><?= htmlspecialchars($caretaker['service_type']) ?></td>
+              <td><?= htmlspecialchars($caretaker['location']) ?></td>
               <td>
                 <span class="status <?= $caretaker['status']=='Active'?'active':'inactive' ?>">
                   <?= htmlspecialchars($caretaker['status']) ?>
@@ -56,7 +58,7 @@
           <?php endforeach; ?>
           <?php else: ?>
           <tr>
-            <td colspan="5" style="text-align:center;">No caregivers found</td>
+            <td colspan="6" style="text-align:center;">No caregivers found</td>
           </tr>
           <?php endif; ?>
           </tbody>
