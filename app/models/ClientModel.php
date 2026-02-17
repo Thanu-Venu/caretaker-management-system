@@ -133,34 +133,31 @@ public function updateClient($id, $data)
 
     $stmt = $this->conn->prepare($sql);
 
-$stmt->bind_param(
-    "iissiisssssssidds",
-    $data['client_id'],
-    $data['caretaker_id'],
-    $data['service_type'],
-    $data['basis'],
-    $data['duration'],
-    $data['preferred_time'],
-    $data['booking_date'],
-    $data['district'],
-    $data['street'],
-    $data['address_line1'],
-    $data['address_line2'],
-    $data['postal_code'],
-    $data['customization'],
-    $data['customization_hours'],
-    $data['customization_price'],
-    $data['total_payment'],
-    $data['status']
-);
-
+    $stmt->bind_param(
+        "iississssssssidds",
+        $data['client_id'],
+        $data['caretaker_id'],
+        $data['service_type'],
+        $data['basis'],
+        $data['duration'],
+        $data['preferred_time'],
+        $data['booking_date'],
+        $data['district'],
+        $data['street'],
+        $data['address_line1'],
+        $data['address_line2'],
+        $data['postal_code'],
+        $data['customization'],
+        $data['customization_hours'],
+        $data['customization_price'],
+        $data['total_payment'],
+        $data['status']
+    );
 
     if ($stmt->execute()) {
         return $this->conn->insert_id; // ✅ RETURN BOOKING ID
     }
 
-    // Log the actual database error
-    error_log("Booking creation failed: " . $stmt->error . " | SQL: " . $sql);
     return false;
 }
 
