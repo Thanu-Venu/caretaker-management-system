@@ -765,6 +765,8 @@ public function getAverageRatingGiven($clientId)
 }
 
 
+// Count total clients for admin dashboard
+
 
     
 }
