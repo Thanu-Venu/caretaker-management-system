@@ -7,10 +7,12 @@ class ComplaintController
 {
     private $complaintModel;
     private $clientModel;
+    private $notificationModel;
     public function __construct()
     {
         $this->complaintModel = new ComplaintModel();
         $this->clientModel = new ClientModel();
+        $this->notificationModel = new NotificationModel();
 
     }
 
@@ -39,19 +41,46 @@ class ComplaintController
             $success = $this->complaintModel->createComplaint($client_name, $caretaker_name, $category, $details);
 
             if ($success) {
+
+                // ✅ Notify all admins
+                $this->notificationModel->notifyAdmins(
+                    "New Complaint",
+                    "A new complaint was submitted by {$client_name} (Caregiver: {$caretaker_name}).",
+                    URLROOT . "/admin/ad_feedback"   // or your admin complaints page link
+                );
+
                 echo "<script>
         alert('Complaint submitted successfully!');
         window.location.href='" . URLROOT . "/public/index.php?url=Complaint/complaintlist';
-
     </script>";
                 exit;
+
             } else {
                 echo "<script>alert('Error submitting complaint.'); window.history.back();</script>";
                 exit;
             }
+
         }
     }
 
+public function complaintReg()
+{
+    // Ensure client is logged in
+    if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+        echo "<script>alert('Please login first'); window.location.href='/CMA/public/index.php?url=auth/login';</script>";
+        exit;
+    }
+
+    $client_name = $_SESSION['user']['name'];
+
+    // Fetch complaints for this client
+    $complaints = $this->complaintModel->getComplaintsByClient($client_name);
+
+    // Load the view with complaints
+    include_once APPROOT . "/views/templates/client/c_header.php";
+    include_once APPROOT . "/views/templates/client/c_sidebar.php";
+    include_once APPROOT . "/views/client/c_complaintReg.php";
+}
 
 
 
@@ -250,8 +279,7 @@ class ComplaintController
 
         // Make sure you have the client's ID
         $client_name = $complaint['client_name'];
-        $client = $this->clientModel->getClientById($client_name); // Or find by email
-        $client_id = $client['id'] ?? null;
+        $client_id = $complaint['client_id'] ?? null;
 
         if ($client_id) {
             $notifModel = new NotificationModel();
@@ -263,6 +291,12 @@ class ComplaintController
                 URLROOT . "/public/index.php?url=Complaint/myComplaints" // optional link
             );
         }
+        $this->notificationModel->notifyAdmins(
+            "Complaint Updated",
+            "Complaint #{$id} status updated to '{$status}' by HR Manager.",
+            URLROOT . "/admin/ad_feedback"
+        );
+
 
         header("Location: " . URLROOT . "/public/index.php?url=Complaint/index");
         exit;

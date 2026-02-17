@@ -2,7 +2,9 @@
 
 class ClientController extends Controller {
      private $clientModel;
-    public function __construct() {
+    private $serviceOptions;
+
+public function __construct() {
     if (session_status() === PHP_SESSION_NONE) session_start();
 
     if (!isset($_SESSION['user'])) {
@@ -10,24 +12,43 @@ class ClientController extends Controller {
         exit;
     }
 
-    // Re-validate user from database
     $this->clientModel = $this->model('ClientModel');
     $user = $this->clientModel->getClientById($_SESSION['user']['id']);
 
-    if (!$user) { // user deleted
+    if (!$user) {
         session_destroy();
         header("Location: index.php?url=auth/login");
         exit;
     }
 
-    // Update session with latest data
     $_SESSION['user'] = $user;
+
+    // <-- ADD THIS
+    $this->serviceOptions = [
+        "Elder Care" => ["Hourly", "Daily", "Monthly", "Yearly"],
+        "Babysitter" => ["Hourly", "Daily", "Monthly", "Yearly"],
+        "Maid" => ["Hourly", "Daily", "Monthly", "Yearly"],
+        "Disability Support" => ["Hourly", "Daily", "Monthly", "Yearly"]
+    ];
 }
 
 
-    public function c_dashboard() {
-        $this->view("client/c_dashboard");
-    }
+    public function c_dashboard()
+{
+    $clientId = $_SESSION['user']['id'];
+
+    $data = [
+        'activeBookings' => $this->clientModel->getActiveBookingsCount($clientId),
+        'caretakers'     => $this->clientModel->getAssignedCaretakersCount($clientId),
+        'totalSpent'     => $this->clientModel->getTotalSpent($clientId),
+        'avgRating'      => $this->clientModel->getAverageRatingGiven($clientId),
+        'recentBookings' => $this->clientModel->getRecentBookings($clientId),
+        'notifications'  => $this->clientModel->getClientNotifications($clientId)
+    ];
+
+    $this->view("client/c_dashboard", $data);
+}
+
      public function c_profile() {
     
     if (!isset($_SESSION['user'])) {
@@ -42,15 +63,37 @@ class ClientController extends Controller {
     $this->view("client/c_profile", ['user' => $user]);
 }
 
-   public function c_find()
-{
+public function c_find1() {
     $caretakerModel = $this->model('CaretakerModel');
-    $caretakers = $caretakerModel->getCaretakers();
+    $allCaretakers = $caretakerModel->getCaretakers();
+
+    $this->view("client/c_find1", [
+        'allCaretakers' => $allCaretakers
+    ]);
+}
+
+public function c_find() {
+    $caretakerModel = $this->model('CaretakerModel');
+    $caretakers = [];
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+       $caretakers = $caretakerModel->getAvailableCaretakers(
+    $_POST['service_type'],
+    $_POST['start_date'],
+    $_POST['preferred_time'],
+    $_POST['basis'],
+    $_POST['duration']
+);
+
+    }
 
     $this->view("client/c_find", [
         'caretakers' => $caretakers
     ]);
 }
+
+
+
 
 
   
@@ -105,16 +148,48 @@ public function submitFeedback()
 
 
     public function c_payment() {
-        $this->view("client/c_payment");
+        $booking_id = $_GET['booking_id'] ?? null;
+        
+        if (!$booking_id) {
+            $_SESSION['error'] = "No booking selected";
+            header("Location: " . URLROOT . "/client/c_upcomingBookings");
+            exit;
+        }
+
+        // Get booking details
+        $booking = $this->clientModel->getBookingById($booking_id);
+        
+        if (!$booking) {
+            $_SESSION['error'] = "Booking not found";
+            header("Location: " . URLROOT . "/client/c_upcomingBookings");
+            exit;
+        }
+
+        // Calculate payment info
+        require_once APPROOT . '/controllers/PaymentController.php';
+        $payment_calc = PaymentController::calculateAdvanceFromBooking($booking);
+
+        $this->view("client/c_payment", [
+            'booking' => $booking,
+            'payment_calc' => $payment_calc
+        ]);
     }
 
     public function c_paymentHistory() {
-        $this->view("client/c_paymentHistory");
+        $clientId = $_SESSION['user']['id'] ?? null;
+        if (!$clientId) {
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
+
+        $payments = $this->clientModel->getPaymentsByClient($clientId);
+        $this->view("client/c_paymentHistory", ['payments' => $payments]);
     }
 
 
     public function c_paymentSuccess() {
-        $this->view("client/c_paymentSuccess");
+        $paymentId = $_GET['payment_id'] ?? null;
+        $this->view("client/c_paymentSuccess", ['payment_id' => $paymentId]);
     }
 
    /* public function c_makePayment() {
@@ -208,21 +283,30 @@ public function cancelBooking()
 
 
     /* ================= PAYMENT PAGE ================= */
-    public function c_makePayment()
-    {
-        $bookingId = $_GET['booking_id'] ?? null;
-
-        if (!$bookingId) {
-            header("Location: " . URLROOT . "/client/c_upcomingBookings");
-            exit;
-        }
-
-        $booking = $this->clientModel->getBookingById($bookingId);
-
-        $this->view('client/c_makePayment', [
-            'booking' => $booking
-        ]);
+   
+public function c_makePayment()
+{
+    $bookingId = $_GET['booking_id'] ?? null;
+    if (!$bookingId) {
+        header("Location: " . URLROOT . "/client/c_upcomingBookings");
+        exit;
     }
+
+    $booking = $this->clientModel->getBookingById($bookingId);
+    if (!$booking) {
+        header("Location: " . URLROOT . "/client/c_upcomingBookings");
+        exit;
+    }
+
+    // Ensure PaymentController is available and compute advance
+    require_once APPROOT . '/controllers/PaymentController.php';
+    $payment_calc = PaymentController::calculateAdvanceFromBooking($booking);
+
+    $this->view('client/c_makePayment', [
+        'booking' => $booking,
+        'payment_calc' => $payment_calc
+    ]);
+}
 
     public function c_cancelledBookings() {
     $clientId = $_SESSION['user']['id'];
@@ -250,54 +334,62 @@ public function cancelBooking()
 
 
     
-    public function c_book()
+public function c_book()
 {
-    // 1️⃣ Check if user is logged in
-    if (!isset($_SESSION['user'])) {
-        header("Location: " . URLROOT . "/public/?url=auth/login");
+    $caretakerModel = $this->model('CaretakerModel');
+
+    // Get caretaker ID from URL
+    $caretakerId = $_GET['id'] ?? null;
+    if (!$caretakerId) {
+        header("Location: " . URLROOT . "/client/c_find1");
         exit;
     }
 
-    // 2️⃣ Check if caretaker ID is provided
-    if (!isset($_GET['id'])) {
-        die("Caretaker ID missing");
-    }
+    // Fetch caretaker details
+    $caretaker = $caretakerModel->getCaretakerById($caretakerId);
 
-    $caretakerId = $_GET['id'];
-
-    // 3️⃣ Load model
-    $clientModel = $this->model('ClientModel');
-
-    // 4️⃣ Get caretaker details
-    $caretaker = $clientModel->getCaretakerById($caretakerId);
-
-    if (!$caretaker) {
-        die("Caretaker not found");
-    }
-
-    // 5️⃣ Define service-dependent options
-    $serviceOptions = [
-        "Elder Care" => ["Monthly", "Yearly"],
-        "Babysitter"   => ["Daily", "Weekly", "Monthly", "Yearly"],
-        "Maid"         => ["Hourly", "Daily", "Weekly", "Monthly", "Yearly"],
-        "Disability Support" => ["Daily", "Weekly", "Monthly"]
+    // Pre-fill data from GET parameters (from search popup)
+    $prefill = [
+        'basis'    => $_GET['basis'] ?? '',
+        'duration' => intval($_GET['duration'] ?? 1),
+        'date'     => $_GET['date'] ?? '',
+        'time'     => $_GET['time'] ?? '',
+        'customization_hours' => intval($_GET['customization_hours'] ?? 0)
     ];
 
-    // 6️⃣ Define base price rates
+    // ---- PHP Price Calculation (automatic) ----
     $priceRates = [
         "Hourly"  => 500,
         "Daily"   => 3000,
-        "Weekly"  => 15000,
         "Monthly" => 40000,
         "Yearly"  => 450000
     ];
 
-    // 7️⃣ Send data to view (for GET request only)
-    $this->view('client/c_book', [
+    $timePriceModifier = [
+        "Full Time (8am - 5pm)" => 1.0,
+        "Morning (8am - 12pm)"  => 0.6,
+        "Evening (1pm - 5pm)"   => 0.6,
+        "Night (6pm - 10pm)"    => 1.2
+    ];
+
+    $modifier = $timePriceModifier[$prefill['time']] ?? 1;
+    $customizationFee = max(0, $prefill['customization_hours']) * 300;
+    $total_payment = (($priceRates[$prefill['basis']] ?? 0) * $prefill['duration'] * $modifier) + $customizationFee;
+
+    // Pass data to view
+    $data = [
         'caretaker'      => $caretaker,
-        'serviceOptions' => $serviceOptions,
-        'priceRates'     => $priceRates
-    ]);
+        'prefill'        => $prefill,
+        'serviceOptions' => [
+            "Elder Care" => ["Hourly","Daily","Monthly","Yearly"],
+            "Babysitter" => ["Hourly","Daily","Monthly"],
+            "Maid"       => ["Hourly","Daily","Monthly"],
+            "Disability Support" => ["Hourly","Daily","Monthly"]
+        ],
+        'total_payment'  => $total_payment // <-- automatically calculated
+    ];
+
+    $this->view('client/c_book', $data);
 }
 
 
@@ -309,16 +401,20 @@ public function bookCaretaker()
         $duration        = intval($_POST['duration']);
         $preferred_time  = $_POST['preferred_time'];
         $booking_date    = $_POST['booking_date'];
-        $service_location = $_POST['service_location'];
-        $customization    = $_POST['customization'];
+        $district        = $_POST['district'];
+        $street          = $_POST['street'];
+        $address_line1   = $_POST['address_line1'];
+        $address_line2   = $_POST['address_line2'];
+        $postal_code     = $_POST['postal_code'];
+        $customization   = $_POST['customization'];
+        $customizationHours = intval($_POST['customization_hours'] ?? 0);
         $caretaker_id    = $_POST['caretaker_id'];
-        $client_id       = $_SESSION['user']['id']; // use session ID
+        $client_id       = $_SESSION['user']['id'];
 
         // ---- PHP Price Calculation ----
         $priceRates = [
             "Hourly"  => 500,
             "Daily"   => 3000,
-            "Weekly"  => 15000,
             "Monthly" => 40000,
             "Yearly"  => 450000
         ];
@@ -331,9 +427,8 @@ public function bookCaretaker()
         ];
 
         $modifier = $timePriceModifier[$preferred_time] ?? 1;
-
-        // Calculate total payment in PHP
-        $total_payment = ($priceRates[$basis] ?? 0) * $duration * $modifier;
+        $customizationFee = max(0, $customizationHours) * 300;
+        $total_payment = (($priceRates[$basis] ?? 0) * $duration * $modifier) + $customizationFee;
 
         // ---- Store booking ----
         $bookingData = [
@@ -343,37 +438,55 @@ public function bookCaretaker()
             'basis'          => $basis,
             'duration'       => $duration,
             'preferred_time' => $preferred_time,
+            'district'       => $district,
+            'street'         => $street,
+            'address_line1'  => $address_line1,
+            'address_line2'  => $address_line2,
+            'postal_code'    => $postal_code,
             'booking_date'   => $booking_date,
-             'service_location' => $service_location,
-            'customization'    => $customization,
+            'customization'  => $customization,
+            'customization_hours' => $customizationHours,
+            'customization_price' => $customizationFee,
             'total_payment'  => $total_payment,
-            'status'         => 'Pending'
+            'status'         => 'Requested'
         ];
 
         $bookingId = $this->clientModel->createBooking($bookingData);
 
-if ($bookingId) {
-    // Send notification to HR
-    $notification = [
-        'message' => "New booking request from client ID ".$client_id,
-        'role'    => 'HR'
-    ];
-    $this->clientModel->sendNotificationToHR($notification);
+        if ($bookingId) {
+            // Send notification to HR (Manager) - only to first/primary manager
+            require_once APPROOT . '/models/NotificationModel.php';
+            $notifModel = new NotificationModel();
+            
+            // Get first HR/Manager user
+            $hr_users = $notifModel->getHRUsers();
+            
+            if (!empty($hr_users)) {
+                $client_name = $_SESSION['user']['name'] ?? $_SESSION['user']['username'];
+                // Send to only the first manager
+                $hr_user = $hr_users[0];
+                $notifModel->addNotification(
+                    $hr_user['id'],
+                    'Manager',
+                    'New Booking Request',
+                    "Client $client_name has submitted a new booking request (ID: $bookingId)",
+                    URLROOT . "/hr/index"
+                );
+            }
 
-    // Redirect with booking ID
-    header("Location: " . URLROOT . "/client/c_bookingConfirm?booking_id=" . $bookingId);
-    exit;
-} else {
-    die("Booking failed");
-}
+            // Redirect with booking ID
+            header("Location: " . URLROOT . "/client/c_bookingConfirm?booking_id=" . $bookingId);
+            exit;
+        } else {
+            die("Booking failed");
+        }
 
     } else {
         // If not POST, redirect to find caretakers
-        header("Location: " . URLROOT . "/client/c_find");
+        header("Location: " . URLROOT . "/client/c_find1");
         exit;
     }
 }
-
 
 
  
@@ -382,7 +495,7 @@ if ($bookingId) {
     public function c_ctprofileview()
 {
     if (!isset($_GET['id'])) {
-        header("Location: index.php?url=client/c_find");
+        header("Location: index.php?url=client/c_find1");
         exit;
     }
 
@@ -418,6 +531,97 @@ if ($bookingId) {
      public function c_paymentPage() {
         $this->view("client/c_paymentPage");
     }
+
+
+
+/* ================= PROCESS PAYMENT ================= */
+
+/* ================= PROCESS PAYMENT ================= */
+public function processPayment() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/client/c_upcomingBookings");
+        exit;
+    }
+
+    $bookingId = $_POST['booking_id'] ?? null;
+    $clientId = $_SESSION['user']['id'];
+    $amount = $_POST['amount'] ?? null;
+    $paymentMethod = $_POST['payment_method'] ?? null;
+
+    $bookingId = is_string($bookingId) ? trim($bookingId) : $bookingId;
+    $paymentMethod = is_string($paymentMethod) ? trim($paymentMethod) : $paymentMethod;
+
+    if (empty($bookingId) || $amount === null || $amount === '' || empty($paymentMethod)) {
+        $_SESSION['error'] = "Invalid payment data";
+        header("Location: " . URLROOT . "/client/c_makePayment?booking_id=" . $bookingId);
+        exit;
+    }
+
+    // Get booking details
+    $booking = $this->clientModel->getBookingById($bookingId);
+    if (!$booking) {
+        $_SESSION['error'] = "Booking not found";
+        header("Location: " . URLROOT . "/client/c_upcomingBookings");
+        exit;
+    }
+
+    // Calculate advance on server (do not trust client amount)
+    require_once APPROOT . '/controllers/PaymentController.php';
+    $payment_calc = PaymentController::calculateAdvanceFromBooking($booking);
+    $amount = $payment_calc['advance'] ?? $amount;
+
+    // Save payment record
+    $paymentData = [
+        'booking_id' => $bookingId,
+        'client_id' => $clientId,
+        'caretaker_id' => $booking['caretaker_id'],
+        'total_booking_amount' => $booking['total_payment'],
+        'customization_price' => $booking['customization_price'] ?? 0,
+        'amount' => $amount,
+        'payment_method' => $paymentMethod,
+        'payment_type' => 'advance'
+    ];
+
+    $paymentId = $this->clientModel->savePayment($paymentData);
+
+    if ($paymentId) {
+        // Update booking status to Advance_Paid
+        $this->clientModel->updateBookingStatus($bookingId, 'Advance_Paid');
+
+        // Send notification to HR (Manager) - only to first/primary manager
+        require_once APPROOT . '/models/NotificationModel.php';
+        $notifModel = new NotificationModel();
+        $hr_users = $notifModel->getHRUsers();
+
+        if (!empty($hr_users)) {
+            $clientName = $_SESSION['user']['name'] ?? $_SESSION['user']['username'];
+            $message = "Advance payment received from client {$clientName} (ID: {$clientId}) - Rs. " . number_format($amount, 2) . " for booking #{$bookingId}.";
+
+            // Send to only the first manager
+            $hr_user = $hr_users[0];
+            $notifModel->addNotification(
+                $hr_user['id'],
+                'Manager',
+                'Advance Payment Received',
+                $message,
+                URLROOT . "/hr/pendingPayments"
+            );
+        }
+
+        $_SESSION['success'] = "Payment submitted successfully! Waiting for HR approval.";
+        header("Location: " . URLROOT . "/client/c_paymentSuccess?payment_id=" . $paymentId);
+        exit;
+    } else {
+        $_SESSION['error'] = "Payment processing failed";
+        header("Location: " . URLROOT . "/client/c_makePayment?booking_id=" . $bookingId);
+        exit;
+    }
+}
+
+
+
+
+
 
      public function c_settings() {
        if (!isset($_SESSION['user'])) {
@@ -498,7 +702,42 @@ if ($bookingId) {
 
 
      public function c_contactCT() {
-        $this->view("client/c_contactCT");
+        $caretaker = null;
+        $paymentId = $_GET['payment_id'] ?? null;
+        $caretakerId = $_GET['caretaker_id'] ?? null;
+        $bookingId = $_GET['booking_id'] ?? null;
+
+        // Try to get caretaker from payment
+        if ($paymentId) {
+            $payment = $this->clientModel->getPaymentById($paymentId);
+            if ($payment && !empty($payment['caretaker_id'])) {
+                $caretakerId = $payment['caretaker_id'];
+            }
+        }
+
+        // Try to get caretaker from booking
+        if (!$caretakerId && $bookingId) {
+            $booking = $this->clientModel->getBookingById($bookingId);
+            if ($booking && !empty($booking['caretaker_id'])) {
+                $caretakerId = $booking['caretaker_id'];
+            }
+        }
+
+        // If still no caretaker_id, get from most recent booking
+        if (!$caretakerId) {
+            $clientId = $_SESSION['user']['id'];
+            $recentBookings = $this->clientModel->getRecentBookings($clientId);
+            if (!empty($recentBookings[0]['caretaker_id'])) {
+                $caretakerId = $recentBookings[0]['caretaker_id'];
+            }
+        }
+
+        if ($caretakerId) {
+            $caretakerModel = $this->model('CaretakerModel');
+            $caretaker = $caretakerModel->getCaretakerById($caretakerId);
+        }
+
+        $this->view("client/c_contactCT", ['caretaker' => $caretaker]);
     }
 
      public function c_complaintlist() {

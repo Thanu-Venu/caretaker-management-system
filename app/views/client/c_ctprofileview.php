@@ -22,7 +22,7 @@ $ct = $data['caretaker'];
       <img 
         src="<?= URLROOT ?>/uploads/<?= htmlspecialchars($ct['profile_image']) ?>"
         alt="<?= htmlspecialchars($ct['name']) ?>"
-        class="profile-img"
+        class="profile-img1"
         onerror="this.src='<?= URLROOT ?>/uploads/default.png';"
       >
 

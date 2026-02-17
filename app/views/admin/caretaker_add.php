@@ -16,46 +16,75 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
     <section class="form-section">
         <h1>Add Caregiver</h1>
         <form method="POST" class="caretaker-form" enctype="multipart/form-data">
-            <label>Name</label>
-            <input type="text" name="name" required placeholder="Enter full name">
 
-            <label>Email</label>
-            <input type="email" name="email" required placeholder="Enter email">
+  <div class="form-grid">
 
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" required placeholder="Enter password">
+    <div class="field">
+      <label>Name</label>
+      <input type="text" name="name" required placeholder="Enter full name">
+    </div>
 
+    <div class="field">
+      <label>Email</label>
+      <input type="email" name="email" required placeholder="Enter email">
+    </div>
 
-            <label>Phone</label>
-            <input type="text" name="phone" required placeholder="Enter phone number">
+    <div class="field">
+      <label>Password</label>
+      <input type="password" name="password" required placeholder="Enter password">
+    </div>
 
-            <label>Experience</label>
-            <input type="text" name="experience" required placeholder="Enter experience">
+    <div class="field">
+      <label>Phone</label>
+      <input type="text" name="phone" required placeholder="Enter phone number">
+    </div>
 
-            <label>Location</label>
-            <input type="text" name="location" required placeholder="Enter location">
+    <div class="field">
+      <label>Experience</label>
+      <input type="text" name="experience" required placeholder="Enter experience">
+    </div>
 
-            <label>Qualifications</label>
-            <input type="text" name="qualifications" required placeholder="Enter qualifications">
-            <label>Profile Picture
-            <input type="file" id="profileFile" name="profile_image" accept="image/*">
-          </label>
+    <div class="field">
+      <label>Location</label>
+      <input type="text" name="location" required placeholder="Enter location">
+    </div>
 
-            <label>Service Type</label>
-            <select name="service_type" required>
-                <option value="">Select service</option>
-                <option value="Elder Care">Elder Care</option>
-                <option value="Maid">Maid</option>
-                <option value="Babysitter">Babysitter</option>
-            </select>
+    <div class="field full">
+      <label>Qualifications</label>
+      <input type="text" name="qualifications" required placeholder="Enter qualifications">
+    </div>
 
-            <label>Status</label>
-            <select name="status">
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-            </select>
+    <div class="field">
+      <label>Profile Picture</label>
+      <input type="file" name="profile_image" accept="image/*">
+    </div>
 
-            <button type="submit" class="submit-btn" >Add Caregiver</button>
-        </form>
+    <div class="field">
+      <label>Service Type</label>
+      <select name="service_type" required>
+        <option value="">Select service</option>
+        <option value="Elder Care">Elder Care</option>
+        <option value="Maid">Maid</option>
+        <option value="Babysitter">Babysitter</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Status</label>
+      <select name="status">
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="submit-btn">Add Caregiver</button>
+    <a href="<?= URLROOT ?>/CaretakerCRUD/list" class="btn-cancel">Cancel</a>
+  </div>
+
+</form>
+
     </section>
 </main>

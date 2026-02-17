@@ -4,9 +4,11 @@ class LeaveCRUDController extends Controller {
 
 
     private $leaveModel;
+    private $notifModel;
 
     public function __construct() {
         $this->leaveModel = $this->model('LeaveModel');
+        $this->notifModel = $this->model('NotificationModel');
     }
 
     // 🔹 Display all leaves for logged-in caretaker
@@ -20,12 +22,17 @@ class LeaveCRUDController extends Controller {
         $this->view('caretaker/ct_leave', ['leaves' => $leaves]);
     }
 
-  public function add() {
+
+  
+     // 🔹 Add new leave
+    public function add() {
+
     if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
         die("Caretaker not logged in");
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
 
         $startDate = $_POST['start_date'];
         $endDate   = $_POST['end_date'];
@@ -57,8 +64,8 @@ class LeaveCRUDController extends Controller {
         $data = [
             'user_id' => $_SESSION['user']['id'],
             'leave_type' => $_POST['leave_type'],
-            'start_date' => $startDate,
-            'end_date' => $endDate,
+            'start_date' => $_POST['start_date'],
+            'end_date' => $_POST['end_date'],
             'start_time' => $_POST['start_time'],
             'end_time' => $_POST['end_time'],
             'reason' => $_POST['reason'],
@@ -66,17 +73,22 @@ class LeaveCRUDController extends Controller {
         ];
 
         $this->leaveModel->addLeave($data);
+
+        // Notify ALL admins
+        $this->notifModel->notifyAdmins(
+            "New Leave Request",
+            "New leave request submitted by caretaker " . ($_SESSION['user']['name'] ?? 'Caretaker'),
+            URLROOT . "/admin/ad_leave"
+        );
+
         header("Location: " . URLROOT . "/LeaveCRUD/index");
         exit;
-    } 
-    else {
+    } else {
         // Pass min start date to view
         $minStartDate = (new DateTime('today'))->modify('+1 days')->format('Y-m-d');
         $this->view('caretaker/leave_add', ['minStartDate' => $minStartDate]);
     }
 }
-
-
 
 
     // 🔹 Edit leave
@@ -148,4 +160,3 @@ class LeaveCRUDController extends Controller {
     ]);
 }
 
-}

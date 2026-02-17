@@ -2,6 +2,9 @@
     margin-left: 270px;
     font-family: Arial, Helvetica, sans-serif;
     margin-right: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 h1 {
@@ -12,36 +15,73 @@ h1 {
 }
 form {
   background: #fff;
-  padding: 20px;
+  padding: 36px;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .form-group {
   margin-bottom: 15px;
+  width: 100%;
+  max-width: 520px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #444;
+  text-align: left;
 }
 
 .form-row {
   display: flex;
   gap: 15px;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 520px;
+}
+
+.form-row .form-group {
+  flex: 1;
+  max-width: none;
 }
 
 input {
-  width: 50%;
+  width: 100%;
+  max-width: 520px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
   box-sizing: border-box;
+  margin: 0 auto;
+}
+
+select {
+  width: 100%;
+  max-width: 520px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  box-sizing: border-box;
+  margin: 0 auto;
 }
 
 .pay-btn {
   background: #27ae60;
   color: #fff;
   border: none;
-  padding: 12px 20px;
+  padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 14px;
   transition: background 0.3s;
   margin-bottom: 10px;
 }
@@ -54,23 +94,25 @@ input {
   background: #e74c3c;
   color: #fff;
   border: none;
-  padding: 12px 20px;
+  padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 14px;
   transition: background 0.3s;
   margin-bottom: 10px;
 }
 
 .form-actions {
   display: flex;
-  justify-content: space-between; /* space between buttons */
-  gap: 15px; /* spacing between buttons */
+  justify-content: space-between;
+  gap: 12px;
   margin-top: 15px;
+  width: 100%;
+  max-width: 520px;
 }
 
 .form-actions .pay-btn,
 .form-actions .cancel-btn {
-  flex: 1; /* equal width */
-  width: auto; /* remove full width */
+  flex: 0 0 auto;
 }

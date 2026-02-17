@@ -22,10 +22,90 @@ class AdminLeaveModel {
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    // Update leave status: Approve / Reject
-    public function updateLeaveStatus($leave_id, $status) {
-        $stmt = $this->conn->prepare("UPDATE leaves SET status=? WHERE id=?");
-        $stmt->bind_param("si", $status, $leave_id);
-        return $stmt->execute();
+
+    public function countPendingLeaves()
+{
+    $stmt = $this->conn->prepare("
+        SELECT COUNT(*) AS total
+        FROM leaves l
+        INNER JOIN caretakers c ON l.user_id = c.id
+        WHERE l.status = 'pending'
+    ");
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_assoc()['total'] ?? 0;
+}
+
+public function getLeavesPaginatedFiltered($limit, $offset, $type, $status)
+{
+    $sql = "
+        SELECT 
+            l.*,
+            c.name AS caretaker_name
+        FROM leaves l
+        JOIN caretakers c ON l.user_id = c.id
+        WHERE 1=1
+    ";
+
+    $types = "";
+    $params = [];
+
+    if ($type && $type !== "All") {
+        $sql .= " AND l.leave_type = ?";
+        $types .= "s";
+        $params[] = $type;
     }
+
+    if ($status && $status !== "All") {
+        $sql .= " AND l.status = ?";
+        $types .= "s";
+        $params[] = $status;
+    }
+
+    $sql .= " ORDER BY l.start_date DESC LIMIT ? OFFSET ?";
+    $types .= "ii";
+    $params[] = $limit;
+    $params[] = $offset;
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param($types, ...$params);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+public function getTotalLeavesFiltered($type, $status)
+{
+    $sql = "
+        SELECT COUNT(*) AS total
+        FROM leaves l
+        JOIN caretakers c ON l.user_id = c.id
+        WHERE 1=1
+    ";
+
+    $types = "";
+    $params = [];
+
+    if ($type && $type !== "All") {
+        $sql .= " AND l.leave_type = ?";
+        $types .= "s";
+        $params[] = $type;
+    }
+
+    if ($status && $status !== "All") {
+        $sql .= " AND l.status = ?";
+        $types .= "s";
+        $params[] = $status;
+    }
+
+    $stmt = $this->conn->prepare($sql);
+
+    if ($types !== "") {
+        $stmt->bind_param($types, ...$params);
+    }
+
+    $stmt->execute();
+    return (int)$stmt->get_result()->fetch_assoc()['total'];
+}
+
+
 }

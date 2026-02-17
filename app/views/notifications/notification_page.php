@@ -9,9 +9,10 @@ if (!isset($_SESSION['user'])) {
 
 $notifModel = new NotificationModel();
 $user_id = $_SESSION['user']['id'];
-$user_role = $_SESSION['role'];
+$user_role = $_SESSION['user']['role'] ?? 'client';
+$template_role = $user_role === 'Manager' ? 'hr' : $user_role;
 
-$header_file = match($user_role) {
+$header_file = match($template_role) {
     'admin' => 'admin/ad_header.php',
     'client' => 'client/c_header.php',
     'caretaker' => 'caretaker/ct_header.php',
@@ -22,7 +23,7 @@ $header_file = match($user_role) {
 include APPROOT . "/views/templates/" . $header_file;
 
 
-$sidebar_file = match($user_role) {
+$sidebar_file = match($template_role) {
     'admin' => 'admin/ad_sidebar.php',
     'client' => 'client/c_sidebar.php',
     'caretaker' => 'caretaker/ct_sidebar.php',

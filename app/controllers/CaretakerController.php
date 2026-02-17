@@ -1,6 +1,6 @@
 <?php
 
-class CaretakerController extends Controller {
+ class CaretakerController extends Controller {
 
     private $leaveModel;
     private $caretakerModel;
@@ -96,36 +96,16 @@ class CaretakerController extends Controller {
     ]);
 }
 
+     public function ct_schedule() {
+         $this->view("caretaker/ct_schedule");
+     }
+ 
 
-    // Render calendar page
-    public function ct_schedule() {
-        $this->view("caretaker/ct_schedule");
-    }
 
-    // AJAX: Fetch events as JSON
-    public function getScheduleEvents() {
-        if (!isset($_SESSION['user'])) {
-            echo json_encode([]);
-            return;
-        }
-
-        $caretakerId = $_SESSION['user']['id']; // Correct session key
-        $events = $this->caretakerModel->getScheduleByCaretaker($caretakerId);
-
-        header('Content-Type: application/json');
-        echo json_encode($events);
-        exit;
-    }
-
-    
      public function ct_leaveHistory() {
          $this->view("caretaker/ct_leaveHistory");
      }
 
-
-
-
-     
  public function ct_complaints()
 {
     $caretakerId = $_SESSION['user']['id'];
@@ -166,6 +146,9 @@ public function saveComplaint() {
         exit;
     }
 }
+
+
+
 
 
          

@@ -5,8 +5,8 @@
 
 .container {
   max-width: 1200px;
-  margin-left: 270px;
-  margin-right: 20px;
+  margin-left: auto;
+  margin-right: auto;
   padding: 20px;
   flex: 1;
 }
@@ -21,6 +21,32 @@
 .header p {
   color: #666;
   margin-bottom: 20px;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.payment-action {
+  margin: 0 0 20px 0;
+  text-align: right;
+}
+
+.payment-btn {
+  display: inline-block;
+  background: #27ae60;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.payment-btn:hover {
+  background: #219150;
 }
 
 /* Cards */

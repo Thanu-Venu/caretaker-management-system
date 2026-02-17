@@ -17,7 +17,7 @@
 <body>
 <main class="main-content">
 <div class="content">
-  <h2>User Roles and Access Control</h2>
+  <h2>Staff Roles and Access Control</h2>
   <!-- Add User Button -->
   <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/userCRUD/add'">Add User</button>
 </div>
@@ -28,8 +28,12 @@
         <thead>
           <tr>
             <th>Username</th>
+            <th>Email</th>
+            <th>Phone</th>
             <th>Role</th>
+            <th>Status</th>
             <th>Action</th>
+            
           </tr>
         </thead>
         <tbody>
@@ -37,7 +41,10 @@
             <?php foreach ($data['users'] as $user): ?>
               <tr>
                 <td><?php echo htmlspecialchars($user['username'] ?? 'N/A'); ?></td>
+                <td><?php echo htmlspecialchars($user['email'] ?? 'N/A'); ?></td>
+                <td><?php echo htmlspecialchars($user['phone'] ?? 'N/A'); ?></td>
                 <td><?php echo htmlspecialchars($user['role'] ?? 'N/A'); ?></td>
+                <td><?php echo htmlspecialchars($user['status'] ?? 'N/A'); ?></td>
                 <td>
                   <a href="<?php echo URLROOT; ?>/userCRUD/edit/<?php echo $user['id'] ?? 0; ?>"><i class="bx bx-edit"></i></a> |
                   <a href="<?php echo URLROOT; ?>/userCRUD/delete/<?php echo $user['id'] ?? 0; ?>" onclick="return confirm('Are you sure?');"><i class="bx bx-trash"></i></a>

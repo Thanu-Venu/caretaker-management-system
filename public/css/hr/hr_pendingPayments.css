@@ -1,0 +1,152 @@
+body {
+    background: #f4f7fb;
+}
+
+.container {
+  flex: 1;
+  padding: 20px 40px;
+  margin-left: 270px;
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+h1 {
+  color: #1e88e5;
+  font-size: 28px;
+  padding-bottom: 20px;
+}
+
+.table-container {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 15px;
+}
+
+.payments-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    overflow: hidden;
+}
+
+.payments-table th, .payments-table td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.payments-table thead {
+    background: #1E88E5;
+}
+
+.payments-table th {
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+}
+
+.payments-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.payments-table td {
+    font-size: 14px;
+    color: #333;
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-approved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-rejected {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Action column styling */
+.payments-table td:last-child {
+    white-space: nowrap;
+}
+
+.payments-table td form {
+    display: inline-block;
+    margin: 0;
+    vertical-align: middle;
+}
+
+.payments-table td input[type="text"] {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.btn {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: opacity 0.3s ease;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.btn-success {
+    background: #00bfa5;
+    color: white;
+}
+
+.btn-danger {
+    background: #ea0b34;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+.no-action {
+    color: #999;
+    font-size: 14px;
+}
+
+.no-data {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+    font-size: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        margin-left: 0;
+        padding: 15px;
+    }
+    
+    .payments-table th, .payments-table td {
+        padding: 10px;
+        font-size: 12px;
+    }
+    
+    .btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+}

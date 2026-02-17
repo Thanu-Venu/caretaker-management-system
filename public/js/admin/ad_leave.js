@@ -20,3 +20,14 @@ function filterTable() {
     }
   }
 }
+function applyFilters() {
+  const type = document.getElementById('type').value;
+  const status = document.getElementById('status').value;
+
+  const params = new URLSearchParams();
+  params.set("page", "1"); // reset to first page
+  params.set("type", type);
+  params.set("status", status);
+
+  window.location = window.location.pathname + "?" + params.toString();
+}

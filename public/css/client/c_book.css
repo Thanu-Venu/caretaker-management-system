@@ -72,10 +72,34 @@
     display: block; 
 }
 
+.form-group input[readonly],
+.form-group select:disabled {
+
+  color: #252424;
+  opacity: 1;
+}
+}
+
 .form-group input:focus,
 .form-group select:focus {
     border-color: #4a90e2;
     outline: none;
+}
+
+#basis,
+#preferredTime {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: none;
+    padding-right: 12px;
+}
+
+.form-group select:disabled,
+.form-group input:readonly {
+    color: #333;
+    background: #f9f9f9;
+    opacity: 1;
 }
 
 /* Price Box */
@@ -191,4 +215,3 @@
 .caretaker-card button:hover {
     background: #357abd;
 }
-

@@ -1,21 +1,32 @@
 <?php
 require_once APPROOT . '/core/Database.php';
 
-class NotificationModel {
-       private $conn;
+class NotificationModel
+{
+    private $conn;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new Database();
         $this->conn = $db->conn;
     }
 
-    // Add notification
-    public function addNotification($user_id, $user_role, $title, $message, $link = "#") {
+    // Add notification with duplicate prevention
+    public function addNotification($user_id, $user_role, $title, $message, $link = "#")
+    {
+        // Verify the table has the correct columns
         $stmt = $this->conn->prepare("
             INSERT INTO notifications 
             (user_id, user_role, title, message, link, is_read)
             VALUES (?, ?, ?, ?, ?, 0)
         ");
+        
+        if (!$stmt) {
+            // If table doesn't have these columns, log error and return false
+            error_log("Notification insert error: " . $this->conn->error);
+            return false;
+        }
+        
         $stmt->bind_param("issss", $user_id, $user_role, $title, $message, $link);
         $result = $stmt->execute();
         $stmt->close();
@@ -23,7 +34,8 @@ class NotificationModel {
     }
 
     // Get notifications
-    public function getNotifications($user_id, $user_role, $limit = 5) {
+    public function getNotifications($user_id, $user_role, $limit = 5)
+    {
         $stmt = $this->conn->prepare("
             SELECT *
             FROM notifications
@@ -40,7 +52,8 @@ class NotificationModel {
     }
 
     // Count unread
-    public function countUnread($user_id, $user_role) {
+    public function countUnread($user_id, $user_role)
+    {
         $stmt = $this->conn->prepare("
             SELECT COUNT(*) AS count
             FROM notifications
@@ -56,7 +69,8 @@ class NotificationModel {
     }
 
     // Mark all as read
-    public function markAsRead($user_id, $user_role) {
+    public function markAsRead($user_id, $user_role)
+    {
         $stmt = $this->conn->prepare("
             UPDATE notifications
             SET is_read = 1
@@ -68,4 +82,32 @@ class NotificationModel {
         $stmt->close();
         return $result;
     }
+
+    // Get all admin user IDs (from users table)
+    public function getAdminIds()
+    {
+        $result = $this->conn->query("SELECT id FROM users WHERE role = 'admin'");
+        $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+        $ids = [];
+        foreach ($rows as $r)
+            $ids[] = (int) $r['id'];
+        return $ids;
+    }
+
+    // Send a notification to ALL admins (each admin gets their own row)
+    public function notifyAdmins($title, $message, $link = "#")
+    {
+        $adminIds = $this->getAdminIds();
+
+        foreach ($adminIds as $adminId) {
+            $this->addNotification($adminId, 'admin', $title, $message, $link);
+        }
+    }
+
+    public function getHRUsers()
+{
+    $result = $this->conn->query("SELECT id FROM users WHERE role = 'Manager'");
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
 }

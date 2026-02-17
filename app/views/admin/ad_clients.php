@@ -24,18 +24,22 @@
       <table class="client-table">
         <thead>
           <tr>
+            <th>Id</th>
             <th>Client Name</th>
             <th>Email</th>
             <th>Phone</th>
+            <th>Created At</th>
           </tr>
         </thead>
         <tbody>
           <?php if (!empty($data['clients'])): ?>
             <?php foreach ($data['clients'] as $client): ?>
               <tr>
+                <td><?= htmlspecialchars($client['id']) ?></td>
                 <td><?= htmlspecialchars($client['name']) ?></td>
                 <td><?= htmlspecialchars($client['email']) ?></td>
                 <td><?= htmlspecialchars($client['phone']) ?></td>
+                <td><?= htmlspecialchars($client['created_at']) ?></td>
               </tr>
             <?php endforeach; ?>
           <?php else: ?>

@@ -50,7 +50,7 @@
             <th>Client</th>
             <th>Caregiver</th>
             <th>Rating</th>
-            <th>Comments</th>
+            <th>Feedback</th>
             <th>Date Received</th>
           </tr>
         </thead>
@@ -67,7 +67,7 @@
                   <?= str_repeat("★", $fb['rating']) . str_repeat("☆", 5 - $fb['rating']) ?>
                 </td>
 
-                <td><?= $fb['comment'] ?></td>
+                <td><?= $fb['feedback'] ?></td>
 
                 <td data-date="<?= $fb['created_at'] ?>">
                   <?= $fb['created_at'] ?>

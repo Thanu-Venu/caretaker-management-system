@@ -19,7 +19,7 @@
     <p><strong>Booking ID:</strong> <?= $data['booking']['booking_id'] ?></p>
     <p><strong>Caretaker:</strong> <?= htmlspecialchars($data['booking']['caretaker_name']) ?></p>
     <p><strong>Date:</strong> <?= date('d M Y', strtotime($data['booking']['booking_date'])) ?></p>
-    <p><strong>Time:</strong> <?= date('h:i A', strtotime($data['booking']['preferred_time'])) ?></p>
+    <p><strong>Time:</strong> <?= date('h:i A', strtotime($data['booking']['created_at'])) ?></p>
     <p><strong>Status:</strong> <span class="<?= strtolower($data['booking']['status']) ?>"><?= $data['booking']['status'] ?></span></p>
 </div>
 

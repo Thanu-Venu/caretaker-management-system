@@ -4,9 +4,10 @@
 class UserCRUDController extends Controller {
 
     private $userModel;
-
+    private $historyModel;
     public function __construct() {
         $this->userModel = $this->model('UserModel');
+        $this->historyModel = $this->model('HistoryModel');
     }
 
     // 🔹 Display All Users
@@ -20,6 +21,13 @@ class UserCRUDController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $this->userModel->addUser($_POST);
+            $this->historyModel->log([
+                'user_id' => $_SESSION['user']['id'],
+                'username' => $_SESSION['user']['username'],
+                'role' => 'admin',
+                'action' => "Added user: " . ($_POST['username'] ?? 'Unknown'),
+                'section' => "Staffs"
+            ]);
             header("Location: " . URLROOT . "/admin/ad_users");
             exit;
         } else {
@@ -31,6 +39,13 @@ class UserCRUDController extends Controller {
    public function edit($id) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $this->userModel->updateUser($id, $_POST);
+        $this->historyModel->log([
+            'user_id' => $_SESSION['user']['id'],
+            'username' => $_SESSION['user']['username'],
+            'role' => 'admin',
+            'action' => "Updated user (ID: $id)",
+            'section' => "Staffs"
+        ]);
         header("Location: " . URLROOT . "/userCRUD/list");
         exit;
     } else {
@@ -43,6 +58,13 @@ class UserCRUDController extends Controller {
     // 🔹 Delete User
     public function delete($id) {
         $this->userModel->deleteUser($id);
+        $this->historyModel->log([
+            'user_id' => $_SESSION['user']['id'],
+            'username' => $_SESSION['user']['username'],
+            'role' => 'admin',
+            'action' => "Deleted user (ID: $id)",
+            'section' => "Staffs"
+        ]);
         header("Location: " . URLROOT . "/admin/ad_users");
         exit;
     }
