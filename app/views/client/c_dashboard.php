@@ -158,6 +158,35 @@
     </div>
   </section>
 
+  <!-- Leave Management Section -->
+  <section class="leave-management">
+    <h2>Leave Management Status</h2>
+    <table>
+      <thead>
+        <tr><th>Dates</th><th>Reason</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <?php if (!empty($data['leaves'])): ?>
+          <?php foreach($data['leaves'] as $leave): ?>
+            <tr>
+              <td><?= date("M d", strtotime($leave['start_date'])) ?> – <?= date("M d", strtotime($leave['end_date'])) ?></td>
+              <td><?= htmlspecialchars($leave['reason']) ?></td>
+              <td>
+                <span class="status <?= strtolower($leave['status']) ?>">
+                  <?= $leave['status'] ?>
+                </span>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <tr>
+            <td colspan="3" style="text-align:center;">No leave requests found</td>
+          </tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
+  </section>
+
 </div>
  <!-- your existing content -->
 </div>

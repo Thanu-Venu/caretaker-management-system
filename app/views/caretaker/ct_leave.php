@@ -19,10 +19,11 @@
         <section>
         <div class="card">
         <div class="card-header">
-        <h2 style="color:#1e88e5;">Leave Requests</h2><br><br><br><br>
+        <h2 style="color:#1e88e5;">Leave Requests</h2><br>
 
         <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">Request Leave</button>
     </div>
+    <br><br>
         <div class="table-container">
             <table>
                 <thead>
