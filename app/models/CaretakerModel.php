@@ -25,6 +25,14 @@ class CaretakerModel {
 
 
    public function addCaretaker($data) {
+    // Ensure all expected keys exist to avoid binding nulls for NOT NULL columns
+    $expected = ['name','email','phone','service_type','status','experience','location','qualifications','profile_image','password'];
+    foreach ($expected as $key) {
+        if (!array_key_exists($key, $data) || $data[$key] === null) {
+            $data[$key] = '';
+        }
+    }
+
     $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
 
     $stmt = $this->conn->prepare(
@@ -163,35 +171,6 @@ class CaretakerModel {
 
         return $stmt->execute();
     }
-
-
-public function getCaretakersFiltered($service, $location)
-{
-    $sql = "SELECT * FROM caretakers WHERE 1=1";
-    $params = [];
-    $types = "";
-
-    if (!empty($service)) {
-        $sql .= " AND service_type=?";
-        $params[] = $service;
-        $types .= "s";
-    }
-
-    if (!empty($location)) {
-        $sql .= " AND location=?";
-        $params[] = $location;
-        $types .= "s";
-    }
-
-    $stmt = $this->conn->prepare($sql);
-
-    if (!empty($params)) {
-        $stmt->bind_param($types, ...$params);
-    }
-
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
 
 private function getTimeRangeFromString($timeString)
 {
