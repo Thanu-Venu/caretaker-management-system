@@ -14,9 +14,14 @@
 
 /* No bookings text */
 .no-cancelled {
-    font-size: 16px;
+    text-align: center;
+    font-size: 20px;
     color: #666;
-    display: none;
+    margin-top: 100px;
+    padding: 40px;
+    background: #f0f4f8;
+    border-radius: 10px;
+    border: 2px dashed #ccc;
 }
 
 /* Cancelled List */

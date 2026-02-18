@@ -83,15 +83,7 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
 
           <div class="filter-row">
 
-            <div class="filter-group">
-              <label>Service Type</label>
-              <select id="serviceFilter" disabled>
-                <option value="">All Services</option>
-                <option value="Elder Care" <?= $selectedService === 'Elder Care' ? 'selected' : '' ?>>Elder Care</option>
-                <option value="Babysitter" <?= $selectedService === 'Babysitter' ? 'selected' : '' ?>>Babysitter</option>
-                <option value="Maid" <?= $selectedService === 'Maid' ? 'selected' : '' ?>>Maid</option>
-              </select>
-            </div>
+           
 
 
             <div class="filter-group">

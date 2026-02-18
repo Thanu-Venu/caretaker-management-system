@@ -23,8 +23,6 @@
       <p><strong>Contact:</strong> <?= htmlspecialchars($caretaker['phone'] ?? 'N/A') ?></p>
       <p><strong>Email:</strong> <?= htmlspecialchars($caretaker['email'] ?? 'N/A') ?></p>
       <div class="buttons">
-        <button class="btn-call">Call</button>
-        <button class="btn-msg">Message</button>
         <button class="btn-call1"><a href="<?= URLROOT ?>/client/c_dashboard">Back to home</a></button>
       </div>
     </div>

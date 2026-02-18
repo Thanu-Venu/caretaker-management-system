@@ -51,7 +51,7 @@ class ComplaintController
 
                 echo "<script>
         alert('Complaint submitted successfully!');
-        window.location.href='" . URLROOT . "/public/index.php?url=Complaint/complaintlist';
+        window.location.href='" . URLROOT . "/public/index.php?url=client/c_complaintlist';
     </script>";
                 exit;
 

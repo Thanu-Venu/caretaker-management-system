@@ -43,7 +43,8 @@ public function __construct() {
         'totalSpent'     => $this->clientModel->getTotalSpent($clientId),
         'avgRating'      => $this->clientModel->getAverageRatingGiven($clientId),
         'recentBookings' => $this->clientModel->getRecentBookings($clientId),
-        'notifications'  => $this->clientModel->getClientNotifications($clientId)
+        'notifications'  => $this->clientModel->getClientNotifications($clientId),
+        'assignedCaretaker' => $this->clientModel->getAssignedCaretaker($clientId)
     ];
 
     $this->view("client/c_dashboard", $data);
@@ -743,7 +744,11 @@ public function processPayment() {
     }
 
      public function c_complaintlist() {
-        $this->view("client/c_complaintlist");
+        $complaintModel = $this->model('ComplaintModel');
+        $client_name = $_SESSION['user']['name'];
+        $complaints = $complaintModel->getComplaintsByClient($client_name);
+        
+        $this->view("client/c_complaintlist", ['complaints' => $complaints]);
     }
  public function c_announcement() {
     $announcementModel = $this->model('AnnouncementModel');

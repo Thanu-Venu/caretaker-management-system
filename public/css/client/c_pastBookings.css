@@ -214,11 +214,13 @@
 
 .no-bookings {
     text-align: center;
-    font-size: 18px;
-    color: #888;
-    margin-top: 50px;
-    margin-left: 270px; /* only if your layout requires it */
-    display: none; /* hide by default, show via PHP if no bookings */
+    font-size: 20px;
+    color: #666;
+    margin-top: 100px;
+    padding: 40px;
+    background: #f0f4f8;
+    border-radius: 10px;
+    border: 2px dashed #ccc;
 }
 
 

@@ -236,6 +236,7 @@ public function getUpcomingBookings($clientId)
 public function cancelBooking($booking_id, $reason)
 {
     $status = "Cancelled";
+    // Use current timestamp in configured timezone
     $cancelled_at = date('Y-m-d H:i:s');
 
     $sql = "UPDATE bookings 
@@ -764,9 +765,37 @@ public function getAverageRatingGiven($clientId)
     return $stmt->get_result()->fetch_assoc()['avg_rating'];
 }
 
+ public function countClients() {
+        $result = $this->conn->query("SELECT COUNT(*) AS total FROM clients");
+        return $result ? ($result->fetch_assoc()['total'] ?? 0) : 0;
+    }
+ public function countUpcomingBookings() {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) AS total FROM bookings WHERE booking_date >= CURDATE()");
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        return $row['total'] ?? 0;
+    }
 
 // Count total clients for admin dashboard
 
+// Get assigned caretaker for emergency contact
+public function getAssignedCaretaker($clientId)
+{
+    $sql = "SELECT DISTINCT c.id, c.name, c.phone, c.service_type
+            FROM caretakers c
+            INNER JOIN bookings b ON c.id = b.caretaker_id
+            WHERE b.client_id = ?
+              AND b.status IN ('Accepted', 'Pending', 'Completed')
+            ORDER BY b.booking_date DESC
+            LIMIT 1";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $clientId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    return $result->num_rows > 0 ? $result->fetch_assoc() : null;
+}
 
     
 }

@@ -119,8 +119,9 @@ $serviceOptions = $data['serviceOptions'];
                 <!-- Customization -->
                 <div class="form-group">
                     <label for="customization_hours">Customization (Extra Hours)</label>
-                    <input type="number" id="customization_hours" name="customization_hours" min="0" max="8" value="0">
                     <small>Extra hours are charged at LKR 300 per hour </small>
+                    <input type="number" id="customization_hours" name="customization_hours" min="0" max="8" value="0">
+                    
 
                     <label for="customization">Customization Notes</label>
                     <textarea id="customization" name="customization"
@@ -147,7 +148,10 @@ $serviceOptions = $data['serviceOptions'];
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" id="bookBtn">Request Booking</button>
+                <div class="form-actions">
+                    <button type="submit" id="bookBtn">Request Booking</button>
+                    <button type="button" class="cancel-btn" onclick="window.history.back()">Cancel</button>
+                </div>
 
             </form>
         </section>

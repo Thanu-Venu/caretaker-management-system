@@ -131,15 +131,72 @@ body, html {
   margin: 0;
 }
 
-/* Price grid for all services */
 .price-overview .price-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 18px;
+  display: flex;
+  gap: 20px;
 }
 
-/* Individual price card */
+
+.price-overview .price-card {
+  flex: 1 1 0 !important;
+  min-width: 280px;               /* keeps box shape */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+
+
+/* Right-aligned horizontal row of small booking buttons under price grid */
+.price-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 6px 0 0;
+}
+
+.ghost-btn.small {
+  display: inline-flex;
+  padding: 8px 12px;
+  font-size: 13px;
+  border-radius: 12px;
+  width: auto;
+}
+
+/* Align per-card ghost buttons bottom-right so they line up horizontally */
+.price-card .ghost-btn {
+  margin-top: auto;        /* pushes button to bottom */
+  align-self: center;      /* centers horizontally */
+  width: 90%;              /* optional – looks cleaner */
+}
+
+@media (max-width: 900px) {
+  .price-actions { justify-content: flex-start; flex-wrap: wrap; }
+}
+
+/* Ensure the meta section stacks vertically (Time Modifiers above Advance Rules) */
+.price-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+@media (min-width: 900px) {
+  /* keep it stacked even on wide screens per user's request */
+  .price-meta { flex-direction: column; }
+}
+
+/* no .price-panel - reverted to original layout */
+
+
 .price-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 320px;
   background: #fff;
   padding: 18px 16px;
   border-radius: 18px;
@@ -244,6 +301,11 @@ body, html {
   margin-top: 10px;
 }
 
+/* Add extra vertical gap between Time Modifiers and Advance Payment Rules */
+.modifier-card + .advance-card {
+  margin-top: 26px;
+}
+
 .advance-card {
   background: #fff;
   padding: 18px 16px;
@@ -297,6 +359,13 @@ body, html {
   font-weight: 800;
   margin: 0;
   color: #111;
+}
+
+/* Small description under the modifier heading */
+.modifier-desc {
+  margin: 6px 0 12px;
+  font-size: 13px;
+  color: #6c757d;
 }
 
 .modifier-grid {
@@ -481,6 +550,22 @@ body, html {
   color: #856404;
 }
 
+/* New status badges */
+.status.requested {
+  background: rgba(30,136,229,0.10);
+  color: #0d47a1;
+}
+
+.status.cancelled {
+  background: rgba(244,67,54,0.10);
+  color: #c62828;
+}
+
+.status.completed {
+  background: #d4edda;
+  color: #155724;
+}
+
 /* ===================== Notifications ===================== */
 .recent-notifications h2 {
   margin: 10px 0 12px;
@@ -570,10 +655,7 @@ body, html {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .price-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
+ 
   .modifier-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -607,5 +689,248 @@ body, html {
 
   .notification span {
     margin-left: 0;
+  }
+}
+
+/* ===================== Emergency Support Modal ===================== */
+.emergency-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  align-items: center;
+  justify-content: center;
+}
+
+.emergency-modal-content {
+  background: #ffffff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.emergency-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #666;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.emergency-close:hover {
+  color: #dc3545;
+}
+
+.emergency-header {
+  background: #dc3545;
+  padding: 25px 20px;
+  border-radius: 12px 12px 0 0;
+  text-align: center;
+  color: white;
+}
+
+.emergency-header i {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.emergency-header h2 {
+  margin: 8px 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.emergency-header p {
+  margin: 5px 0 0;
+  font-size: 14px;
+}
+
+.emergency-contacts {
+  padding: 20px;
+}
+
+.contact-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: #f5f5f5;
+  padding: 18px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  border: 2px solid #ddd;
+}
+
+.contact-card.hotline {
+  border-color: #dc3545;
+  background: #fff5f5;
+}
+
+.contact-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.contact-card.hotline .contact-icon {
+  background: #dc3545;
+  color: white;
+}
+
+.contact-card.caretaker .contact-icon {
+  background: #1e88e5;
+  color: white;
+}
+
+.contact-icon i {
+  font-size: 24px;
+}
+
+.contact-info {
+  flex: 1;
+}
+
+.contact-info h3 {
+  margin: 0 0 5px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+}
+
+.contact-number {
+  font-size: 18px;
+  font-weight: 700;
+  color: #dc3545;
+  margin: 5px 0;
+}
+
+.contact-desc {
+  font-size: 13px;
+  color: #666;
+  margin: 5px 0 0;
+}
+
+.call-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 16px;
+  background: #28a745;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.call-btn:hover {
+  background: #218838;
+}
+
+.emergency-services {
+  margin-top: 20px;
+  padding: 18px;
+  background: #fffbf0;
+  border-radius: 10px;
+  border: 2px solid #ffc107;
+}
+
+.emergency-services h3 {
+  margin: 0 0 15px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.service-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.service-item i {
+  font-size: 24px;
+  color: #dc3545;
+}
+
+.service-item strong {
+  display: block;
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.service-number {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e88e5;
+  text-decoration: none;
+}
+
+.service-number:hover {
+  text-decoration: underline;
+}
+
+.emergency-footer {
+  padding: 15px 20px;
+  background: #fff3cd;
+  border-radius: 0 0 12px 12px;
+  text-align: center;
+}
+
+.emergency-footer p {
+  margin: 0;
+  font-size: 13px;
+  color: #856404;
+  font-weight: 600;
+}
+
+.emergency-footer i {
+  font-size: 16px;
+  margin-right: 5px;
+}
+
+@media (max-width: 600px) {
+  .emergency-modal-content {
+    width: 95%;
+  }
+
+  .contact-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .call-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .service-grid {
+    grid-template-columns: 1fr;
   }
 }

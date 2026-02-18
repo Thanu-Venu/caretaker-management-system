@@ -151,14 +151,14 @@
       No matching records found.
     </p>
 
-    <!-- Footer -->
-    <div class="footer">
-      <p>Showing 1 to <?= count($payments) ?> of <?= count($payments) ?> results</p>
-      <div class="pagination">
-        <button>&lt; Previous</button>
-        <button>Next &gt;</button>
-      </div>
-    </div>
+   <!-- Footer -->
+<div class="footer">
+  <p id="resultsCounter">Showing 1 to <?= count($payments) ?> of <?= count($payments) ?> results</p>
+  <div class="pagination">
+    <button>&lt; Previous</button>
+    <button>Next &gt;</button>
+  </div>
+</div>
 
   </div>
 
