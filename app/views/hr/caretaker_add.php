@@ -29,6 +29,9 @@ include_once APPROOT . "/views/templates/hr/hr_sidebar.php";
             <label>Phone</label>
             <input type="text" name="phone" required placeholder="Enter phone number">
 
+            <label>Location</label>
+            <input type="text" name="location" required placeholder="Enter location">
+
             <label>Service Type</label>
             <select name="service_type" required>
                 <option value="">Select service</option>

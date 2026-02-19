@@ -25,6 +25,14 @@ class CaretakerModel {
 
 
    public function addCaretaker($data) {
+    // Ensure all expected keys exist to avoid binding nulls for NOT NULL columns
+    $expected = ['name','email','phone','service_type','status','experience','location','qualifications','profile_image','password'];
+    foreach ($expected as $key) {
+        if (!array_key_exists($key, $data) || $data[$key] === null) {
+            $data[$key] = '';
+        }
+    }
+
     $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
 
     $stmt = $this->conn->prepare(
@@ -163,35 +171,6 @@ class CaretakerModel {
 
         return $stmt->execute();
     }
-
-
-public function getCaretakersFiltered($service, $location)
-{
-    $sql = "SELECT * FROM caretakers WHERE 1=1";
-    $params = [];
-    $types = "";
-
-    if (!empty($service)) {
-        $sql .= " AND service_type=?";
-        $params[] = $service;
-        $types .= "s";
-    }
-
-    if (!empty($location)) {
-        $sql .= " AND location=?";
-        $params[] = $location;
-        $types .= "s";
-    }
-
-    $stmt = $this->conn->prepare($sql);
-
-    if (!empty($params)) {
-        $stmt->bind_param($types, ...$params);
-    }
-
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
 
 private function getTimeRangeFromString($timeString)
 {
@@ -382,31 +361,6 @@ public function getApprovedBookingsWithClientDetails($caretakerId) {
     return false;
 }
 
-public function getClientsByCaretaker($caretakerId)
-{
-    $sql = "SELECT 
-                b.id AS booking_id,
-                b.client_id,
-                c.name AS client_name,
-                b.service_type,
-                b.booking_date,
-                b.preferred_time
-            FROM bookings b
-            JOIN clients c ON b.client_id = c.id
-            WHERE b.caretaker_id = ?
-            ORDER BY b.booking_date DESC";
-
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param('i', $caretakerId);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
-
-public function countCaretakers()
-{
-    $result = $this->conn->query("SELECT COUNT(*) AS total FROM caretakers");
-    return $result->fetch_assoc()['total'] ?? 0;
-}
 
 public function addComplaint($data) {
     $stmt = $this->conn->prepare(
@@ -463,6 +417,136 @@ public function getCaretakerFeedbacks($caretakerId)
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
+public function countCaretakers(string $search = ''): int
+{
+    if ($search !== '') {
+        $like = "%" . $search . "%";
+        $stmt = $this->conn->prepare("
+            SELECT COUNT(*) AS total
+            FROM caretakers
+            WHERE name LIKE ? OR service_type LIKE ? OR status LIKE ?
+        ");
+        $stmt->bind_param("sss", $like, $like, $like);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        return (int)($row['total'] ?? 0);
+    }
+
+    $res = $this->conn->query("SELECT COUNT(*) AS total FROM caretakers");
+    $row = $res ? $res->fetch_assoc() : null;
+    return (int)($row['total'] ?? 0);
+}
+
+public function getCaretakersPaginated(int $limit, int $offset, string $search = ''): array
+{
+    if ($search !== '') {
+        $like = "%" . $search . "%";
+        $stmt = $this->conn->prepare("
+            SELECT *
+            FROM caretakers
+            WHERE name LIKE ? OR service_type LIKE ? OR status LIKE ?
+            ORDER BY id DESC
+            LIMIT ? OFFSET ?
+        ");
+        $stmt->bind_param("sssii", $like, $like, $like, $limit, $offset);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    $stmt = $this->conn->prepare("
+        SELECT *
+        FROM caretakers
+        ORDER BY id DESC
+        LIMIT ? OFFSET ?
+    ");
+    $stmt->bind_param("ii", $limit, $offset);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+public function getCaretakersFiltered(array $filters, int $limit, int $offset): array
+{
+    $sql = "SELECT id, name, service_type, status, location, email, phone, experience
+            FROM caretakers
+            WHERE 1=1";
+    $types = "";
+    $params = [];
+
+    if (!empty($filters['status'])) {
+        $sql .= " AND status = ?";
+        $types .= "s";
+        $params[] = $filters['status'];
+    }
+
+    if (!empty($filters['service_type'])) {
+        $sql .= " AND service_type = ?";
+        $types .= "s";
+        $params[] = $filters['service_type'];
+    }
+
+    if (!empty($filters['location'])) {
+        $sql .= " AND LOWER(location) LIKE ?";
+        $types .= "s";
+        $params[] = "%" . strtolower($filters['location']) . "%";
+    }
+
+    if (!empty($filters['q'])) {
+        $sql .= " AND LOWER(name) LIKE ?";
+        $types .= "s";
+        $params[] = "%" . strtolower($filters['q']) . "%";
+    }
+
+    $sql .= " ORDER BY created_at DESC LIMIT ? OFFSET ?";
+    $types .= "ii";
+    $params[] = $limit;
+    $params[] = $offset;
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param($types, ...$params);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+public function countCaretakersFiltered(array $filters): int
+{
+    $sql = "SELECT COUNT(*) AS total
+            FROM caretakers
+            WHERE 1=1";
+    $types = "";
+    $params = [];
+
+    if (!empty($filters['status'])) {
+        $sql .= " AND status = ?";
+        $types .= "s";
+        $params[] = $filters['status'];
+    }
+
+    if (!empty($filters['service_type'])) {
+        $sql .= " AND service_type = ?";
+        $types .= "s";
+        $params[] = $filters['service_type'];
+    }
+
+    if (!empty($filters['location'])) {
+        $sql .= " AND LOWER(location) LIKE ?";
+        $types .= "s";
+        $params[] = "%" . strtolower($filters['location']) . "%";
+    }
+
+    if (!empty($filters['q'])) {
+        $sql .= " AND LOWER(name) LIKE ?";
+        $types .= "s";
+        $params[] = "%" . strtolower($filters['q']) . "%";
+    }
+
+    $stmt = $this->conn->prepare($sql);
+    if (!empty($params)) {
+        $stmt->bind_param($types, ...$params);
+    }
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+    return (int)($row['total'] ?? 0);
+}
 
 
 }

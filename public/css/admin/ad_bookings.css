@@ -102,3 +102,25 @@ body {
   color: white;
   padding: 4px 9px;
 }
+.pagination{
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pagination a{
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #333;
+  background: #fff;
+}
+
+.pagination a.active{
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}

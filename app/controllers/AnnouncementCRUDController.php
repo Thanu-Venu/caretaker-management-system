@@ -9,10 +9,18 @@ class AnnouncementCRUDController extends Controller {
     }
 
     // List announcements
-    public function list() {
-        $announcements = $this->announcementModel->getAllAnnouncements();
-        $this->view('admin/ad_announcement', ['announcements' => $announcements]);
-    }
+   public function index()
+{
+    $announcements = $this->announcementModel->getAllAnnouncements(); // your existing method
+    $data = ['announcements' => $announcements];
+    $this->view('admin/ad_announcement', $data);
+}
+
+public function create()
+{
+    $this->view('admin/ad_addAnnouncement');
+}
+
 
     // Add announcement
     public function add() {
@@ -26,7 +34,7 @@ class AnnouncementCRUDController extends Controller {
 
             if ($this->announcementModel->addAnnouncement($data)) {
                 $_SESSION['flash_message'] = "Announcement added successfully!";
-                header("Location: " . URLROOT . "/AnnouncementCRUD/list");
+                header("Location: " . URLROOT . "/AnnouncementCRUD/index");
                 exit;
             } else {
                 die("Something went wrong!");
@@ -46,7 +54,7 @@ class AnnouncementCRUDController extends Controller {
 
             if ($this->announcementModel->updateAnnouncement($data)) {
                 $_SESSION['flash_message'] = "Announcement updated!";
-                header("Location: " . URLROOT . "/AnnouncementCRUD/list");
+                header("Location: " . URLROOT . "/AnnouncementCRUD/index");
                 exit;
             }
         } else {
@@ -59,7 +67,7 @@ class AnnouncementCRUDController extends Controller {
     public function delete($id) {
         $this->announcementModel->deleteAnnouncement($id);
         $_SESSION['flash_message'] = "Announcement deleted!";
-        header("Location: " . URLROOT . "/AnnouncementCRUD/list");
+        header("Location: " . URLROOT . "/AnnouncementCRUD/index");
         exit;
     }
 

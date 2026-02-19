@@ -1,22 +1,25 @@
 /* Main section */
-.main-content {
-    margin-left: 270px;
-    padding: 40px;
-    font-family: 'Poppins', Arial, sans-serif;
-}
-
 body {
     background: #f4f7fb;
 }
 
-.form-section {
-    max-width: 600px;
-    margin: 0 auto;
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+.main-content{
+  margin-left: 270px;
+  padding: 40px;
+  min-height: 100vh;
 }
+
+/* Make the card take full available width */
+.form-section{
+  width: 100%;
+  max-width: none;      /* remove the 600px limit */
+  margin: 0;            /* remove centering */
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
 
 .form-section h1 {
     text-align: center;
@@ -73,3 +76,6 @@ body {
         padding: 20px;
     }
 }
+
+/* ========================
+   Form Buttons Row

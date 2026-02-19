@@ -13,55 +13,77 @@
 <main class="content">
     <h1>My Past Bookings</h1>
 
-    <?php if (empty($data['bookings'])): ?>
-        <div class="no-bookings">
-            <p style="font-size: 24px; margin-bottom: 10px;">📋 No Past Bookings</p>
-            <p>You don't have any completed bookings yet.</p>
-        </div>
-    <?php else: ?>
-        <div class="bookings-list">
-            <?php foreach ($data['bookings'] as $b): ?>
-                <div class="booking-card completed"
-                     data-booking-id="<?= $b['booking_id'] ?>"
-                     data-caretaker-id="<?= $b['caretaker_id'] ?? '' ?>">
-
-                    <h2><?= htmlspecialchars($b['caretaker_name']) ?></h2>
-
-                    <p><strong>Service:</strong> <?= htmlspecialchars($b['service_type']) ?></p>
-                    <p><strong>Date:</strong> <?= date('Y-m-d', strtotime($b['booking_date'])) ?></p>
-                    <p><strong>Time:</strong> <?= htmlspecialchars($b['preferred_time']) ?></p>
-                    <p><strong>Duration:</strong> <?= $b['duration'].' '.$b['basis'] ?></p>
-                    <p><strong>Status:</strong>
-                        <span class="status completed">Completed</span>
-                    </p>
-
-                    <?php if ($b['rating'] !== null): ?>
-
-    <!-- SHOW FEEDBACK -->
-    <div class="feedback-display">
-        <p><strong>Your Rating:</strong>
-            <?php for ($i = 1; $i <= 5; $i++): ?>
-                <span class="<?= $i <= $b['rating'] ? 'star-filled' : 'star-empty' ?>">★</span>
-            <?php endfor; ?>
-        </p>
-
-        <p><strong>Your Feedback:</strong></p>
-        <p class="feedback-text">
-            <?= htmlspecialchars($b['feedback']) ?>
-        </p>
-    </div>
-
+   <?php if (empty($data['bookings'])): ?>
+    <p class="no-bookings">You don’t have any past bookings yet.</p>
 <?php else: ?>
 
-    <!-- SHOW BUTTON -->
-    <button class="feedback-btn">Give Feedback</button>
+<div class="table-wrapper">
+    <table class="bookings-table">
+        <thead>
+            <tr>
+                <th>Caretaker</th>
+                <th>Service</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th>Feedback</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        <?php foreach ($data['bookings'] as $b): ?>
+            <tr
+                data-booking-id="<?= $b['booking_id'] ?>"
+                data-caretaker-id="<?= $b['caretaker_id'] ?? '' ?>"
+            >
+                <td><?= htmlspecialchars($b['caretaker_name']) ?></td>
+                <td><?= htmlspecialchars($b['service_type']) ?></td>
+                <td><?= date('Y-m-d', strtotime($b['booking_date'])) ?></td>
+                <td><?= htmlspecialchars($b['preferred_time']) ?></td>
+                <td><?= (int)$b['duration'] . ' ' . htmlspecialchars($b['basis']) ?></td>
+
+                <td>
+                    <span class="status completed">Completed</span>
+                </td>
+
+                <td>
+                    <?php if ($b['rating'] !== null): ?>
+                        <div class="rating-stars">
+                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                <span class="<?= $i <= (int)$b['rating'] ? 'star-filled' : 'star-empty' ?>">★</span>
+                            <?php endfor; ?>
+                        </div>
+                        <div class="feedback-mini">
+                            <?= htmlspecialchars($b['feedback']) ?>
+                        </div>
+                    <?php else: ?>
+                        <span class="no-feedback">No feedback yet</span>
+                    <?php endif; ?>
+                </td>
+
+                <td class="actions">
+                    <?php if ($b['rating'] === null): ?>
+                        <!-- Keep the same class so your existing JS works -->
+                        <button type="button"
+                                class="feedback-btn"
+                                data-booking-id="<?= $b['booking_id'] ?>"
+                                data-caretaker-id="<?= $b['caretaker_id'] ?? '' ?>">
+                            Give Feedback
+                        </button>
+                    <?php else: ?>
+                        <span class="done-text">Submitted</span>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
 
 <?php endif; ?>
 
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
 </main>
 
 <!-- ================= FEEDBACK MODAL ================= -->

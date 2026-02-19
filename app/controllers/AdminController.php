@@ -22,7 +22,7 @@ class AdminController extends Controller
         if (session_status() === PHP_SESSION_NONE)
             session_start();
 
-        if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role']!=='admin'){
+        if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 'admin') {
             header("Location: index.php?url=auth/login");
             exit;
         }
@@ -79,10 +79,35 @@ class AdminController extends Controller
 
 
     public function ad_leave()
-    {
-        $leaves = $this->adminLeaveModel->getAllLeaves(); // Fetch caretakers' leaves
-        $this->view("admin/ad_leave", ['leaves' => $leaves]);
-    }
+{
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    if ($page < 1) $page = 1;
+
+    $limit  = 10;
+    $offset = ($page - 1) * $limit;
+
+    $type   = $_GET['type'] ?? 'All';
+    $status = $_GET['status'] ?? 'All';
+
+    $leaveModel = $this->model('AdminLeaveModel');
+
+    $leaves = $leaveModel->getLeavesPaginatedFiltered($limit, $offset, $type, $status);
+    $totalLeaves = $leaveModel->getTotalLeavesFiltered($type, $status);
+
+    $totalPages = (int) ceil($totalLeaves / $limit);
+    if ($totalPages < 1) $totalPages = 1;
+
+    $data = [
+        'leaves'       => $leaves,
+        'currentPage'  => $page,
+        'totalPages'   => $totalPages,
+        'selectedType' => $type,
+        'selectedStatus' => $status
+    ];
+
+    $this->view('admin/ad_leave', $data);
+}
+
 
    public function update_leave_status($id, $status)
 {
@@ -105,16 +130,37 @@ class AdminController extends Controller
 
 
     public function ad_history()
-    {
-        $logs = $this->historyModel->getAdminLogs();
-        $this->view("admin/ad_history", ['logs' => $logs]);
-    }
+{
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    if ($page < 1) $page = 1;
+
+    $limit  = 10; // logs per page
+    $offset = ($page - 1) * $limit;
+
+    $historyModel = $this->model('HistoryModel'); // change to your model name
+
+    $logs = $historyModel->getLogsPaginated($limit, $offset);
+    $totalLogs = $historyModel->getTotalLogs();
+
+    $totalPages = (int) ceil($totalLogs / $limit);
+    if ($totalPages < 1) $totalPages = 1;
+
+    $data = [
+        'logs' => $logs,
+        'currentPage' => $page,
+        'totalPages' => $totalPages
+    ];
+
+    $this->view('admin/ad_history', $data);
+}
+
 
     public function ad_caretakers()
-    {
-        $caretakers = $this->caretakerModel->getCaretakers(); // ✅ use the initialized property
-        $this->view("admin/ad_caretakers", ['caretakers' => $caretakers]);
-    }
+{
+    header("Location: " . URLROOT . "/CaretakerCRUD/list?page=1");
+    exit;
+}
+
 
     public function ad_announcement()
     {
@@ -146,12 +192,6 @@ class AdminController extends Controller
         ]);
     }
 
-    public function ad_bookings()
-    {
-        $bookings=$this->clientModel->getAllBookingsAdmin();
-        $this->view("admin/ad_bookings", ['bookings' => $bookings]);
-    }
-
     public function ad_settings()
     {
         // Session already started in constructor
@@ -180,5 +220,31 @@ class AdminController extends Controller
     {
         $this->view("admin/ad_payments");
     }
+
+    public function ad_bookings()
+{
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    if ($page < 1) $page = 1;
+
+    $limit  = 10;
+    $offset = ($page - 1) * $limit;
+
+    $clientModel = $this->model('ClientModel'); // or new ClientModel();
+
+    $bookings = $clientModel->getBookingsPaginated($limit, $offset);
+    $totalBookings = $clientModel->getTotalBookings();
+
+    $totalPages = (int) ceil($totalBookings / $limit);
+    if ($totalPages < 1) $totalPages = 1;
+
+    $data = [
+        'bookings'     => $bookings,
+        'currentPage'  => $page,
+        'totalPages'   => $totalPages,
+        'totalRecords' => $totalBookings
+    ];
+
+    $this->view('admin/ad_bookings', $data);
+}
 
 }

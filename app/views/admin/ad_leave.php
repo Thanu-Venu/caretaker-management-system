@@ -1,5 +1,11 @@
 <?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
+<?php
+$currentPage = $data['currentPage'] ?? 1;
+$totalPages  = $data['totalPages'] ?? 1;
+$selectedType = $data['selectedType'] ?? 'All';
+$selectedStatus = $data['selectedStatus'] ?? 'All';
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -22,21 +28,22 @@
       <div class="filter-section">
         <div class="filter-group">
           <label for="type">Type</label>
-          <select id="type" onchange="filterTable()">
-            <option value="All">All</option>
-            <option value="Vacation">Vacation</option>
-            <option value="Sick Leave">Sick Leave</option>
-            <option value="Personal Leave">Personal Leave</option>
-            <option value="Maternity Leave">Maternity Leave</option>
+          <select id="type" onchange="applyFilters()">
+            <option value="All" <?= ($selectedType == "All") ? 'selected' : '' ?>>All</option>
+            <option value="Vacation" <?= ($selectedType == "Vacation") ? 'selected' : '' ?>>Vacation</option>
+            <option value="Sick Leave" <?= ($selectedType == "Sick Leave") ? 'selected' : '' ?>>Sick Leave</option>
+            <option value="Personal Leave" <?= ($selectedType == "Personal Leave") ? 'selected' : '' ?>>Personal Leave</option>
+            <option value="Maternity Leave" <?= ($selectedType == "Maternity Leave") ? 'selected' : '' ?>>Maternity Leave</option>
           </select>
+
         </div>
         <div class="filter-group">
           <label for="status">Status</label>
-          <select id="status" onchange="filterTable()">
-            <option value="All">All</option>
-            <option value="Pending">Pending</option>
-            <option value="Approved">Approved</option>
-            <option value="Rejected">Rejected</option>
+          <select id="status" onchange="applyFilters()">
+  <option value="All" <?= ($selectedStatus == "All") ? 'selected' : '' ?>>All</option>
+            <option value="Pending" <?= ($selectedStatus == "Pending") ? 'selected' : '' ?>>Pending</option>
+            <option value="Approved" <?= ($selectedStatus == "Approved") ? 'selected' : '' ?>>Approved</option>
+            <option value="Rejected" <?= ($selectedStatus == "Rejected") ? 'selected' : '' ?>>Rejected</option>
           </select>
         </div>
       </div>
@@ -51,7 +58,6 @@
               <th>Start Date</th>
               <th>End Date</th>
               <th>Status</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -62,18 +68,7 @@
                   <td><?= htmlspecialchars($leave['leave_type']) ?></td>
                   <td><?= htmlspecialchars($leave['start_date']) ?></td>
                   <td><?= htmlspecialchars($leave['end_date']) ?></td>
-                  <td><span
-                      class="status <?= strtolower($leave['status']) ?>"><?= htmlspecialchars($leave['status']) ?></span>
-                  </td>
-                  <td>
-                    <?php if ($leave['status'] == 'Pending'): ?>
-                      <a href="<?= URLROOT ?>/Admin/update_leave_status/<?= $leave['id'] ?>/Approved"
-                        onclick="return confirm('Approve this leave?')" class="approve-btn"><i class='bx bx-check-circle' style="color:green;"></i></a>
-                      <a href="<?= URLROOT ?>/Admin/update_leave_status/<?= $leave['id'] ?>/Rejected"
-                        onclick="return confirm('Reject this leave?')" class="reject-btn"><i class='bx bx-x-circle' style="color:red;"></i></a>
-
-                    <?php endif; ?>
-                  </td>
+                  <td><span class="status <?= strtolower($leave['status']) ?>"><?= htmlspecialchars($leave['status']) ?></span></td>
                 </tr>
               <?php endforeach; ?>
             <?php else: ?>
@@ -83,26 +78,52 @@
             <?php endif; ?>
           </tbody>
         </table>
+        <div class="pagination">
+  <?php
+$currentPage = $data['currentPage'] ?? 1;
+$totalPages  = $data['totalPages'] ?? 1;
+
+$query = $_GET; // keeps type/status
+?>
+
+<div class="pagination">
+  <?php if ($currentPage > 1): ?>
+    <?php $query['page'] = $currentPage - 1; ?>
+    <a href="<?= URLROOT ?>/admin/ad_leave?<?= http_build_query($query) ?>">Prev</a>
+  <?php endif; ?>
+
+  <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+    <?php $query['page'] = $i; ?>
+    <a class="<?= ($i == $currentPage) ? 'active' : '' ?>"
+       href="<?= URLROOT ?>/admin/ad_leave?<?= http_build_query($query) ?>">
+      <?= $i ?>
+    </a>
+  <?php endfor; ?>
+
+  <?php if ($currentPage < $totalPages): ?>
+    <?php $query['page'] = $currentPage + 1; ?>
+    <a href="<?= URLROOT ?>/admin/ad_leave?<?= http_build_query($query) ?>">Next</a>
+  <?php endif; ?>
+</div>
+
       </div>
     </section>
   </main>
 
   <script>
-    function filterTable() {
-      const typeFilter = document.getElementById('type').value.toLowerCase();
-      const statusFilter = document.getElementById('status').value.toLowerCase();
+function applyFilters() {
+  const type = document.getElementById('type').value;
+  const status = document.getElementById('status').value;
 
-      document.querySelectorAll('#leaveTable tbody tr').forEach(row => {
-        const type = row.cells[1].innerText.toLowerCase();
-        const status = row.cells[4].innerText.toLowerCase();
+  const params = new URLSearchParams(window.location.search);
+  params.set("page", "1");
+  params.set("type", type);
+  params.set("status", status);
 
-        const typeMatch = typeFilter === 'all' || type === typeFilter;
-        const statusMatch = statusFilter === 'all' || status === statusFilter;
+  window.location = window.location.pathname + "?" + params.toString();
+}
+</script>
 
-        row.style.display = (typeMatch && statusMatch) ? '' : 'none';
-      });
-    }
-  </script>
 </body>
 
 </html>

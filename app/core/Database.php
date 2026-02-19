@@ -4,12 +4,7 @@ class Database {
 
     public function __construct() {
 
-
-        $this->conn = new mysqli("localhost", "root", "", "smartcare");
-
-
-     
-
+    $this->conn = new mysqli("localhost", "root", "Thanuvenu", "smartcare");
         $host = "localhost";
         $user = "root";
         $pass = "";            
