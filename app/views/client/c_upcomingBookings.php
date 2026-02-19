@@ -14,7 +14,10 @@
     <h1>My Upcoming Bookings</h1>
 
     <?php if (empty($data['bookings'])): ?>
-        <p class="no-bookings">You don’t have any upcoming bookings yet.</p>
+        <div class="no-bookings">
+            <p style="font-size: 24px; margin-bottom: 10px;">📅 No Upcoming Bookings</p>
+            <p>You don't have any upcoming bookings at the moment.</p>
+        </div>
     <?php else: ?>
 
     <?php if (empty($data['bookings'])): ?>

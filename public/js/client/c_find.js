@@ -179,7 +179,9 @@ function applyFilters() {
     const ratingMatch = isNaN(minRating) || cardRating >= minRating;
 
     if (serviceMatch && locationMatch && ratingMatch) {
-      card.style.display = "block";
+      card.style.display = "flex";
+      card.style.flexDirection = "column";
+      card.style.minHeight = "550px";
     } else {
       card.style.display = "none";
     }
