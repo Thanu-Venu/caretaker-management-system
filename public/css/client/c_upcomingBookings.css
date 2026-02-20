@@ -1,281 +1,275 @@
-/* =========================
-   Base Layout
-========================= */
 .content {
-  margin-left: 250px;
-  padding: 28px;
-  font-family: "Poppins", sans-serif;
-  background: #f6f8fc;
-  min-height: 100vh;
+    margin-left: 250px; /* leave space for sidebar */
+    padding: 30px;
+    font-family: "Poppins", sans-serif;
+    background-color: #f9fafc;
+    min-height: 100vh;
 }
 
 .content h1 {
-  font-size: 28px;
-  margin-bottom: 18px;
-  color: #1e88e5;
-  font-weight: 700;
-  letter-spacing: 0.2px;
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #1e88e5;
 }
 
+/* No bookings text */
 .no-bookings {
-  font-size: 15px;
-  color: #6b7280;
-  background: #ffffff;
-  border: 1px solid #eef2f7;
-  padding: 14px 16px;
-  border-radius: 12px;
-  display: inline-block;
+    font-size: 16px;
+    color: #666;
+    display: none; /* Hidden by default, shown via JS if no bookings */
 }
 
-/* =========================
-   Table
-========================= */
-.table-wrapper {
-  overflow-x: auto;
-  background: #ffffff;
-  border-radius: 14px;
-  border: 1px solid #eef2f7;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+/* Bookings List */
+.bookings-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
 }
 
-.bookings-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 850px; /* helps on desktop */
+/* Booking Card */
+.booking-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+    
 }
 
-.bookings-table thead th {
-  background: #1e88e5;
-  color: #fff;
-  font-weight: 700;
-  font-size: 14px;
-  padding: 14px 14px;
-  border-bottom: 1px solid #e9eef6;
-  white-space: nowrap;
+.booking-card:hover {
+    transform: translateY(-3px);
 }
 
-.bookings-table tbody td {
-  padding: 14px 14px;
-  font-size: 14px;
-  color: #0f172a;
-  border-bottom: 1px solid #f1f5f9;
-  vertical-align: middle;
+.booking-card h2 {
+    margin-bottom: 8px;
+    font-size: 20px;
+    color: #333;
 }
 
-.bookings-table tbody tr:hover {
-  background: #fafcff;
+.booking-card p {
+    margin: 6px 0;
+    font-size: 14px;
+    color: #555;
 }
 
-.bookings-table tbody tr:last-child td {
-  border-bottom: none;
+/* Status Labels */
+.status {
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-size: 13px;
 }
 
-/* Improve text feel */
-.bookings-table td:nth-child(1) {
-  font-weight: 600;
-  color: #0b3b66;
+.status.pending {
+    background: #fff3cd;
+    color: #856404;
 }
 
-/* Actions */
-.actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+.status.confirmed {
+    background: #d4edda;
+    color: #155724;
 }
 
-/* =========================
-   Buttons
-========================= */
-.cancel-btn,
-.reschedule-btn,
-.payment-btn,
-.cancel1-btn,
-.save-btn {
-  border: none;
-  border-radius: 10px;
-  padding: 9px 12px;
-  font-size: 13.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+.status.cancelled {
+    background: #f8d7da;
+    color: #721c24;
 }
 
+.card-actions {
+    display: flex;         /* make buttons side by side */
+    gap: 10px;             /* space between buttons */
+    margin-top: 12px;
+    flex-wrap: wrap;       /* wrap to next line if screen is too small */
+}
+
+
+/* Cancel Button *
 .cancel-btn {
-  background: #ef4444;
+  background: #e74c3c;
   color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+  display: flex;
 }
+
 .cancel-btn:hover {
-  opacity: 0.95;
-  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.25);
+  background: #c0392b;
 }
-.cancel-btn:active { transform: scale(0.98); }
 
 .reschedule-btn {
-  background: #f59e0b;
+  background: #4a90e2;
   color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
 }
+
 .reschedule-btn:hover {
-  opacity: 0.95;
-  box-shadow: 0 8px 18px rgba(245, 158, 11, 0.25);
+  background: #357abd;
 }
-.reschedule-btn:active { transform: scale(0.98); }
 
 .payment-btn {
-  background: #22c55e;
+  background: #f39c12;
   color: #fff;
-}
-.payment-btn:hover {
-  opacity: 0.95;
-  box-shadow: 0 8px 18px rgba(34, 197, 94, 0.25);
-}
-.payment-btn:active { transform: scale(0.98); }
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
+}*/
 
-/* Modal confirm cancel button */
-.cancel1-btn {
-  background: #ef4444;
-  color: #fff;
-  width: 100%;
-}
-.cancel1-btn:hover {
-  opacity: 0.95;
-  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.25);
-}
-
-/* Save button for reschedule (if you use save-btn class) */
-.save-btn {
-  background: #2563eb;
-  color: #fff;
-  width: 100%;
-}
-.save-btn:hover {
-  opacity: 0.95;
-  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+.cancel-btn, .reschedule-btn, .payment-btn {
+  flex: 1;               /* all buttons equal width */
+  text-align: center;
+  display: inline-block;  /* override block */
+  padding: 10px 15px;    /* adjust padding as needed */
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600px;
+  transition: background 0.3s;
+  outline: none;
+  border: none;
 }
 
-/* =========================
-   Modal (single clean version)
-========================= */
+.cancel-btn { background: #e74c3c; color: #fff; }
+.cancel-btn:hover { background: #c0392b; }
+
+.reschedule-btn { background: #4a90e2; color: #fff; }
+.reschedule-btn:hover { background: #357abd; }
+
+.payment-btn { background: #f39c12; color: #fff; }
+.payment-btn:hover { background: #e67e22; }
+
+
+/* Responsive */
+@media (max-width: 768px) {
+    .content {
+        margin-left: 0;
+    }
+}
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+/* Modal background */
 .modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: rgba(15, 23, 42, 0.55);
-  backdrop-filter: blur(4px);
-
-  /* these make it centered when shown */
+  display: none; 
+  position: fixed; 
+  z-index: 1000; 
+  left: 0; 
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  background: rgba(0,0,0,0.6);
   justify-content: center;
   align-items: center;
-  padding: 18px;
 }
 
+/* Modal content box */
 .modal-content {
-  background: #ffffff;
-  width: 100%;
-  max-width: 420px;
-  border-radius: 14px;
-  border: 1px solid #eef2f7;
-  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.25);
-  padding: 18px 18px 16px;
+  background: #fff;
+  padding: 20px;
+  width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
   position: relative;
-  animation: modalPop 0.18s ease;
+  animation: slideDown 0.3s ease;
 }
 
-.modal-content h2 {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0 0 12px;
-  color: #0f172a;
-}
-
+/* Close button */
 .close {
   position: absolute;
   top: 10px;
-  right: 12px;
-  font-size: 22px;
+  right: 15px;
+  font-size: 20px;
   cursor: pointer;
-  color: #64748b;
-  transition: color 0.2s ease;
+  color: #333;
 }
-.close:hover { color: #0f172a; }
 
-/* Form elements inside modals */
-.modal-content label {
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
   display: block;
   font-weight: 600;
-  color: #334155;
-  margin: 10px 0 6px;
-  font-size: 13px;
+  margin-bottom: 5px;
 }
 
-.modal-content input,
-.modal-content textarea,
-.modal-content select {
+.form-group input,
+.form-group select {
   width: 100%;
-  padding: 10px 10px;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  outline: none;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.save-btn {
+  background: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.save-btn:hover {
+  background: #45a049;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.payment-warning {
+  background: #fff3cd;
+  color: #856404;
+  padding: 10px;
+  border: 1px solid #ffeeba;
+  border-radius: 6px;
   font-size: 14px;
-  background: #fbfdff;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: 15px;
 }
 
-.modal-content textarea {
-  min-height: 90px;
-  resize: vertical;
-}
-
-.modal-content input:focus,
-.modal-content textarea:focus,
-.modal-content select:focus {
-  border-color: #60a5fa;
-  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.22);
-}
-
-/* For modal action rows (if you use them) */
+/* Reuse modal styles */
 .modal-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 14px;
+  justify-content: space-between;
+  margin-top: 15px;
 }
 
-/* =========================
-   Messages / warnings
-========================= */
-.payment-warning {
-  background: #fff7ed;
-  color: #92400e;
-  padding: 10px 12px;
-  border: 1px solid #fed7aa;
-  border-radius: 12px;
-  font-size: 13px;
-  margin-bottom: 12px;
+.cancel1-btn {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-/* =========================
-   Responsive
-========================= */
-@media (max-width: 768px) {
-  .content { margin-left: 0; padding: 18px; }
-  .bookings-table { min-width: 720px; } /* horizontal scroll on phones */
+.cancel1-btn:hover {
+  background: #c0392b;
 }
 
-/* =========================
-   Animations
-========================= */
-@keyframes modalPop {
-  from { transform: translateY(8px) scale(0.98); opacity: 0; }
-  to   { transform: translateY(0) scale(1); opacity: 1; }
-}
-
-.payment-deadline{
-  padding: 6px 10px;
+.cancel1-btn-secondary {
+  background: #bdc3c7;
+  color: #333;
+  border: none;
+  padding: 10px 15px;
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
@@ -358,4 +352,3 @@
 .cancel1-btn:hover, .reschedule-btn:hover {
   background-color: #0056b3;
 }
-

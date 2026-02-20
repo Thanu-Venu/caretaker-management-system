@@ -29,10 +29,36 @@ class LeaveCRUDController extends Controller {
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Validate dates
+        $startDate = strtotime($_POST['start_date']);
+        $endDate = strtotime($_POST['end_date']);
+        $today = strtotime('today');
+        $leaveType = $_POST['leave_type'];
+
+        // Check minimum start date based on leave type
+        if ($leaveType === 'Sick Leave') {
+            $minStartDate = strtotime('tomorrow');
+        } else {
+            $minStartDate = strtotime('+5 days', $today);
+        }
+
+        if ($startDate < $minStartDate) {
+            die("Invalid start date. Sick Leave: start from tomorrow. Other leaves: start from 5 days from today.");
+        }
+
+        if ($endDate < $startDate) {
+            die("End date must be after start date.");
+        }
+
+        // Check 28-day limit
+        $daysDifference = ($endDate - $startDate) / (60 * 60 * 24);
+        if ($daysDifference > 27) {
+            die("Leave cannot exceed 28 days. You selected " . intval($daysDifference + 1) . " days.");
+        }
 
         $data = [
             'user_id' => $_SESSION['user']['id'],
-            'leave_type' => $_POST['leave_type'],
+            'leave_type' => $leaveType,
             'start_date' => $_POST['start_date'],
             'end_date' => $_POST['end_date'],
             'start_time' => $_POST['start_time'],
@@ -56,7 +82,14 @@ class LeaveCRUDController extends Controller {
         exit;
     }
 
-    $this->view('caretaker/leave_add');
+    // Pass data to view for date validation
+    $viewData = [
+        'today' => date('Y-m-d'),
+        'minStartDateNormal' => date('Y-m-d', strtotime('+5 days')),
+        'minStartDateSick' => date('Y-m-d', strtotime('tomorrow'))
+    ];
+
+    $this->view('caretaker/leave_add', $viewData);
 }
 
 
@@ -75,6 +108,20 @@ class LeaveCRUDController extends Controller {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Validate dates
+            $startDate = strtotime($_POST['start_date']);
+            $endDate = strtotime($_POST['end_date']);
+
+            if ($endDate < $startDate) {
+                die("End date must be after start date.");
+            }
+
+            // Check 28-day limit
+            $daysDifference = ($endDate - $startDate) / (60 * 60 * 24);
+            if ($daysDifference > 27) {
+                die("Leave cannot exceed 28 days. You selected " . intval($daysDifference + 1) . " days.");
+            }
+
             $data = [
                 'id' => $id,
                 'leave_type' => $_POST['leave_type'],

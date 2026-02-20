@@ -19,7 +19,7 @@
     <form method="POST" action="<?php echo URLROOT; ?>/leaveCRUD/add">
 
       <label>Leave Type</label>
-      <select name="leave_type" required>
+      <select name="leave_type" id="leave_type" required>
         <option value="">Select Type</option>
         <option value="Vacation">Vacation</option>
         <option value="Sick Leave">Sick Leave</option>
@@ -33,8 +33,10 @@
           <input type="date"
                  name="start_date"
                  id="start_date"
-                 min="<?= $data['minStartDate']; ?>"
+                 data-min-normal="<?= $data['minStartDateNormal'] ?? ''; ?>"
+                 data-min-sick="<?= $data['minStartDateSick'] ?? ''; ?>"
                  required>
+          <small id="start_date_hint" style="color: #666; font-size: 12px;"></small>
         </label>
 
         <label>
