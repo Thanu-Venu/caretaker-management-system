@@ -1,6 +1,6 @@
 <?php
 
- class CaretakerController extends Controller {
+class CaretakerController extends Controller {
 
     private $leaveModel;
     private $caretakerModel;
@@ -54,13 +54,6 @@
 }
 
 
-
-    
-
-   
-
-
-
      public function ct_editprofile() {
         $this->view("caretaker/ct_editprofile");
     }
@@ -79,17 +72,13 @@
 
 
      
-     public function ct_booking() {
-    $user = $_SESSION['user'];
-    $caretakerId = $user['id'];
-
+    public function ct_booking() {
+    $caretakerId = $_SESSION['user']['id'];
     $caretakerModel = $this->model('CaretakerModel');
 
-    // Fetch bookings directly from DB
     $upcoming = $caretakerModel->getUpcomingBookings($caretakerId);
     $past = $caretakerModel->getPastBookings($caretakerId);
 
-    // Just pass the booking_date and preferred_time as they are
     $this->view('caretaker/ct_booking', [
         'upcoming' => $upcoming,
         'past' => $past
@@ -99,14 +88,27 @@
      public function ct_schedule() {
          $this->view("caretaker/ct_schedule");
      }
- 
+      // AJAX: Fetch events as JSON
+    public function getScheduleEvents() {
+        if (!isset($_SESSION['user'])) {
+            echo json_encode([]);
+            return;
+        }
 
+        $caretakerId = $_SESSION['user']['id']; // Correct session key
+        $events = $this->caretakerModel->getScheduleByCaretaker($caretakerId);
 
+        header('Content-Type: application/json');
+        echo json_encode($events);
+        exit;
+    }
+
+   
      public function ct_leaveHistory() {
          $this->view("caretaker/ct_leaveHistory");
      }
 
- public function ct_complaints()
+    public function ct_complaints()
 {
     $caretakerId = $_SESSION['user']['id'];
 
@@ -121,6 +123,7 @@
         'resolvedComplaints' => $resolvedComplaints // pass to view
     ]);
 }
+
 
 
 public function saveComplaint() {
@@ -178,8 +181,7 @@ public function saveComplaint() {
     
 }
 
-
-       public function ct_reports() {
+  public function ct_reports() {
     $user = $_SESSION['user'];
     $caretakerId = $user['id'];
 
@@ -333,10 +335,6 @@ public function saveComplaint() {
             header("Location: " . URLROOT . "/complaint/index");
         }
     }
-
-
-
-
 
     public function ct_announcement() {
     $announcementModel = $this->model('AnnouncementModel');
