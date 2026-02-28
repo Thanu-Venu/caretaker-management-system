@@ -32,6 +32,19 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
         <option value="Maid">Maid</option>
         <option value="Disability Support">Disability Support</option>
       </select>
+      <script>
+        window.serviceLocations = <?= json_encode($data['serviceLocations'] ?? []) ?>;
+      </script>
+
+      <label>Location</label>
+      <select name="location" id="popupLocationFilter" required>
+        <option value="">Select Location</option>
+        <?php
+        $locations = $data['locations'] ?? [];
+        foreach ($locations as $loc): ?>
+            <option value="<?= htmlspecialchars($loc) ?>" <?= ($_POST['location'] ?? '') === $loc ? 'selected' : '' ?>><?= htmlspecialchars($loc) ?></option>
+        <?php endforeach; ?>
+      </select>
 
       <label>Duration Basis</label>
       <select name="basis" id="basisFilter" required>
@@ -44,10 +57,12 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
       <label>Start Date</label>
       <input type="date" name="start_date" id="startDate" required>
 
-      <label>Preferred Time</label>
-      <select name="preferred_time" id="preferredTimeSelect" required>
-        <option value="">Select Time</option>
-      </select>
+      <label id="preferredTimeLabel">Preferred Time</label>
+      <div id="timeContainer">
+        <select name="preferred_time" id="preferredTimeSelect" required>
+          <option value="">Select Time</option>
+        </select>
+      </div>
 
       <div class="popup-actions">
       <button type="button" id="cancelPopupBtn" class="cancel-btn">Cancel</button>
@@ -67,11 +82,11 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
 
     <div class="page-header">
       <div>
-        <h1>Find the Perfect Caretaker</h1>
+        <h1>Find the Perfect Caregiver</h1>
         <?php if ($showResults): ?>
-          <p>Filtered caretakers based on your booking details</p>
+          <p>Filtered caregivers based on your booking details</p>
         <?php else: ?>
-          <p>Search for available caretakers based on your booking details</p>
+          <p>Search for available caregivers based on your booking details</p>
         <?php endif; ?>
       </div>
     </div>
@@ -82,28 +97,6 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
         <div class="filter-box">
 
           <div class="filter-row">
-
-            <div class="filter-group">
-              <label>Service Type</label>
-              <select id="serviceFilter" disabled>
-                <option value="">All Services</option>
-                <option value="Elder Care" <?= $selectedService === 'Elder Care' ? 'selected' : '' ?>>Elder Care</option>
-                <option value="Babysitter" <?= $selectedService === 'Babysitter' ? 'selected' : '' ?>>Babysitter</option>
-                <option value="Maid" <?= $selectedService === 'Maid' ? 'selected' : '' ?>>Maid</option>
-              </select>
-            </div>
-
-
-            <div class="filter-group">
-              <label>Location</label>
-              <select id="locationFilter">
-                <option value="">All Locations</option>
-                <option value="Jaffna">Jaffna</option>
-                <option value="Colombo">Colombo</option>
-                <option value="Kandy">Kandy</option>
-                <option value="Matara">Matara</option>
-              </select>
-            </div>
 
             <div class="filter-group">
               <label>Minimum Rating</label>
@@ -125,7 +118,7 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
       </section>
 
       <section>
-        <h2 class="two">Available Caretakers</h2>
+        <h2 class="two">Available Caregivers</h2>
 
         <div id="caretakersList" class="caretakers">
 
@@ -168,7 +161,7 @@ class="book-btn">Book Now</a>
 
             <?php endforeach; ?>
           <?php else: ?>
-            <p>Use the Book Caretaker button to search for availability.</p>
+            <p>Use the Book Caregiver button to search for availability.</p>
           <?php endif; ?>
 
         </div>

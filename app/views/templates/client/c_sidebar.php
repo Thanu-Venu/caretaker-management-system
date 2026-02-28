@@ -25,6 +25,7 @@
             class="bx bx-chevron-down arrow"></i></a>
         <ul class="dropdown-container">
           <li><a href="http://localhost/CMA/public?url=client/c_upcomingBookings">Upcoming Bookings</a></li>
+          <li><a href="http://localhost/CMA/public?url=client/c_ongoingBookings">Ongoing Bookings</a></li>
           <li><a href="http://localhost/CMA/public?url=client/c_pastBookings">Past Bookings</a></li>
           <li><a href="http://localhost/CMA/public?url=client/c_cancelledBookings">Cancelled Bookings</a></li>
         </ul>

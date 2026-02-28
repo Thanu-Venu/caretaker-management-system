@@ -6,17 +6,15 @@
   padding: 40px;
 }
 
-
 .card {
   background: #fff;
   padding: 35px;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   max-width: 550px;
   width: 100%;
-  max-width: none;       /* 🔥 important */
+  max-width: none; /* 🔥 important */
 }
-
 
 .card h2 {
   color: #00bfa5;
@@ -30,28 +28,23 @@
   margin-bottom: 20px;
 }
 
-
 .card i {
   color: #00bfa5;
   font-size: 24px;
   margin-right: 6px;
 }
 
-
 .details {
-  text-align:center;
+  text-align: center;
   margin: 25px 0px;
   font-size: 15px;
   line-height: 1.6;
   flex-direction: column;
 }
 
-
-
-
 .details strong {
-  width: 120px;         /* same width for all labels */
-  text-align: right;   /* labels end at same line */
+  width: 120px; /* same width for all labels */
+  text-align: right; /* labels end at same line */
   margin-right: 10px;
   color: #333;
 }
@@ -73,7 +66,6 @@ button {
   border-radius: 6px;
 }
 
-
 button:hover {
   opacity: 0.9;
 }
@@ -86,4 +78,39 @@ button.viewbtn {
 button.secondary {
   background: #1e88e5;
   color: #fff;
+}
+
+/* ---- enhanced details layout ---- */
+.details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 20px;
+  row-gap: 12px;
+  align-items: start;
+  margin: 25px 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #444;
+  text-align: left;
+}
+
+.details p {
+  margin: 0;
+}
+
+.details strong {
+  color: #333;
+  font-weight: 600;
+  justify-self: end;
+}
+
+@media (max-width: 600px) {
+  .details {
+    grid-template-columns: 1fr;
+  }
+  .details strong {
+    justify-self: start;
+    display: block;
+    margin-bottom: 4px;
+  }
 }
