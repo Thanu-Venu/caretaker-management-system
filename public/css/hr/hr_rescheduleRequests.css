@@ -1,0 +1,132 @@
+/* hr_requests.css */
+
+/* Page layout */
+.content {
+  margin-left: 260px; /* keep space for sidebar (adjust if your sidebar width differs) */
+  padding: 24px;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f6f7fb;
+  min-height: 100vh;
+}
+
+/* Title */
+.content h1 {
+  margin: 0 0 18px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1e88e5;
+}
+
+/* Messages */
+.success-msg {
+  background: #e7f8ee;
+  border: 1px solid #bce9cc;
+  color: #166534;
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin: 12px 0 18px;
+  font-weight: 600;
+}
+
+.content p {
+  color: #374151;
+}
+
+/* Table wrapper */
+.table-wrapper {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+}
+
+/* Table */
+.requests-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.requests-table thead th {
+  text-align: left;
+  padding: 14px 14px;
+  background: #1e88e5;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+.requests-table tbody td {
+  padding: 14px 14px;
+  border-bottom: 1px solid #eef2f7;
+  color: #111827;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.requests-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* Make "Reason" nicer for long text */
+.requests-table td:nth-child(7) {
+  max-width: 360px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Buttons */
+.approve-btn,
+.reject-btn {
+  border: none;
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.06s ease, opacity 0.2s ease;
+}
+
+.approve-btn {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.reject-btn {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.approve-btn:hover,
+.reject-btn:hover {
+  opacity: 0.92;
+}
+
+.approve-btn:active,
+.reject-btn:active {
+  transform: translateY(1px);
+}
+
+/* Buttons alignment inside cell */
+.requests-table td:last-child {
+  white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .content {
+    margin-left: 0; /* if sidebar collapses on smaller screens */
+    padding: 16px;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  .requests-table {
+    min-width: 820px; /* enables horizontal scroll when needed */
+  }
+}

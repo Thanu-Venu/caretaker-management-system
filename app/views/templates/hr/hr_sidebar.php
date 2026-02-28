@@ -34,6 +34,7 @@
       <li><a href="http://localhost/CMA/public?url=hr/hr_pending_request"><i class="fas fa-hourglass-half"></i> <span>Pending Request</span></a></li>
       <li><a href="http://localhost/CMA/public?url=hr/pendingPayments"><i class='bx bx-money'></i> <span>Pending Payments</span></a></li>
       <li><a href="http://localhost/CMA/public?url=hr/changeRequests"><i class='bx bx-user-check'></i> <span>Change Requests</span></a></li>
+      <li><a href="http://localhost/CMA/public?url=hr/rescheduleRequests"><i class='bx bx-calendar-edit'></i> <span>Reschedule Requests</span></a></li>
       <li><a href="http://localhost/CMA/public?url=hr/hr_schedule"><i class='bx bx-calendar'></i> <span>Schedule</span></a></li>
       <li><a href="http://localhost/CMA/public?url=HrLeave/index"><i class='bx bx-time'></i> <span>Leave</span></a></li>
       <li><a href="http://localhost/CMA/public/index.php?url=Complaint/index"><i class='bx bx-error'></i> <span>Complaints</span></a></li>
