@@ -1,148 +1,225 @@
 const timeOptions = {
-    "Elder Care": ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)", "Night (6pm - 10pm)"],
-    "Babysitter": ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)"],
-    "Maid": ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)"],
-    "Disability Support": ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)"]
+  "Elder Care": [
+    "Full Time (8am - 5pm)",
+    "Morning (8am - 12pm)",
+    "Evening (1pm - 5pm)",
+    "Night (6pm - 10pm)",
+  ],
+  Babysitter: [
+    "Full Time (8am - 5pm)",
+    "Morning (8am - 12pm)",
+    "Evening (1pm - 5pm)",
+  ],
+  Maid: [
+    "Full Time (8am - 5pm)",
+    "Morning (8am - 12pm)",
+    "Evening (1pm - 5pm)",
+  ],
+  "Disability Support": [
+    "Full Time (8am - 5pm)",
+    "Morning (8am - 12pm)",
+    "Evening (1pm - 5pm)",
+  ],
 };
 
 const serviceOptions = {
-    "Elder Care": ["Monthly", "Yearly"],
-    "Babysitter": ["Daily", "Monthly", "Yearly"],
-    "Maid": ["Hourly", "Daily", "Monthly", "Yearly"],
-    "Disability Support": ["Daily", "Monthly"]
+  "Elder Care": ["Monthly", "Yearly"],
+  Babysitter: ["Daily", "Monthly", "Yearly"],
+  Maid: ["Hourly", "Daily", "Monthly", "Yearly"],
+  "Disability Support": ["Daily", "Monthly"],
 };
+
+// utility ensures preferredTimeSelect is a <select>; replaces input if present
+function ensureTimeSelect() {
+  let elem = document.getElementById("preferredTimeSelect");
+  if (elem && elem.tagName.toLowerCase() === "select") {
+    return elem;
+  }
+  const container = document.getElementById("timeContainer");
+  if (!container) return null;
+  const select = document.createElement("select");
+  select.name = "preferred_time";
+  select.id = "preferredTimeSelect";
+  select.required = true;
+  container.innerHTML = "";
+  container.appendChild(select);
+  return select;
+}
 
 function updatePopupOptions(service) {
-    const timeSelect = document.getElementById('preferredTimeSelect');
-    const basisSelect = document.getElementById('basisFilter');
+  const timeSelect = ensureTimeSelect();
+  const basisSelect = document.getElementById("basisFilter");
+  const locSelect = document.getElementById("popupLocationFilter");
 
-    if (timeSelect) {
-        timeSelect.innerHTML = '<option value="">Select Time</option>';
-        if(service && timeOptions[service]) {
-            timeOptions[service].forEach(time => {
-                const option = document.createElement('option');
-                option.value = time;
-                option.textContent = time;
-                timeSelect.appendChild(option);
-            });
-        }
+  if (timeSelect) {
+    timeSelect.innerHTML = '<option value="">Select Time</option>';
+    if (service && timeOptions[service]) {
+      timeOptions[service].forEach((time) => {
+        const option = document.createElement("option");
+        option.value = time;
+        option.textContent = time;
+        timeSelect.appendChild(option);
+      });
     }
+  }
 
-    if (basisSelect) {
-        basisSelect.innerHTML = '<option value="">Select Basis</option>';
-        if(service && serviceOptions[service]) {
-            serviceOptions[service].forEach(basis => {
-                const option = document.createElement('option');
-                option.value = basis;
-                option.textContent = basis;
-                basisSelect.appendChild(option);
-            });
-        }
+  if (basisSelect) {
+    basisSelect.innerHTML = '<option value="">Select Basis</option>';
+    if (service && serviceOptions[service]) {
+      serviceOptions[service].forEach((basis) => {
+        const option = document.createElement("option");
+        option.value = basis;
+        option.textContent = basis;
+        basisSelect.appendChild(option);
+      });
     }
+  }
 
-    const durationInput = document.querySelector('input[name="duration"]');
-    if (durationInput) {
-        durationInput.value = '';
-        durationInput.max = '';
-        durationInput.placeholder = "Enter duration";
+  // disable location options not available for chosen service
+  if (locSelect && window.serviceLocations) {
+    const allowed = service ? window.serviceLocations[service] || [] : [];
+    for (const opt of locSelect.options) {
+      if (opt.value === "") continue;
+      opt.disabled = service && allowed.indexOf(opt.value) === -1;
+      if (opt.disabled && opt.selected) {
+        opt.selected = false;
+      }
     }
+  }
+
+  const durationInput = document.querySelector('input[name="duration"]');
+  if (durationInput) {
+    durationInput.value = "";
+    durationInput.max = "";
+    durationInput.placeholder = "Enter duration";
+  }
 }
 
+window.onload = function () {
+  // Set Start Date: min = today + 4 days
+  const startDateInput = document.querySelector('input[name="start_date"]');
+  if (!startDateInput) {
+    return;
+  }
+  const today = new Date();
 
+  const minDate = new Date(today);
+  minDate.setDate(today.getDate() + 4); // +4 days
 
-window.onload = function() {
+  const formatDate = (d) => {
+    let month = "" + (d.getMonth() + 1);
+    let day = "" + d.getDate();
+    const year = d.getFullYear();
 
-    // Set Start Date: min = today + 4 days
-    const startDateInput = document.querySelector('input[name="start_date"]');
-    if (!startDateInput) {
-        return;
-    }
-    const today = new Date();
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
 
-    const minDate = new Date(today);
-    minDate.setDate(today.getDate() + 4); // +4 days
+    return [year, month, day].join("-");
+  };
 
-    const formatDate = (d) => {
-        let month = '' + (d.getMonth() + 1);
-        let day = '' + d.getDate();
-        const year = d.getFullYear();
-
-        if (month.length < 2) month = '0' + month;
-        if (day.length < 2) day = '0' + day;
-
-        return [year, month, day].join('-');
-    };
-
-    startDateInput.min = formatDate(minDate);
+  startDateInput.min = formatDate(minDate);
 };
 
-
-
-const popupFormEl = document.querySelector('#searchPopup form');
+const popupFormEl = document.querySelector("#searchPopup form");
 if (popupFormEl) {
-    popupFormEl.addEventListener('submit', function() {
-        const overlayEl = document.getElementById('popupOverlay');
-        const popupEl = document.getElementById('searchPopup');
-        if (overlayEl) overlayEl.style.display = 'none';
-        if (popupEl) popupEl.style.display = 'none';
-    });
+  popupFormEl.addEventListener("submit", function () {
+    const overlayEl = document.getElementById("popupOverlay");
+    const popupEl = document.getElementById("searchPopup");
+    if (overlayEl) overlayEl.style.display = "none";
+    if (popupEl) popupEl.style.display = "none";
+  });
 }
 
-
 // Update Preferred Time & Basis
-const popupServiceFilter = document.getElementById('popupServiceFilter');
+const popupServiceFilter = document.getElementById("popupServiceFilter");
 if (popupServiceFilter) {
-    const onServiceChange = function() {
-        updatePopupOptions(this.value);
-    };
-    popupServiceFilter.addEventListener('change', onServiceChange);
-    popupServiceFilter.addEventListener('input', onServiceChange);
+  const onServiceChange = function () {
+    updatePopupOptions(this.value);
+  };
+  popupServiceFilter.addEventListener("change", onServiceChange);
+  popupServiceFilter.addEventListener("input", onServiceChange);
 }
 
 // Limit duration based on Basis
-const basisFilter = document.getElementById('basisFilter');
+const basisFilter = document.getElementById("basisFilter");
 if (basisFilter) {
-    basisFilter.addEventListener('change', function() {
-        const basis = this.value;
-        const durationInput = document.querySelector('input[name="duration"]');
-        if (!durationInput) {
-            return;
-        }
-
-    if(basis === "Hourly") {
-        durationInput.max = 23;
-    } else if(basis === "Daily") {
-        durationInput.max = 30;
-    } else if(basis === "Monthly") {
-        durationInput.max = 11;
-    } else if(basis === "Yearly") {
-        durationInput.max = 5; // optional
+  basisFilter.addEventListener("change", function () {
+    const basis = this.value;
+    const durationInput = document.querySelector('input[name="duration"]');
+    if (!durationInput) {
+      return;
     }
 
-        durationInput.placeholder = `Enter 1 - ${durationInput.max}`;
-    });
+    // update duration limits as before
+    if (basis === "Hourly") {
+      durationInput.max = 23;
+    } else if (basis === "Daily") {
+      durationInput.max = 30;
+    } else if (basis === "Monthly") {
+      durationInput.max = 11;
+    } else if (basis === "Yearly") {
+      durationInput.max = 5; // optional
+    }
+
+    durationInput.placeholder = `Enter 1 - ${durationInput.max}`;
+
+    // if maid + hourly, change preferred time options to hourly start times and update label
+    const serviceSelect = document.getElementById("popupServiceFilter");
+    const service = serviceSelect ? serviceSelect.value : "";
+    const labelEl = document.getElementById("preferredTimeLabel");
+    let timeSelect = document.getElementById("preferredTimeSelect");
+    // if maid/hourly we switch to time input
+    if (service === "Maid" && basis === "Hourly") {
+      if (labelEl) labelEl.textContent = "Start Time";
+      const container = document.getElementById("timeContainer");
+      if (container) {
+        const input = document.createElement("input");
+        input.type = "time";
+        input.name = "preferred_time";
+        input.id = "preferredTimeSelect";
+        input.required = true;
+        container.innerHTML = "";
+        container.appendChild(input);
+        timeSelect = input;
+      }
+    } else {
+      if (labelEl) labelEl.textContent = "Preferred Time";
+      // ensure it is a select
+      timeSelect = ensureTimeSelect();
+      if (timeSelect && service) {
+        timeSelect.innerHTML = '<option value="">Select Time</option>';
+        if (timeOptions[service]) {
+          timeOptions[service].forEach((time) => {
+            const option = document.createElement("option");
+            option.value = time;
+            option.textContent = time;
+            timeSelect.appendChild(option);
+          });
+        }
+      }
+    }
+  });
 }
 
-
-const serviceFilter = document.getElementById('serviceFilter');
+const serviceFilter = document.getElementById("serviceFilter");
 if (serviceFilter) {
-    serviceFilter.addEventListener('change', function() {
-        const service = this.value;
-        const timeSelect = document.getElementById('preferredTimeSelect');
-        if (!timeSelect) {
-            return;
-        }
-        timeSelect.innerHTML = '<option value="">Select Time</option>'; // reset
+  serviceFilter.addEventListener("change", function () {
+    const service = this.value;
+    const timeSelect = document.getElementById("preferredTimeSelect");
+    if (!timeSelect) {
+      return;
+    }
+    timeSelect.innerHTML = '<option value="">Select Time</option>'; // reset
 
-        if(service && timeOptions[service]) {
-            timeOptions[service].forEach(time => {
-                const option = document.createElement('option');
-                option.value = time;
-                option.textContent = time;
-                timeSelect.appendChild(option);
-            });
-        }
-    });
+    if (service && timeOptions[service]) {
+      timeOptions[service].forEach((time) => {
+        const option = document.createElement("option");
+        option.value = time;
+        option.textContent = time;
+        timeSelect.appendChild(option);
+      });
+    }
+  });
 }
 
 const cancelBtn = document.getElementById("cancelPopupBtn");
@@ -150,26 +227,24 @@ const popup = document.getElementById("searchPopup");
 const overlay = document.getElementById("popupOverlay");
 
 if (cancelBtn && popup && overlay) {
-    cancelBtn.addEventListener("click", () => {
-        popup.style.display = "none";
-        overlay.style.display = "none";
-    });
+  cancelBtn.addEventListener("click", () => {
+    popup.style.display = "none";
+    overlay.style.display = "none";
+  });
 }
 
-
-
 function applyFilters() {
-    const serviceEl = document.getElementById("serviceFilter");
-    const locationEl = document.getElementById("locationFilter");
-    const ratingEl = document.getElementById("ratingFilter");
+  const serviceEl = document.getElementById("serviceFilter");
+  const locationEl = document.getElementById("locationFilter");
+  const ratingEl = document.getElementById("ratingFilter");
 
-    const service = serviceEl ? serviceEl.value.trim().toLowerCase() : "";
-    const location = locationEl ? locationEl.value.trim().toLowerCase() : "";
-    const minRating = ratingEl ? parseFloat(ratingEl.value) : NaN;
+  const service = serviceEl ? serviceEl.value.trim().toLowerCase() : "";
+  const location = locationEl ? locationEl.value.trim().toLowerCase() : "";
+  const minRating = ratingEl ? parseFloat(ratingEl.value) : NaN;
 
   const cards = document.querySelectorAll(".card");
 
-  cards.forEach(card => {
+  cards.forEach((card) => {
     const cardService = (card.dataset.service || "").trim().toLowerCase();
     const cardLocation = (card.dataset.location || "").trim().toLowerCase();
     const cardRating = parseFloat(card.dataset.rating) || 0;
@@ -186,15 +261,14 @@ function applyFilters() {
   });
 }
 
-
 function clearFilters() {
-    const serviceEl = document.getElementById("serviceFilter");
-    const locationEl = document.getElementById("locationFilter");
-    const ratingEl = document.getElementById("ratingFilter");
+  const serviceEl = document.getElementById("serviceFilter");
+  const locationEl = document.getElementById("locationFilter");
+  const ratingEl = document.getElementById("ratingFilter");
 
-    if (serviceEl) serviceEl.value = "";
-    if (locationEl) locationEl.value = "";
-    if (ratingEl) ratingEl.value = "0";
+  if (serviceEl) serviceEl.value = "";
+  if (locationEl) locationEl.value = "";
+  if (ratingEl) ratingEl.value = "0";
   applyFilters();
 }
 
@@ -206,36 +280,32 @@ if (locationFilter) locationFilter.addEventListener("change", applyFilters);
 if (ratingFilter) ratingFilter.addEventListener("change", applyFilters);
 
 document.addEventListener("DOMContentLoaded", function () {
+  const openBtn = document.getElementById("openPopupBtn");
+  const overlay = document.getElementById("popupOverlay");
+  const popup = document.getElementById("searchPopup");
+  const form = document.getElementById("popupForm");
 
-    const openBtn = document.getElementById("openPopupBtn");
-    const overlay = document.getElementById("popupOverlay");
-    const popup = document.getElementById("searchPopup");
-    const form = document.getElementById("popupForm");
+  if (openBtn && overlay && popup) {
+    // 🔹 OPEN popup on button click
+    openBtn.addEventListener("click", function () {
+      overlay.style.display = "block";
+      popup.style.display = "block";
+      if (popupServiceFilter) {
+        updatePopupOptions(popupServiceFilter.value);
+      }
+    });
 
-    if (openBtn && overlay && popup) {
-        // 🔹 OPEN popup on button click
-        openBtn.addEventListener("click", function () {
-            overlay.style.display = "block";
-            popup.style.display = "block";
-            if (popupServiceFilter) {
-                updatePopupOptions(popupServiceFilter.value);
-            }
-        });
+    // 🔹 CLOSE popup when clicking overlay
+    overlay.addEventListener("click", function () {
+      overlay.style.display = "none";
+      popup.style.display = "none";
+    });
+  }
 
-        // 🔹 CLOSE popup when clicking overlay
-        overlay.addEventListener("click", function () {
-            overlay.style.display = "none";
-            popup.style.display = "none";
-        });
-    }
-
-    if (form) {
-        form.addEventListener('submit', () => {
-            if (overlay) overlay.style.display = 'none';
-            if (popup) popup.style.display = 'none';
-        });
-    }
+  if (form) {
+    form.addEventListener("submit", () => {
+      if (overlay) overlay.style.display = "none";
+      if (popup) popup.style.display = "none";
+    });
+  }
 });
-
-
-
