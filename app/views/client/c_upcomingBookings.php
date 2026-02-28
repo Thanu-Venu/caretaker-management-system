@@ -13,6 +13,13 @@
 <main class="content">
     <h1>My Upcoming Bookings</h1>
 
+    <?php if (!empty($_SESSION['success'])): ?>
+        <p class="success-msg"><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></p>
+    <?php endif; ?>
+    <?php if (!empty($_SESSION['error'])): ?>
+        <p class="error-msg"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></p>
+    <?php endif; ?>
+
     <?php if (empty($data['bookings'])): ?>
         <p class="no-bookings">You don’t have any upcoming bookings yet.</p>
     <?php else: ?>
@@ -45,13 +52,19 @@
                         Cancel
                     </button>
 
-                    <button class="action-btn" id="reschedule-btn"
-                        onclick="openRescheduleModal(<?= $b['booking_id'] ?>)">
-                        Reschedule
-                    </button>
-                </div>
-
-            </div>
+                    <?php
+                        $canReschedule = in_array($b['status'], ['Accepted','Advance_Paid','Payment_Requested']);
+                        if ($b['status'] === 'Reschedule_Requested') {
+                            $canReschedule = false;
+                        }
+                    ?>
+                    <?php if ($canReschedule): ?>
+                        <button class="action-btn" id="reschedule-btn"
+                            onclick="openRescheduleModal(<?= $b['booking_id'] ?>)">
+                            Reschedule
+                        </button>
+                    <?php endif; ?>
+                </td>
         <?php endforeach; ?>
     </tbody>
 </table>
@@ -89,18 +102,9 @@
     <label>New Date</label>
     <input type="date" name="new_date" required>
 
-    <label>New Time</label>
-<select name="new_time" required>
-    <option value="">Select</option>
-    <option value="Full Time (8am - 5pm)">Full Time (8am - 5pm)</option>
-    <option value="Morning (8am - 12pm)">Morning (8am - 12pm)</option>
-    <option value="Evening (1pm - 5pm)">Evening (1pm - 5pm)</option>
-    <option value="Night (6pm - 10pm)">Night (6pm - 10pm)</option>
-</select>
 
-
-    <label>New Duration</label>
-    <input type="number" name="new_duration" min="1" required>
+    <label>Reason for rescheduling</label>
+    <textarea name="reason" rows="3" placeholder="Optional (for HR)"></textarea>
 
     <button type="submit" class="reschedule-btn">Save Changes</button>
 </form>

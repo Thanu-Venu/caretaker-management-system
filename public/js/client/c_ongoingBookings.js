@@ -14,7 +14,7 @@ function openRescheduleModal(id) {
   );
   if (dateInput) {
     const today = new Date();
-    today.setDate(today.getDate() + 4);
+    today.setDate(today.getDate() + 1); // at least 24 hours notice
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, "0");
     const dd = String(today.getDate()).padStart(2, "0");
