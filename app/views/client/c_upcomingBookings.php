@@ -17,15 +17,12 @@
         <p class="no-bookings">You don’t have any upcoming bookings yet.</p>
     <?php else: ?>
 
-    <?php if (empty($data['bookings'])): ?>
-    <p class="no-bookings">You don’t have any upcoming bookings yet.</p>
-<?php else: ?>
 
 <div class="table-wrapper">
 <table class="bookings-table">
     <thead>
         <tr>
-            <th>Caretaker</th>
+            <th>Caregiver</th>
             <th>Service</th>
             <th>Date</th>
             <th>Time</th>
@@ -43,12 +40,12 @@
                 <td><?= $b['duration'].' '.$b['basis'] ?></td>
 
                 <td class="actions">
-                    <button class="cancel-btn"
+                    <button class="action-btn" id="cancel-btn"
                         onclick="openCancelModal(<?= $b['booking_id'] ?>)">
                         Cancel
                     </button>
 
-                    <button class="reschedule-btn"
+                    <button class="action-btn" id="reschedule-btn"
                         onclick="openRescheduleModal(<?= $b['booking_id'] ?>)">
                         Reschedule
                     </button>
@@ -61,7 +58,6 @@
 </div>
 
 <?php endif; ?>
-    <?php endif; ?>
 
 
 <!-- ================= CANCEL MODAL ================= -->
