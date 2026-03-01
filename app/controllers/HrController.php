@@ -265,6 +265,138 @@ public function approvePayment() {
     exit;
 }
 
+// ================= CHANGE REQUESTS =================
+public function changeRequests()
+{
+    $crModel = $this->model('ChangeRequestModel');
+    $requests = $crModel->getPendingRequests();
+    $this->view('hr/changeRequests', ['requests' => $requests]);
+}
+
+// ================= RESCHEDULE REQUESTS =================
+public function rescheduleRequests()
+{
+    $rrModel = $this->model('RescheduleRequestModel');
+    $requests = $rrModel->getPendingRequests();
+    $this->view('hr/rescheduleRequests', ['requests' => $requests]);
+}
+
+public function approveReschedule()
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/hr/rescheduleRequests");
+        exit;
+    }
+    $requestId = $_POST['request_id'] ?? null;
+    if (!$requestId) {
+        header("Location: " . URLROOT . "/hr/rescheduleRequests");
+        exit;
+    }
+
+    $rrModel = $this->model('RescheduleRequestModel');
+    $bookingId = $rrModel->approveRequest($requestId);
+
+    if ($bookingId) {
+        // after updating booking we may want to keep status accepted
+        $this->model('ClientModel')->updateBookingStatus($bookingId, 'Accepted');
+
+        // notify client and caretaker about the change
+        require_once APPROOT . '/models/NotificationModel.php';
+        $notif = new NotificationModel();
+        // fetch booking info for names
+        $booking = $this->model('ClientModel')->getBookingById($bookingId);
+        if ($booking) {
+            $clientId = $booking['client_id'];
+            $caretakerId = $booking['caretaker_id'];
+            $msgClient = "Your booking #{$bookingId} has been rescheduled to {$booking['booking_date']} ({$booking['preferred_time']}).";
+            $msgCt = "Booking #{$bookingId} assigned to you has been rescheduled to {$booking['booking_date']} ({$booking['preferred_time']}).";
+            $notif->addNotification($clientId, 'client', 'Reschedule Approved', $msgClient, URLROOT . "/client/c_upcomingBookings");
+            $notif->addNotification($caretakerId, 'caretaker', 'Reschedule Approved', $msgCt, URLROOT . "/caretaker/ct_ongoingBookings");
+        }
+    }
+
+    $_SESSION['success'] = "Reschedule request approved.";
+    header("Location: " . URLROOT . "/hr/rescheduleRequests");
+    exit;
+}
+
+public function rejectReschedule()
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/hr/rescheduleRequests");
+        exit;
+    }
+    $requestId = $_POST['request_id'] ?? null;
+    if (!$requestId) {
+        header("Location: " . URLROOT . "/hr/rescheduleRequests");
+        exit;
+    }
+
+    $rrModel = $this->model('RescheduleRequestModel');
+    // determine associated booking id before changing status
+    $reqDetails = $rrModel->getRequestById($requestId);
+    $rrModel->rejectRequest($requestId);
+
+    // revert booking status so client can continue using it
+    if ($reqDetails && isset($reqDetails['booking_id'])) {
+        $this->model('ClientModel')->updateBookingStatus($reqDetails['booking_id'], 'Accepted');
+        // notify client of rejection
+        require_once APPROOT . '/models/NotificationModel.php';
+        $notif = new NotificationModel();
+        $cid = $reqDetails['client_id'];
+        $msg = "Your reschedule request for booking #{$reqDetails['booking_id']} has been rejected.";
+        $notif->addNotification($cid, 'client', 'Reschedule Rejected', $msg, URLROOT . "/client/c_upcomingBookings");
+    }
+
+    $_SESSION['success'] = "Reschedule request rejected.";
+    header("Location: " . URLROOT . "/hr/rescheduleRequests");
+    exit;
+}
+
+public function approveChange()
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/hr/changeRequests");
+        exit;
+    }
+    $requestId = $_POST['request_id'] ?? null;
+    if (!$requestId) {
+        header("Location: " . URLROOT . "/hr/changeRequests");
+        exit;
+    }
+
+    $crModel = $this->model('ChangeRequestModel');
+    $bookingId = $crModel->approveRequest($requestId);
+
+    if ($bookingId) {
+        $this->model('ClientModel')->updateBookingStatus($bookingId, 'Accepted');
+    }
+
+    $_SESSION['success'] = "Change request approved.";
+    header("Location: " . URLROOT . "/hr/changeRequests");
+    exit;
+}
+
+public function rejectChange()
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/hr/changeRequests");
+        exit;
+    }
+    $requestId = $_POST['request_id'] ?? null;
+    if (!$requestId) {
+        header("Location: " . URLROOT . "/hr/changeRequests");
+        exit;
+    }
+
+    $crModel = $this->model('ChangeRequestModel');
+    $crModel->rejectRequest($requestId);
+
+    $_SESSION['success'] = "Change request rejected.";
+    header("Location: " . URLROOT . "/hr/changeRequests");
+    exit;
+}
+
 /* ================= REJECT PAYMENT ================= */
 public function rejectPayment() {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
