@@ -51,11 +51,10 @@ class HrController extends Controller {
     public function hr_complaint() {
         $this->view("hr/hr_complaint");
     }
-    
 
     public function hr_addct() {
-        $caretakers = $this->caretakerModel->getCaretakers(); // ✅ use the initialized property
-        $this->view("hr/hr_addct", ['caretakers' => $caretakers]);
+        header("Location: " . URLROOT . "/HRCaretakerCRUD/list?page=1");
+        exit;
     }    
 
     public function hr_managect() {
