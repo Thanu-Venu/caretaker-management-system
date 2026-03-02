@@ -154,9 +154,9 @@
     <section class="card">
       <h3>This Month</h3>
       <div class="mon-bod">
-      <p>Currently Available: <strong>12</strong></p>
-      <p>Hours Worked: <strong>48</strong></p>
-      <p>Earnings: <strong>1200</strong></p>
+      <p>Currently Available: <strong>12</strong></p><br>
+      <p>Hours Worked: <strong>48</strong></p><br>
+      <p>Earnings: <strong>1200</strong></p><br>
       <p>Ratings: ⭐ 4.9</p>
       </div>
     </section>
