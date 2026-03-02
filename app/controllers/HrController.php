@@ -61,8 +61,28 @@ class HrController extends Controller {
         $this->view("hr/hr_managect");
     }
 
-    public function hr_history() {
-        $this->view("hr/hr_history");
+    public function hr_logs() {
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($page < 1) $page = 1;
+
+        $limit  = 10; // logs per page
+        $offset = ($page - 1) * $limit;
+
+        $logsModel = $this->model('HRLogsModel'); // change to your model name
+
+        $logs = $logsModel->getLogsPaginated($limit, $offset);
+        $totalLogs = $logsModel->getTotalLogs();
+
+        $totalPages = (int) ceil($totalLogs / $limit);
+        if ($totalPages < 1) $totalPages = 1;
+
+        $data = [
+            'logs' => $logs,
+            'currentPage' => $page,
+            'totalPages' => $totalPages
+        ];
+
+        $this->view('hr/hr_logs', $data);
     }
 
     public function hr_leave() {
@@ -171,7 +191,9 @@ public function updateComplaintStatus() {
 
 
      public function hr_feedback() {
-        $this->view("hr/hr_feedback");
+        $feedbackModel = $this->model('FeedbackModel');
+        $feedbacks = $feedbackModel->getAll();
+        $this->view("hr/hr_feedback", ['feedbacks' => $feedbacks]);
     }
 
     public function hr_reports() {
