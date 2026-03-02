@@ -58,7 +58,7 @@ function moneyLKR($amount) {
 
 <!-- Stats Cards -->
   <div class="stats-cards">
-    <h2>Status Cards</h2>
+    <h2>Stats Cards</h2>
     <div class="card">
       <div class="action1">
         <i class='bx bx-book'></i>
@@ -88,51 +88,10 @@ function moneyLKR($amount) {
         <i class='bx bx-star' ></i>
         </div>
         <h3><?= $data['avgRating'] ?? '0.0'; ?></h3>
-<p>Average Rating </p>
+<p>Avg Rating Given</p>
 
     </div>
 </div>
-
-<!-- Quick Actions -->
-  <section class="quick-actions">
-    <h2>Quick Actions</h2>
-    <div class="actions">
-      <div class="action">
-        <i class='bx bx-search'></i>
-        <h3>   
-          <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_find1'">
-           Book New Service
-          </button>
-        </h3>
-
-        <p>Find and book a caretaker</p>
-      </div>
-      <div class="action">
-        <i class='bx bx-calendar-edit'></i>
-          <h3>   
-          <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_upcomingBookings'">
-           Reschedule Booking
-          </button>
-        </h3>
-
-        <p>Change your appointmnet time</p>
-      </div>
-      <div class="action">
-        <i class='bx bx-phone'></i>
-         <h3>   
-          <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_contactCT'">Contact Caretaker</button>
-        </h3>      
-        <p>Manage your assigned caretaker</p>
-      </div>
-      <div class="action">
-        <i class='bx bx-support'></i>
-         <h3>   
-          <button id="emergencyBtn" class="main-btn" onclick="openEmergencyModal()">Emergency Support</button>
-        </h3> 
-        <p>24/7 Emergency assistance</p>
-      </div>
-    </div>
-  </section>
 
 <!-- Price Overview -->
 <section class="price-overview">
@@ -141,8 +100,7 @@ function moneyLKR($amount) {
     <p>Base rates + time modifiers (final price depends on duration and time slot)</p>
   </div>
 
-  <div class="price-panel">
-    <div class="price-grid">
+  <div class="price-grid">
 
     <!-- Elder Care -->
     <div class="card price-card">
@@ -161,6 +119,7 @@ function moneyLKR($amount) {
 
       <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find1">Book Elder Care</a>
     </div>
+
     <!-- Babysitter -->
     <div class="card price-card">
       <div class="price-head">
@@ -200,9 +159,7 @@ function moneyLKR($amount) {
       <a class="ghost-btn" href="<?= URLROOT; ?>/client/c_find1">Book Maid</a>
     </div>
 
-    </div>
-
-    
+  </div>
 
   <!-- Time modifier mini card -->
   <div class="card modifier-card">
@@ -210,12 +167,11 @@ function moneyLKR($amount) {
       <i class='bx bx-time-five'></i>
       <h3>Time Modifiers</h3>
     </div>
-    <p class="modifier-desc">Modifiers applied to base rates depending on time slot (morning, evening, full-time, night).</p>
     <div class="modifier-grid">
-      <div><span>Morning</span><strong><?= number_format($timePriceModifier["Morning (8am - 12pm)"] * 100, 0) ?>%</strong></div>
-      <div><span>Evening</span><strong><?= number_format($timePriceModifier["Evening (1pm - 5pm)"] * 100, 0) ?>%</strong></div>
-      <div><span>Full Time</span><strong><?= number_format($timePriceModifier["Full Time (8am - 5pm)"] * 100, 0) ?>%</strong></div>
-      <div><span>Night</span><strong><?= number_format($timePriceModifier["Night (6pm - 10pm)"] * 100, 0) ?>%</strong></div>
+      <div><span>Morning</span><strong><?= $timePriceModifier["Morning (8am - 12pm)"] ?>x</strong></div>
+      <div><span>Evening</span><strong><?= $timePriceModifier["Evening (1pm - 5pm)"] ?>x</strong></div>
+      <div><span>Full Time</span><strong><?= $timePriceModifier["Full Time (8am - 5pm)"] ?>x</strong></div>
+      <div><span>Night</span><strong><?= $timePriceModifier["Night (6pm - 10pm)"] ?>x</strong></div>
     </div>
   </div>
 
@@ -234,7 +190,46 @@ function moneyLKR($amount) {
   </div>
 </section>
 
-  
+  <!-- Quick Actions -->
+  <section class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="actions">
+      <div class="action">
+        <i class='bx bx-search'></i>
+        <h3>   
+          <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_find1'">
+           Book New Service
+          </button>
+        </h3>
+
+        <p>Find and book a caretaker</p>
+      </div>
+      <div class="action">
+        <i class='bx bx-calendar-edit'></i>
+          <h3>   
+          <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_upcomingBookings'">
+           Reschedule Booking
+          </button>
+        </h3>
+
+        <p>Change your appointmnet time</p>
+      </div>
+      <div class="action">
+        <i class='bx bx-phone'></i>
+         <h3>   
+          <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_contactCT'">Contact Caretaker</button>
+        </h3>      
+        <p>Manage your assigned caretaker</p>
+      </div>
+      <div class="action">
+        <i class='bx bx-support'></i>
+         <h3>   
+          <button id="bookBtn" class="main-btn">Emergency Support</button>
+        </h3> 
+        <p>24/7 Emergency assistance</p>
+      </div>
+    </div>
+  </section>
 
 <section class="recent-bookings">
   <h2>Recent Bookings</h2>
@@ -259,127 +254,25 @@ function moneyLKR($amount) {
 
 
 
+<section class="recent-notifications">
+  <h2>Recent Notifications</h2>
 
+  <?php foreach ($data['notifications'] as $note): ?>
+    <div class="notification">
+      <i class='bx bx-bell'></i>
+      <div>
+        <p><?= $note['message']; ?></p>
+      </div>
+      <span><?= date("h:i A", strtotime($note['created_at'])); ?></span>
+    </div>
+  <?php endforeach; ?>
+</section>
 
 
 
 </div>
  <!-- your existing contzent -->
 </div>
-
-<!-- ================= EMERGENCY SUPPORT MODAL ================= -->
-<div id="emergencyModal" class="emergency-modal">
-  <div class="emergency-modal-content">
-    <span class="emergency-close" onclick="closeEmergencyModal()">&times;</span>
-    
-    <div class="emergency-header">
-      <i class='bx bx-error-circle'></i>
-      <h2>Emergency Support</h2>
-      <p>24/7 Hotline & Emergency Contacts</p>
-    </div>
-
-    <div class="emergency-contacts">
-      
-      <!-- SmartCare Hotline -->
-      <div class="contact-card hotline">
-        <div class="contact-icon">
-          <i class='bx bx-phone-call'></i>
-        </div>
-        <div class="contact-info">
-          <h3>SmartCare 24/7 Hotline</h3>
-          <p class="contact-number">077 123 4567</p>
-          <p class="contact-desc">Our support team is available round the clock</p>
-        </div>
-        <a href="tel:0771234567" class="call-btn">
-          <i class='bx bx-phone'></i> Call Now
-        </a>
-      </div>
-
-      <!-- Assigned Caretaker -->
-      <?php if (!empty($data['assignedCaretaker'])): ?>
-      <div class="contact-card caretaker">
-        <div class="contact-icon">
-          <i class='bx bx-user-circle'></i>
-        </div>
-        <div class="contact-info">
-          <h3>Your Assigned Caretaker</h3>
-          <p class="contact-number"><?= htmlspecialchars($data['assignedCaretaker']['phone'] ?? 'N/A') ?></p>
-          <p class="contact-desc"><?= htmlspecialchars($data['assignedCaretaker']['name'] ?? 'Not Assigned') ?></p>
-        </div>
-        <?php if (!empty($data['assignedCaretaker']['phone'])): ?>
-        <a href="tel:<?= htmlspecialchars($data['assignedCaretaker']['phone']) ?>" class="call-btn">
-          <i class='bx bx-phone'></i> Call Now
-        </a>
-        <?php endif; ?>
-      </div>
-      <?php endif; ?>
-
-      <!-- Emergency Services -->
-      <div class="emergency-services">
-        <h3>Emergency Services</h3>
-        <div class="service-grid">
-          
-          <div class="service-item">
-            <i class='bx bx-plus-medical'></i>
-            <div>
-              <strong>Ambulance</strong>
-              <a href="tel:1990" class="service-number">1990</a>
-            </div>
-          </div>
-
-          <div class="service-item">
-            <i class='bx bx-shield'></i>
-            <div>
-              <strong>Police</strong>
-              <a href="tel:119" class="service-number">119</a>
-            </div>
-          </div>
-
-          <div class="service-item">
-            <i class='bx bx-badge-check'></i>
-            <div>
-              <strong>Fire Service</strong>
-              <a href="tel:110" class="service-number">110</a>
-            </div>
-          </div>
-
-          <div class="service-item">
-            <i class='bx bx-hospital'></i>
-            <div>
-              <strong>Hospital</strong>
-              <a href="tel:011-269-1111" class="service-number">011-269-1111</a>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-
-    <div class="emergency-footer">
-      <p><i class='bx bx-info-circle'></i> For life-threatening emergencies, dial 1990 immediately</p>
-    </div>
-
-  </div>
-</div>
-
-<script>
-function openEmergencyModal() {
-  document.getElementById('emergencyModal').style.display = 'flex';
-}
-
-function closeEmergencyModal() {
-  document.getElementById('emergencyModal').style.display = 'none';
-}
-
-// Close modal when clicking outside
-window.onclick = function(event) {
-  const modal = document.getElementById('emergencyModal');
-  if (event.target == modal) {
-    closeEmergencyModal();
-  }
-}
-</script>
 
 </body>
 </html>

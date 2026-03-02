@@ -36,15 +36,9 @@
           History </a>
       </li>
 
-      
-<!-- Complaints Dropdown -->
-<li class="submenu">
-  <a href="#" class="dropdown-btn"><i class="fa-solid fa-file-circle-exclamation"></i> Complaints <i class="bx bx-chevron-down arrow"></i></a>
-  <ul class="dropdown-container">
-    <li><a href="http://localhost/CMA/public?url=client/c_complaintReg">Register Complaint</a></li>
-    <li><a href="http://localhost/CMA/public?url=client/c_complaintlist">My Complaints</a></li>
-  </ul>
-</li>
+      <li>
+        <a href="http://localhost/CMA/public?url=client/c_complaintReg"><i class="fa-solid fa-file-circle-exclamation"></i> Complaints </i></a>
+      </li>
 
       <li>
         <a href="http://localhost/CMA/public?url=client/c_announcement"><i class='bx bxs-megaphone'></i> Announcements </i></a>

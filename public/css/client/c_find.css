@@ -147,7 +147,6 @@ p.hint {
   width: 85%; 
   display: flex;
   flex-direction: column;
-  min-height: 550px;
 }
 
 /* Card Image — NO FACE CUT, CLEAN FIT */
@@ -235,49 +234,48 @@ p.hint {
 .overlay {
     display: none; 
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%; 
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(3px);
+    top:0; left:0;
+    width:100%; 
+    height:100%;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px); /* blur background */
     z-index: 900;
 }
 
+
 /* --------- Popup Form Container --------- */
 .popup {
-    display: none;
+    display: none;           /* Hidden initially */
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 500px;
-    background: #ffffff;
-    padding: 35px 40px;
-    border-radius: 16px;
+    top: 50%;                /* vertically center */
+    left: 470px;             /* start after sidebar width */
+    width: calc(100% - 270px); /* full width minus sidebar */
+    max-width: 1000px;       /* optional max width */
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
     z-index: 1000;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    max-height: 90vh;
-    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;        /* scroll if content too long */
+    transform: translateY(-50%); /* vertically center */
 }
 
 /* Popup Form Title */
 .popup h3 {
     text-align: center;
-    margin: 0 0 25px;
+    margin-bottom: 20px;
     color: #1e88e5;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
 }
 
 /* Form Labels */
 .popup label {
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     display: block;
     color: #333;
-    font-size: 14px;
 }
 
 /* Input Fields & Selects */
@@ -286,97 +284,59 @@ p.hint {
 .popup select {
     width: 100%;
     padding: 12px 15px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    border: 2px solid #e0e0e0;
-    font-size: 15px;
-    background-color: #fafafa;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-.popup input[type="number"]:focus,
-.popup input[type="date"]:focus,
-.popup select:focus {
-    border-color: #1e88e5;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
     background-color: #fff;
-    outline: none;
 }
 
 /* Scrollable preferred time dropdown */
 #preferredTimeSelect {
-    max-height: 120px;
+    max-height: 120px;  /* max height for scroll */
     overflow-y: auto;
 }
 
-/* Popup Actions Container */
-.popup-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 25px;
-}
-
-/* Search Button */
-.popup button[type="submit"],
-.popup-actions .book-btn {
-    flex: 1;
-    padding: 14px 20px;
+/* Popup Button */
+.popup button[type="submit"] {
+  width: auto;
+  padding: 12px 84px;
     border: none;
     background-color: #1e88e5;
     color: white;
     font-weight: 600;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+  font-size: 17px;
+    transition: 0.3s;
 }
 
-.popup button[type="submit"]:hover,
-.popup-actions .book-btn:hover {
+.popup button[type="submit"]:hover {
     background-color: #1565c0;
 }
 
-/* Cancel Button */
+.popup-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .popup-actions .cancel-btn {
-    flex: 1;
-    background-color: #dc3545;
-    color: #fff;
-    border: none;
-    padding: 14px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 12px 84px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 17px;
 }
 
 .popup-actions .cancel-btn:hover {
-    background-color: #c82333;
+  background-color: #c0392b;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .popup {
-        width: 95%;
-        padding: 25px 20px;
-        max-width: 450px;
-    }
-
-    .popup h3 {
-        font-size: 20px;
-    }
-
-    .popup-actions {
-        flex-direction: column;
-    }
-
-    .popup button[type="submit"],
-    .popup-actions .book-btn,
-    .popup-actions .cancel-btn {
-        width: 100%;
-    }
-}
-
+/* Optional: Small screens */
 @media (max-width: 480px) {
     .popup {
         width: 95%;

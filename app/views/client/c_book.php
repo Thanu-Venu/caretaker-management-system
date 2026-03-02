@@ -34,7 +34,7 @@ $serviceOptions = $data['serviceOptions'];
             <span id="basePrice">Select a service to see price</span>
             <p>Note: The base price may differ according to preferred time</p>
         </div>
-    <?php endif; ?>
+    
 
     <!-- ✅ IMPORTANT: IDs added so JS can update the caretaker summary when selecting an alternative -->
     <section class="caretaker-summary">

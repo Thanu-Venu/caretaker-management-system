@@ -360,7 +360,25 @@ public function getApprovedBookingsWithClientDetails($caretakerId) {
     }
     return false;
 }
+public function getClientsByCaretaker($caretakerId)
+{
+    $sql = "SELECT 
+                b.id AS booking_id,
+                b.client_id,
+                c.name AS client_name,
+                b.service_type,
+                b.booking_date,
+                b.preferred_time
+            FROM bookings b
+            JOIN clients c ON b.client_id = c.id
+            WHERE b.caretaker_id = ?
+            ORDER BY b.booking_date DESC";
 
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param('i', $caretakerId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
 
 public function addComplaint($data) {
     $stmt = $this->conn->prepare(
@@ -548,7 +566,91 @@ public function countCaretakersFiltered(array $filters): int
     return (int)($row['total'] ?? 0);
 }
 
+ public function getBookingsByCaretaker($caretakerId)
+    {
+        $this->conn->query(
+            'SELECT b.id AS booking_id,
+                    c.name AS client_name,
+                    s.name AS service_name,
+                    b.booking_date,
+                    b.booking_time,
+                    b.status
+             FROM bookings b
+             JOIN clients c   ON b.client_id  = c.id
+             JOIN services s  ON b.service_id = s.id
+             WHERE b.caretaker_id = :cid
+             ORDER BY b.booking_date, b.booking_time'
+        );
+        $this->conn->bind(':cid', $caretakerId);
+        return $this->conn->resultSet();
+    }
 
+    public function getServiceReport($caretakerId)
+{
+    $sql = "SELECT 
+                b.id AS booking_id,
+                c.name AS client_name,
+                b.service_type,
+                b.booking_date,
+                b.duration,
+                b.total_payment
+            FROM bookings b
+            JOIN clients c ON b.client_id = c.id
+            WHERE b.caretaker_id = ?
+            ORDER BY b.booking_date DESC";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param('i', $caretakerId);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+     // Fetch bookings for FullCalendar
+    public function getScheduleByCaretaker($caretakerId) {
+        // Select additional fields so the frontend modal can show payment/location/duration
+        $sql = "SELECT 
+                    b.id AS booking_id,
+                    c.name AS client_name,
+                    b.service_type,
+                    b.booking_date,
+                    b.preferred_time,
+                    b.duration,
+                    b.service_location,
+                    b.total_payment,
+                    b.status
+                FROM bookings b
+                JOIN clients c ON b.client_id = c.id
+                WHERE b.caretaker_id = ?
+                ORDER BY b.booking_date ASC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        $events = [];
+        foreach ($result as $row) {
+            // Use date-only start so events with non-ISO preferred_time still show on the calendar
+            $events[] = [
+                'id' => $row['booking_id'],
+                'title' => $row['client_name'] . ' - ' . $row['service_type'],
+                'start' => $row['booking_date'],
+                'allDay' => true,
+                'extendedProps' => [
+                    'client' => $row['client_name'],
+                    'service' => $row['service_type'],
+                    'time' => $row['preferred_time'],
+                    'duration' => $row['duration'],
+                    'location' => $row['service_location'],
+                    'payment' => $row['total_payment'],
+                    'status' => $row['status']
+                ]
+            ];
+        }
+
+        return $events;
+    }
 }
 
 ?>

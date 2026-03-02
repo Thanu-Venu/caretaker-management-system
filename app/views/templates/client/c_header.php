@@ -48,9 +48,7 @@ $profilePic = $_SESSION['user']['profile_image'] ?? 'default.png';
         <div class="notification-wrapper">
             <button id="notifBtn" class="notif-btn">
                 <i class="fa-solid fa-bell"></i>
-                <?php if ($unreadCount > 0): ?>
-                    <span class="notif-count"><?= $unreadCount ?></span>
-                <?php endif; ?>
+                <span class="notif-count"><?= $unreadCount ?></span>
             </button>
 
             <div id="notifDropdown" class="notif-dropdown">
