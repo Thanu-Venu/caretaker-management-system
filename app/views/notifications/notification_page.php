@@ -9,7 +9,7 @@ if (!isset($_SESSION['user'])) {
 
 $notifModel = new NotificationModel();
 $user_id = $_SESSION['user']['id'];
-$user_role = $_SESSION['user']['role'] ?? 'client';
+$user_role = $_SESSION['role'];
 $template_role = $user_role === 'Manager' ? 'hr' : $user_role;
 
 $header_file = match($template_role) {
