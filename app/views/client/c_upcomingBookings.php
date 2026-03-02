@@ -78,6 +78,13 @@
                         Cancel
                     </button>
 
+                     <!-- PAY NOW (only when Payment_Requested) -->
+    <?php if ($b['status'] === 'Payment_Requested'): ?>
+        <a class="action-btn" id="paynow-btn"
+           href="<?= URLROOT ?>/client/c_makePayment?booking_id=<?= (int)$b['booking_id'] ?>">
+            Pay Now
+        </a>
+    <?php endif; ?>
                     <?php
                         $canReschedule = in_array($b['status'], ['Accepted','Advance_Paid','Payment_Requested']);
                         if ($b['status'] === 'Reschedule_Requested') {

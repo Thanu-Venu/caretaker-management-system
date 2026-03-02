@@ -33,8 +33,6 @@ $sidebar_file = match($template_role) {
 
 include APPROOT . "/views/templates/" . $sidebar_file;
 
-// Optional: mark all as read if opening the page
-$notifModel->markAsRead($user_id, $user_role);
 
 // Get all notifications (or limit as needed)
 $notifications = $notifModel->getNotifications($user_id, $user_role, 50);
@@ -63,12 +61,12 @@ $user_display = $_SESSION['user']['name'] ?? $_SESSION['user']['username'];
                 <ul class="notif-list">
                     <?php foreach ($notifications as $n): ?>
                         <li class="notif-item <?= $n['is_read'] == 0 ? 'unread' : '' ?>">
-                            <a href="<?= htmlspecialchars($n['link']) ?>">
-                                <strong><?= htmlspecialchars($n['title']) ?></strong>
-                                <span><?= htmlspecialchars($n['message']) ?></span>
-                                <small><?= date("d M Y, H:i", strtotime($n['created_at'])) ?></small>
-                            </a>
-                        </li>
+  <a href="<?= URLROOT ?>/notification/open/<?= (int)$n['id'] ?>">
+      <strong><?= htmlspecialchars($n['title']) ?></strong>
+      <span><?= htmlspecialchars($n['message']) ?></span>
+      <small><?= date("d M Y, H:i", strtotime($n['created_at'])) ?></small>
+  </a>
+</li>
                     <?php endforeach; ?>
                 </ul>
             <?php endif; ?>
