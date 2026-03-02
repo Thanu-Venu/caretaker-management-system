@@ -37,7 +37,7 @@
       <li><a href="http://localhost/CMA/public?url=HrLeave/index"><i class='bx bx-time'></i> <span>Leave</span></a></li>
       <li><a href="http://localhost/CMA/public/index.php?url=Complaint/index"><i class='bx bx-error'></i> <span>Complaints</span></a></li>
       <li><a href="http://localhost/CMA/public?url=hr/hr_feedback"><i class='bx bx-message'></i> <span>Feedback</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=hr/hr_history"><i class='bx bx-history'></i> <span>History</span></a></li>
+      <li><a href="http://localhost/CMA/public?url=hr/hr_logs"><i class='bx bx-history'></i> <span>Logs</span></a></li>
       <li><a href="http://localhost/CMA/public?url=hr/hr_reports"><i class='bx bx-bar-chart'></i> <span>Reports</span></a></li>
       <li><a href="http://localhost/CMA/public?url=hr/hr_announcement"><i class='bx bxs-megaphone'></i> <span>Announcement</span></a></li>
       <li><a href="http://localhost/CMA/public?url=hr/hr_settings"><i class='bx bx-cog'></i> <span>Settings</span></a></li>
