@@ -51,7 +51,7 @@ function moneyLKR($amount) {
 <div id="advanceModal" class="modal" style="display:flex;">
   <div class="modal-content" style="max-width:640px;">
     <span class="close" onclick="document.getElementById('advanceModal').style.display='none'">&times;</span>
-    <h2>Advance Payments Required</h2>
+    <h2 style="margin-bottom:12px; color:#1e88e5; font-family: 'Poppins', sans-serif; font-weight:700; font-size:24px;">Advance Payments Required</h2>
     <p>You have pending advance payments for the following bookings:</p>
 
     <?php foreach ($data['pendingAdvance'] as $p): ?>
