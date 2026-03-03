@@ -16,11 +16,11 @@
       <p class="subtitle">Your caretaker booking request has been sent.</p>
 
      <div class="details">
-    <p><strong>Booking ID:</strong> <?= $data['booking']['booking_id'] ?></p>
-    <p><strong>Caretaker:</strong> <?= htmlspecialchars($data['booking']['caretaker_name']) ?></p>
-    <p><strong>Date:</strong> <?= date('d M Y', strtotime($data['booking']['booking_date'])) ?></p>
-    <p><strong>Time:</strong> <?= date('h:i A', strtotime($data['booking']['created_at'])) ?></p>
-    <p><strong>Status:</strong> <span class="<?= strtolower($data['booking']['status']) ?>"><?= $data['booking']['status'] ?></span></p>
+    <p><strong>Booking ID:</strong> <?= $booking['booking_id'] ?></p>
+    <p><strong>Caretaker:</strong> <?= htmlspecialchars($booking['caretaker_name']) ?></p>
+    <p><strong>Date:</strong> <?= date('d M Y', strtotime($booking['booking_date'])) ?></p>
+    <p><strong>Time:</strong> <?= date('h:i A', strtotime($booking['created_at'])) ?></p>
+    <p><strong>Status:</strong> <span class="<?= strtolower($booking['status']) ?>"><?= $booking['status'] ?></span></p>
 </div>
 
 

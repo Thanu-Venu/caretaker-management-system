@@ -17,52 +17,36 @@
         <p class="no-bookings">You don’t have any upcoming bookings yet.</p>
     <?php else: ?>
 
-    <?php if (empty($data['bookings'])): ?>
-    <p class="no-bookings">You don’t have any upcoming bookings yet.</p>
-<?php else: ?>
-
-<div class="table-wrapper">
-<table class="bookings-table">
-    <thead>
-        <tr>
-            <th>Caretaker</th>
-            <th>Service</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Duration</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
+    <div class="bookings-list">
         <?php foreach ($data['bookings'] as $b): ?>
-            <tr>
-                <td><?= htmlspecialchars($b['caretaker_name']) ?></td>
-                <td><?= htmlspecialchars($b['service_type']) ?></td>
-                <td><?= date('Y-m-d', strtotime($b['booking_date'])) ?></td>
-                <td><?= htmlspecialchars($b['preferred_time']) ?></td>
-                <td><?= $b['duration'].' '.$b['basis'] ?></td>
+            <div class="booking-card">
 
-                <td class="actions">
+                <h2><?= htmlspecialchars($b['caretaker_name']) ?></h2>
+                <p><strong>Service:</strong> <?= htmlspecialchars($b['service_type']) ?></p>
+                <p><strong>Date:</strong> <?= date('Y-m-d', strtotime($b['booking_date'])) ?></p>
+                <p><strong>Time:</strong> <?= htmlspecialchars($b['preferred_time']) ?></p>
+                <p><strong>Duration:</strong> <?= $b['duration'].' '.$b['basis'] ?></p>
+
+                <div class="card-actions">
+                    <!-- CANCEL -->
                     <button class="cancel-btn"
                         onclick="openCancelModal(<?= $b['booking_id'] ?>)">
-                        Cancel
+                        Cancel Booking
                     </button>
 
+                    <!-- RESCHEDULE -->
                     <button class="reschedule-btn"
                         onclick="openRescheduleModal(<?= $b['booking_id'] ?>)">
-                        Reschedule
+                        Reschedule Booking
                     </button>
                 </div>
 
             </div>
         <?php endforeach; ?>
-    </tbody>
-</table>
-</div>
+    </div>
 
-<?php endif; ?>
     <?php endif; ?>
-
+</main>
 
 <!-- ================= CANCEL MODAL ================= -->
 <div id="cancelModal" class="modal">

@@ -107,17 +107,17 @@ class LeaveModel {
 
     /* ================= HR - REASSIGN + APPROVE (USING booking_reassignments) ================= */
 
-    // Bookings affected by leave overlap (booking_date..end_date overlaps leaveStart..leaveEnd)
+    // Bookings affected by leave overlap (booking_date falls within leaveStart..leaveEnd)
     public function getAffectedBookingsRange($caretakerId, $leaveStart, $leaveEnd) {
         $sql = "SELECT *
                 FROM bookings
                 WHERE caretaker_id = ?
                   AND status IN ('Pending','Accepted')
+                  AND booking_date >= ?
                   AND booking_date <= ?
-                  AND end_date >= ?
                 ORDER BY booking_date ASC";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("iss", $caretakerId, $leaveEnd, $leaveStart);
+        $stmt->bind_param("iss", $caretakerId, $leaveStart, $leaveEnd);
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
@@ -147,10 +147,10 @@ class LeaveModel {
                 FROM bookings
                 WHERE caretaker_id = ?
                   AND status IN ('Pending','Accepted')
-                  AND booking_date <= ?
-                  AND end_date >= ?";
+                  AND booking_date >= ?
+                  AND booking_date <= ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("iss", $replacementId, $endDate, $startDate);
+        $stmt->bind_param("iss", $replacementId, $startDate, $endDate);
         $stmt->execute();
         $row = $stmt->get_result()->fetch_assoc();
         return ((int)($row['cnt'] ?? 0)) > 0;
@@ -216,7 +216,7 @@ class LeaveModel {
             $bookingId = (int)$b['id'];
 
             $bStart = $b['booking_date'];
-            $bEnd   = $b['end_date'] ?: $bStart;
+            $bEnd   = $b['booking_date'];  // Single-day booking
 
             $oStart = (strtotime($bStart) > strtotime($leaveStart)) ? $bStart : $leaveStart;
             $oEnd   = (strtotime($bEnd)   < strtotime($leaveEnd))   ? $bEnd   : $leaveEnd;
@@ -368,8 +368,8 @@ class LeaveModel {
                   FROM bookings b2
                   WHERE b2.caretaker_id = c.id
                     AND b2.status IN ('Pending','Accepted')
+                    AND b2.booking_date >= ?
                     AND b2.booking_date <= ?
-                    AND b2.end_date >= ?
               )
 
               -- no reassignment conflict (already replacement elsewhere)

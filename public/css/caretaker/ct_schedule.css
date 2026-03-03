@@ -1,3 +1,7 @@
+
+
+
+
 .main-content {
   margin-left: 270px; /* sidebar space */
   padding: 40px;
@@ -82,6 +86,118 @@ h1 {
 
 #scheduleTable tr:hover {
   background: #f4faff;
+}
+
+/* Modal Body Styles */
+.modal-body {
+  padding: 20px 0;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+/* Detail Grid Layout */
+.booking-details-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .booking-details-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Detail Section Styling */
+.detail-section {
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.detail-section:nth-child(2) {
+  border-left-color: #2ecc71;
+}
+
+.detail-section:nth-child(3) {
+  border-left-color: #e74c3c;
+}
+
+.section-title {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #34495e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 8px;
+}
+
+/* Detail Row Styling */
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 13px;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #7f8c8d;
+  min-width: 120px;
+}
+
+.detail-value {
+  color: #34495e;
+  font-weight: 500;
+  text-align: right;
+  flex-grow: 1;
+  padding-left: 10px;
+}
+
+/* Status Badge Styling */
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-accepted {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-pending {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.status-rejected {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.status-completed {
+  background: #cfe9e5;
+  color: #0c5460;
+  border: 1px solid #b8daff;
+}
+
+/* Payment styling */
+.detail-value.payment {
+  color: #000;
+  font-weight: 700;
+  font-size: 14px;
 }
 
 /* Animations */

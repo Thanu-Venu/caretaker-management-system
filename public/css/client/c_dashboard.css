@@ -481,6 +481,24 @@ body, html {
   color: #856404;
 }
 
+.status.approved {
+  background: #00bfa5;
+  color: white;
+  padding: 7px 16px;
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.status.rejected {
+  background: #f44336;
+  color: white;
+  padding: 7px 16px;
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
 /* ===================== Notifications ===================== */
 .recent-notifications h2 {
   margin: 10px 0 12px;
@@ -551,6 +569,52 @@ body, html {
   color: #2e7d32;
   font-weight: 700;
   border: 1px solid rgba(46, 125, 50, 0.2);
+}
+
+/* ===================== Leave Management ===================== */
+.leave-management {
+  margin: 40px 0 20px;
+  background: #fff;
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+.leave-management h2 {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.leave-management table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.leave-management table thead {
+  background: #f5f7fa;
+  border-bottom: 2px solid #e3e9f0;
+}
+
+.leave-management table th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.leave-management table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e3e9f0;
+  font-size: 14px;
+  color: #555;
+}
+
+.leave-management table tbody tr:hover {
+  background: #f9fcff;
 }
 
 /* ===================== Responsive ===================== */

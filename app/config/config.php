@@ -7,3 +7,5 @@ define('URLROOT', 'http://localhost/CMA');
 
 // Site Name
 define('SITENAME', 'SmartCare');
+
+

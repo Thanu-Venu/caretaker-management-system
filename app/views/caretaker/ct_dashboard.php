@@ -58,16 +58,15 @@
     <!-- Availability -->
     <section class="card availability">
       <h3>Availability Status</h3>
-      <p><strong>Currently Available</strong></p>
-      <label class="switch">
+     <br>
+      
+      <p>You're visible to clients and can receive new bookings</p><br>
+     <label class="switch">
         <input type="checkbox" checked>
         <span class="slider"></span>
       </label>
-      
-      <p>You're visible to clients and can receive new bookings</p>
-      <div class="Available">
-      <button class="butn">Available now</button>
-      </div>
+  
+     
     </section>
 
     <!-- Bookings -->
@@ -155,9 +154,9 @@
     <section class="card">
       <h3>This Month</h3>
       <div class="mon-bod">
-      <p>Currently Available: <strong>12</strong></p>
-      <p>Hours Worked: <strong>48</strong></p>
-      <p>Earnings: <strong>1200</strong></p>
+      <p>Currently Available: <strong>12</strong></p><br>
+      <p>Hours Worked: <strong>48</strong></p><br>
+      <p>Earnings: <strong>1200</strong></p><br>
       <p>Ratings: ⭐ 4.9</p>
       </div>
     </section>

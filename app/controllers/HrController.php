@@ -100,31 +100,13 @@ class HrController extends Controller {
         $this->view("hr/hr_schedule");
     }
 
-  public function hr_pending_request()
+   public function hr_pending_request()
 {
-    $perPage = 10;
-
-    $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-    $status = $_GET['status'] ?? 'All';
-
-    $total = $this->hrModel->countBookingsByStatus($status);
-    $totalPages = max(1, (int)ceil($total / $perPage));
-
-    if ($page > $totalPages) $page = $totalPages;
-
-    $offset = ($page - 1) * $perPage;
-
-    $bookings = $this->hrModel->getBookingsPaginatedByStatus(
-        $perPage,
-        $offset,
-        $status
-    );
+    $hrModel = $this->model('HrModel');
+    $bookings = $hrModel->getAllBookings();
 
     $this->view('hr/hr_pending_request', [
-        'bookings' => $bookings,
-        'page' => $page,
-        'totalPages' => $totalPages,
-        'status' => $status
+        'bookings' => $bookings
     ]);
 }
 
@@ -165,6 +147,7 @@ public function requestAdvancePayment() {
     header("Location: " . URLROOT . "/hr/hr_pending_request");
     exit;
 }
+
 public function updateComplaintStatus() {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         header("Location: " . URLROOT . "/hr/hr_complaint");
@@ -179,7 +162,7 @@ public function updateComplaintStatus() {
         exit;
     }
 
-    $status = ($action === 'accept') ? 'Approved' : 'Rejected';
+    $status = ($action === 'accept') ? 'Accepted' : 'Rejected';
 
     // Call the model to update the complaint status
     $this->hrModel->updateComplaintStatus($complaintId, $status);
