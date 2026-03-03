@@ -1,22 +1,25 @@
 /* Main section */
-.main-content {
-    margin-left: 270px;
-    padding: 40px;
-    font-family: 'Poppins', Arial, sans-serif;
-}
-
 body {
     background: #f4f7fb;
 }
 
-.form-section {
-    max-width: 600px;
-    margin: 0 auto;
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+.main-content{
+  margin-left: 270px;
+  padding: 40px;
+  min-height: 100vh;
 }
+
+/* Make the card take full available width */
+.form-section{
+  width: 100%;
+  max-width: 1200px;      /* remove the 600px limit */
+  margin: 0 auto;            /* remove centering */
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
 
 .form-section h1 {
     text-align: center;
@@ -34,7 +37,7 @@ body {
 
 .caretaker-form input,
 .caretaker-form select {
-    width: 550px;
+    width: 100%;
     padding: 10px 1px;
     margin-bottom: 20px;
     border: 1px solid #ccc;
@@ -48,28 +51,58 @@ body {
     border-color: #1565c0;
 }
 
+/* Form actions container */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
 /* Submit button */
 .submit-btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
+    padding: 12px 200px;
     background-color: #1E88E5;
     color: white;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     transition: 0.3s;
+    text-decoration: none;
 }
 
 .submit-btn:hover {
     background-color: #1565c0;
 }
 
+/* Cancel button link styling */
+.btn-cancel {
+    display: inline-block;
+    padding: 12px 230px;
+    background-color: #d32f2f;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.3s;
+    text-align: center;
+}
+
+.btn-cancel:hover {
+    background-color: #b71c1c;
+}
 /* Responsive */
 @media (max-width: 768px) {
     .form-section {
         padding: 20px;
     }
 }
+
+/* ========================
+   Form Buttons Row

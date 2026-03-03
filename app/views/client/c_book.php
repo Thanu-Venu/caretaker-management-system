@@ -35,6 +35,51 @@ $serviceOptions = $data['serviceOptions'];
             <span id="basePrice">Select a service to see price</span>
             <p>Note: The base price may differ according to preferred time</p>
         </div>
+    
+
+    <!-- ✅ IMPORTANT: IDs added so JS can update the caretaker summary when selecting an alternative -->
+    <section class="caretaker-summary">
+        <h2 id="ctName"><?= htmlspecialchars($ct['name'] ?? 'N/A') ?></h2>
+        <p><strong>Service:</strong> <span id="ctService"><?= htmlspecialchars($ct['service_type'] ?? 'N/A') ?></span></p>
+        <p><strong>Location:</strong> <span id="ctLocation"><?= htmlspecialchars($ct['location'] ?? 'N/A') ?></span></p>
+        <p><strong>Rating:</strong> ⭐ <span id="ctRating"><?= htmlspecialchars($ct['rating'] ?? 'N/A') ?></span></p>
+    </section>
+
+    <div class="form-group">
+        <label>Base Price:</label>
+        <span id="basePrice">Select a basis to see price</span>
+        <p class="hint">Final price depends on duration and preferred time.</p>
+    </div>
+
+    <section class="booking-form">
+        <form id="bookingForm" method="POST" action="<?= URLROOT ?>/public/?url=client/bookCaretaker">
+
+            <!-- ✅ JS will update caretaker_id if alternative selected -->
+            <input type="hidden" name="caretaker_id" id="caretaker_id" value="<?= (int)$ct['id'] ?>">
+
+            <!-- ✅ JS uses this for pricing/service validations -->
+            <input type="hidden" name="service_type" id="service_type" value="<?= htmlspecialchars($serviceType, ENT_QUOTES) ?>">
+
+            <input type="hidden" name="total_payment" id="total_payment" value="0">
+            <input type="hidden" name="end_date" id="end_date" value="">
+
+            <!-- ===== BASIS ===== -->
+            <div class="form-group">
+                <label for="basis">Select Basis</label>
+                <select id="basis" name="basis" required>
+                    <option value="">-- Select --</option>
+
+                    <?php if (!empty($bases)): ?>
+                        <?php foreach ($bases as $b): ?>
+                            <option value="<?= htmlspecialchars($b, ENT_QUOTES) ?>">
+                                <?= htmlspecialchars($b) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <option value="">No basis options available</option>
+                    <?php endif; ?>
+                </select>
+            </div>
 
         <!-- ================= Booking Form ================= -->
         <section class="booking-form">
@@ -119,8 +164,9 @@ $serviceOptions = $data['serviceOptions'];
                 <!-- Customization -->
                 <div class="form-group">
                     <label for="customization_hours">Customization (Extra Hours)</label>
-                    <input type="number" id="customization_hours" name="customization_hours" min="0" max="8" value="0">
                     <small>Extra hours are charged at LKR 300 per hour </small>
+                    <input type="number" id="customization_hours" name="customization_hours" min="0" max="8" value="0">
+                    
 
                     <label for="customization">Customization Notes</label>
                     <textarea id="customization" name="customization"
@@ -147,7 +193,10 @@ $serviceOptions = $data['serviceOptions'];
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" id="bookBtn">Request Booking</button>
+                <div class="form-actions">
+                    <button type="submit" id="bookBtn">Request Booking</button>
+                    <button type="button" class="cancel-btn" onclick="window.history.back()">Cancel</button>
+                </div>
 
             </form>
         </section>
