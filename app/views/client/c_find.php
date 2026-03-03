@@ -30,7 +30,6 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
         <option value="Elder Care">Elder Care</option>
         <option value="Babysitter">Babysitter</option>
         <option value="Maid">Maid</option>
-        <option value="Disability Support">Disability Support</option>
       </select>
       <script>
         window.serviceLocations = <?= json_encode($data['serviceLocations'] ?? []) ?>;
@@ -42,7 +41,7 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
         <?php
         $locations = $data['locations'] ?? [];
         foreach ($locations as $loc): ?>
-            <option value="<?= htmlspecialchars($loc) ?>" <?= ($_POST['location'] ?? '') === $loc ? 'selected' : '' ?>><?= htmlspecialchars($loc) ?></option>
+          <option value="<?= htmlspecialchars($loc) ?>" <?= ($_POST['location'] ?? '') === $loc ? 'selected' : '' ?>><?= htmlspecialchars($loc) ?></option>
         <?php endforeach; ?>
       </select>
 
@@ -65,9 +64,9 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
       </div>
 
       <div class="popup-actions">
-      <button type="button" id="cancelPopupBtn" class="cancel-btn">Cancel</button>
-      <button type="submit" class="book-btn">Search</button>
-    </div>
+        <button type="button" id="cancelPopupBtn" class="cancel-btn">Cancel</button>
+        <button type="submit" class="book-btn">Search</button>
+      </div>
 
     </form>
   </div>
@@ -154,7 +153,7 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
 &duration=<?= urlencode($_POST['duration'] ?? '') ?>
 &date=<?= urlencode($_POST['start_date'] ?? '') ?>
 &time=<?= urlencode($_POST['preferred_time'] ?? '') ?>"
-class="book-btn">Book Now</a>
+                    class="book-btn">Book Now</a>
                 </div>
 
               </div>

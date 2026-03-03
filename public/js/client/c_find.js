@@ -25,8 +25,7 @@ const timeOptions = {
 const serviceOptions = {
   "Elder Care": ["Monthly", "Yearly"],
   Babysitter: ["Daily", "Monthly", "Yearly"],
-  Maid: ["Hourly", "Daily", "Monthly", "Yearly"],
-  "Disability Support": ["Daily", "Monthly"],
+  Maid: ["Hourly", "Daily", "Monthly", "Yearly"]
 };
 
 // utility ensures preferredTimeSelect is a <select>; replaces input if present
@@ -120,15 +119,7 @@ window.onload = function () {
   startDateInput.min = formatDate(minDate);
 };
 
-const popupFormEl = document.querySelector("#searchPopup form");
-if (popupFormEl) {
-  popupFormEl.addEventListener("submit", function () {
-    const overlayEl = document.getElementById("popupOverlay");
-    const popupEl = document.getElementById("searchPopup");
-    if (overlayEl) overlayEl.style.display = "none";
-    if (popupEl) popupEl.style.display = "none";
-  });
-}
+
 
 // Update Preferred Time & Basis
 const popupServiceFilter = document.getElementById("popupServiceFilter");
@@ -201,26 +192,6 @@ if (basisFilter) {
   });
 }
 
-const serviceFilter = document.getElementById("serviceFilter");
-if (serviceFilter) {
-  serviceFilter.addEventListener("change", function () {
-    const service = this.value;
-    const timeSelect = document.getElementById("preferredTimeSelect");
-    if (!timeSelect) {
-      return;
-    }
-    timeSelect.innerHTML = '<option value="">Select Time</option>'; // reset
-
-    if (service && timeOptions[service]) {
-      timeOptions[service].forEach((time) => {
-        const option = document.createElement("option");
-        option.value = time;
-        option.textContent = time;
-        timeSelect.appendChild(option);
-      });
-    }
-  });
-}
 
 const cancelBtn = document.getElementById("cancelPopupBtn");
 const popup = document.getElementById("searchPopup");
@@ -280,6 +251,15 @@ if (locationFilter) locationFilter.addEventListener("change", applyFilters);
 if (ratingFilter) ratingFilter.addEventListener("change", applyFilters);
 
 document.addEventListener("DOMContentLoaded", function () {
+  const popupFormEl = document.querySelector("#searchPopup form");
+if (popupFormEl) {
+  popupFormEl.addEventListener("submit", function () {
+    const overlayEl = document.getElementById("popupOverlay");
+    const popupEl = document.getElementById("searchPopup");
+    if (overlayEl) overlayEl.style.display = "none";
+    if (popupEl) popupEl.style.display = "none";
+  });
+}
   const openBtn = document.getElementById("openPopupBtn");
   const overlay = document.getElementById("popupOverlay");
   const popup = document.getElementById("searchPopup");
