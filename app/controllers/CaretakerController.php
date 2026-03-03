@@ -105,31 +105,11 @@ class CaretakerController extends Controller
     public function ct_complaints()
     {
         $caretakerId = $_SESSION['user']['id'];
+        $complaints = $this->complaintModel->getComplaintsByCaretaker($caretakerId);
 
-     
-    public function ct_booking() {
-    $caretakerId = $_SESSION['user']['id'];
-    $caretakerModel = $this->model('CaretakerModel');
-
-    $upcoming = $caretakerModel->getUpcomingBookings($caretakerId);
-    $past = $caretakerModel->getPastBookings($caretakerId);
-
-    $this->view('caretaker/ct_booking', [
-        'upcoming' => $upcoming,
-        'past' => $past
-    ]);
-}
-
-            if ($result) {
-                $_SESSION['success'] = "Complaint registered successfully!";
-            } else {
-                $_SESSION['error'] = "Error saving complaint!";
-            }
-
-            // Redirect back to complaints page
-            header("Location: " . URLROOT . "/caretaker/ct_complaints");
-            exit;
-        }
+        $this->view('caretaker/ct_complaints', [
+            'complaints' => $complaints
+        ]);
     }
 
     public function getClientInfo()
@@ -156,8 +136,6 @@ class CaretakerController extends Controller
 
             echo "success";
         }
-
-
     }
 
     public function ct_reports()
@@ -176,14 +154,13 @@ class CaretakerController extends Controller
 
         // pass user info to the view
         $this->view("caretaker/ct_settings", ['user' => $user]);
-
     }
 
     public function editCaretakerDetails()
     {
 
-        if (!isset($_SESSION['user'])) {
-            header("Location: index.php?url=Auth/login");
+        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
+            header("Location: " . URLROOT . "/auth/login");
             exit;
         }
 
@@ -217,16 +194,15 @@ class CaretakerController extends Controller
             $_SESSION['user'] = $this->caretakerModel->getCaretakerById($user['id']);
 
             $_SESSION['success'] = "Profile updated successfully!";
-            header("Location: index.php?url=Caretaker/ct_settings");
+            header("Location: " . URLROOT . "/caretaker/ct_settings");
             exit();
         }
     }
 
     public function editPasswordDetails()
     {
-
-        if (!isset($_SESSION['user'])) {
-            header("Location: index.php?url=Auth/login");
+        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
+            header("Location: " . URLROOT . "/auth/login");
             exit();
         }
 
@@ -239,7 +215,7 @@ class CaretakerController extends Controller
 
             if ($newPassword !== $confirmPassword) {
                 $_SESSION['error'] = "Passwords do not match!";
-                header("Location: index.php?url=Caretaker/ct_settings");
+                header("Location: " . URLROOT . "/caretaker/ct_settings");
                 exit();
             }
 
@@ -251,7 +227,7 @@ class CaretakerController extends Controller
 
             // Success
             $_SESSION['success'] = "Password updated successfully!";
-            header("Location: index.php?url=Caretaker/ct_settings");
+            header("Location: " . URLROOT . "/caretaker/ct_settings");
             exit();
         }
     }
@@ -309,5 +285,4 @@ class CaretakerController extends Controller
 
         $this->view("caretaker/ct_announcement", $announcements);
     }
-
 }

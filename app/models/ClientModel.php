@@ -1,14 +1,20 @@
 <?php
 require_once APPROOT . '/core/Database.php';
 
-class ClientModel {
+class ClientModel
+{
     private $conn;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new Database();
         $this->conn = $db->conn;
     }
-    public function getAllClients() {
+
+    /* ===================== CLIENT CRUD ===================== */
+
+    public function getAllClients()
+    {
         $result = $this->conn->query(
             "SELECT id, name, email, phone, created_at
              FROM clients
@@ -17,7 +23,8 @@ class ClientModel {
         return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     }
 
-    public function getClientById($id) {
+    public function getClientById($id)
+    {
         $stmt = $this->conn->prepare(
             "SELECT id, name, email, phone, profile_image, created_at
              FROM clients
@@ -28,7 +35,21 @@ class ClientModel {
         return $stmt->get_result()->fetch_assoc();
     }
 
-    public function updateClient($id, $data) {
+    // Used by CaretakerController AJAX sometimes
+    public function getClientDetails($id)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT id, name, email, phone, profile_image, created_at
+             FROM clients
+             WHERE id=?"
+        );
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    public function updateClient($id, $data)
+    {
         $stmt = $this->conn->prepare(
             "UPDATE clients
              SET name=?, email=?, phone=?, profile_image=?
@@ -44,19 +65,22 @@ class ClientModel {
         return $stmt->execute();
     }
 
-    public function updateClientPassword($id, $hashedPassword) {
+    public function updateClientPassword($id, $hashedPassword)
+    {
         $stmt = $this->conn->prepare("UPDATE clients SET password=? WHERE id=?");
         $stmt->bind_param("si", $hashedPassword, $id);
         return $stmt->execute();
     }
 
-    public function deleteClient($id) {
+    public function deleteClient($id)
+    {
         $stmt = $this->conn->prepare("DELETE FROM clients WHERE id=?");
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
 
-    public function searchClients($keyword) {
+    public function searchClients($keyword)
+    {
         $search = "%" . $keyword . "%";
         $stmt = $this->conn->prepare(
             "SELECT id, name, email, phone, created_at
@@ -69,7 +93,8 @@ class ClientModel {
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function login($email, $password) {
+    public function login($email, $password)
+    {
         $stmt = $this->conn->prepare("SELECT * FROM clients WHERE email=?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -80,7 +105,23 @@ class ClientModel {
         }
         return false;
     }
-    public function getCaretakerById($id) {
+
+    public function countClients()
+    {
+        $result = $this->conn->query("SELECT COUNT(*) AS total FROM clients");
+        return $result ? ($result->fetch_assoc()['total'] ?? 0) : 0;
+    }
+
+    public function getAllClient()
+    {
+        // If your controllers call getAllClient(), keep it as alias
+        return $this->getAllClients();
+    }
+
+    /* ===================== CARETAKER HELPERS ===================== */
+
+    public function getCaretakerById($id)
+    {
         $sql = "SELECT
                     id,
                     name,
@@ -92,160 +133,72 @@ class ClientModel {
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
-
         return $stmt->get_result()->fetch_assoc();
     }
 
-    // 2️⃣ Create booking
+    /* ===================== BOOKINGS ===================== */
+
     public function createBooking($data)
-{
-    $sql = "INSERT INTO bookings 
-    (client_id, caretaker_id, service_type, basis, duration, preferred_time, booking_date, district, street, address_line1, address_line2, postal_code, customization, customization_hours, customization_price, total_payment, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-    $stmt = $this->conn->prepare($sql);
-
-    $stmt->bind_param(
-        "iississssssssidds",
-        $data['client_id'],
-        $data['caretaker_id'],
-        $data['service_type'],
-        $data['basis'],
-        $data['duration'],
-        $data['preferred_time'],
-        $data['booking_date'],
-        $data['district'],
-        $data['street'],
-        $data['address_line1'],
-        $data['address_line2'],
-        $data['postal_code'],
-        $data['customization'],
-        $data['customization_hours'],
-        $data['customization_price'],
-        $data['total_payment'],
-        $data['status']
-    );
-
-    if ($stmt->execute()) {
-        return $this->conn->insert_id; // ✅ RETURN BOOKING ID
-    }
-
-    return false;
-}
-
+    {
+        $sql = "INSERT INTO bookings
+                (client_id, caretaker_id, service_type, basis, duration, preferred_time, booking_date,
+                 district, street, address_line1, address_line2, postal_code,
+                 customization, customization_hours, customization_price, total_payment, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $this->conn->prepare($sql);
 
-public function getBookingById($bookingId) {
-    $sql = "SELECT 
-                b.id AS booking_id,
-                b.caretaker_id,
-                b.booking_date,
-                b.preferred_time,
-                b.basis,
-                b.duration,
-                b.service_type,
-                b.total_payment,
-                b.created_at,
-                b.customization,
-                b.customization_hours,
-                b.customization_price,
-                b.status,
-                c.name AS caretaker_name
-            FROM bookings b
-            JOIN caretakers c ON b.caretaker_id = c.id
-            WHERE b.id = ?";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $bookingId);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_assoc();
-}
-
-
-// Fetch Upcoming Bookings
-public function getUpcomingBookings($clientId)
-{
-    $fixStatusSql = "
-       UPDATE bookings
-       SET status = 'Requested'
-       WHERE status IS NULL OR status = ''
-    ";
-    $this->conn->query($fixStatusSql);
-
-    $updateSql = "
-        UPDATE bookings
-        SET status = 'Completed'
-        WHERE booking_date < CURDATE()
-                    AND status IN ('Requested','Payment_Requested','Advance_Paid','Accepted')
-    ";
-    $this->conn->query($updateSql);
-
-    $sql = "SELECT 
-                b.id AS booking_id,
-                b.booking_date,
-                b.preferred_time,
-                b.duration,
-                b.basis,
-                b.service_type,
-                b.status,
-                c.name AS caretaker_name
-            FROM bookings b
-            JOIN caretakers c ON b.caretaker_id = c.id
-                        WHERE b.client_id = ?
-                            AND b.status IN ('Requested','Payment_Requested','Advance_Paid','Accepted')
-                            AND b.booking_date >= CURDATE()
-            ORDER BY b.booking_date ASC";
-
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $clientId);
-    $stmt->execute();
-
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
-
         $stmt->bind_param(
-            "iississsssssssds",
-            $data['client_id'],       // i
-            $data['caretaker_id'],    // i
-            $data['service_type'],    // s
-            $data['basis'],           // s
-            $data['duration'],        // i
-            $data['preferred_time'],  // s
-            $data['booking_date'],    // s
-            $data['end_date'],        // s
-            $district,                // s
-            $street,                  // s
-            $address_line1,           // s
-            $address_line2,           // s
-            $postal_code,             // s
-            $customization,           // s
-            $data['total_payment'],   // d
-            $data['status']           // s
+            "iississssssssidds",
+            $data['client_id'],
+            $data['caretaker_id'],
+            $data['service_type'],
+            $data['basis'],
+            $data['duration'],
+            $data['preferred_time'],
+            $data['booking_date'],
+            $data['district'],
+            $data['street'],
+            $data['address_line1'],
+            $data['address_line2'],
+            $data['postal_code'],
+            $data['customization'],
+            $data['customization_hours'],
+            $data['customization_price'],
+            $data['total_payment'],
+            $data['status']
         );
 
+        if ($stmt->execute()) {
+            return $this->conn->insert_id;
+        }
+        return false;
+    }
 
-// app/models/ClientModel.php
-public function cancelBooking($booking_id, $reason)
-{
-    $status = "Cancelled";
-    $cancelled_at = date('Y-m-d H:i:s');
-
-    public function getBookingById($bookingId) {
+    public function getBookingById($bookingId)
+    {
         $sql = "SELECT
                     b.id AS booking_id,
+                    b.client_id,
+                    b.caretaker_id,
                     b.booking_date,
                     b.preferred_time,
                     b.basis,
                     b.duration,
                     b.service_type,
                     b.total_payment,
+                    b.created_at,
+                    b.customization,
+                    b.customization_hours,
+                    b.customization_price,
                     b.status,
                     b.district,
                     b.street,
                     b.address_line1,
                     b.address_line2,
                     b.postal_code,
-                    b.customization,
+                    b.cancellation_reason,
+                    b.cancelled_at,
                     c.name AS caretaker_name
                 FROM bookings b
                 JOIN caretakers c ON b.caretaker_id = c.id
@@ -256,17 +209,22 @@ public function cancelBooking($booking_id, $reason)
         return $stmt->get_result()->fetch_assoc();
     }
 
-    public function getUpcomingBookings($clientId) {
-        $updateSql = "
+    public function getUpcomingBookings($clientId)
+    {
+        // Fix NULL/empty status
+        $this->conn->query("
+            UPDATE bookings
+            SET status = 'Requested'
+            WHERE status IS NULL OR status = ''
+        ");
+
+        // Auto-complete old bookings (only those not cancelled)
+        $this->conn->query("
             UPDATE bookings
             SET status = 'Completed'
-            WHERE client_id = ?
-              AND booking_date < CURDATE()
-              AND status IN ('Pending','Accepted')
-        ";
-        $u = $this->conn->prepare($updateSql);
-        $u->bind_param("i", $clientId);
-        $u->execute();
+            WHERE booking_date < CURDATE()
+              AND status IN ('Requested','Payment_Requested','Advance_Paid','Accepted','Pending','change_requested','reschedule_requested')
+        ");
 
         $sql = "SELECT
                     b.id AS booking_id,
@@ -281,18 +239,18 @@ public function cancelBooking($booking_id, $reason)
                 FROM bookings b
                 JOIN caretakers c ON b.caretaker_id = c.id
                 WHERE b.client_id = ?
-                  AND b.status IN ('Pending', 'Accepted')
+                  AND b.status IN ('Requested','Payment_Requested')
                   AND b.booking_date >= CURDATE()
                 ORDER BY b.booking_date ASC";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $clientId);
         $stmt->execute();
-
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function getPastBookings($clientId) {
+    public function getPastBookings($clientId)
+    {
         $sql = "SELECT
                     b.id AS booking_id,
                     b.booking_date,
@@ -306,17 +264,45 @@ public function cancelBooking($booking_id, $reason)
                 FROM bookings b
                 JOIN caretakers c ON b.caretaker_id = c.id
                 WHERE b.client_id = ?
-                  AND b.status = 'Completed'
+                  AND b.status IN ('Completed','Cancelled')
                 ORDER BY b.booking_date DESC";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $clientId);
         $stmt->execute();
-
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function getPastBookingsWithFeedback($clientId) {
+    /**
+     * Get bookings that are occurring today and not yet completed or cancelled.
+     * This is used to populate the "ongoing" bookings page for clients.
+     */
+    public function getOngoingBookings($clientId)
+{
+    $sql = "SELECT
+                b.id AS booking_id,
+                b.booking_date,
+                b.preferred_time,
+                b.duration,
+                b.basis,
+                b.service_type,
+                b.status,
+                b.customization,
+                b.caretaker_changed_once,
+                ct.name AS caretaker_name
+            FROM bookings b
+            JOIN caretakers ct ON b.caretaker_id = ct.id
+            WHERE b.client_id = ?
+              AND b.status IN ('Accepted','Advance_Paid','Change_Requested','Reschedule_Requested')
+            ORDER BY b.booking_date ASC";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $clientId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+    public function getPastBookingsWithFeedback($clientId)
+    {
         $sql = "SELECT
                     b.id AS booking_id,
                     b.booking_date,
@@ -338,26 +324,36 @@ public function cancelBooking($booking_id, $reason)
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $clientId);
         $stmt->execute();
-
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function cancelBooking($booking_id, $reason) {
-        $status = "Cancelled";
-        $cancelled_at = date('Y-m-d H:i:s');
+    public function getCancelledBookings($clientId)
+{
+    $sql = "SELECT
+                b.id AS booking_id,
+                b.booking_date,
+                b.preferred_time,
+                b.duration,
+                b.basis,
+                b.service_type,
+                b.status,
+                b.cancellation_reason,
+                b.cancelled_at,
+                ct.name AS caretaker_name
+            FROM bookings b
+            JOIN caretakers ct ON b.caretaker_id = ct.id
+            WHERE b.client_id = ?
+              AND LOWER(TRIM(b.status)) = 'cancelled'
+            ORDER BY b.cancelled_at DESC, b.booking_date DESC";
 
-        $sql = "UPDATE bookings
-                SET status = ?,
-                    cancellation_reason = ?,
-                    cancelled_at = ?
-                WHERE id = ?";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $clientId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("sssi", $status, $reason, $cancelled_at, $booking_id);
-        return $stmt->execute();
-    }
-
-    public function rescheduleBooking($bookingId, $newDate, $newTime, $newDuration) {
+    public function rescheduleBooking($bookingId, $newDate, $newTime, $newDuration)
+    {
         $sql = "UPDATE bookings
                 SET booking_date = ?,
                     preferred_time = ?,
@@ -369,228 +365,238 @@ public function cancelBooking($booking_id, $reason)
         return $stmt->execute();
     }
 
-    public function getBookingsByStatus($status) {
+    public function getBookingsByStatus($status)
+    {
         $sql = "SELECT
-                    b.id as booking_id,
+                    b.id AS booking_id,
                     b.booking_date,
                     b.preferred_time,
                     b.duration,
                     b.basis,
                     b.service_type,
-                    c.name as caretaker_name
+                    b.status,
+                    c.name AS caretaker_name
                 FROM bookings b
                 JOIN caretakers c ON b.caretaker_id = c.id
-                WHERE b.status = ?";
-
-   
-    /* ================= MARK AS PAID ================= */
-   
-
-
-
-public function savePayment($paymentData) {
-    // Prevent duplicate advance payments for the same booking
-    $bookingId = $paymentData['booking_id'] ?? null;
-    $paymentType = $paymentData['payment_type'] ?? 'advance';
-    if ($bookingId && $paymentType === 'advance') {
-        $check = $this->conn->prepare(
-            "SELECT id FROM payments WHERE booking_id = ? AND payment_type = ? AND status IN ('pending','approved') ORDER BY created_at DESC LIMIT 1"
-        );
-        $check->bind_param("is", $bookingId, $paymentType);
-        $check->execute();
-        $existing = $check->get_result()->fetch_assoc();
-        $check->close();
-        if ($existing && !empty($existing['id'])) {
-            return (int) $existing['id'];
-        }
-    }
-
-    $stmt = $this->conn->prepare(
-        "INSERT INTO payments (booking_id, client_id, caretaker_id, total_booking_amount, customization_price, amount, remaining_balance, payment_method, payment_type, status, due_date) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-    );
-    
-    $status = 'pending';
-    $paymentType = $paymentData['payment_type'] ?? 'advance';
-    $dueDate = $paymentData['due_date'] ?? null;
-    $remainingBalance = ($paymentData['total_booking_amount'] ?? 0) - ($paymentData['amount'] ?? 0);
-    $customizationPrice = $paymentData['customization_price'] ?? 0;
-    
-    $stmt->bind_param(
-        "iiidddsssss",
-        $paymentData['booking_id'],
-        $paymentData['client_id'],
-        $paymentData['caretaker_id'],
-        $paymentData['total_booking_amount'],
-        $customizationPrice,
-        $paymentData['amount'],
-        $remainingBalance,
-        $paymentData['payment_method'],
-        $paymentType,
-        $status,
-        $dueDate
-    );
-    
-    if ($stmt->execute()) {
-        return $this->conn->insert_id;
-    }
-    return false;
-}
-
-// Get payments by booking
-public function getPaymentsByBooking($bookingId) {
-    $sql = "SELECT * FROM payments WHERE booking_id = ? ORDER BY created_at DESC";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $bookingId);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
-
-// Get payments by client (for payment history)
-public function getPaymentsByClient($clientId) {
-    $sql = "SELECT 
-                p.id,
-                p.booking_id,
-                p.client_id,
-                p.caretaker_id,
-                p.amount,
-                p.payment_method,
-                p.payment_type,
-                p.status,
-                p.created_at,
-                b.service_type,
-                b.duration,
-                b.basis,
-                b.total_payment,
-                b.booking_date,
-                ct.name AS caretaker_name
-            FROM payments p
-            JOIN bookings b ON p.booking_id = b.id
-            JOIN caretakers ct ON p.caretaker_id = ct.id
-            WHERE p.client_id = ?
-            ORDER BY p.created_at DESC";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $clientId);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
-
-// Update payment status
-
-
-// Get payments by status
-public function getPaymentsByStatus($status) {
-    $sql = "SELECT p.*, b.total_payment, b.basis, c.name as client_name, ct.name as caretaker_name 
-            FROM payments p
-            JOIN bookings b ON p.booking_id = b.id
-            JOIN clients c ON p.client_id = c.id
-            JOIN caretakers ct ON p.caretaker_id = ct.id
-            WHERE p.status = ?
-            ORDER BY p.created_at DESC";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("s", $status);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
-
-// Update booking status
-
-
-// Get all pending payments with details
-
-// Get all payments with details (pending, approved, rejected)
-public function getPendingPayments() {
-    $sql = "SELECT 
-                p.id,
-                p.booking_id,
-                p.client_id,
-                p.caretaker_id,
-                p.amount,
-                p.total_booking_amount,
-                p.remaining_balance,
-                p.payment_method,
-                p.payment_type,
-                p.status,
-                p.created_at,
-                p.approved_at,
-                c.name AS client_name,
-                c.phone AS client_phone,
-                ct.name AS caretaker_name,
-                b.service_type,
-                b.booking_date,
-                b.preferred_time,
-                b.basis,
-                b.duration,
-                b.total_payment
-            FROM payments p
-            JOIN clients c ON p.client_id = c.id
-            JOIN caretakers ct ON p.caretaker_id = ct.id
-            JOIN bookings b ON p.booking_id = b.id
-            ORDER BY CASE 
-                WHEN p.status = 'pending' THEN 1
-                WHEN p.status = 'approved' THEN 2
-                WHEN p.status = 'rejected' THEN 3
-            END, p.created_at DESC";
-    
-    $result = $this->conn->query($sql);
-    return $result->fetch_all(MYSQLI_ASSOC);
-}
-
-// Get payment by ID
-public function getPaymentById($paymentId) {
-    $sql = "SELECT 
-                p.*,
-                c.name AS client_name,
-                c.phone AS client_phone,
-                c.email AS client_email,
-                ct.name AS caretaker_name,
-                b.service_type,
-                b.booking_date,
-                b.preferred_time,
-                b.basis,
-                b.duration
-            FROM payments p
-            JOIN clients c ON p.client_id = c.id
-            JOIN caretakers ct ON p.caretaker_id = ct.id
-            JOIN bookings b ON p.booking_id = b.id
-            WHERE p.id = ?";
-    
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $paymentId);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_assoc();
-}
-
-// Update payment status
-public function updatePaymentStatus($paymentId, $status) {
-    $sql = "UPDATE payments SET status = :status, approved_at = NOW() WHERE id = :id";
-    $stmt = $this->conn->prepare("UPDATE payments SET status = ?, approved_at = NOW() WHERE id = ?");
-    $stmt->bind_param("si", $status, $paymentId);
-    return $stmt->execute();
-}
-
-// Update booking status
-public function updateBookingStatus($bookingId, $status) {
-    $stmt = $this->conn->prepare("UPDATE bookings SET status = ? WHERE id = ?");
-    $stmt->bind_param("si", $status, $bookingId);
-    return $stmt->execute();
-}
-
+                WHERE b.status = ?
+                ORDER BY b.booking_date DESC";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param('i', $clientId);
+        $stmt->bind_param("s", $status);
         $stmt->execute();
-
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-   /* public function markAsPaid($bookingId) {
-        $sql = "UPDATE bookings SET status = 'Paid' WHERE id = ?";
+    public function getCaretakerIdByBooking($bookingId)
+    {
+        $sql = "SELECT caretaker_id FROM bookings WHERE id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $bookingId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        return $result ? $result['caretaker_id'] : null;
+    }
+
+    /* ===================== PAYMENTS ===================== */
+
+    public function savePayment($paymentData)
+    {
+        $bookingId = $paymentData['booking_id'] ?? null;
+        $paymentType = $paymentData['payment_type'] ?? 'advance';
+
+        // Prevent duplicate advance payments
+        if ($bookingId && $paymentType === 'advance') {
+            $check = $this->conn->prepare(
+                "SELECT id
+                 FROM payments
+                 WHERE booking_id = ? AND payment_type = ?
+                   AND status IN ('pending','approved')
+                 ORDER BY created_at DESC
+                 LIMIT 1"
+            );
+            $check->bind_param("is", $bookingId, $paymentType);
+            $check->execute();
+            $existing = $check->get_result()->fetch_assoc();
+            $check->close();
+
+            if ($existing && !empty($existing['id'])) {
+                return (int)$existing['id'];
+            }
+        }
+
+        $stmt = $this->conn->prepare(
+            "INSERT INTO payments
+            (booking_id, client_id, caretaker_id, total_booking_amount, customization_price, amount, remaining_balance,
+             payment_method, payment_type, status, due_date)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        $status = 'pending';
+        $dueDate = $paymentData['due_date'] ?? null;
+
+        $totalBookingAmount = (float)($paymentData['total_booking_amount'] ?? 0);
+        $amount = (float)($paymentData['amount'] ?? 0);
+        $customizationPrice = (float)($paymentData['customization_price'] ?? 0);
+
+        $remainingBalance = $totalBookingAmount - $amount;
+
+        $stmt->bind_param(
+            "iiidddsssss",
+            $paymentData['booking_id'],
+            $paymentData['client_id'],
+            $paymentData['caretaker_id'],
+            $totalBookingAmount,
+            $customizationPrice,
+            $amount,
+            $remainingBalance,
+            $paymentData['payment_method'],
+            $paymentType,
+            $status,
+            $dueDate
+        );
+
+        if ($stmt->execute()) {
+            return $this->conn->insert_id;
+        }
+        return false;
+    }
+
+    public function getPaymentsByBooking($bookingId)
+    {
+        $sql = "SELECT * FROM payments WHERE booking_id = ? ORDER BY created_at DESC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $bookingId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getPaymentsByClient($clientId)
+    {
+        $sql = "SELECT
+                    p.id,
+                    p.booking_id,
+                    p.client_id,
+                    p.caretaker_id,
+                    p.amount,
+                    p.payment_method,
+                    p.payment_type,
+                    p.status,
+                    p.created_at,
+                    b.service_type,
+                    b.duration,
+                    b.basis,
+                    b.total_payment,
+                    b.booking_date,
+                    ct.name AS caretaker_name
+                FROM payments p
+                JOIN bookings b ON p.booking_id = b.id
+                JOIN caretakers ct ON p.caretaker_id = ct.id
+                WHERE p.client_id = ?
+                ORDER BY p.created_at DESC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getPaymentsByStatus($status)
+    {
+        $sql = "SELECT p.*, b.total_payment, b.basis, c.name as client_name, ct.name as caretaker_name
+                FROM payments p
+                JOIN bookings b ON p.booking_id = b.id
+                JOIN clients c ON p.client_id = c.id
+                JOIN caretakers ct ON p.caretaker_id = ct.id
+                WHERE p.status = ?
+                ORDER BY p.created_at DESC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $status);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getPendingPayments()
+    {
+        $sql = "SELECT
+                    p.id,
+                    p.booking_id,
+                    p.client_id,
+                    p.caretaker_id,
+                    p.amount,
+                    p.total_booking_amount,
+                    p.remaining_balance,
+                    p.payment_method,
+                    p.payment_type,
+                    p.status,
+                    p.created_at,
+                    p.approved_at,
+                    c.name AS client_name,
+                    c.phone AS client_phone,
+                    ct.name AS caretaker_name,
+                    b.service_type,
+                    b.booking_date,
+                    b.preferred_time,
+                    b.basis,
+                    b.duration,
+                    b.total_payment
+                FROM payments p
+                JOIN clients c ON p.client_id = c.id
+                JOIN caretakers ct ON p.caretaker_id = ct.id
+                JOIN bookings b ON p.booking_id = b.id
+                ORDER BY CASE
+                    WHEN p.status = 'pending' THEN 1
+                    WHEN p.status = 'approved' THEN 2
+                    WHEN p.status = 'rejected' THEN 3
+                END, p.created_at DESC";
+
+        $result = $this->conn->query($sql);
+        return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+    }
+
+    public function getPaymentById($paymentId)
+    {
+        $sql = "SELECT
+                    p.*,
+                    c.name AS client_name,
+                    c.phone AS client_phone,
+                    c.email AS client_email,
+                    ct.name AS caretaker_name,
+                    b.service_type,
+                    b.booking_date,
+                    b.preferred_time,
+                    b.basis,
+                    b.duration
+                FROM payments p
+                JOIN clients c ON p.client_id = c.id
+                JOIN caretakers ct ON p.caretaker_id = ct.id
+                JOIN bookings b ON p.booking_id = b.id
+                WHERE p.id = ?";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $paymentId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    public function updatePaymentStatus($paymentId, $status)
+    {
+        $stmt = $this->conn->prepare("UPDATE payments SET status = ?, approved_at = NOW() WHERE id = ?");
+        $stmt->bind_param("si", $status, $paymentId);
         return $stmt->execute();
-    }*/
-    public function addFeedback($data) {
+    }
+
+    public function updateBookingStatus($bookingId, $status)
+    {
+        $stmt = $this->conn->prepare("UPDATE bookings SET status = ? WHERE id = ?");
+        $stmt->bind_param("si", $status, $bookingId);
+        return $stmt->execute();
+    }
+
+    /* ===================== FEEDBACK ===================== */
+
+    public function addFeedback($data)
+    {
         $sql = "INSERT INTO feedbacks
                 (booking_id, client_id, caretaker_id, rating, feedback)
                 VALUES (?, ?, ?, ?, ?)";
@@ -608,30 +614,141 @@ public function updateBookingStatus($bookingId, $status) {
         return $stmt->execute();
     }
 
-    public function feedbackExists($bookingId) {
+    public function feedbackExists($bookingId)
+    {
         $stmt = $this->conn->prepare("SELECT id FROM feedbacks WHERE booking_id = ?");
         $stmt->bind_param("i", $bookingId);
         $stmt->execute();
         return $stmt->get_result()->num_rows > 0;
     }
 
-    public function getCaretakerIdByBooking($bookingId) {
-        $sql = "SELECT caretaker_id FROM bookings WHERE id = ?";
+    public function getAverageRatingGiven($clientId)
+    {
+        $sql = "SELECT ROUND(AVG(rating),1) AS avg_rating
+                FROM feedbacks
+                WHERE client_id = ?";
+
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $bookingId);
+        $stmt->bind_param("i", $clientId);
         $stmt->execute();
-        $result = $stmt->get_result()->fetch_assoc();
-        return $result ? $result['caretaker_id'] : null;
+        $row = $stmt->get_result()->fetch_assoc();
+        return $row['avg_rating'] ?? null;
     }
 
-    public function sendNotificationToHR($data) {
-        $sql = "INSERT INTO c_notifications (message, role) VALUES (?, ?)";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ss", $data['message'], $data['role']);
+    /* ===================== NOTIFICATIONS ===================== */
+
+    public function saveNotification($notificationData)
+    {
+        $stmt = $this->conn->prepare(
+            "INSERT INTO notifications (user_id, user_type, message, type, is_read, created_at)
+             VALUES (?, ?, ?, ?, 0, NOW())"
+        );
+
+        $type = $notificationData['type'] ?? 'general';
+
+        $stmt->bind_param(
+            "isss",
+            $notificationData['user_id'],
+            $notificationData['user_type'],
+            $notificationData['message'],
+            $type
+        );
+
         return $stmt->execute();
     }
 
-    public function getAllBookingsAdmin() {
+    public function getHRNotifications($limit = 10)
+    {
+        $sql = "SELECT
+                    n.id,
+                    n.user_id,
+                    n.user_type,
+                    n.message,
+                    n.is_read,
+                    n.created_at
+                FROM notifications n
+                WHERE n.user_id = 1
+                  AND n.user_type = 'hr'
+                ORDER BY n.is_read ASC, n.created_at DESC
+                LIMIT ?";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $limit);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getUnreadHRNotificationCount()
+    {
+        $sql = "SELECT COUNT(*) AS count
+                FROM notifications
+                WHERE user_id = 1 AND user_type = 'hr' AND is_read = 0";
+
+        $result = $this->conn->query($sql);
+        $row = $result ? $result->fetch_assoc() : ['count' => 0];
+        return $row['count'] ?? 0;
+    }
+
+    public function markNotificationAsRead($notificationId)
+    {
+        $sql = "UPDATE notifications SET is_read = 1 WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $notificationId);
+        return $stmt->execute();
+    }
+
+    public function markAllHRNotificationsAsRead()
+    {
+        $sql = "UPDATE notifications
+                SET is_read = 1
+                WHERE user_id = 1 AND user_type = 'hr' AND is_read = 0";
+        return $this->conn->query($sql);
+    }
+
+    public function getAllClientNotifications($clientId)
+    {
+        $sql = "SELECT
+                    n.id,
+                    n.user_id,
+                    n.user_role,
+                    n.message,
+                    n.is_read,
+                    n.created_at
+                FROM notifications n
+                WHERE n.user_id = ? AND n.user_role = 'client'
+                ORDER BY n.is_read ASC, n.created_at DESC
+                LIMIT 5";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+
+    public function getBookingSummaryForNotification($bookingId)
+{
+    $sql = "SELECT b.id AS booking_id, b.service_type, b.booking_date, b.preferred_time,
+                   b.basis, b.duration, b.district, b.street, b.total_payment,
+                   cl.name AS client_name, cl.email AS client_email,
+                   ct.name AS caretaker_name
+            FROM bookings b
+            JOIN clients cl ON cl.id = b.client_id
+            LEFT JOIN caretakers ct ON ct.id = b.caretaker_id
+            WHERE b.id = ?
+            LIMIT 1";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $bookingId);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    return $row;
+}
+    /* ===================== ADMIN REPORTS / STATS ===================== */
+
+    public function getAllBookingsAdmin()
+    {
         $sql = "SELECT
                     b.id AS booking_id,
                     cl.name AS client_name,
@@ -640,7 +757,6 @@ public function updateBookingStatus($bookingId, $status) {
                     b.booking_date,
                     b.status,
                     b.customization
-                    
                 FROM bookings b
                 JOIN clients cl ON b.client_id = cl.id
                 JOIN caretakers ct ON b.caretaker_id = ct.id
@@ -650,19 +766,16 @@ public function updateBookingStatus($bookingId, $status) {
         return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     }
 
-    public function countClients() {
-        $result = $this->conn->query("SELECT COUNT(*) AS total FROM clients");
-        return $result ? ($result->fetch_assoc()['total'] ?? 0) : 0;
-    }
-
-    public function countUpcomingBookings() {
+    public function countUpcomingBookings()
+    {
         $stmt = $this->conn->prepare("SELECT COUNT(*) AS total FROM bookings WHERE booking_date >= CURDATE()");
         $stmt->execute();
         $row = $stmt->get_result()->fetch_assoc();
         return $row['total'] ?? 0;
     }
 
-    public function getBookingsLast4Weeks() {
+    public function getBookingsLast4Weeks()
+    {
         $stmt = $this->conn->prepare("
             SELECT YEARWEEK(booking_date, 1) as yw, COUNT(*) as total
             FROM bookings
@@ -682,7 +795,8 @@ public function updateBookingStatus($bookingId, $status) {
         return ['labels' => $labels, 'values' => $values];
     }
 
-    public function getClientEngagementLast6Months() {
+    public function getClientEngagementLast6Months()
+    {
         $stmt = $this->conn->prepare("
             SELECT
                 DATE_FORMAT(booking_date, '%Y-%m') AS ym,
@@ -702,179 +816,245 @@ public function updateBookingStatus($bookingId, $status) {
             $labels[] = $r['mon'];
             $values[] = (int)$r['total'];
         }
-
-
-    
-    
-
-    public function getActiveBookingsCount($clientId)
-{
-        $sql = "SELECT COUNT(*) AS total
-                        FROM bookings
-                        WHERE client_id = ?
-                            AND status IN ('Requested','Payment_Requested','Advance_Paid','Accepted','Pending')";
-
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $clientId);
-    $stmt->execute();
-
-    return $stmt->get_result()->fetch_assoc()['total'];
-}
-
-
-public function getAssignedCaretakersCount($clientId)
-{
-        $sql = "SELECT COUNT(DISTINCT caretaker_id) AS total
-                        FROM bookings
-                        WHERE client_id = ?
-                            AND status IN ('Requested','Payment_Requested','Advance_Paid','Accepted','Pending','Completed','Paid')";
-
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $clientId);
-    $stmt->execute();
-
-    return $stmt->get_result()->fetch_assoc()['total'];
-}
-
-public function getTotalSpent($clientId)
-{
-    $sql = "SELECT COALESCE(SUM(p.amount),0) AS total
-            FROM payments p
-            WHERE p.client_id = ?
-              AND p.status = 'approved'";
-
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $clientId);
-    $stmt->execute();
-
-    return $stmt->get_result()->fetch_assoc()['total'];
-}
-
-
-public function getRecentBookings($clientId)
-{
-    $sql = "SELECT 
-                b.caretaker_id,
-                b.booking_date,
-                b.preferred_time,
-                b.duration,
-                b.status,
-                b.service_type,
-                c.name AS caretaker_name
-            FROM bookings b
-            JOIN caretakers c ON b.caretaker_id = c.id
-            WHERE b.client_id = ?
-            ORDER BY b.created_at DESC
-            LIMIT 3";
-
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $clientId);
-    $stmt->execute();
-
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
-
-// 3️⃣ Send notification to HR
-    public function sendNotificationToHR($data) {
-        $sql = "INSERT INTO c_notifications (message, role) VALUES (?, ?)";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ss", $data['message'], $data['role']);
-        return $stmt->execute();
+        return ['labels' => $labels, 'values' => $values];
     }
 
-    // Get HR notifications (unread only)
-public function getHRNotifications($limit = 10) {
-    $sql = "SELECT 
-                n.id,
-                n.user_id,
-                n.user_type,
-                n.message,
-                n.is_read,
-                n.created_at
-            FROM notifications n
-            WHERE n.user_id = 1
-              AND n.user_type = 'hr'
-            ORDER BY n.is_read ASC, n.created_at DESC
-            LIMIT ?";
-    
+    /* ===================== CLIENT DASHBOARD STATS ===================== */
+
+    public function getActiveBookingsCount($clientId)
+    {
+        $sql = "SELECT COUNT(*) AS total
+                FROM bookings
+                WHERE client_id = ?
+                  AND status IN ('Requested','Payment_Requested','Advance_Paid','Accepted','Pending','Change_Requested')";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        return $row['total'] ?? 0;
+    }
+
+    public function getAssignedCaretakersCount($clientId)
+    {
+        $sql = "SELECT COUNT(DISTINCT caretaker_id) AS total
+                FROM bookings
+                WHERE client_id = ?
+                  AND status IN ('Requested','Payment_Requested','Advance_Paid','Accepted','Pending','Completed','Paid')";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        return $row['total'] ?? 0;
+    }
+
+    public function getTotalSpent($clientId)
+    {
+        $sql = "SELECT COALESCE(SUM(p.amount),0) AS total
+                FROM payments p
+                WHERE p.client_id = ?
+                  AND p.status = 'approved'";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        return $row['total'] ?? 0;
+    }
+
+    public function getRecentBookings($clientId)
+    {
+        $sql = "SELECT
+                    b.caretaker_id,
+                    b.booking_date,
+                    b.preferred_time,
+                    b.duration,
+                    b.status,
+                    b.service_type,
+                    c.name AS caretaker_name
+                FROM bookings b
+                JOIN caretakers c ON b.caretaker_id = c.id
+                WHERE b.client_id = ?
+                ORDER BY b.created_at DESC
+                LIMIT 3";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+    /* ===================== ADMIN: PAGINATED BOOKINGS ===================== */
+
+public function getBookingsPaginated($limit, $offset, $search = '', $status = '')
+{
+    $limit  = (int)$limit;
+    $offset = (int)$offset;
+
+    $sql = "SELECT
+                b.id AS booking_id,
+                cl.name AS client_name,
+                cl.phone AS client_phone,
+                ct.name AS caretaker_name,
+                b.service_type,
+                b.basis,
+                b.duration,
+                b.preferred_time,
+                b.booking_date,
+                b.total_payment,
+                b.status,
+                b.created_at
+            FROM bookings b
+            JOIN clients cl ON b.client_id = cl.id
+            JOIN caretakers ct ON b.caretaker_id = ct.id
+            WHERE 1=1";
+
+    $types = "";
+    $params = [];
+
+    // Search (client name OR caretaker name OR booking id)
+    if (!empty($search)) {
+        $sql .= " AND (cl.name LIKE ? OR ct.name LIKE ? OR b.id LIKE ?)";
+        $types .= "sss";
+        $like = "%" . $search . "%";
+        $params[] = $like;
+        $params[] = $like;
+        $params[] = $like;
+    }
+
+    // Status filter
+    if (!empty($status) && $status !== 'All') {
+        $sql .= " AND b.status = ?";
+        $types .= "s";
+        $params[] = $status;
+    }
+
+    $sql .= " ORDER BY b.created_at DESC LIMIT ? OFFSET ?";
+    $types .= "ii";
+    $params[] = $limit;
+    $params[] = $offset;
+
     $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $limit);
+    $stmt->bind_param($types, ...$params);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+public function getTotalBookings($search = '', $status = '')
+{
+    $sql = "SELECT COUNT(*) AS total
+            FROM bookings b
+            JOIN clients cl ON b.client_id = cl.id
+            JOIN caretakers ct ON b.caretaker_id = ct.id
+            WHERE 1=1";
+
+    $types = "";
+    $params = [];
+
+    if (!empty($search)) {
+        $sql .= " AND (cl.name LIKE ? OR ct.name LIKE ? OR b.id LIKE ?)";
+        $types .= "sss";
+        $like = "%" . $search . "%";
+        $params[] = $like;
+        $params[] = $like;
+        $params[] = $like;
+    }
+
+    if (!empty($status) && $status !== 'All') {
+        $sql .= " AND b.status = ?";
+        $types .= "s";
+        $params[] = $status;
+    }
+
+    $stmt = $this->conn->prepare($sql);
+
+    if (!empty($types)) {
+        $stmt->bind_param($types, ...$params);
+    }
+
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+    return (int)($row['total'] ?? 0);
+}
+
+public function getAssignedCaretaker($client_id)
+{
+    $sql = "SELECT
+                b.id AS booking_id,
+                b.status,
+                b.booking_date,
+                b.service_type,
+                ct.id AS caretaker_id,
+                ct.name AS caretaker_name,
+                ct.phone AS caretaker_phone,
+                ct.email AS caretaker_email,
+                ct.service_type AS caretaker_service,
+                ct.location AS caretaker_location
+            FROM bookings b
+            JOIN caretakers ct ON ct.id = b.caretaker_id
+            WHERE b.client_id = ?
+              AND b.status IN ('Accepted','Advance_Paid','Payment_Requested')
+            ORDER BY b.created_at DESC
+            LIMIT 1";
+
+    $stmt = $this->conn->prepare($sql);
+    if (!$stmt) {
+        return null; // or throw exception / log $this->conn->error
+    }
+
+    $stmt->bind_param("i", $client_id);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    $row = $result ? $result->fetch_assoc() : null;
+
+    $stmt->close();
+    return $row;
+}
+
+
+public function cancelBooking($bookingId, $reason)
+{
+    $sql = "UPDATE bookings
+            SET status = 'cancelled',
+                cancellation_reason = ?,
+                cancelled_at = NOW()
+            WHERE id = ?";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("si", $reason, $bookingId);
+    $stmt->execute();
+
+    return $stmt->affected_rows > 0;
+}
+
+public function getAdvancePaymentPendingBookings($clientId){
+    $sql = "SELECT id AS booking_id,booking_date, preferred_time, duration, basis, service_type
+            FROM bookings
+            WHERE client_id = ?
+              AND status = 'Payment_Requested'
+            ORDER BY booking_date ASC";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $clientId);
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
-// Get unread HR notification count
-public function getUnreadHRNotificationCount() {
-    $sql = "SELECT COUNT(*) AS count FROM notifications 
-            WHERE user_id = 1 AND user_type = 'hr' AND is_read = 0";
-    
-    $result = $this->conn->query($sql);
-    return $result->fetch_assoc()['count'];
-}
-
-// Mark notification as read
-public function markNotificationAsRead($notificationId) {
-    $sql = "UPDATE notifications SET is_read = 1 WHERE id = ?";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $notificationId);
-    return $stmt->execute();
-}
-
-// Mark all HR notifications as read
-public function markAllHRNotificationsAsRead() {
-    $sql = "UPDATE notifications SET is_read = 1 
-            WHERE user_id = 1 AND user_type = 'hr' AND is_read = 0";
-    return $this->conn->query($sql);
-}
-
-// Update saveNotification to include is_read field
-public function saveNotification($notificationData) {
-    $stmt = $this->conn->prepare(
-        "INSERT INTO notifications (user_id, user_type, message, type, is_read, created_at) 
-         VALUES (?, ?, ?, ?, 0, NOW())"
-    );
-    
-    $type = $notificationData['type'] ?? 'general';
-    $stmt->bind_param(
-        "isss",
-        $notificationData['user_id'],
-        $notificationData['user_type'],
-        $notificationData['message'],
-        $type
-    );
-    
-    return $stmt->execute();
-}
-
-public function getClientNotifications($clientId)
+public function getBookedCaretakersByClient($client_id)
 {
-    $sql = "SELECT message, created_at
-            FROM c_notifications
-            WHERE role = 'Client'
-            ORDER BY created_at DESC
-            LIMIT 3";
-
-    return $this->conn->query($sql)->fetch_all(MYSQLI_ASSOC);
-}
-
-public function getAverageRatingGiven($clientId)
-{
-    $sql = "SELECT ROUND(AVG(rating),1) AS avg_rating
-            FROM feedbacks
-            WHERE client_id = ?";
+    $sql = "
+        SELECT DISTINCT c.id, c.name
+        FROM bookings b
+        JOIN caretakers c ON b.caretaker_id = c.id
+        WHERE b.client_id = ?
+        AND b.status IN ('Accepted', 'Advance_Paid', 'Completed','change_requested','reschedule_requested')
+    ";
 
     $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $clientId);
+    $stmt->bind_param("i", $client_id);
     $stmt->execute();
 
-    return $stmt->get_result()->fetch_assoc()['avg_rating'];
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
-
-
-
-    
 }
-
-
-}
-

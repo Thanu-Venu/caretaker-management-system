@@ -1,13 +1,12 @@
 <?php
+require_once APPROOT . "/models/HRDashboardModel.php";
 class HrController extends Controller {
 
     private $userModel;
     private $hrModel;
 
     private $caretakerModel;
-    private $complaintModel; 
-    
-
+    private $complaintModel;
     private $clientModel;
     private $hrLeaveModel;
     private $notificationModel;
@@ -16,14 +15,13 @@ class HrController extends Controller {
     {
         // Load caretaker model once
         $this->caretakerModel = $this->model('CaretakerModel');
-
+        $this->complaintModel = $this->model('ComplaintModel');
         $this->userModel = $this->model('UserModel');
         $this->clientModel = $this->model('ClientModel');
         $this->hrLeaveModel = $this->model('HRLeaveModel');
         $this->notificationModel = $this->model('NotificationModel');
-    
 
-    
+
     if (session_status() === PHP_SESSION_NONE) session_start();
 
      if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role']!=='Manager'){
@@ -31,8 +29,8 @@ class HrController extends Controller {
             exit;
         }
     $this->userModel = $this->model('UserModel');
-    $this->hrModel   = $this->model('HrModel'); 
-        
+    $this->hrModel   = $this->model('HrModel');
+
 
     // Revalidate caretaker from DB
     $user = $this->userModel->getUserById($_SESSION['user']['id']); // lowercase usage
@@ -44,19 +42,43 @@ class HrController extends Controller {
 
     $_SESSION['user'] = $user;
 }
-    public function hr_dashboard() {
-        $this->view("hr/hr_dashboard");
-    }
-    
-    public function hr_complaint() {
-        $this->view("hr/hr_complaint");
-    }
-    
+   public function hr_dashboard() {
+    $dash = new HRDashboardModel();
+
+    $data = [
+        'totalCaretakers' => $dash->totalCaretakers(),
+        'activeServices'  => $dash->activeServicesToday(),
+        'pendingLeave'    => $dash->pendingLeaveRequests(),
+        'pendingRequests' => $dash->pendingClientRequests(),
+        'recentLeaves'    =>$dash->recentLeaveRequests(5),
+        'recentComplaints'=>$dash->recentComplaints(5),
+        'recentBookings'  =>$dash->recentClientRequests(5)
+    ];
+
+    $this->view('hr/hr_dashboard', $data);
+}
+
+
+public function hr_complaint() {
+
+    // caretaker complaints (from ct_complaints table)
+    $ctComplaints = $this->complaintModel->getCaretakerComplaints();
+
+    // client complaints (from complaints table)
+    $clientComplaints = $this->complaintModel->getAllComplaints();
+
+    $this->view("hr/hr_complaint", [
+        'ct_complaints' => $ctComplaints,
+        'complaints'    => $clientComplaints
+    ]);
+}
+
+
 
     public function hr_addct() {
         $caretakers = $this->caretakerModel->getCaretakers(); // ✅ use the initialized property
         $this->view("hr/hr_addct", ['caretakers' => $caretakers]);
-    }    
+    }
 
     public function hr_managect() {
         $this->view("hr/hr_managect");
@@ -76,7 +98,7 @@ class HrController extends Controller {
         header('Location: ' . URLROOT . '/hr/hr_leave'); // redirect back to admin leave page
         exit();
     }
-    
+
     public function hr_schedule() {
         $this->view("hr/hr_schedule");
     }
@@ -127,20 +149,28 @@ public function requestAdvancePayment() {
 
     // 1️⃣ Update booking status
     $updated = $this->hrModel->requestAdvancePayment($booking_id);
+   $booking = $this->hrModel->getBookingSummary($booking_id);
 
-    if ($updated) {
-        // 2️⃣ Notify client with link to payment page
-        $this->notificationModel->addNotification(
-            $client_id,
-            'client',
-            "Advance Payment Required",
-            "Please pay the advance payment to proceed with your booking.",
-            URLROOT . "/client/c_makePayment?booking_id=" . $booking_id
-        );
-        $_SESSION['success'] = "Advance payment requested successfully!";
-    } else {
-        $_SESSION['error'] = "Failed to request advance payment. Please try again.";
-    }
+$details = "";
+if ($booking && $updated) {
+    $details =
+        "Booking #{$booking['booking_id']} | " .
+        "Service: {$booking['service_type']} | " .
+        "Date: {$booking['booking_date']} | " .
+        "Time: {$booking['preferred_time']} | " .
+        "Duration: {$booking['duration']} {$booking['basis']}" .
+        (!empty($booking['caretaker_name']) ? " | Caregiver: {$booking['caretaker_name']}" : "");
+}
+
+$message = "Advance payment is required to proceed.\n" . $details . "\n\nClick to pay now.";
+
+$this->notificationModel->addNotification(
+    $client_id,
+    'client',
+    "Advance Payment Required",
+    $message,
+    URLROOT . "/client/c_makePayment?booking_id=" . $booking_id
+);
 
     // 3️⃣ Redirect HR
     header("Location: " . URLROOT . "/hr/hr_pending_request");
@@ -206,7 +236,7 @@ public function updateComplaintStatus() {
     $this->view("hr/hr_announcement", $announcements);
     }
 
-    
+
 
 
 
@@ -215,7 +245,7 @@ public function updateComplaintStatus() {
 public function pendingPayments() {
     $clientModel = $this->model('ClientModel');
     $pendingPayments = $clientModel->getPendingPayments();
-    
+
     $this->view('hr/hr_pendingPayments', ['payments' => $pendingPayments]);
 }
 
@@ -234,10 +264,10 @@ public function approvePayment() {
     }
 
     $clientModel = $this->model('ClientModel');
-    
+
     // Get payment details
     $payment = $clientModel->getPaymentById($paymentId);
-    
+
     if (!$payment) {
         $_SESSION['error'] = "Payment not found";
         header("Location: " . URLROOT . "/hr/pendingPayments");
@@ -353,29 +383,79 @@ public function rejectReschedule()
     exit;
 }
 
-public function approveChange()
-{
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    public function approveChange()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: " . URLROOT . "/hr/changeRequests");
+            exit;
+        }
+
+        $requestId = (int)($_POST['request_id'] ?? 0);
+        $hrNote = trim($_POST['hr_note'] ?? '');
+
+        if ($requestId <= 0) {
+            header("Location: " . URLROOT . "/hr/changeRequests");
+            exit;
+        }
+
+        $crModel = $this->model('ChangeRequestModel');
+        $result = $crModel->approveRequest($requestId, $hrNote); // (we will update model to accept note)
+
+        if ($result) {
+            // ✅ notify client + (optional) caretaker
+            $bookingId = (int)$result['booking_id'];
+
+            $clientModel = $this->model('ClientModel');
+            $booking = $clientModel->getBookingById($result['booking_id']);
+
+            if ($booking) {
+                $msg = "Your caregiver change request for Booking #{$result['booking_id']} was approved.";
+                if ($hrNote !== '') $msg .= "\nHR Note: {$hrNote}";
+                $ok1 = $this->notificationModel->addNotification(
+                    (int)$booking['client_id'],
+                    'client',
+                    'Change Request Approved',
+                    $msg,
+                    URLROOT . "/client/c_ongoingBookings"
+                );
+
+                // optional: notify new caretaker
+                // ✅ new caretaker notification
+                $ok2 = $this->notificationModel->addNotification(
+                    (int)$booking['caretaker_id'],
+                    'caretaker',
+                    'New Booking Assigned',
+                    "Booking #{$bookingId} has been assigned to you (caregiver change approved).",
+                    URLROOT . "/caretaker/ct_booking?booking_id={$bookingId}&tab=upcoming"
+                );
+
+                // ✅ old caretaker notification (optional but useful)
+                $oldCt = (int)$result['old_caretaker_id'];
+                $newCt = (int)$result['new_caretaker_id'];
+                if ($oldCt > 0 && $oldCt !== $newCt) {
+                    $this->notificationModel->addNotification(
+                        $oldCt,
+                        'caretaker',
+                        'Booking Reassigned',
+                        "Booking #{$bookingId} is no longer assigned to you (caregiver change approved).",
+                        URLROOT . "/caretaker/ct_booking?tab=upcoming"
+                    );
+                }
+
+                // if insert fails, log it
+                if (!$ok1 || !$ok2) {
+                    error_log("Change approve: notification insert failed for booking {$bookingId}");
+                }
+            }
+
+            $_SESSION['success'] = "Change request approved.";
+        } else {
+            $_SESSION['error'] = "Failed to approve change request.";
+        }
+
         header("Location: " . URLROOT . "/hr/changeRequests");
         exit;
     }
-    $requestId = $_POST['request_id'] ?? null;
-    if (!$requestId) {
-        header("Location: " . URLROOT . "/hr/changeRequests");
-        exit;
-    }
-
-    $crModel = $this->model('ChangeRequestModel');
-    $bookingId = $crModel->approveRequest($requestId);
-
-    if ($bookingId) {
-        $this->model('ClientModel')->updateBookingStatus($bookingId, 'Accepted');
-    }
-
-    $_SESSION['success'] = "Change request approved.";
-    header("Location: " . URLROOT . "/hr/changeRequests");
-    exit;
-}
 
 public function rejectChange()
 {
@@ -384,18 +464,38 @@ public function rejectChange()
         exit;
     }
     $requestId = $_POST['request_id'] ?? null;
-    if (!$requestId) {
+    $hrNote= trim($_POST['hr_note'] ?? '');
+    if ($requestId<=0) {
         header("Location: " . URLROOT . "/hr/changeRequests");
         exit;
     }
 
     $crModel = $this->model('ChangeRequestModel');
-    $crModel->rejectRequest($requestId);
+    $result=$crModel->rejectRequest($requestId, $hrNote);
 
-    $_SESSION['success'] = "Change request rejected.";
-    header("Location: " . URLROOT . "/hr/changeRequests");
-    exit;
-}
+        if ($result) {
+            $bookingId = (int)$result['booking_id'];
+            $clientId  = (int)$result['client_id'];
+
+            $msg = "Your caregiver change request for Booking #{$bookingId} was REJECTED.";
+            if ($hrNote !== '') $msg .= "\nHR Note: {$hrNote}";
+
+            $this->notificationModel->addNotification(
+                $clientId,
+                'client',
+                'Change Request Rejected',
+                $msg,
+                URLROOT . "/client/c_ongoingBookings"
+            );
+
+            $_SESSION['success'] = "Change request rejected.";
+        } else {
+            $_SESSION['error'] = "Failed to reject change request.";
+        }
+
+        header("Location: " . URLROOT . "/hr/changeRequests");
+        exit;
+    }
 
 /* ================= REJECT PAYMENT ================= */
 public function rejectPayment() {
@@ -406,7 +506,7 @@ public function rejectPayment() {
 
     $paymentId = $_POST['payment_id'] ?? null;
     $reason = $_POST['reason'] ?? '';
-    
+
     if (!$paymentId) {
         $_SESSION['error'] = "Invalid payment ID";
         header("Location: " . URLROOT . "/hr/pendingPayments");
@@ -414,10 +514,10 @@ public function rejectPayment() {
     }
 
     $clientModel = $this->model('ClientModel');
-    
+
     // Get payment details
     $payment = $clientModel->getPaymentById($paymentId);
-    
+
     if (!$payment) {
         $_SESSION['error'] = "Payment not found";
         header("Location: " . URLROOT . "/hr/pendingPayments");
@@ -451,5 +551,5 @@ public function rejectPayment() {
 
 
 
-    
+
 }
