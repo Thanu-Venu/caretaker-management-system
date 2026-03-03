@@ -11,7 +11,7 @@ $caretaker = $data['caretaker'];
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin dashboard</title>
+  <title>HR dashboard</title>
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/caretaker_edit.css">
 </head>
@@ -19,32 +19,76 @@ $caretaker = $data['caretaker'];
 <main class="main-content">
   <section class="form-section">
     <h1>Edit Caregiver</h1>
-    <form action="<?php echo URLROOT; ?>/HRCaretakerCRUD/edit/<?php echo $caretaker['id']; ?>" method="POST">
-      
-  <label for="name">Name</label>
-  <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($caretaker['name']); ?>" required>
+    <form action="<?php echo URLROOT; ?>/HRCaretakerCRUD/edit/<?php echo $caretaker['id']; ?>" 
+      method="POST" enctype="multipart/form-data" class="caretaker-form">
 
-  <label for="email">Email</label>
-  <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($caretaker['email']); ?>" required>
+  <div class="form-grid">
 
-  <label for="phone">Phone</label>
-  <input type="text" name="phone" id="phone" value="<?php echo htmlspecialchars($caretaker['phone']); ?>" required>
+    <div class="field">
+      <label>Name</label>
+      <input type="text" name="name"
+        value="<?= htmlspecialchars($caretaker['name']); ?>" required>
+    </div>
 
-  <label for="service_type">Service Type</label>
-  <select name="service_type" id="service_type" required>
-    <option value="Elder Care" <?php if($caretaker['service_type']=='Elder Care') echo 'selected'; ?>>Elder Care</option>
-    <option value="Maid" <?php if($caretaker['service_type']=='Maid') echo 'selected'; ?>>Maid</option>
-    <option value="Babysitter" <?php if($caretaker['service_type']=='Babysitter') echo 'selected'; ?>>Babysitter</option>
-  </select>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" name="email"
+        value="<?= htmlspecialchars($caretaker['email']); ?>" required>
+    </div>
 
-  <label for="status">Status</label>
-  <select name="status" id="status" required>
-    <option value="Active" <?php if($caretaker['status']=='Active') echo 'selected'; ?>>Active</option>
-    <option value="Inactive" <?php if($caretaker['status']=='Inactive') echo 'selected'; ?>>Inactive</option>
-  </select>
+    <div class="field">
+      <label>Phone</label>
+      <input type="text" name="phone"
+        value="<?= htmlspecialchars($caretaker['phone']); ?>" required>
+    </div>
 
-  <button type="submit">Update Caregiver</button>
-  <a href="<?php echo URLROOT; ?>/hr/hr_addct">Cancel</a>
+    <div class="field">
+      <label>Experience</label>
+      <input type="text" name="experience"
+        value="<?= htmlspecialchars($caretaker['experience']); ?>" required>
+    </div>
+
+    <div class="field">
+      <label>Location</label>
+      <input type="text" name="location"
+        value="<?= htmlspecialchars($caretaker['location']); ?>" required>
+    </div>
+
+    <div class="field full">
+      <label>Qualifications</label>
+      <input type="text" name="qualifications"
+        value="<?= htmlspecialchars($caretaker['qualifications']); ?>" required>
+    </div>
+
+    <div class="field">
+      <label>Profile Picture</label>
+      <input type="file" name="profile_image" accept="image/*">
+    </div>
+
+    <div class="field">
+      <label>Service Type</label>
+      <select name="service_type" required>
+        <option value="Elder Care" <?= $caretaker['service_type']=='Elder Care' ? 'selected' : '' ?>>Elder Care</option>
+        <option value="Maid" <?= $caretaker['service_type']=='Maid' ? 'selected' : '' ?>>Maid</option>
+        <option value="Babysitter" <?= $caretaker['service_type']=='Babysitter' ? 'selected' : '' ?>>Babysitter</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Status</label>
+      <select name="status" required>
+        <option value="Active" <?= $caretaker['status']=='Active' ? 'selected' : '' ?>>Active</option>
+        <option value="Inactive" <?= $caretaker['status']=='Inactive' ? 'selected' : '' ?>>Inactive</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="submit-btn">Update Caregiver</button>
+    <a href="<?= URLROOT ?>/HRCaretakerCRUD/list" class="btn-cancel">Cancel</a>
+  </div>
+
 </form>
 
   </section>

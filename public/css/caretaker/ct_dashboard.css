@@ -189,6 +189,22 @@ tbody tr:nth-child(even) {
   font-size: 12px;
 }
 
+.status.rejected {
+  background: #f44336;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.status.pending {
+  background: #ff9800;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
 /* Calendar Widget */
 .calendar {
   text-align: center;

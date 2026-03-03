@@ -15,11 +15,11 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  color: #1E88E5;
+  color: #1e88e5;
 }
 
-h1 {
-  color: #1E88E5;
+.caretaker-header h1 {
+  color: #1e88e5;
   font-size: 28px;
 }
 
@@ -36,6 +36,7 @@ h1 {
 
 .add-btn:hover {
   background: #1565c0;
+ 
 }
 
 /* Search bar */
@@ -93,6 +94,11 @@ th, td {
   border-bottom: 1px solid #eee;
 }
 
+
+tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
 .status {
   border-radius: 12px;
   font-size: 16px;
@@ -116,13 +122,8 @@ th, td {
   transition: color 0.3s ease;
   font-size: 18px;
 }
-
-.actions .bx-edit {
-  color: #007bff;
-}
-
-.actions .bx-trash {
-    color: red;
+.actions i:hover {
+  color: #000;
 }
 
 .actions .bx-edit:hover {
@@ -133,3 +134,53 @@ th, td {
     color: #a71d2a;
 }
 
+.filter-bar form{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin: 15px 0;
+}
+
+.filter-bar select, .filter-bar input{
+  padding:8px 10px;
+  border:1px solid #ddd;
+  border-radius:8px;
+}
+
+.filter-bar button{
+  padding:8px 14px;
+  border:none;
+  border-radius:8px;
+  background:#1e88e5;
+  color:#fff;
+  cursor:pointer;
+}
+
+.reset-btn{
+  padding:8px 14px;
+  border-radius:8px;
+  background:#eee;
+  text-decoration:none;
+  color:#333;
+}
+
+.pagination{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  margin-top:15px;
+}
+
+.pagination a{
+  padding:7px 12px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  text-decoration:none;
+  color:#333;
+}
+
+.pagination a.active{
+  background:#1e88e5;
+  color:#fff;
+  border-color:#1e88e5;
+}

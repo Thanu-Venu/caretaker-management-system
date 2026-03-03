@@ -73,11 +73,8 @@ if (isset($data['user'])) {
         </form>
       </section>
 
-     
-
     </div>
   </div>
-
 
   <script src="<?php echo URLROOT; ?>/public/js/client/c_settings.js"></script>
 </body>
