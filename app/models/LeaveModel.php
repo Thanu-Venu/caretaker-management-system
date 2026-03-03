@@ -3,7 +3,18 @@ require_once APPROOT . '/core/Database.php';
 
 class LeaveModel {
     private $conn;
-
+    
+    private function bookingEndDateExpr(): string {
+    return "
+        CASE
+            WHEN basis = 'Daily'   THEN DATE_ADD(booking_date, INTERVAL (duration - 1) DAY)
+            WHEN basis = 'Weekly'  THEN DATE_ADD(booking_date, INTERVAL (duration*7 - 1) DAY)
+            WHEN basis = 'Monthly' THEN DATE_SUB(DATE_ADD(booking_date, INTERVAL duration MONTH), INTERVAL 1 DAY)
+            WHEN basis = 'Yearly'  THEN DATE_SUB(DATE_ADD(booking_date, INTERVAL duration YEAR), INTERVAL 1 DAY)
+            ELSE booking_date
+        END
+    ";
+    }
     public function __construct() {
         $db = new Database();
         $this->conn = $db->conn;
@@ -44,7 +55,27 @@ class LeaveModel {
             $data['reason'],
             $data['can_edit_until']
         );
-        return $stmt->execute();
+        $ok= $stmt->execute();
+        if(!$ok){
+            return false;
+        }
+
+        $leaveId=$this->conn->insert_id;
+
+        $title="New Leave Request";
+        $message = "Caretaker ID: {$data['user_id']}\n"
+             . "Type: {$data['leave_type']}\n"
+             . "Dates: {$data['start_date']} to {$data['end_date']}\n"
+             . "Time: {$data['start_time']} - {$data['end_time']}\n"
+             . "Reason: {$data['reason']}";
+    // Notify Manager
+$managerLink = URLROOT . "/hr/hr_leave";
+$this->notifyRoleUsers("Manager", $title, $message, $managerLink);
+
+// Notify Admin
+$adminLink = URLROOT . "/admin/ad_leave";
+$this->notifyRoleUsers("admin", $title, $message, $adminLink);
+    return true;
     }
 
     public function updateLeave($data) {
@@ -107,20 +138,24 @@ class LeaveModel {
 
     /* ================= HR - REASSIGN + APPROVE (USING booking_reassignments) ================= */
 
-    // Bookings affected by leave overlap (booking_date falls within leaveStart..leaveEnd)
+    // Bookings affected by leave overlap (booking_date..end_date overlaps leaveStart..leaveEnd)
     public function getAffectedBookingsRange($caretakerId, $leaveStart, $leaveEnd) {
-        $sql = "SELECT *
-                FROM bookings
-                WHERE caretaker_id = ?
-                  AND status IN ('Pending','Accepted')
-                  AND booking_date >= ?
-                  AND booking_date <= ?
-                ORDER BY booking_date ASC";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("iss", $caretakerId, $leaveStart, $leaveEnd);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    }
+    $endExpr = $this->bookingEndDateExpr();
+
+    $sql = "SELECT b.*,
+                   ($endExpr) AS booking_end_date
+            FROM bookings b
+            WHERE b.caretaker_id = ?
+              AND b.status IN ('Requested','Payment_Requested','Advance_Paid','Accepted','Change_Requested')
+              AND b.booking_date <= ?
+              AND ($endExpr) >= ?
+            ORDER BY b.booking_date ASC";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param('iss', $caretakerId, $leaveEnd, $leaveStart);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
 
     // Replacement cannot have an approved leave that overlaps
     public function replacementHasApprovedLeaveConflict($replacementId, $startDate, $endDate) {
@@ -141,20 +176,23 @@ class LeaveModel {
 
     // Replacement cannot have another booking that overlaps
     public function replacementHasBookingConflict($replacementId, $startDate, $endDate) {
-        if (empty($replacementId)) return false;
+    if (empty($replacementId)) return false;
 
-        $sql = "SELECT COUNT(*) AS cnt
-                FROM bookings
-                WHERE caretaker_id = ?
-                  AND status IN ('Pending','Accepted')
-                  AND booking_date >= ?
-                  AND booking_date <= ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("iss", $replacementId, $startDate, $endDate);
-        $stmt->execute();
-        $row = $stmt->get_result()->fetch_assoc();
-        return ((int)($row['cnt'] ?? 0)) > 0;
-    }
+    $endExpr = $this->bookingEndDateExpr();
+
+    $sql = "SELECT COUNT(*) AS cnt
+            FROM bookings b
+            WHERE b.caretaker_id = ?
+              AND b.status IN ('Requested','Payment_Requested','Advance_Paid','Accepted','Change_Requested')
+              AND b.booking_date <= ?
+              AND ($endExpr) >= ?";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("iss", $replacementId, $endDate, $startDate);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+    return ((int)($row['cnt'] ?? 0)) > 0;
+}
 
     // Replacement cannot already be assigned as a replacement in another reassignment range that overlaps
     public function replacementHasReassignmentConflict($replacementId, $startDate, $endDate) {
@@ -204,90 +242,122 @@ class LeaveModel {
      * NOTE: We store only the overlap portion per booking (better than storing whole leave blindly).
      */
     private function createReassignmentsForLeave($oldCaretakerId, $replacementId, $hrId, $leaveStart, $leaveEnd, $note='') {
-        $affected = $this->getAffectedBookingsRange($oldCaretakerId, $leaveStart, $leaveEnd);
-        if (empty($affected)) return true;
+    $affected = $this->getAffectedBookingsRange($oldCaretakerId, $leaveStart, $leaveEnd);
+    if (empty($affected)) return true;
 
-        $sql = "INSERT INTO booking_reassignments
-                (booking_id, old_caretaker_id, new_caretaker_id, start_date, end_date, reassigned_by, reassigned_at, note)
-                VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)";
-        $stmt = $this->conn->prepare($sql);
+    $sql = "INSERT INTO booking_reassignments
+            (booking_id, old_caretaker_id, new_caretaker_id, start_date, end_date, reassigned_by, reassigned_at, note)
+            VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)";
+    $stmt = $this->conn->prepare($sql);
 
-        foreach ($affected as $b) {
-            $bookingId = (int)$b['id'];
+    foreach ($affected as $b) {
+        $bookingId = (int)$b['id'];
+        $bStart = $b['booking_date'];
+        $bEnd   = $b['booking_end_date'] ?? $bStart;
 
-            $bStart = $b['booking_date'];
-            $bEnd   = $b['booking_date'];  // Single-day booking
+        $oStart = (strtotime($bStart) > strtotime($leaveStart)) ? $bStart : $leaveStart;
+        $oEnd   = (strtotime($bEnd)   < strtotime($leaveEnd))   ? $bEnd   : $leaveEnd;
 
-            $oStart = (strtotime($bStart) > strtotime($leaveStart)) ? $bStart : $leaveStart;
-            $oEnd   = (strtotime($bEnd)   < strtotime($leaveEnd))   ? $bEnd   : $leaveEnd;
-
-            $stmt->bind_param("iiissis", $bookingId, $oldCaretakerId, $replacementId, $oStart, $oEnd, $hrId, $note);
-            if (!$stmt->execute()) return false;
-        }
-
-        return true;
+        $stmt->bind_param("iiissis", $bookingId, $oldCaretakerId, $replacementId, $oStart, $oEnd, $hrId, $note);
+        if (!$stmt->execute()) return false;
     }
+    return true;
+}
 
     /**
      * Full transaction: validate conflicts + create reassignment records (if needed) + approve leave.
      * Does NOT modify bookings table.
      */
     public function approveLeaveWithReassign($leaveId, $replacementId, $hrId, $hrNote = '') {
-        $leave = $this->getLeaveById($leaveId);
-        if (!$leave) return ['ok'=>false, 'message'=>'Leave not found'];
-        if (strtolower($leave->status) !== 'pending') return ['ok'=>false, 'message'=>'Leave is not pending'];
+    $leave = $this->getLeaveById($leaveId);
+    if (!$leave) return ['ok' => false, 'message' => 'Leave not found'];
+    if (strtolower($leave->status) !== 'pending') return ['ok' => false, 'message' => 'Leave is not pending'];
 
-        $leaveStart = $leave->start_date;
-        $leaveEnd   = $leave->end_date;
-        $oldCaretakerId = (int)$leave->user_id;
+    $leaveStart = $leave->start_date;
+    $leaveEnd   = $leave->end_date;
+    $oldCaretakerId = (int)$leave->user_id;
 
-        $affected = $this->getAffectedBookingsRange($oldCaretakerId, $leaveStart, $leaveEnd);
+    // Uses derived booking_end_date (make sure your getAffectedBookingsRange() is the fixed version)
+    $affected = $this->getAffectedBookingsRange($oldCaretakerId, $leaveStart, $leaveEnd);
 
-        // If bookings are affected, replacement is required
-        if (!empty($affected) && empty($replacementId)) {
-            return ['ok'=>false, 'message'=>'Replacement caretaker is required because bookings are affected'];
+    // If bookings are affected, replacement is required
+    if (!empty($affected) && empty($replacementId)) {
+        return ['ok' => false, 'message' => 'Replacement caretaker is required because bookings are affected'];
+    }
+
+    // Validate conflicts if replacement is selected
+    if (!empty($replacementId)) {
+        // 1) replacement has approved leave overlap
+        if ($this->replacementHasApprovedLeaveConflict($replacementId, $leaveStart, $leaveEnd)) {
+            return ['ok' => false, 'message' => 'Replacement has an approved leave in this date range'];
         }
 
-        // Validate conflicts if replacement is selected
-        if (!empty($replacementId)) {
-            if ($this->replacementHasApprovedLeaveConflict($replacementId, $leaveStart, $leaveEnd)) {
-                return ['ok'=>false, 'message'=>'Replacement has an approved leave in this date range'];
-            }
-            if ($this->replacementHasBookingConflict($replacementId, $leaveStart, $leaveEnd)) {
-                return ['ok'=>false, 'message'=>'Replacement already has bookings in this date range'];
-            }
-            if ($this->replacementHasReassignmentConflict($replacementId, $leaveStart, $leaveEnd)) {
-                return ['ok'=>false, 'message'=>'Replacement is already assigned as a replacement in this date range'];
-            }
+        // 2) replacement has booking overlap (make sure replacementHasBookingConflict() is also fixed to derive end date)
+        if ($this->replacementHasBookingConflict($replacementId, $leaveStart, $leaveEnd)) {
+            return ['ok' => false, 'message' => 'Replacement already has bookings in this date range'];
         }
 
-        $this->conn->begin_transaction();
-        try {
-            // Create reassignment records only if affected bookings exist
-            if (!empty($affected)) {
-                $ok = $this->createReassignmentsForLeave($oldCaretakerId, $replacementId, $hrId, $leaveStart, $leaveEnd, $hrNote);
-                if (!$ok) throw new Exception("Failed to create reassignment records");
-            }
-
-            // Approve leave (replacement can be NULL)
-            if (!$this->approveLeave($leaveId, $replacementId, $hrId, $hrNote)) {
-                throw new Exception("Failed to approve leave");
-            }
-
-            $this->conn->commit();
-
-            return [
-                'ok' => true,
-                'message' => empty($affected)
-                    ? "Leave approved (no affected bookings)"
-                    : "Leave approved and reassignment records saved"
-            ];
-
-        } catch (Exception $e) {
-            $this->conn->rollback();
-            return ['ok'=>false, 'message'=>$e->getMessage()];
+        // 3) replacement already assigned as a replacement elsewhere overlap
+        if ($this->replacementHasReassignmentConflict($replacementId, $leaveStart, $leaveEnd)) {
+            return ['ok' => false, 'message' => 'Replacement is already assigned as a replacement in this date range'];
         }
     }
+
+    $this->conn->begin_transaction();
+    try {
+        // Create reassignment records only if affected bookings exist
+        if (!empty($affected)) {
+            $ok = $this->createReassignmentsForLeave(
+                $oldCaretakerId,
+                $replacementId,
+                $hrId,
+                $leaveStart,
+                $leaveEnd,
+                $hrNote
+            );
+            if (!$ok) throw new Exception("Failed to create reassignment records");
+        }
+
+        // Approve leave (replacement can be NULL if no affected bookings)
+        if (!$this->approveLeave($leaveId, $replacementId, $hrId, $hrNote)) {
+            throw new Exception("Failed to approve leave");
+        }
+
+        $this->conn->commit();
+
+        /* ===================== NOTIFICATION TO CARETAKER ===================== */
+        // Uses your common notifications table.
+        // Receiver is caretaker => user_role='caretaker'
+        $title = empty($affected) ? "Leave Approved" : "Leave Approved (Reassigned)";
+        $msg   = "Your leave request has been approved.\n"
+               . "Period: {$leaveStart} to {$leaveEnd}\n"
+               . "Note: " . (trim($hrNote) !== '' ? $hrNote : '—');
+
+        // Change this link to your caretaker leave page route
+        $link  = URLROOT . "/caretaker/ct_leave";
+
+        // If you already have notifyUser(), use it.
+        // If not, this is the direct insert.
+        $sqlN = "INSERT INTO notifications (user_id, user_role, title, message, link, is_read)
+                 VALUES (?, 'caretaker', ?, ?, ?, 0)";
+        $stmtN = $this->conn->prepare($sqlN);
+        if ($stmtN) {
+            $stmtN->bind_param("isss", $oldCaretakerId, $title, $msg, $link);
+            $stmtN->execute();
+        }
+
+        return [
+            'ok' => true,
+            'message' => empty($affected)
+                ? "Leave approved (no affected bookings)"
+                : "Leave approved and reassignment records saved"
+        ];
+
+    } catch (Exception $e) {
+        $this->conn->rollback();
+        return ['ok' => false, 'message' => $e->getMessage()];
+    }
+}
 
     /* ================= Replacement caretakers list ================= */
 
@@ -310,101 +380,136 @@ class LeaveModel {
     }
 
     public function getEligibleReplacementCaretakers($leaveId) {
-        $leave = $this->getLeaveById($leaveId);
-        if (!$leave) return ['ok' => false, 'message' => 'Leave not found', 'caretakers' => []];
+    $leave = $this->getLeaveById($leaveId);
+    if (!$leave) {
+        return ['ok' => false, 'message' => 'Leave not found', 'caretakers' => []];
+    }
 
-        $oldCaretakerId = (int)$leave->user_id;
-        $leaveStart = $leave->start_date;
-        $leaveEnd   = $leave->end_date;
+    $oldCaretakerId = (int)$leave->user_id;
+    $leaveStart = $leave->start_date;
+    $leaveEnd   = $leave->end_date;
 
-        $affected = $this->getAffectedBookingsRange($oldCaretakerId, $leaveStart, $leaveEnd);
+    // affected bookings for this caretaker during leave window (range overlap)
+    $affected = $this->getAffectedBookingsRange($oldCaretakerId, $leaveStart, $leaveEnd);
 
-        $criteria = $this->getSingleReplacementCriteria($affected);
-        if (!$criteria['ok']) {
-            return ['ok' => false, 'message' => $criteria['message'], 'caretakers' => [], 'affected' => $affected];
-        }
+    $criteria = $this->getSingleReplacementCriteria($affected);
+    if (!$criteria['ok']) {
+        return [
+            'ok' => false,
+            'message' => $criteria['message'],
+            'caretakers' => [],
+            'affected' => $affected
+        ];
+    }
 
-        // If no affected bookings, show active caretakers (excluding same caregiver)
-        if (empty($affected)) {
-            $sql = "SELECT id, name, service_type, location, rating
-                    FROM caretakers
-                    WHERE status='Active' AND id <> ?
-                    ORDER BY rating DESC, name ASC";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("i", $oldCaretakerId);
-            $stmt->execute();
-            return [
-                'ok' => true,
-                'message' => '',
-                'caretakers' => $stmt->get_result()->fetch_all(MYSQLI_ASSOC),
-                'affected' => $affected
-            ];
-        }
-
-        $serviceType = $criteria['service_type'];
-        $district    = $criteria['district'];
-
-        $sql = "
-            SELECT c.id, c.name, c.service_type, c.location, c.rating
-            FROM caretakers c
-            WHERE c.status = 'Active'
-              AND c.id <> ?
-              AND c.service_type = ?
-              AND c.location = ?
-
-              -- no approved leave conflict
-              AND NOT EXISTS (
-                  SELECT 1
-                  FROM leaves l2
-                  WHERE l2.user_id = c.id
-                    AND l2.status = 'Approved'
-                    AND l2.start_date <= ?
-                    AND l2.end_date >= ?
-              )
-
-              -- no booking conflict (range overlap)
-              AND NOT EXISTS (
-                  SELECT 1
-                  FROM bookings b2
-                  WHERE b2.caretaker_id = c.id
-                    AND b2.status IN ('Pending','Accepted')
-                    AND b2.booking_date >= ?
-                    AND b2.booking_date <= ?
-              )
-
-              -- no reassignment conflict (already replacement elsewhere)
-              AND NOT EXISTS (
-                  SELECT 1
-                  FROM booking_reassignments br
-                  WHERE br.new_caretaker_id = c.id
-                    AND br.start_date <= ?
-                    AND br.end_date >= ?
-              )
-
-            ORDER BY c.rating DESC, c.name ASC
-        ";
-
+    // If no affected bookings, show any active caretakers (excluding same caregiver)
+    if (empty($affected)) {
+        $sql = "SELECT id, name, service_type, location, rating
+                FROM caretakers
+                WHERE status='Active' AND id <> ?
+                ORDER BY rating DESC, name ASC";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param(
-            "issssssss",
-            $oldCaretakerId,
-            $serviceType,
-            $district,
-            $leaveEnd, $leaveStart,
-            $leaveEnd, $leaveStart,
-            $leaveEnd, $leaveStart
-        );
+        $stmt->bind_param("i", $oldCaretakerId);
         $stmt->execute();
 
         return [
             'ok' => true,
             'message' => '',
             'caretakers' => $stmt->get_result()->fetch_all(MYSQLI_ASSOC),
-            'affected' => $affected,
-            'criteria' => ['service_type'=>$serviceType,'district'=>$district]
+            'affected' => $affected
         ];
     }
 
+    $serviceType = $criteria['service_type']; // from affected bookings
+    $district    = $criteria['district'];     // from affected bookings
+
+    // Derived booking end date (because bookings table has no end_date)
+    // NOTE: These are DATE ranges (not time-of-day). Hourly is treated as same-day.
+    $bookingEndExpr = "
+        CASE
+            WHEN b2.basis = 'Daily'   THEN DATE_ADD(b2.booking_date, INTERVAL (b2.duration - 1) DAY)
+            WHEN b2.basis = 'Weekly'  THEN DATE_ADD(b2.booking_date, INTERVAL (b2.duration*7 - 1) DAY)
+            WHEN b2.basis = 'Monthly' THEN DATE_SUB(DATE_ADD(b2.booking_date, INTERVAL b2.duration MONTH), INTERVAL 1 DAY)
+            WHEN b2.basis = 'Yearly'  THEN DATE_SUB(DATE_ADD(b2.booking_date, INTERVAL b2.duration YEAR), INTERVAL 1 DAY)
+            ELSE b2.booking_date
+        END
+    ";
+
+    // Booking statuses that should block availability
+    $blockingStatuses = "('Requested','Payment_Requested','Advance_Paid','Accepted','Change_Requested')";
+
+    $sql = "
+        SELECT c.id, c.name, c.service_type, c.location, c.rating
+        FROM caretakers c
+        WHERE c.status = 'Active'
+          AND c.id <> ?
+          AND c.service_type = ?
+          AND c.location = ?
+
+          -- no approved leave conflict
+          AND NOT EXISTS (
+              SELECT 1
+              FROM leaves l2
+              WHERE l2.user_id = c.id
+                AND l2.status = 'Approved'
+                AND l2.start_date <= ?
+                AND l2.end_date >= ?
+          )
+
+          -- no booking conflict (range overlap using derived end date)
+          AND NOT EXISTS (
+              SELECT 1
+              FROM bookings b2
+              WHERE b2.caretaker_id = c.id
+                AND b2.status IN $blockingStatuses
+                AND b2.booking_date <= ?
+                AND ($bookingEndExpr) >= ?
+          )
+
+          -- no reassignment conflict (already replacement elsewhere)
+          AND NOT EXISTS (
+              SELECT 1
+              FROM booking_reassignments br
+              WHERE br.new_caretaker_id = c.id
+                AND br.start_date <= ?
+                AND br.end_date >= ?
+          )
+
+        ORDER BY c.rating DESC, c.name ASC
+    ";
+
+    $stmt = $this->conn->prepare($sql);
+    if (!$stmt) {
+        return ['ok' => false, 'message' => 'SQL prepare failed: ' . $this->conn->error, 'caretakers' => [], 'affected' => $affected];
+    }
+
+    // Bind order must match the placeholders:
+    // 1 oldCaretakerId
+    // 2 serviceType
+    // 3 district(location)
+    // 4 leaveEnd, 5 leaveStart (leave overlap)
+    // 6 leaveEnd, 7 leaveStart (booking overlap)
+    // 8 leaveEnd, 9 leaveStart (reassignment overlap)
+    $stmt->bind_param(
+        "issssssss",
+        $oldCaretakerId,
+        $serviceType,
+        $district,
+        $leaveEnd, $leaveStart,
+        $leaveEnd, $leaveStart,
+        $leaveEnd, $leaveStart
+    );
+
+    $stmt->execute();
+
+    return [
+        'ok' => true,
+        'message' => '',
+        'caretakers' => $stmt->get_result()->fetch_all(MYSQLI_ASSOC),
+        'affected' => $affected,
+        'criteria' => ['service_type' => $serviceType, 'district' => $district]
+    ];
+}
     /* ================= Helper: assigned caretaker for a date ================= */
 
     public function getAssignedCaretakerForBookingOnDate($bookingId, $date) {
@@ -442,4 +547,31 @@ public function getLeavesPage(int $limit, int $offset): array {
     return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
 }
 
+private function notifyUser($userId, $role, $title, $message, $link = null) {
+    $sql = "INSERT INTO notifications (user_id, user_role, title, message, link, is_read)
+            VALUES (?, ?, ?, ?, ?, 0)";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("issss", $userId, $role, $title, $message, $link);
+    return $stmt->execute();
+}
+
+/**
+ * Notify all users of a given role (Manager/admin).
+ * This assumes you have a users table. If you don't, tell me where Managers are stored.
+ */
+private function notifyRoleUsers($role, $title, $message, $link = null) {
+    // Change 'users' table/columns to match your project (very likely you have one)
+    $sql = "SELECT id FROM users WHERE role = ?"; 
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("s", $role);
+    $stmt->execute();
+    $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+    $ok = true;
+    foreach ($rows as $r) {
+        $uid = (int)$r['id'];
+        $ok = $ok && $this->notifyUser($uid, $role, $title, $message, $link);
+    }
+    return $ok;
+}
 }

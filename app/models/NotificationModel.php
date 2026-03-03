@@ -68,21 +68,6 @@ class NotificationModel
         return $row['count'] ?? 0;
     }
 
-    // Mark all as read
-    public function markAsRead($user_id, $user_role)
-    {
-        $stmt = $this->conn->prepare("
-            UPDATE notifications
-            SET is_read = 1
-            WHERE user_id = ?
-              AND user_role = ?
-        ");
-        $stmt->bind_param("is", $user_id, $user_role);
-        $result = $stmt->execute();
-        $stmt->close();
-        return $result;
-    }
-
     // Get all admin user IDs (from users table)
     public function getAdminIds()
     {
@@ -109,5 +94,33 @@ class NotificationModel
 {
     $result = $this->conn->query("SELECT id FROM users WHERE role = 'Manager'");
     return $result->fetch_all(MYSQLI_ASSOC);
+}
+public function getNotificationById($notifId, $user_id, $user_role)
+{
+    $stmt = $this->conn->prepare("
+        SELECT id, link, is_read
+        FROM notifications
+        WHERE id = ? AND user_id = ? AND user_role = ?
+        LIMIT 1
+    ");
+    $stmt->bind_param("iis", $notifId, $user_id, $user_role);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    return $row;
+}
+
+public function markOneRead($notifId, $user_id, $user_role)
+{
+    $stmt = $this->conn->prepare("
+        UPDATE notifications
+        SET is_read = 1
+        WHERE id = ? AND user_id = ? AND user_role = ?
+    ");
+    $stmt->bind_param("iis", $notifId, $user_id, $user_role);
+    $stmt->execute();
+    $ok = ($stmt->affected_rows > 0);
+    $stmt->close();
+    return $ok;
 }
 }

@@ -1,4 +1,4 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php  include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
 
 <?php if (!empty($_SESSION['flash_message'])): ?>
@@ -45,6 +45,34 @@ function moneyLKR($amount) {
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_dashboard.css">
 </head>
 <body>
+  <body>
+
+<?php if (!empty($data['pendingAdvance'])): ?>
+<div id="advanceModal" class="modal" style="display:flex;">
+  <div class="modal-content" style="max-width:640px;">
+    <span class="close" onclick="document.getElementById('advanceModal').style.display='none'">&times;</span>
+    <h2 style="margin-bottom:12px; color:#1e88e5; font-family: 'Poppins', sans-serif; font-weight:700; font-size:24px;">Advance Payments Required</h2>
+    <p>You have pending advance payments for the following bookings:</p>
+
+    <?php foreach ($data['pendingAdvance'] as $p): ?>
+      <div class="advance-details" style="margin-bottom:15px;">
+        <div><b>Booking #:</b> <?= $p['booking_id'] ?></div>
+        <div><b>Service:</b> <?= htmlspecialchars($p['service_type']) ?></div>
+        <div><b>Date:</b> <?= htmlspecialchars($p['booking_date']) ?></div>
+        <div><b>Time:</b> <?= htmlspecialchars($p['preferred_time']) ?></div>
+        <div><b>Duration:</b> <?= htmlspecialchars($p['duration'].' '.$p['basis']) ?></div>
+
+        <a class="modal-submit-btn"
+           style="margin-top:10px;"
+           href="<?= URLROOT ?>/client/c_makePayment?booking_id=<?= $p['booking_id'] ?>">
+          Pay Now
+        </a>
+      </div>
+    <?php endforeach; ?>
+
+  </div>
+</div>
+<?php endif; ?>
 <div class="container">
  
 
@@ -302,6 +330,7 @@ function moneyLKR($amount) {
 </div>
  <!-- your existing contzent -->
 </div>
+
 
 </body>
 </html>

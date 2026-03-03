@@ -146,10 +146,21 @@ public function updateBookingStatus($booking_id, $status) {
 
 public function sendNotification($data)
 {
-    $sql = "INSERT INTO c_notifications (message, role)
-            VALUES (?, ?)";
+    $sql = "INSERT INTO notifications 
+            (user_id, user_role, title, message, link, is_read, created_at)
+            VALUES (?, ?, ?, ?, ?, 0, NOW())";
+
     $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("ss", $data['message'], $data['role']);
+
+    $stmt->bind_param(
+        "issss",
+        $data['user_id'],
+        $data['user_role'],
+        $data['title'],
+        $data['message'],
+        $data['link']
+    );
+
     return $stmt->execute();
 }
 
@@ -220,6 +231,8 @@ public function getBookingsPaginatedByStatus(
     $sql = "
         SELECT 
             b.id AS booking_id,
+            b.client_id,            -- ✅ add
+            b.caretaker_id,         -- ✅ add (optional but useful)
             b.booking_date,
             b.preferred_time,
             b.status,
@@ -266,5 +279,15 @@ public function getBookingsPaginatedByStatus(
 
     return $res->fetch_all(MYSQLI_ASSOC);
 }
-
+public function getBookingSummary($bookingId){
+    $sql = "SELECT b.id AS booking_id, b.booking_date, b.preferred_time, b.duration, b.basis, b.service_type,
+                   ct.name AS caretaker_name
+            FROM bookings b
+            LEFT JOIN caretakers ct ON ct.id = b.caretaker_id
+            WHERE b.id = ? LIMIT 1";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $bookingId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
 }
