@@ -1,15 +1,38 @@
 <?php
 
-class HrLeaveController extends Controller {
+class HrLeaveController extends Controller
+{
 
     private $leaveModel;
+    private $hrLogsModel;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->leaveModel = $this->model('LeaveModel');
+        $this->hrLogsModel = $this->model('HRLogsModel');
+    }
+
+    private function logManagerAction($action, $section = 'Leaves')
+    {
+        $userId = (int)($_SESSION['user']['id'] ?? 0);
+        if ($userId <= 0) {
+            return;
+        }
+
+        $username = $_SESSION['user']['username'] ?? ($_SESSION['user']['name'] ?? 'unknown');
+
+        $this->hrLogsModel->log([
+            'user_id' => $userId,
+            'username' => $username,
+            'role' => 'Manager',
+            'action' => $action,
+            'section' => $section
+        ]);
     }
 
     // ✅ Central role check (Manager)
-    private function requireManager() {
+    private function requireManager()
+    {
         if (!isset($_SESSION['user'])) {
             die("Not logged in");
         }
@@ -24,53 +47,56 @@ class HrLeaveController extends Controller {
     }
 
     // HR leave list
-    public function index() {
-    $this->requireManager();
+    public function index()
+    {
+        $this->requireManager();
 
-    $perPage = 10;
-    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-    if ($page < 1) $page = 1;
+        $perPage = 10;
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($page < 1) $page = 1;
 
-    $total = $this->leaveModel->countAllLeaves();
-    $totalPages = max(1, (int)ceil($total / $perPage));
+        $total = $this->leaveModel->countAllLeaves();
+        $totalPages = max(1, (int)ceil($total / $perPage));
 
-    if ($page > $totalPages) $page = $totalPages;
+        if ($page > $totalPages) $page = $totalPages;
 
-    $offset = ($page - 1) * $perPage;
-    $rows = $this->leaveModel->getLeavesPage($perPage, $offset);
+        $offset = ($page - 1) * $perPage;
+        $rows = $this->leaveModel->getLeavesPage($perPage, $offset);
 
-    $this->view('hr/hr_leave', [
-        'leaves' => $rows,
-        'page' => $page,
-        'perPage' => $perPage,
-        'total' => $total,
-        'totalPages' => $totalPages
-    ]);
-}
+        $this->view('hr/hr_leave', [
+            'leaves' => $rows,
+            'page' => $page,
+            'perPage' => $perPage,
+            'total' => $total,
+            'totalPages' => $totalPages
+        ]);
+    }
 
 
 
     // Show approve screen (choose replacement + see affected bookings)
-    public function approve_form($leaveId) {
-    $this->requireManager(); // or your Manager check
+    public function approve_form($leaveId)
+    {
+        $this->requireManager(); // or your Manager check
 
-    $leaveId = (int)$leaveId;
-    $leave = $this->leaveModel->getLeaveById($leaveId);
-    if (!$leave) die("Leave not found");
+        $leaveId = (int)$leaveId;
+        $leave = $this->leaveModel->getLeaveById($leaveId);
+        if (!$leave) die("Leave not found");
 
-    $result = $this->leaveModel->getEligibleReplacementCaretakers($leaveId);
+        $result = $this->leaveModel->getEligibleReplacementCaretakers($leaveId);
 
-    $this->view('hr/hr_leave_approve', [
-        'leave' => $leave,
-        'affected' => $result['affected'] ?? [],
-        'caretakers' => $result['caretakers'] ?? [],
-        'error' => ($result['ok'] ? '' : ($result['message'] ?? '')),
-        'criteria' => $result['criteria'] ?? null
-    ]);
-}
+        $this->view('hr/hr_leave_approve', [
+            'leave' => $leave,
+            'affected' => $result['affected'] ?? [],
+            'caretakers' => $result['caretakers'] ?? [],
+            'error' => ($result['ok'] ? '' : ($result['message'] ?? '')),
+            'criteria' => $result['criteria'] ?? null
+        ]);
+    }
 
     // POST: approve + reassign
-    public function approve_submit() {
+    public function approve_submit()
+    {
         $this->requireManager();
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -96,15 +122,19 @@ class HrLeaveController extends Controller {
             die("Error: " . htmlspecialchars($res['message']));
         }
 
+        $this->logManagerAction("Approved leave request (Leave ID: {$leaveId})", 'Leaves');
+
         header("Location: " . URLROOT . "/HrLeave/index");
         exit;
     }
 
     // Reject
-    public function reject($leaveId) {
+    public function reject($leaveId)
+    {
         $this->requireManager();
 
         $this->leaveModel->updateLeaveStatus((int)$leaveId, 'Rejected');
+        $this->logManagerAction("Rejected leave request (Leave ID: " . (int)$leaveId . ")", 'Leaves');
         header("Location: " . URLROOT . "/HrLeave/index");
         exit;
     }

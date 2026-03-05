@@ -11,6 +11,7 @@ class HrController extends Controller
     private $clientModel;
     private $hrLeaveModel;
     private $notificationModel;
+    private $hrLogsModel;
 
     public function __construct()
     {
@@ -21,6 +22,7 @@ class HrController extends Controller
         $this->clientModel = $this->model('ClientModel');
         $this->hrLeaveModel = $this->model('HRLeaveModel');
         $this->notificationModel = $this->model('NotificationModel');
+        $this->hrLogsModel = $this->model('HRLogsModel');
 
 
         if (session_status() === PHP_SESSION_NONE) session_start();
@@ -89,9 +91,41 @@ class HrController extends Controller
         $this->view("hr/hr_managect");
     }
 
-    public function hr_history()
+    public function hr_logs()
     {
-        $this->view("hr/hr_history");
+        $perPage = 10;
+        $currentPage = max(1, (int)($_GET['page'] ?? 1));
+        $currentUserId = (int)($_SESSION['user']['id'] ?? 0);
+
+        $totalLogs = $this->hrLogsModel->getTotalLogsByUser($currentUserId);
+        $totalPages = max(1, (int)ceil($totalLogs / $perPage));
+
+        if ($currentPage > $totalPages) {
+            $currentPage = $totalPages;
+        }
+
+        $offset = ($currentPage - 1) * $perPage;
+        $logs = $this->hrLogsModel->getLogsPaginatedByUser($currentUserId, $perPage, $offset);
+
+        $this->view("hr/hr_logs", [
+            'logs' => $logs,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages
+        ]);
+    }
+
+    private function logHrAction($action, $section)
+    {
+        $userId = (int)($_SESSION['user']['id'] ?? 0);
+        if ($userId <= 0) return;
+
+        $this->hrLogsModel->log([
+            'user_id' => $userId,
+            'username' => $_SESSION['user']['username'] ?? 'unknown',
+            'role' => 'Manager',
+            'action' => $action,
+            'section' => $section
+        ]);
     }
 
     public function hr_leave()
@@ -103,6 +137,7 @@ class HrController extends Controller
     public function update_leave_status($id, $status)
     {
         $this->hrLeaveModel->updateLeaveStatus($id, $status); // update in DB
+        $this->logHrAction("Updated leave status to {$status} (Leave ID: {$id})", 'Leaves');
         header('Location: ' . URLROOT . '/hr/hr_leave'); // redirect back to admin leave page
         exit();
     }
@@ -233,6 +268,8 @@ class HrController extends Controller
             URLROOT . "/client/c_makePayment?booking_id=" . $booking_id
         );
 
+        $this->logHrAction("Requested advance payment for Booking #{$booking_id}", 'Pending Requests');
+
         // 3️⃣ Redirect HR
         header("Location: " . URLROOT . "/hr/hr_pending_request");
         exit;
@@ -256,6 +293,7 @@ class HrController extends Controller
 
         // Call the model to update the complaint status
         $this->hrModel->updateComplaintStatus($complaintId, $status);
+        $this->logHrAction("Updated complaint status to {$status} (Complaint ID: {$complaintId})", 'Complaints');
 
         // Redirect back to the pending requests page
         header("Location: " . URLROOT . "/hr/hr_complaint");
@@ -358,6 +396,8 @@ class HrController extends Controller
             URLROOT . "/caretaker/ct_booking?booking_id=" . $payment['booking_id'] . "&tab=upcoming"
         );
 
+        $this->logHrAction("Approved payment #{$paymentId} for Booking #{$payment['booking_id']}", 'Payments');
+
         $_SESSION['success'] = "Payment approved successfully! Caretaker notified.";
         header("Location: " . URLROOT . "/hr/pendingPayments");
         exit;
@@ -458,6 +498,7 @@ class HrController extends Controller
             }
 
             $_SESSION['success'] = "Reschedule request approved successfully.";
+            $this->logHrAction("Approved reschedule request #{$requestId} (Booking #{$bookingId})", 'Reschedule Requests');
         } else {
             $_SESSION['error'] = "Failed to approve reschedule request. Please try again.";
         }
@@ -493,6 +534,12 @@ class HrController extends Controller
             $cid = $reqDetails['client_id'];
             $msg = "Your reschedule request for booking #{$reqDetails['booking_id']} has been rejected. The booking remains on the original date. Please check for any HR notes.";
             $notif->addNotification($cid, 'client', 'Reschedule Rejected', $msg, URLROOT . "/client/c_upcomingBookings");
+        }
+
+        if ($reqDetails && isset($reqDetails['booking_id'])) {
+            $this->logHrAction("Rejected reschedule request #{$requestId} (Booking #{$reqDetails['booking_id']})", 'Reschedule Requests');
+        } else {
+            $this->logHrAction("Rejected reschedule request #{$requestId}", 'Reschedule Requests');
         }
 
         $_SESSION['success'] = "Reschedule request rejected.";
@@ -566,6 +613,7 @@ class HrController extends Controller
             }
 
             $_SESSION['success'] = "Change request approved.";
+            $this->logHrAction("Approved caregiver change request #{$requestId} (Booking #{$bookingId})", 'Change Requests');
         } else {
             $_SESSION['error'] = "Failed to approve change request.";
         }
@@ -606,6 +654,7 @@ class HrController extends Controller
             );
 
             $_SESSION['success'] = "Change request rejected.";
+            $this->logHrAction("Rejected caregiver change request #{$requestId} (Booking #{$bookingId})", 'Change Requests');
         } else {
             $_SESSION['error'] = "Failed to reject change request.";
         }
@@ -658,6 +707,8 @@ class HrController extends Controller
             $clientMessage,
             URLROOT . "/client/c_paymentHistory"
         );
+
+        $this->logHrAction("Rejected payment #{$paymentId} for Booking #{$payment['booking_id']}", 'Payments');
 
         $_SESSION['success'] = "Payment rejected. Client notified.";
         header("Location: " . URLROOT . "/hr/pendingPayments");
