@@ -17,10 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".feedback-btn").forEach(btn => {
         btn.addEventListener("click", () => {
 
-            const card = btn.closest(".booking-card");
+            const row = btn.closest("tr");
 
-            bookingIdInput.value = card.dataset.bookingId;
-            caretakerIdInput.value = card.dataset.caretakerId;
+            bookingIdInput.value = row.dataset.bookingId;
+            caretakerIdInput.value = row.dataset.caretakerId;
 
             modal.style.display = "flex";
         });
