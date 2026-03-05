@@ -367,8 +367,12 @@ class HrController extends Controller
     public function changeRequests()
     {
         $crModel = $this->model('ChangeRequestModel');
-        $requests = $crModel->getPendingRequests();
-        $this->view('hr/changeRequests', ['requests' => $requests]);
+        $pendingRequests = $crModel->getPendingRequests();
+        $completedRequests = $crModel->getCompletedRequests();
+        $this->view('hr/changeRequests', [
+            'pending_requests' => $pendingRequests,
+            'completed_requests' => $completedRequests
+        ]);
     }
 
     // ================= RESCHEDULE REQUESTS =================
