@@ -379,8 +379,12 @@ class HrController extends Controller
     public function rescheduleRequests()
     {
         $rrModel = $this->model('RescheduleRequestModel');
-        $requests = $rrModel->getPendingRequests();
-        $this->view('hr/rescheduleRequests', ['requests' => $requests]);
+        $pendingRequests = $rrModel->getPendingRequests();
+        $completedRequests = $rrModel->getCompletedRequests();
+        $this->view('hr/rescheduleRequests', [
+            'pending_requests' => $pendingRequests,
+            'completed_requests' => $completedRequests
+        ]);
     }
 
     public function approveReschedule()
@@ -390,13 +394,14 @@ class HrController extends Controller
             exit;
         }
         $requestId = $_POST['request_id'] ?? null;
+        $hrNote = $_POST['hr_note'] ?? '';
         if (!$requestId) {
             header("Location: " . URLROOT . "/hr/rescheduleRequests");
             exit;
         }
 
         $rrModel = $this->model('RescheduleRequestModel');
-        $bookingId = $rrModel->approveRequest($requestId);
+        $bookingId = $rrModel->approveRequest($requestId, $hrNote);
 
         if ($bookingId) {
             // after updating booking we may want to keep status accepted
@@ -429,6 +434,7 @@ class HrController extends Controller
             exit;
         }
         $requestId = $_POST['request_id'] ?? null;
+        $hrNote = $_POST['hr_note'] ?? '';
         if (!$requestId) {
             header("Location: " . URLROOT . "/hr/rescheduleRequests");
             exit;
@@ -437,7 +443,7 @@ class HrController extends Controller
         $rrModel = $this->model('RescheduleRequestModel');
         // determine associated booking id before changing status
         $reqDetails = $rrModel->getRequestById($requestId);
-        $rrModel->rejectRequest($requestId);
+        $rrModel->rejectRequest($requestId, $hrNote);
 
         // revert booking status so client can continue using it
         if ($reqDetails && isset($reqDetails['booking_id'])) {

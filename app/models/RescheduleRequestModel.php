@@ -45,6 +45,9 @@ class RescheduleRequestModel
                        rr.created_at,
                        rr.old_date,
                        rr.new_date,
+                       rr.status,
+                       rr.hr_note,
+                       rr.reviewed_at,
                        b.service_type,
                        c.name AS client_name,
                        ct.name AS caretaker_name
@@ -60,10 +63,38 @@ class RescheduleRequestModel
     }
 
     /**
+     * Fetch completed reschedule requests (approved or rejected).
+     */
+    public function getCompletedRequests()
+    {
+        $sql = "SELECT rr.id AS request_id,
+                       rr.booking_id,
+                       rr.reason,
+                       rr.created_at,
+                       rr.old_date,
+                       rr.new_date,
+                       rr.status,
+                       rr.hr_note,
+                       rr.reviewed_at,
+                       b.service_type,
+                       c.name AS client_name,
+                       ct.name AS caretaker_name
+                FROM reschedule_requests rr
+                JOIN bookings b ON rr.booking_id = b.id
+                JOIN clients c ON rr.client_id = c.id
+                JOIN caretakers ct ON b.caretaker_id = ct.id
+                WHERE rr.status IN ('approved', 'rejected')
+                ORDER BY rr.reviewed_at DESC";
+
+        $result = $this->conn->query($sql);
+        return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+    }
+
+    /**
      * Mark a request approved and update the underlying booking.
      * Returns the booking id when successful, false otherwise.
      */
-    public function approveRequest($requestId)
+    public function approveRequest($requestId, $hrNote = '')
     {
         // fetch the request details so we know what values to apply
         $stmt = $this->conn->prepare("SELECT booking_id, new_date FROM reschedule_requests WHERE id = ?");
@@ -77,9 +108,9 @@ class RescheduleRequestModel
         $upd->bind_param("si", $req['new_date'], $req['booking_id']);
         $upd->execute();
 
-        // update request record
-        $stmt2 = $this->conn->prepare("UPDATE reschedule_requests SET status = 'approved' WHERE id = ?");
-        $stmt2->bind_param("i", $requestId);
+        // update request record with hr_note and reviewed_at
+        $stmt2 = $this->conn->prepare("UPDATE reschedule_requests SET status = 'approved', hr_note = ?, reviewed_at = NOW() WHERE id = ?");
+        $stmt2->bind_param("si", $hrNote, $requestId);
         $stmt2->execute();
 
         return $req['booking_id'];
@@ -88,10 +119,10 @@ class RescheduleRequestModel
     /**
      * Reject a reschedule request.
      */
-    public function rejectRequest($requestId)
+    public function rejectRequest($requestId, $hrNote = '')
     {
-        $stmt = $this->conn->prepare("UPDATE reschedule_requests SET status = 'rejected' WHERE id = ?");
-        $stmt->bind_param("i", $requestId);
+        $stmt = $this->conn->prepare("UPDATE reschedule_requests SET status = 'rejected', hr_note = ?, reviewed_at = NOW() WHERE id = ?");
+        $stmt->bind_param("si", $hrNote, $requestId);
         return $stmt->execute();
     }
 
