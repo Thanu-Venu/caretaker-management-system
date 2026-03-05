@@ -120,7 +120,16 @@ class ClientController extends Controller
 
     public function c_feedback()
     {
-        $this->view("client/c_feedback");
+        $clientId = $_SESSION['user']['id'] ?? null;
+        if (!$clientId) {
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
+
+        $feedbackModel = $this->model('FeedbackModel');
+        $feedbacks = $feedbackModel->getByClient($clientId);
+
+        $this->view("client/c_feedback", ['feedbacks' => $feedbacks]);
     }
 
     public function submitFeedback()
