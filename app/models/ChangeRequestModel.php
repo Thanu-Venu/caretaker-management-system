@@ -77,6 +77,9 @@ class ChangeRequestModel
                        cr.booking_id,
                        cr.reason,
                        cr.created_at,
+                       cr.status,
+                       cr.hr_note,
+                       cr.reviewed_at,
                        b.booking_date,
                        b.preferred_time,
                        b.service_type,
@@ -90,6 +93,33 @@ class ChangeRequestModel
                 LEFT JOIN caretakers newc ON cr.new_caretaker_id = newc.id
                 WHERE cr.status = 'pending'
                 ORDER BY cr.created_at DESC";
+
+        $result = $this->conn->query($sql);
+        return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+    }
+
+    public function getCompletedRequests()
+    {
+        $sql = "SELECT cr.id AS request_id,
+                       cr.booking_id,
+                       cr.reason,
+                       cr.created_at,
+                       cr.status,
+                       cr.hr_note,
+                       cr.reviewed_at,
+                       b.booking_date,
+                       b.preferred_time,
+                       b.service_type,
+                       c.name AS client_name,
+                       oldc.name AS old_caretaker,
+                       newc.name AS new_caretaker
+                FROM change_requests cr
+                JOIN bookings b ON cr.booking_id = b.id
+                JOIN clients c ON cr.client_id = c.id
+                LEFT JOIN caretakers oldc ON cr.old_caretaker_id = oldc.id
+                LEFT JOIN caretakers newc ON cr.new_caretaker_id = newc.id
+                WHERE cr.status IN ('approved', 'rejected')
+                ORDER BY cr.reviewed_at DESC";
 
         $result = $this->conn->query($sql);
         return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
@@ -184,7 +214,7 @@ class ChangeRequestModel
                 'old_caretaker_id' => (int)$req['old_caretaker_id'],
                 'new_caretaker_id' => $newCt,
             ];
-            } catch (\Throwable $e) {
+        } catch (\Throwable $e) {
             $this->conn->rollback();
             return false;
         }
