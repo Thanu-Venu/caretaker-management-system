@@ -92,28 +92,54 @@ class RescheduleRequestModel
 
     /**
      * Mark a request approved and update the underlying booking.
+     * Uses transactions to ensure atomic operation.
      * Returns the booking id when successful, false otherwise.
      */
     public function approveRequest($requestId, $hrNote = '')
     {
-        // fetch the request details so we know what values to apply
+        // Fetch the request details
         $stmt = $this->conn->prepare("SELECT booking_id, new_date FROM reschedule_requests WHERE id = ?");
         $stmt->bind_param("i", $requestId);
         $stmt->execute();
         $req = $stmt->get_result()->fetch_assoc();
-        if (!$req) return false;
 
-        // update booking with new date/time/duration
-        $upd = $this->conn->prepare("UPDATE bookings SET booking_date = ? WHERE id = ?");
-        $upd->bind_param("si", $req['new_date'], $req['booking_id']);
-        $upd->execute();
+        if (!$req) {
+            return false;
+        }
 
-        // update request record with hr_note and reviewed_at
-        $stmt2 = $this->conn->prepare("UPDATE reschedule_requests SET status = 'approved', hr_note = ?, reviewed_at = NOW() WHERE id = ?");
-        $stmt2->bind_param("si", $hrNote, $requestId);
-        $stmt2->execute();
+        // Begin transaction for atomic operation
+        $this->conn->begin_transaction();
 
-        return $req['booking_id'];
+        try {
+            // Update booking with new date
+            $upd = $this->conn->prepare("UPDATE bookings SET booking_date = ? WHERE id = ?");
+            $upd->bind_param("si", $req['new_date'], $req['booking_id']);
+
+            if (!$upd->execute()) {
+                throw new Exception("Failed to update booking date.");
+            }
+
+            // Update request record with status, hr_note, and reviewed_at
+            $stmt2 = $this->conn->prepare(
+                "UPDATE reschedule_requests
+                 SET status = 'approved', hr_note = ?, reviewed_at = NOW()
+                 WHERE id = ?"
+            );
+            $stmt2->bind_param("si", $hrNote, $requestId);
+
+            if (!$stmt2->execute()) {
+                throw new Exception("Failed to update reschedule request status.");
+            }
+
+            // Commit transaction
+            $this->conn->commit();
+            return $req['booking_id'];
+        } catch (Exception $e) {
+            // Rollback on error
+            $this->conn->rollback();
+            error_log("Reschedule approval failed: " . $e->getMessage());
+            return false;
+        }
     }
 
     /**
@@ -146,5 +172,100 @@ class RescheduleRequestModel
         $stmt->bind_param("i", $requestId);
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
+    }
+
+    /**
+     * ======================== VALIDATION HELPERS ========================
+     */
+
+    /**
+     * Count how many reschedule requests exist for a booking with status 'pending' or 'approved'.
+     * Business rule: Only allow ONE reschedule per booking.
+     */
+    public function getRescheduleCountForBooking($bookingId)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT COUNT(*) as count
+             FROM reschedule_requests
+             WHERE booking_id = ? AND status IN ('pending', 'approved')"
+        );
+        $stmt->bind_param("i", $bookingId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        return (int)($result['count'] ?? 0);
+    }
+
+    /**
+     * Check if a booking already has a reschedule request (pending or approved).
+     * Returns true if exists, false otherwise.
+     */
+    public function hasRescheduleRequest($bookingId)
+    {
+        return $this->getRescheduleCountForBooking($bookingId) > 0;
+    }
+
+    /**
+     * Comprehensive validation: Check if a booking can be rescheduled.
+     * Returns array with keys: 'valid' (bool), 'error' (string if invalid).
+     *
+     * Validation rules (in order):
+     * 1. Booking must exist
+     * 2. Booking must belong to the requesting client (ownership)
+     * 3. Booking status must be 'Requested'
+     * 4. No prior reschedule request (pending/approved)
+     * 5. New date must not be in the past
+     * 6. New date must be at least 24 hours from now
+     */
+    public function canReschedule($bookingId, $clientId, $newDate)
+    {
+        // Fetch booking
+        $stmt = $this->conn->prepare("SELECT * FROM bookings WHERE id = ?");
+        $stmt->bind_param("i", $bookingId);
+        $stmt->execute();
+        $booking = $stmt->get_result()->fetch_assoc();
+
+        // 1. Booking exists?
+        if (!$booking) {
+            return ['valid' => false, 'error' => 'Booking not found.'];
+        }
+
+        // 2. Ownership check
+        if ((int)$booking['client_id'] !== (int)$clientId) {
+            return ['valid' => false, 'error' => 'You do not have permission to reschedule this booking.'];
+        }
+
+        // 3. Status must be 'Requested'
+        if ($booking['status'] !== 'Requested') {
+            return [
+                'valid' => false,
+                'error' => "This booking cannot be rescheduled (current status: {$booking['status']}). Only bookings with 'Requested' status can be rescheduled."
+            ];
+        }
+
+        // 4. Check for existing reschedule requests
+        if ($this->hasRescheduleRequest($bookingId)) {
+            return [
+                'valid' => false,
+                'error' => 'A reschedule request has already been submitted for this booking. Only one reschedule is allowed per booking.'
+            ];
+        }
+
+        // 5. Date validation: not in the past
+        $today = date('Y-m-d');
+        if ($newDate < $today) {
+            return ['valid' => false, 'error' => 'The new date cannot be in the past.'];
+        }
+
+        // 6. Date validation: minimum 24 hours advance notice
+        $minDate = date('Y-m-d', strtotime('+1 day'));
+        if ($newDate < $minDate) {
+            return [
+                'valid' => false,
+                'error' => 'Reschedule requests must be made at least 24 hours in advance.'
+            ];
+        }
+
+        // All validations passed
+        return ['valid' => true, 'booking' => $booking];
     }
 }

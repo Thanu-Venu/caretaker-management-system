@@ -393,36 +393,75 @@ class HrController extends Controller
             header("Location: " . URLROOT . "/hr/rescheduleRequests");
             exit;
         }
-        $requestId = $_POST['request_id'] ?? null;
-        $hrNote = $_POST['hr_note'] ?? '';
+
+        $requestId = (int)($_POST['request_id'] ?? 0);
+        $hrNote = trim($_POST['hr_note'] ?? '');
+
         if (!$requestId) {
+            $_SESSION['error'] = "Invalid request ID.";
             header("Location: " . URLROOT . "/hr/rescheduleRequests");
             exit;
         }
 
         $rrModel = $this->model('RescheduleRequestModel');
+
+        // Validate request exists and is pending
+        $request = $rrModel->getRequestById($requestId);
+        if (!$request) {
+            $_SESSION['error'] = "Reschedule request not found.";
+            header("Location: " . URLROOT . "/hr/rescheduleRequests");
+            exit;
+        }
+
+        if ($request['status'] !== 'pending') {
+            $_SESSION['error'] = "This request has already been processed.";
+            header("Location: " . URLROOT . "/hr/rescheduleRequests");
+            exit;
+        }
+
+        // Use transaction-based approval from model
         $bookingId = $rrModel->approveRequest($requestId, $hrNote);
 
         if ($bookingId) {
-            // after updating booking we may want to keep status accepted
-            $this->model('ClientModel')->updateBookingStatus($bookingId, 'Accepted');
+            // Revert booking status to 'Requested' so client can continue normal workflow (payment, etc.)
+            $this->model('ClientModel')->updateBookingStatus($bookingId, 'Requested');
 
-            // notify client and caretaker about the change
+            // Send notifications to client and caretaker
             require_once APPROOT . '/models/NotificationModel.php';
             $notif = new NotificationModel();
-            // fetch booking info for names
+
+            // Fetch updated booking info
             $booking = $this->model('ClientModel')->getBookingById($bookingId);
+
             if ($booking) {
                 $clientId = $booking['client_id'];
                 $caretakerId = $booking['caretaker_id'];
-                $msgClient = "Your booking #{$bookingId} has been rescheduled to {$booking['booking_date']} ({$booking['preferred_time']}).";
-                $msgCt = "Booking #{$bookingId} assigned to you has been rescheduled to {$booking['booking_date']} ({$booking['preferred_time']}).";
-                $notif->addNotification($clientId, 'client', 'Reschedule Approved', $msgClient, URLROOT . "/client/c_upcomingBookings");
-                $notif->addNotification($caretakerId, 'caretaker', 'Reschedule Approved', $msgCt, URLROOT . "/caretaker/ct_ongoingBookings");
+
+                $msgClient = "Your reschedule request has been approved! Booking #{$bookingId} is now scheduled for {$booking['booking_date']} at {$booking['preferred_time']}. Please complete any pending payment steps.";
+                $msgCaretaker = "Booking #{$bookingId} assigned to you has been rescheduled to {$booking['booking_date']} at {$booking['preferred_time']}.";
+
+                $notif->addNotification(
+                    $clientId,
+                    'client',
+                    'Reschedule Approved',
+                    $msgClient,
+                    URLROOT . "/client/c_upcomingBookings"
+                );
+
+                $notif->addNotification(
+                    $caretakerId,
+                    'caretaker',
+                    'Reschedule Approved',
+                    $msgCaretaker,
+                    URLROOT . "/caretaker/ct_ongoingBookings"
+                );
             }
+
+            $_SESSION['success'] = "Reschedule request approved successfully.";
+        } else {
+            $_SESSION['error'] = "Failed to approve reschedule request. Please try again.";
         }
 
-        $_SESSION['success'] = "Reschedule request approved.";
         header("Location: " . URLROOT . "/hr/rescheduleRequests");
         exit;
     }
@@ -445,14 +484,14 @@ class HrController extends Controller
         $reqDetails = $rrModel->getRequestById($requestId);
         $rrModel->rejectRequest($requestId, $hrNote);
 
-        // revert booking status so client can continue using it
+        // Revert booking status to 'Requested' so client can continue normal workflow
         if ($reqDetails && isset($reqDetails['booking_id'])) {
-            $this->model('ClientModel')->updateBookingStatus($reqDetails['booking_id'], 'Accepted');
+            $this->model('ClientModel')->updateBookingStatus($reqDetails['booking_id'], 'Requested');
             // notify client of rejection
             require_once APPROOT . '/models/NotificationModel.php';
             $notif = new NotificationModel();
             $cid = $reqDetails['client_id'];
-            $msg = "Your reschedule request for booking #{$reqDetails['booking_id']} has been rejected.";
+            $msg = "Your reschedule request for booking #{$reqDetails['booking_id']} has been rejected. The booking remains on the original date. Please check for any HR notes.";
             $notif->addNotification($cid, 'client', 'Reschedule Rejected', $msg, URLROOT . "/client/c_upcomingBookings");
         }
 

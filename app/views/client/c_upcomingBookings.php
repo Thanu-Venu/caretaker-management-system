@@ -88,15 +88,44 @@
                                             Pay Now
                                         </a>
                                     <?php endif; ?>
+
                                     <?php
-                                    $canReschedule = in_array($b['status'], ['Requested']);
-                                    if ($b['status'] === 'Reschedule_Requested') {
-                                        $canReschedule = false;
+                                    // ========== RESCHEDULE BUTTON LOGIC ==========
+                                    // Only show reschedule button if:
+                                    // 1. Booking status is 'Requested' (only this status allows reschedule)
+                                    // 2. No existing reschedule request (pending/approved)
+
+                                    $canShowReschedule = false;
+                                    $rescheduleTooltip = '';
+
+                                    if ($b['status'] === 'Requested') {
+                                        // Check if reschedule request already exists
+                                        require_once APPROOT . '/models/RescheduleRequestModel.php';
+                                        $rrCheck = new RescheduleRequestModel();
+                                        $hasReschedule = $rrCheck->hasRescheduleRequest($b['booking_id']);
+
+                                        if ($hasReschedule) {
+                                            $canShowReschedule = false;
+                                            $rescheduleTooltip = 'A reschedule request has already been submitted for this booking';
+                                        } else {
+                                            $canShowReschedule = true;
+                                        }
+                                    } else {
+                                        $rescheduleTooltip = "Only bookings with 'Requested' status can be rescheduled";
                                     }
                                     ?>
-                                    <?php if ($canReschedule): ?>
+
+                                    <?php if ($canShowReschedule): ?>
                                         <button class="action-btn" id="reschedule-btn"
                                             onclick="openRescheduleModal(<?= $b['booking_id'] ?>)">
+                                            Reschedule
+                                        </button>
+                                    <?php elseif ($b['status'] === 'Requested'): ?>
+                                        <!-- Show disabled button with tooltip for 'Requested' bookings that already have a reschedule request -->
+                                        <button class="action-btn" id="reschedule-btn"
+                                            disabled
+                                            style="opacity: 0.5; cursor: not-allowed;"
+                                            title="<?= htmlspecialchars($rescheduleTooltip) ?>">
                                             Reschedule
                                         </button>
                                     <?php endif; ?>
@@ -132,17 +161,29 @@
                 <span class="close" onclick="closeRescheduleModal()">&times;</span>
                 <h2>Reschedule Booking</h2>
 
+                <div class="warning-box" style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; margin-bottom: 15px; border-radius: 4px;">
+                    <strong>⚠️ Important:</strong>
+                    <ul style="margin: 8px 0 0 20px; padding: 0;">
+                        <li>Only the <strong>date</strong> can be changed through reschedule</li>
+                        <li>Service type, duration, and caregiver remain the same</li>
+                        <li>You can only reschedule <strong>once per booking</strong></li>
+                        <li>Requests must be made at least <strong>24 hours in advance</strong></li>
+                        <li>Status must be 'Requested' to allow reschedule</li>
+                    </ul>
+                </div>
+
                 <form method="POST" action="<?= URLROOT ?>/client/rescheduleBooking">
                     <input type="hidden" name="booking_id" id="rescheduleBookingId">
 
-                    <label>New Date</label>
-                    <input type="date" name="new_date" required>
+                    <label>New Date <span style="color: red;">*</span></label>
+                    <input type="date" name="new_date" required
+                        min="<?= date('Y-m-d', strtotime('+1 day')) ?>"
+                        title="Must be at least 24 hours from now">
 
+                    <label>Reason for Rescheduling <span style="color: #666; font-size: 0.9em;">(Optional)</span></label>
+                    <textarea name="reason" rows="3" placeholder="Provide a reason for HR review (optional)"></textarea>
 
-                    <label>Reason for rescheduling</label>
-                    <textarea name="reason" rows="3" placeholder="Optional (for HR)"></textarea>
-
-                    <button type="submit" class="reschedule-btn">Save Changes</button>
+                    <button type="submit" class="reschedule-btn">Submit Reschedule Request</button>
                 </form>
             </div>
         </div>
