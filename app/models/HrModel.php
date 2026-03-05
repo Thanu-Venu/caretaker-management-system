@@ -254,14 +254,30 @@ public function getBookingsPaginatedByStatus(
 
     $stmt = $this->conn->prepare($sql);
 
+    if (!$stmt) {
+        error_log("HrModel::getBookingsPaginatedByStatus prepare failed: " . $this->conn->error);
+        return [];
+    }
+
     if ($status && $status !== 'All') {
         $stmt->bind_param("sii", $status, $limit, $offset);
     } else {
         $stmt->bind_param("ii", $limit, $offset);
     }
 
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $exec = $stmt->execute();
+    if (!$exec) {
+        error_log("HrModel::getBookingsPaginatedByStatus execute failed: " . $stmt->error);
+        return [];
+    }
+
+    $res = $stmt->get_result();
+    if ($res === false) {
+        error_log("HrModel::getBookingsPaginatedByStatus get_result failed: " . $this->conn->error);
+        return [];
+    }
+
+    return $res->fetch_all(MYSQLI_ASSOC);
 }
 public function getBookingSummary($bookingId){
     $sql = "SELECT b.id AS booking_id, b.booking_date, b.preferred_time, b.duration, b.basis, b.service_type,

@@ -28,10 +28,11 @@
 .add-btn {
     background: #1e88e5;
     color: #fff;
-    padding: 8px 14px;
+   
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    padding: 8px 18px;
 }
 .add-btn:hover {
     background: #1565c0;
@@ -41,13 +42,21 @@
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 15px;
-    font-size: 15px;
 }
+
+thead {
+    background-color: #1E88E5;
+    color: #fff;
+}
+
 th, td {
-    padding: 12px;
+    padding: 12px 15px;
     border-bottom: 1px solid #ddd;
     text-align: left;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
 }
 
 /* Status Colors */
