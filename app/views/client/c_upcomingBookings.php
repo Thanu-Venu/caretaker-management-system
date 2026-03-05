@@ -8,6 +8,35 @@
     <meta charset="UTF-8">
     <title>My Upcoming Bookings</title>
     <link rel="stylesheet" href="<?= URLROOT ?>/public/css/client/c_upcomingBookings.css">
+    <style>
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-requested {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .status-payment_requested {
+            background-color: #ffe5cc;
+            color: #cc6600;
+            border: 1px solid #ffccaa;
+        }
+
+        .status-advance_paid {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
 </head>
 
 <body>
@@ -63,6 +92,7 @@
                             <th>Date</th>
                             <th>Time</th>
                             <th>Duration</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -74,6 +104,15 @@
                                 <td><?= date('Y-m-d', strtotime($b['booking_date'])) ?></td>
                                 <td><?= htmlspecialchars($b['preferred_time']) ?></td>
                                 <td><?= $b['duration'] . ' ' . $b['basis'] ?></td>
+
+                                <td>
+                                    <span class="status-badge status-<?= strtolower($b['status']) ?>">
+                                        <?php
+                                        $statusDisplay = str_replace('_', ' ', $b['status']);
+                                        echo htmlspecialchars($statusDisplay);
+                                        ?>
+                                    </span>
+                                </td>
 
                                 <td class="actions">
                                     <button class="action-btn" id="cancel-btn"
