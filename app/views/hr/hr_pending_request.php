@@ -21,11 +21,11 @@
                 <select name="status" id="status" onchange="this.form.submit()">
                     <?php
 
-                    $statuses = ['All', 'Pending', 'Accepted', 'Rejected', 'Cancelled', 'Completed'];
+                    $statuses = ['All', 'Requested', 'Payment_Requested', 'Advance_Paid', 'Accepted', 'Change_Requested', 'Rejected', 'Cancelled', 'Completed', 'Reschedule_Requested'];
                     foreach ($statuses as $s):
-                        ?>
+                    ?>
                         <option value="<?= $s ?>" <?= ($data['status'] === $s) ? 'selected' : '' ?>>
-                            <?= $s ?>
+                            <?= str_replace('_', ' ', $s) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -37,9 +37,10 @@
                         <th>Client ID</th>
                         <th>Client</th>
                         <th>Service</th>
-                        <th>Preferred Caretaker</th>
+                        <th>Duration & Basis</th>
                         <th>Date & Time</th>
                         <th>Customization</th>
+                        <th>Total Amount</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -55,19 +56,44 @@
                                 ?>
                                 <td><?= $b['booking_id'] ?></td>
                                 <td><?= htmlspecialchars($b['client_name']) ?></td>
-                                <td><?= htmlspecialchars($b['service_type']) ?></td>
-                                <td><?= htmlspecialchars($b['caretaker_name']) ?></td>
-                                <td><?= $b['booking_date'] ?> (<?= $b['preferred_time'] ?>)</td>
+                                <td><span class="service-badge"><?= htmlspecialchars($b['service_type']) ?></span></td>
+                                <td>
+                                    <div class="duration-info">
+                                        <strong><?= $b['duration'] ?? '—' ?></strong>
+                                        <span class="basis-tag"><?= $b['basis'] ?? '—' ?></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="datetime-info">
+                                        <div class="date-val"><?= $b['booking_date'] ?></div>
+                                        <div class="time-val"><?= $b['preferred_time'] ?></div>
+                                    </div>
+                                </td>
                                 <td>
                                     <?php
-
                                     $customText = trim($b['customization'] ?? '');
                                     $customHours = (int) ($b['customization_hours'] ?? 0);
+                                    $customPrice = (float) ($b['customization_price'] ?? 0);
                                     ?>
-                                    <?= $customText !== '' ? htmlspecialchars($customText) : '—' ?>
-                                    <?php if ($customHours > 0): ?>
-                                        <div><small>Extra hours: <?= $customHours ?></small></div>
-                                    <?php endif; ?>
+                                    <div class="customization-info">
+                                        <?php if ($customText !== ''): ?>
+                                            <div class="custom-text"><?= htmlspecialchars($customText) ?></div>
+                                        <?php else: ?>
+                                            <span class="no-custom">None</span>
+                                        <?php endif; ?>
+                                        <?php if ($customHours > 0): ?>
+                                            <div class="custom-details">
+                                                <i class="fas fa-clock"></i> <?= $customHours ?> hrs
+                                                <i class="fas fa-money-bill-wave"></i> Rs <?= number_format($customPrice, 2) ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="amount-box">
+                                        <span class="currency">Rs</span>
+                                        <span class="amount-value"><?= number_format($b['total_payment'] ?? 0, 2) ?></span>
+                                    </div>
                                 </td>
                                 <td>
                                     <span class="status-<?= strtolower($status) ?>"><?= $status ?></span>
@@ -98,7 +124,7 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="8">No bookings</td>
+                            <td colspan="9" class="empty-state">No bookings found</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

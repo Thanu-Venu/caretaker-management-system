@@ -120,7 +120,16 @@ class ClientController extends Controller
 
     public function c_feedback()
     {
-        $this->view("client/c_feedback");
+        $clientId = $_SESSION['user']['id'] ?? null;
+        if (!$clientId) {
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
+
+        $feedbackModel = $this->model('FeedbackModel');
+        $feedbacks = $feedbackModel->getByClient($clientId);
+
+        $this->view("client/c_feedback", ['feedbacks' => $feedbacks]);
     }
 
     public function submitFeedback()
@@ -443,64 +452,41 @@ class ClientController extends Controller
     /* ================= RESCHEDULE BOOKING ================= */
     public function rescheduleBooking()
     {
-        // option B: request-based workflow, send to HR for approval
+        // Request-based workflow: client submits reschedule request to HR for approval
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: " . URLROOT . "/client/c_upcomingBookings");
             exit;
         }
 
-        $bookingId   = (int)($_POST['booking_id'] ?? 0);
-        $newDate     = $_POST['new_date'] ?? '';
-        $reason      = trim($_POST['reason'] ?? '');
+        $bookingId = (int)($_POST['booking_id'] ?? 0);
+        $newDate = trim($_POST['new_date'] ?? '');
+        $reason = trim($_POST['reason'] ?? '');
 
-        // basic sanity
+        // Basic sanity check
         if (!$bookingId || !$newDate || strtotime($newDate) === false) {
-            $_SESSION['error'] = "Please provide a valid date.";
+            $_SESSION['error'] = "Please provide a valid booking ID and date.";
             header("Location: " . URLROOT . "/client/c_upcomingBookings");
             exit;
         }
 
         $clientId = $_SESSION['user']['id'];
-        $booking  = $this->clientModel->getBookingById($bookingId);
-        if (!$booking || $booking['client_id'] !== $clientId) {
-            $_SESSION['error'] = "Booking not found or access denied.";
-            header("Location: " . URLROOT . "/client/c_upcomingBookings");
-            exit;
-        }
-
-        // status must allow reschedule
-        $allowed = ['Accepted', 'Advance_Paid', 'Payment_Requested'];
-        if (!in_array($booking['status'], $allowed)) {
-            $_SESSION['error'] = "This booking cannot be rescheduled (status {$booking['status']}).";
-            header("Location: " . URLROOT . "/client/c_upcomingBookings");
-            exit;
-        }
-
-        // date restrictions
-        $today = date('Y-m-d');
-        if ($newDate < $today) {
-            $_SESSION['error'] = "New date cannot be in the past.";
-            header("Location: " . URLROOT . "/client/c_upcomingBookings");
-            exit;
-        }
-        // notice period (minimum 1 day)
-        $minDate = date('Y-m-d', strtotime('+1 day'));
-        if ($newDate < $minDate) {
-            $_SESSION['error'] = "Reschedule must be requested at least 24 hours in advance.";
-            header("Location: " . URLROOT . "/client/c_upcomingBookings");
-            exit;
-        }
-
-        // make sure no previous reschedule request exists for this booking
         $rrModel = $this->model('RescheduleRequestModel');
-        $existing = $rrModel->getRequestByBooking($bookingId);
-        if ($existing) {
-            // either pending, approved or rejected; we limit to one request per booking
-            $_SESSION['error'] = "A reschedule request has already been made for this booking.";
+
+        // ============ COMPREHENSIVE VALIDATION ============
+        // Use the new canReschedule() method which validates everything in order
+        $validation = $rrModel->canReschedule($bookingId, $clientId, $newDate);
+
+        if (!$validation['valid']) {
+            // Validation failed - return with specific error message
+            $_SESSION['error'] = $validation['error'];
             header("Location: " . URLROOT . "/client/c_upcomingBookings");
             exit;
         }
-        // check caretaker availability for the new slot
+
+        // Extract the validated booking from the result
+        $booking = $validation['booking'];
+
+        // Additional validation: Check caretaker availability for the new date
         $caretakerModel = $this->model('CaretakerModel');
         $available = $caretakerModel->getAvailableCaretakers(
             $booking['service_type'],
@@ -509,44 +495,47 @@ class ClientController extends Controller
             $booking['basis'],
             $booking['duration']
         );
-        $ids = array_column($available, 'id');
-        if (!in_array($booking['caretaker_id'], $ids)) {
-            $_SESSION['error'] = "Assigned caregiver is not available for the requested new slot.";
+
+        $availableIds = array_column($available, 'id');
+        if (!in_array($booking['caretaker_id'], $availableIds)) {
+            $_SESSION['error'] = "The assigned caregiver is not available on the requested new date and time.";
             header("Location: " . URLROOT . "/client/c_upcomingBookings");
             exit;
         }
 
-        // check leave
+        // Check if caretaker is on leave during the new date
         $leaveModel = $this->model('HRLeaveModel');
         if ($leaveModel->isCaretakerOnLeave($booking['caretaker_id'], $newDate)) {
-            $_SESSION['error'] = "The caregiver is on leave during the requested date.";
+            $_SESSION['error'] = "The assigned caregiver is on leave during the requested date.";
             header("Location: " . URLROOT . "/client/c_upcomingBookings");
             exit;
         }
 
-        // all validations passed; create request
+        // ============ ALL VALIDATIONS PASSED - CREATE REQUEST ============
         $requestData = [
-            'booking_id'    => $bookingId,
-            'client_id'     => $clientId,
-            'old_date'      => $booking['booking_date'],
-            'new_date'      => $newDate,
-            'reason'        => $reason
+            'booking_id' => $bookingId,
+            'client_id' => $clientId,
+            'old_date' => $booking['booking_date'],
+            'new_date' => $newDate,
+            'reason' => $reason
         ];
 
         $rrModel->createRequest($requestData);
 
-        // mark booking status for easy filtering
+        // Update booking status to indicate reschedule is pending
         $this->clientModel->updateBookingStatus($bookingId, 'Reschedule_Requested');
 
-        // notify first HR user
+        // Notify HR users about the new reschedule request
         require_once APPROOT . '/models/NotificationModel.php';
         $notif = new NotificationModel();
         $hrs = $notif->getHRUsers();
+
         if (!empty($hrs)) {
             $clientName = $_SESSION['user']['name'] ?? $_SESSION['user']['username'];
             $msg = "Client {$clientName} has requested to reschedule booking #{$bookingId} " .
-                "from {$booking['booking_date']} ({$booking['preferred_time']}) " .
-                "to {$newDate} ({$newTime}).";
+                "from {$booking['booking_date']} to {$newDate}.";
+
+            // Notify the first HR user (or loop through all if needed)
             $hrUser = $hrs[0];
             $notif->addNotification(
                 $hrUser['id'],
@@ -557,8 +546,9 @@ class ClientController extends Controller
             );
         }
 
-        $_SESSION['success'] = "Reschedule request sent to HR. They will review and respond soon.";
-        // send user back to whichever page they came from (ongoing vs upcoming)
+        $_SESSION['success'] = "Reschedule request submitted successfully. HR will review and respond soon.";
+
+        // Redirect back to the referring page (upcoming or ongoing bookings)
         $redirect = URLROOT . "/client/c_upcomingBookings";
         if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'c_ongoingBookings') !== false) {
             $redirect = URLROOT . "/client/c_ongoingBookings";

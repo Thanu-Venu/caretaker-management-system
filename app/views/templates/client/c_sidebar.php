@@ -40,7 +40,9 @@
       <li>
         <a href="http://localhost/CMA/public?url=client/c_complaintlist"><i class="fa-solid fa-file-circle-exclamation"></i> Complaints </i></a>
       </li>
-
+      <li>
+        <a href="http://localhost/CMA/public?url=client/c_feedback"><i class="bx bxs-star"></i> Feedback </i></a>
+      </li>
       <li>
         <a href="http://localhost/CMA/public?url=client/c_announcement"><i class='bx bxs-megaphone'></i> Announcements </i></a>
 
