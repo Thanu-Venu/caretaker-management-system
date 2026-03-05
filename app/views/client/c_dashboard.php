@@ -74,7 +74,7 @@ function moneyLKR($amount) {
 </div>
 <?php endif; ?>
 <div class="container">
- 
+
 
 <div class="client-dashboard">
 
@@ -224,7 +224,7 @@ function moneyLKR($amount) {
     <div class="actions">
       <div class="action">
         <i class='bx bx-search'></i>
-        <h3>   
+        <h3>
           <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_find1'">
            Book New Service
           </button>
@@ -234,7 +234,7 @@ function moneyLKR($amount) {
       </div>
       <div class="action">
         <i class='bx bx-calendar-edit'></i>
-          <h3>   
+          <h3>
           <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_upcomingBookings'">
            Reschedule Booking
           </button>
@@ -244,16 +244,16 @@ function moneyLKR($amount) {
       </div>
       <div class="action">
         <i class='bx bx-phone'></i>
-         <h3>   
+         <h3>
           <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_contactCT'">Contact Caretaker</button>
-        </h3>      
+        </h3>
         <p>Manage your assigned caretaker</p>
       </div>
       <div class="action">
         <i class='bx bx-support'></i>
-         <h3>   
+         <h3>
           <button id="bookBtn" class="main-btn">Emergency Support</button>
-        </h3> 
+        </h3>
         <p>24/7 Emergency assistance</p>
       </div>
     </div>
@@ -295,37 +295,6 @@ function moneyLKR($amount) {
     </div>
   <?php endforeach; ?>
 </section>
-
-
-
-  <!-- Leave Management Section -->
-  <section class="leave-management">
-    <h2>Leave Management Status</h2>
-    <table>
-      <thead>
-        <tr><th>Dates</th><th>Reason</th><th>Status</th></tr>
-      </thead>
-      <tbody>
-        <?php if (!empty($data['leaves'])): ?>
-          <?php foreach($data['leaves'] as $leave): ?>
-            <tr>
-              <td><?= date("M d", strtotime($leave['start_date'])) ?> – <?= date("M d", strtotime($leave['end_date'])) ?></td>
-              <td><?= htmlspecialchars($leave['reason']) ?></td>
-              <td>
-                <span class="status <?= strtolower($leave['status']) ?>">
-                  <?= $leave['status'] ?>
-                </span>
-              </td>
-            </tr>
-          <?php endforeach; ?>
-        <?php else: ?>
-          <tr>
-            <td colspan="3" style="text-align:center;">No leave requests found</td>
-          </tr>
-        <?php endif; ?>
-      </tbody>
-    </table>
-  </section>
 
 </div>
  <!-- your existing contzent -->
