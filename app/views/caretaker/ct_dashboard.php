@@ -20,7 +20,7 @@
     <h1>Welcome back, <?php echo htmlspecialchars($_SESSION['user']['name']); ?></h1>
     
   </section>
-
+<br>
   <!-- Dashboard Layout -->
   
   <main class="dashboard">
