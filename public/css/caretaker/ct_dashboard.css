@@ -456,3 +456,10 @@ tbody tr:hover {
   background: #e3f2fd;
   color: #1565c0;
 }
+/* Today highlight */
+.calendar .date.today {
+  border: 2px solid #1e88e5;
+  background: #e8f2ff;
+  color: #1e88e5;
+  font-weight: 600;
+}

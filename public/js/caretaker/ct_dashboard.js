@@ -1,13 +1,5 @@
 
 
-
-// Example caretaker profile  data
-let caretaker = {
-  name: "Sarah Johnson",
-  experience: "Elder care specialist with 8 years of compassionate service.",
-  qualifications: "Elder Care, Medication Management, Mobility Assistance"
-};
-
 function openProfile() {
   // Fill modal inputs with caretaker data
   document.getElementById('name').value = caretaker.name;
@@ -78,58 +70,59 @@ document.querySelectorAll('.switch input').forEach(toggle => {
     }
   });
 });
+// ===== Dashboard Calendar (dynamic) =====
+const calendarDates = document.getElementById("calendarDates");
+const monthLabel = document.getElementById("calendarMonthLabel");
 
-// Generate calendar dates (for September 2025)
-// --- Calendar widget (dynamic current month) ---
-function renderMiniCalendar(year, monthIndex) {
-  // monthIndex: 0 = Jan, 11 = Dec
-  const calendarDates = document.getElementById("calendarDates");
-  const titleEl = document.getElementById("calendarMonthTitle");
-
-  if (!calendarDates) return;
-
-  // clear old cells
-  calendarDates.innerHTML = "";
-
-  const firstOfMonth = new Date(year, monthIndex, 1);
-  const lastOfMonth = new Date(year, monthIndex + 1, 0); // last day of month
-  const daysInMonth = lastOfMonth.getDate();
-
-  // 0=Sun..6=Sat (matches your Su Mo Tu We Th Fr Sa header)
-  const firstDayIndex = firstOfMonth.getDay();
-
-  // Set title (e.g., March 2026)
-  if (titleEl) {
-    const monthName = firstOfMonth.toLocaleString("en-US", { month: "long" });
-    titleEl.textContent = `${monthName} ${year}`;
-  }
-
-  // Add blank cells before day 1
-  for (let i = 0; i < firstDayIndex; i++) {
-    const blank = document.createElement("div");
-    blank.classList.add("empty");
-    calendarDates.appendChild(blank);
-  }
+if (calendarDates && monthLabel) {
+  const bookingDatesArr = window.CT_DASHBOARD_BOOKING_DATES || [];
+  const bookingDates = new Set(bookingDatesArr); // YYYY-MM-DD
 
   const today = new Date();
-  const isCurrentMonth =
-    today.getFullYear() === year && today.getMonth() === monthIndex;
+  const year = today.getFullYear();
+  const month = today.getMonth(); // 0-11
 
-  // Add date cells
+  // Label: "March 2026"
+  monthLabel.textContent = today.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+
+  // First day of month (0=Sun..6=Sat)
+  const firstDow = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  // Clear
+  calendarDates.innerHTML = "";
+
+  // Add empty boxes before day 1
+  for (let i = 0; i < firstDow; i++) {
+    calendarDates.appendChild(document.createElement("div"));
+  }
+
+  // Render days
   for (let d = 1; d <= daysInMonth; d++) {
     const dateEl = document.createElement("div");
     dateEl.classList.add("date");
     dateEl.textContent = d;
 
-    if (isCurrentMonth && d === today.getDate()) {
-      dateEl.classList.add("active"); // highlight today
-    }
+    const ymd = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+
+    // highlight today
+    const isToday =
+      d === today.getDate() &&
+      month === today.getMonth() &&
+      year === today.getFullYear();
+
+    if (isToday) dateEl.classList.add("today");
+
+    // highlight booking dates separately
+    if (bookingDates.has(ymd)) dateEl.classList.add("has-booking");
+
+    // click -> go to schedule page and show that date
+    dateEl.addEventListener("click", () => {
+      // send selected date as query param
+      const scheduleUrl = `${window.URLROOT}/caretaker/ct_schedule?date=${encodeURIComponent(ymd)}`;
+      window.location.href = scheduleUrl;
+    });
 
     calendarDates.appendChild(dateEl);
   }
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  const now = new Date();
-  renderMiniCalendar(now.getFullYear(), now.getMonth());
-});

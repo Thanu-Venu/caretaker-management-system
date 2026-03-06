@@ -1,217 +1,339 @@
-/* c_book.css */
+/* c_book.css - enhanced (same theme/colors) */
 
-/* Main Content */
+/* ---------- Base / Layout ---------- */
+* {
+  box-sizing: border-box;
+}
+
 .content {
-    margin-left: 270px; /* space for sidebar */
-    padding: 30px;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #f9fafc;
-    min-height: 100vh;
-    margin-right: 30px;
-    
+  margin-left: 270px; /* space for sidebar */
+  margin-right: 30px;
+  padding: 30px;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f9fafc;
+  min-height: 100vh;
 }
 
 /* Heading */
 .content h1 {
-    font-size: 28px;
-    margin-bottom: 20px;
-    color:#1e88e5;
+  font-size: 28px;
+  margin: 0 0 18px;
+  color: #1e88e5;
+  letter-spacing: 0.2px;
 }
 
-/* Caretaker Summary */
+/* Nice consistent section spacing */
+.caretaker-summary,
+.booking-form,
+#otherCaretakers {
+  margin-bottom: 22px;
+}
+
+/* ---------- Cards ---------- */
 .caretaker-summary {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    margin-bottom: 25px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.04);
 }
 
 .caretaker-summary h2 {
-    margin-bottom: 10px;
-    font-size: 22px;
-    color: #333;
+  margin: 0 0 10px;
+  font-size: 22px;
+  color: #333;
 }
 
 .caretaker-summary p {
-    margin: 6px 0;
-    font-size: 15px;
-    color: #555;
+  margin: 6px 0;
+  font-size: 15px;
+  color: #555;
+  line-height: 1.4;
 }
 
-/* Form Section */
-.booking-form {
-    background: #ffffff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    margin-bottom: 25px;
+/* Make summary labels feel more “dashboard-like” */
+.caretaker-summary p strong {
+  display: inline-block;
+  min-width: 80px;
+  color: #333;
 }
 
+/* ---------- Base Price line ---------- */
 .form-group {
-    margin-bottom: 18px;
+  margin-bottom: 18px;
 }
 
+.form-group .hint {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.35;
+}
+
+#basePrice {
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #f1f7ff;
+  border: 1px solid #d3e3ff;
+  color: #1d3557;
+  font-weight: 700;
+}
+
+/* ---------- Booking Form Container ---------- */
+.booking-form {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Better form rhythm */
 .form-group label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 600;
-    color: #333;
+  display: block;
+  margin-bottom: 7px;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #333;
+  letter-spacing: 0.2px;
 }
 
 .form-group input,
-.form-group select,.form-group textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 15px;
-    background: #fff;
-    transition: border-color 0.2s;
-    box-sizing: border-box;  /* ensures padding & border stay inside width */
-    display: block; 
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 15px;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.05s;
+  display: block;
 }
 
+/* Make textarea feel nicer */
+.form-group textarea {
+  min-height: 90px;
+  resize: vertical;
+  line-height: 1.4;
+}
+
+/* Keep readonly + disabled readable */
 .form-group input[readonly],
 .form-group select:disabled {
-
   color: #252424;
   opacity: 1;
 }
-}
 
+/* Focus polish (same blue theme) */
 .form-group input:focus,
-.form-group select:focus {
-    border-color: #4a90e2;
-    outline: none;
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74,144,226,0.18);
+  outline: none;
 }
 
+/* Subtle “press” feel for better UX */
+.form-group input:active,
+.form-group select:active,
+.form-group textarea:active {
+  transform: translateY(0.5px);
+}
+
+/* Remove arrow styling for disabled selects (kept from you) */
 #basis,
 #preferredTime {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: none;
-    padding-right: 12px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+  padding-right: 12px;
 }
 
+/* Disabled / readonly style */
 .form-group select:disabled,
 .form-group input:readonly {
-    color: #333;
-    background: #f9f9f9;
-    opacity: 1;
+  color: #333;
+  background: #f9f9f9;
+  opacity: 1;
 }
 
-/* Price Box */
+/* Make helper text readable */
+.form-group small {
+  display: block;
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: #666;
+  line-height: 1.35;
+}
+
+/* ---------- Price Box ---------- */
 .price-box {
-    background: #f1f7ff;
-    border: 1px solid #d3e3ff;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    color: #1d3557;
-    font-weight: bold;
+  background: #f1f7ff;
+  border: 1px solid #d3e3ff;
+  padding: 16px;
+  border-radius: 12px;
+  margin: 6px 0 18px;
+  color: #1d3557;
+  font-weight: bold;
 }
 
+/* Align price rows nicely */
+.price-box p {
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+
+/* Keep numbers aligned visually */
+.price-box span {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Availability */
 #availabilityMsg {
-    font-size: 14px;
-    font-weight: 500;
-    color: #e63946;
+  display: inline-block;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff5f5;
+  border: 1px solid rgba(230,57,70,0.25);
+  font-size: 14px;
+  font-weight: 600;
+  color: #e63946;
+  min-height: 18px;
 }
 
-/* Booking Button */
+/* ---------- Button ---------- */
 #bookBtn {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 10px;
-    background: #4a90e2;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.3s;
+  width: 100%;
+  padding: 13px 14px;
+  border: none;
+  border-radius: 12px;
+  background: #4a90e2;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.25s, transform 0.06s, box-shadow 0.2s;
+  box-shadow: 0 10px 18px rgba(74,144,226,0.25);
 }
 
 #bookBtn:hover:enabled {
-    background: #357abd;
+  background: #357abd;
+  box-shadow: 0 12px 22px rgba(74,144,226,0.28);
+}
+
+#bookBtn:active:enabled {
+  transform: translateY(1px);
 }
 
 #bookBtn:disabled {
-    background: #b0c7e6;
-    cursor: not-allowed;
+  background: #b0c7e6;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
-/* Other Caretakers */
+/* ---------- Other Caretakers ---------- */
 #otherCaretakers {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Keep hidden by default (your logic) */
+#otherCaretakers {
+  display: none;
 }
 
 #otherCaretakers h3 {
-    margin-bottom: 15px;
-    font-size: 20px;
-    color: #333;
+  margin: 0 0 14px;
+  font-size: 20px;
+  color: #333;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .content {
-        margin-left: 0;
-        padding: 20px;
-    }
-
-    #bookBtn {
-        font-size: 14px;
-    }
-}
-
-#otherCaretakers {
-    display:none; /* hide by default */
-}
+/* Grid */
 .caretaker-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    margin-top: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 18px;
+  margin-top: 12px;
 }
 
+/* Cards */
 .caretaker-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    text-align: center;
-    width: 300px;
-    height: 400px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.04);
+  text-align: center;
+  width: 100%;
+  height: auto; /* allow flexible height for content */
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .caretaker-card h4 {
-    margin-bottom: 8px;
-    font-size: 18px;
-    color: #333;
+  margin: 0 0 8px;
+  font-size: 18px;
+  color: #333;
 }
 
 .caretaker-card p {
-    margin: 4px 0;
-    font-size: 14px;
-    color: #555;
+  margin: 4px 0;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.35;
 }
 
+/* Button inside card */
 .caretaker-card button {
-    margin-top: 10px;
-    padding: 8px 14px;
-    border: none;
-    border-radius: 8px;
-    background: #4a90e2;
-    color: #fff;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.3s;
+  margin-top: 12px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #4a90e2;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.25s, transform 0.06s;
 }
 
 .caretaker-card button:hover {
-    background: #357abd;
+  background: #357abd;
+}
+
+.caretaker-card button:active {
+  transform: translateY(1px);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 18px;
+  }
+
+  .booking-form {
+    padding: 18px;
+  }
+
+  #bookBtn {
+    font-size: 14px;
+  }
+
+  .price-box p {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

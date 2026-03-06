@@ -20,7 +20,7 @@
     <h1>Welcome back, <?php echo htmlspecialchars($_SESSION['user']['name']); ?></h1>
     
   </section>
-<br>
+
   <!-- Dashboard Layout -->
   
   <main class="dashboard">
@@ -107,18 +107,26 @@
       </div>
     </section>
 
-      <!-- Schedule -->
-    <section class="card schedule">
-      <h3>Schedule</h3>
-      <div class="calendar">
-        <p>September 2025</p>
-        <div class="days">
-          <span>Su</span><span>Mo</span><span>Tu</span><span>We</span>
-          <span>Th</span><span>Fr</span><span>Sa</span>
-        </div>
-        <div class="dates" id="calendarDates"></div>
-      </div>
-    </section>
+  <!-- Schedule -->
+<section class="card schedule">
+  <h3>Schedule</h3>
+  <div class="calendar">
+    <p id="calendarMonthLabel"></p>
+
+    <div class="days">
+      <span>Su</span><span>Mo</span><span>Tu</span><span>We</span>
+      <span>Th</span><span>Fr</span><span>Sa</span>
+    </div>
+
+    <div class="dates" id="calendarDates"></div>
+  </div>
+</section>
+
+<script>
+  // Pass booking dates (YYYY-MM-DD) to JS
+  window.CT_DASHBOARD_BOOKING_DATES = <?= json_encode(array_values(array_unique(array_map(fn($b) => $b['booking_date'], $data['upcoming'] ?? [])))) ?>;
+  window.URLROOT = "<?= URLROOT ?>";
+</script>
 
     <!-- Leave Management -->
     <section class="card leave">
