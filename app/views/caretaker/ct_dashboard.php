@@ -39,8 +39,11 @@
         <?= htmlspecialchars($data['caretaker']['service_type']) ?>
     </button>
 </h4>
-            
-           <button   onclick="openProfile()" class="btn"  >Edit profile</button>
+
+<button class="btn" type="button"
+  onclick="window.location.href='<?= URLROOT ?>/index.php?url=Caretaker/ct_settings'">
+  Edit profile
+</button>
           </div>
           
           <p class="profile-desc">
