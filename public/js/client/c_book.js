@@ -17,6 +17,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const preferredTimeLabel = document.getElementById("preferredTimeLabel");
 
+  function normalizeBasis(value) {
+    const v = (value || "").trim().toLowerCase();
+    if (v === "hourly") return "Hourly";
+    if (v === "daily") return "Daily";
+    if (v === "monthly") return "Monthly";
+    if (v === "yearly") return "Yearly";
+    return (value || "").trim();
+  }
+
   // Use the serviceType from PHP (already set in view script)
   // const serviceType = "...";
 
@@ -75,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function calculatePrice() {
-    const basis = (basisSelect?.value || "").trim();
+    const basis = normalizeBasis(basisSelect?.value || "");
     const duration = Math.max(1, parseInt(durationInput?.value || "1", 10));
     const preferredTime = getPreferredTimeValue();
     const hours = Math.max(0, parseInt(customizationHoursInput?.value || "0", 10));
@@ -110,16 +119,66 @@ document.addEventListener("DOMContentLoaded", () => {
   // If your Hourly flow uses <input type="time">, keep modifier=1 automatically.
   // Optional: show label "Start Time" for Hourly only.
   function updateTimeLabelForHourly() {
-    const basis = (basisSelect?.value || "").trim();
+    const basis = normalizeBasis(basisSelect?.value || "");
     if (!preferredTimeLabel) return;
     preferredTimeLabel.textContent = basis === "Hourly" ? "Start Time" : "Preferred Time";
+
+    // Switch between select (for non-Hourly) and time input (for Hourly)
+    const timeContainer = document.getElementById("timeContainer");
+    if (!timeContainer) return;
+
+    if (basis === "Hourly") {
+      // Show time input for Hourly bookings
+      timeContainer.innerHTML = `
+        <input type="time" id="preferredTime" required
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+      `;
+      // Set default time if available
+      const prefillTime = preferredHidden?.value || "09:00";
+      const timeInput = document.getElementById("preferredTime");
+      if (timeInput) {
+        timeInput.value = prefillTime;
+        timeInput.addEventListener("input", () => {
+          if (preferredHidden) preferredHidden.value = timeInput.value;
+          calculatePrice();
+        });
+        // Initial sync
+        if (preferredHidden) preferredHidden.value = prefillTime;
+      }
+    } else {
+      // Show select dropdown for non-Hourly bookings
+      const currentValue = preferredHidden?.value || "";
+      timeContainer.innerHTML = `
+        <select id="preferredTime" required>
+          <option value="">Select Time</option>
+          <option value="Full Time (8am - 5pm)" ${currentValue === "Full Time (8am - 5pm)" ? "selected" : ""}>Full Time (8am - 5pm)</option>
+          <option value="Morning (8am - 12pm)" ${currentValue === "Morning (8am - 12pm)" ? "selected" : ""}>Morning (8am - 12pm)</option>
+          <option value="Evening (1pm - 5pm)" ${currentValue === "Evening (1pm - 5pm)" ? "selected" : ""}>Evening (1pm - 5pm)</option>
+        </select>
+      `;
+      const selectElem = document.getElementById("preferredTime");
+      if (selectElem) {
+        selectElem.addEventListener("change", () => {
+          if (preferredHidden) preferredHidden.value = selectElem.value;
+          calculatePrice();
+        });
+        // Initial sync
+        if (preferredHidden) preferredHidden.value = currentValue;
+      }
+    }
+
+    calculatePrice();
   }
 
   // listeners
-  if (basisSelect) basisSelect.addEventListener("change", () => {
-    updateTimeLabelForHourly();
-    calculatePrice();
-  });
+  if (basisSelect) {
+    basisSelect.addEventListener("change", () => {
+      // Sync hidden field
+      if (basisHidden) basisHidden.value = basisSelect.value;
+      updateTimeLabelForHourly();
+      calculatePrice();
+    });
+  }
 
   if (durationInput) durationInput.addEventListener("input", calculatePrice);
 

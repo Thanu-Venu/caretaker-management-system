@@ -354,6 +354,37 @@ class HrController extends Controller
         $this->view('hr/hr_pendingPayments', ['payments' => $pendingPayments]);
     }
 
+    public function paymentMonitor()
+    {
+        $allowedRecurringStatuses = ['all', 'pending', 'paid', 'overdue', 'cancelled'];
+        $allowedPaymentStatuses = ['all', 'pending', 'approved', 'rejected'];
+
+        $filters = [
+            'client' => trim((string)($_GET['client'] ?? '')),
+            'recurring_status' => (string)($_GET['recurring_status'] ?? 'all'),
+            'payment_status' => (string)($_GET['payment_status'] ?? 'all'),
+            'from_date' => trim((string)($_GET['from_date'] ?? '')),
+            'to_date' => trim((string)($_GET['to_date'] ?? '')),
+        ];
+
+        if (!in_array($filters['recurring_status'], $allowedRecurringStatuses, true)) {
+            $filters['recurring_status'] = 'all';
+        }
+
+        if (!in_array($filters['payment_status'], $allowedPaymentStatuses, true)) {
+            $filters['payment_status'] = 'all';
+        }
+
+        $data = [
+            'summary' => $this->hrModel->getPaymentSummary(),
+            'recurring' => $this->hrModel->getRecurringPaymentOverview(100, $filters),
+            'recent' => $this->hrModel->getRecentPaymentTimeline(100, $filters),
+            'filters' => $filters
+        ];
+
+        $this->view('hr/hr_paymentMonitor', $data);
+    }
+
     /* ================= APPROVE PAYMENT ================= */
     public function approvePayment()
     {
@@ -383,18 +414,39 @@ class HrController extends Controller
         // Update payment status to approved
         $clientModel->updatePaymentStatus($paymentId, 'approved');
 
-        // Update booking status to Accepted
-        $clientModel->updateBookingStatus($payment['booking_id'], 'Accepted');
+        if ($payment['payment_type'] === 'advance') {
+            // Update booking status to Accepted
+            $clientModel->updateBookingStatus($payment['booking_id'], 'Accepted');
 
-        // Send notification to caretaker
-        $notifModel = $this->model('NotificationModel');
-        $notifModel->addNotification(
-            $payment['caretaker_id'],
-            'caretaker',
-            'Booking Accepted',
-            "Booking #" . $payment['booking_id'] . " has been accepted after payment approval. Client: " . $payment['client_name'] . ". You can now view the booking details in your Bookings page.",
-            URLROOT . "/caretaker/ct_booking?booking_id=" . $payment['booking_id'] . "&tab=upcoming"
-        );
+            // Set advance_paid_date and create recurring payments if needed
+            $bookingDetails = $clientModel->getBookingById($payment['booking_id']);
+            if ($bookingDetails) {
+                $clientModel->updateBookingAdvancePaidDate($payment['booking_id']);
+
+                require_once APPROOT . '/controllers/PaymentController.php';
+                PaymentController::createRecurringPayments($payment['booking_id'], $bookingDetails);
+            }
+
+            // Send notification to caretaker for first approval.
+            $notifModel = $this->model('NotificationModel');
+            $notifModel->addNotification(
+                $payment['caretaker_id'],
+                'caretaker',
+                'Booking Accepted',
+                "Booking #" . $payment['booking_id'] . " has been accepted after payment approval. Client: " . $payment['client_name'] . ". You can now view the booking details in your Bookings page.",
+                URLROOT . "/caretaker/ct_booking?booking_id=" . $payment['booking_id'] . "&tab=upcoming"
+            );
+        } else {
+            // For recurring/follow-up payments, mark matching recurring payment as paid.
+            require_once APPROOT . '/core/RecurringPaymentService.php';
+            $recurringService = new RecurringPaymentService();
+            $recurringService->markRecurringPaymentAsPaidByDetails(
+                (int)$payment['booking_id'],
+                (string)$payment['due_date'],
+                (float)$payment['amount'],
+                (int)$paymentId
+            );
+        }
 
         $this->logHrAction("Approved payment #{$paymentId} for Booking #{$payment['booking_id']}", 'Payments');
 
@@ -694,8 +746,10 @@ class HrController extends Controller
         // Update payment status to rejected
         $clientModel->updatePaymentStatus($paymentId, 'rejected');
 
-        // Update booking status back to Requested
-        $clientModel->updateBookingStatus($payment['booking_id'], 'Requested');
+        // Revert only advance-payment bookings back to Requested.
+        if ($payment['payment_type'] === 'advance') {
+            $clientModel->updateBookingStatus($payment['booking_id'], 'Requested');
+        }
 
         // Send notification to client
         $notifModel = $this->model('NotificationModel');

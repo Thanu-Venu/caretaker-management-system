@@ -175,6 +175,7 @@ class ClientController extends Controller
     public function c_payment()
     {
         $booking_id = $_GET['booking_id'] ?? null;
+        $recurringPaymentId = $_GET['recurring_payment_id'] ?? null;
 
         if (!$booking_id) {
             $_SESSION['error'] = "No booking selected";
@@ -193,16 +194,40 @@ class ClientController extends Controller
 
         // Calculate payment info
         require_once APPROOT . '/controllers/PaymentController.php';
-        $payment_calc = PaymentController::calculateAdvanceFromBooking($booking);
+        $payment_calc = PaymentController::calculatePaymentDetails($booking);
+        $payment_calc['advance'] = $payment_calc['advance_amount'] ?? 0;
+        $payment_calc['remaining'] = $payment_calc['remaining_balance'] ?? 0;
+        $payment_calc['notes'] = $payment_calc['description'] ?? '';
+
+        $recurringPayment = null;
+        if (!empty($recurringPaymentId)) {
+            $recurringPayment = $this->clientModel->getRecurringPaymentByIdForClient(
+                (int)$recurringPaymentId,
+                (int)($_SESSION['user']['id'] ?? 0),
+                (int)$booking_id
+            );
+
+            if (!$recurringPayment || !in_array($recurringPayment['status'], ['pending', 'overdue'], true)) {
+                $_SESSION['error'] = "Invalid recurring payment request";
+                header("Location: " . URLROOT . "/client/c_upcomingBookings");
+                exit;
+            }
+        }
 
         $this->view("client/c_payment", [
             'booking' => $booking,
-            'payment_calc' => $payment_calc
+            'payment_calc' => $payment_calc,
+            'recurring_payment' => $recurringPayment
         ]);
     }
 
     public function c_paymentHistory()
     {
+        // Keep backward compatibility with old menu/links.
+        header("Location: " . URLROOT . "/client/payments?tab=paid_history");
+        exit;
+
+        // Legacy code (intentionally unreachable after redirect)
         $clientId = $_SESSION['user']['id'] ?? null;
         if (!$clientId) {
             header("Location: " . URLROOT . "/auth/login");
@@ -211,6 +236,281 @@ class ClientController extends Controller
 
         $payments = $this->clientModel->getPaymentsByClient($clientId);
         $this->view("client/c_paymentHistory", ['payments' => $payments]);
+    }
+
+    public function payments()
+    {
+        $clientId = $_SESSION['user']['id'] ?? null;
+        if (!$clientId) {
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
+
+        $allowedTabs = ['all', 'due_now', 'upcoming', 'overdue', 'paid_history', 'by_booking'];
+        $tab = $_GET['tab'] ?? 'all';
+        if (!in_array($tab, $allowedTabs, true)) {
+            $tab = 'all';
+        }
+
+        $filters = [
+            'tab' => $tab,
+            'search' => trim((string)($_GET['search'] ?? '')),
+            'status' => trim((string)($_GET['status'] ?? 'all')),
+            'service_type' => trim((string)($_GET['service_type'] ?? 'all')),
+            'booking_status' => trim((string)($_GET['booking_status'] ?? 'all')),
+            'from_date' => trim((string)($_GET['from_date'] ?? '')),
+            'to_date' => trim((string)($_GET['to_date'] ?? '')),
+        ];
+
+        $summary = $this->clientModel->getClientPaymentSummary((int)$clientId);
+        $actionItems = $this->clientModel->getClientActionRequiredPayments((int)$clientId);
+        $bookingOverview = $this->clientModel->getClientBookingPaymentOverview((int)$clientId);
+        $history = $this->clientModel->getClientPaymentHistoryDetailed((int)$clientId);
+
+        $todayTs = strtotime(date('Y-m-d'));
+        $upcomingWindowTs = strtotime('+30 days', $todayTs);
+
+        $filteredAction = array_values(array_filter($actionItems, function ($item) use ($filters, $todayTs, $upcomingWindowTs) {
+            $search = strtolower($filters['search']);
+            if ($search !== '') {
+                $haystack = strtolower(
+                    (string)$item['booking_id'] . ' ' .
+                        (string)$item['service_type'] . ' ' .
+                        (string)$item['caretaker_name']
+                );
+                if (strpos($haystack, $search) === false) {
+                    return false;
+                }
+            }
+
+            if ($filters['service_type'] !== 'all' && strcasecmp((string)$item['service_type'], (string)$filters['service_type']) !== 0) {
+                return false;
+            }
+
+            if ($filters['status'] !== 'all' && strcasecmp((string)$item['payment_status'], (string)$filters['status']) !== 0) {
+                return false;
+            }
+
+            if ($filters['booking_status'] !== 'all' && strcasecmp((string)$item['booking_status'], (string)$filters['booking_status']) !== 0) {
+                return false;
+            }
+
+            $dueTs = !empty($item['due_date']) ? strtotime((string)$item['due_date']) : null;
+            if (!empty($filters['from_date']) && $dueTs !== null && $dueTs < strtotime($filters['from_date'])) {
+                return false;
+            }
+            if (!empty($filters['to_date']) && $dueTs !== null && $dueTs > strtotime($filters['to_date'])) {
+                return false;
+            }
+
+            if ($filters['tab'] === 'due_now') {
+                return (string)$item['payment_status'] === 'overdue' || ((int)$item['days_delta'] <= 0 && (string)$item['payment_status'] !== 'advance_required');
+            }
+
+            if ($filters['tab'] === 'upcoming') {
+                if ($dueTs === null) {
+                    return false;
+                }
+                return ((string)$item['payment_status'] === 'pending') && $dueTs > $todayTs && $dueTs <= $upcomingWindowTs;
+            }
+
+            if ($filters['tab'] === 'overdue') {
+                return (string)$item['payment_status'] === 'overdue';
+            }
+
+            if ($filters['tab'] === 'paid_history') {
+                return false;
+            }
+
+            return true;
+        }));
+
+        $filteredBookings = array_values(array_filter($bookingOverview, function ($item) use ($filters) {
+            $search = strtolower($filters['search']);
+            if ($search !== '') {
+                $haystack = strtolower(
+                    (string)$item['booking_id'] . ' ' .
+                        (string)$item['service_type'] . ' ' .
+                        (string)$item['caretaker_name']
+                );
+                if (strpos($haystack, $search) === false) {
+                    return false;
+                }
+            }
+
+            if ($filters['service_type'] !== 'all' && strcasecmp((string)$item['service_type'], (string)$filters['service_type']) !== 0) {
+                return false;
+            }
+
+            if ($filters['booking_status'] !== 'all' && strcasecmp((string)$item['status'], (string)$filters['booking_status']) !== 0) {
+                return false;
+            }
+
+            return true;
+        }));
+
+        $filteredHistory = array_values(array_filter($history, function ($item) use ($filters) {
+            $search = strtolower($filters['search']);
+            if ($search !== '') {
+                $haystack = strtolower(
+                    (string)$item['booking_id'] . ' ' .
+                        (string)$item['service_type'] . ' ' .
+                        (string)$item['caretaker_name']
+                );
+                if (strpos($haystack, $search) === false) {
+                    return false;
+                }
+            }
+
+            if ($filters['service_type'] !== 'all' && strcasecmp((string)$item['service_type'], (string)$filters['service_type']) !== 0) {
+                return false;
+            }
+
+            if ($filters['status'] !== 'all' && strcasecmp((string)$item['status'], (string)$filters['status']) !== 0) {
+                return false;
+            }
+
+            $paidTs = !empty($item['paid_at']) ? strtotime((string)$item['paid_at']) : null;
+            if (!empty($filters['from_date']) && $paidTs !== null && $paidTs < strtotime($filters['from_date'])) {
+                return false;
+            }
+            if (!empty($filters['to_date']) && $paidTs !== null && $paidTs > strtotime($filters['to_date'] . ' 23:59:59')) {
+                return false;
+            }
+
+            if ($filters['tab'] === 'paid_history') {
+                return strtolower((string)$item['status']) === 'approved';
+            }
+
+            return true;
+        }));
+
+        $this->view('client/c_payments', [
+            'summary' => $summary,
+            'action_items' => $filteredAction,
+            'booking_overview' => $filteredBookings,
+            'payment_history' => $filteredHistory,
+            'filters' => $filters
+        ]);
+    }
+
+    public function paymentDetails($bookingId = null)
+    {
+        $clientId = $_SESSION['user']['id'] ?? null;
+        if (!$clientId) {
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
+
+        if ($bookingId === null) {
+            $bookingId = $_GET['booking_id'] ?? null;
+        }
+
+        $bookingId = (int)$bookingId;
+        if ($bookingId <= 0) {
+            header("Location: " . URLROOT . "/client/payments");
+            exit;
+        }
+
+        $timelineData = $this->clientModel->getBookingPaymentTimelineData((int)$clientId, $bookingId);
+        $booking = $timelineData['booking'] ?? null;
+
+        if (!$booking) {
+            $_SESSION['error'] = "Booking not found";
+            header("Location: " . URLROOT . "/client/payments");
+            exit;
+        }
+
+        $timelineEvents = [];
+        $payments = $timelineData['payments'] ?? [];
+        $recurring = $timelineData['recurring'] ?? [];
+
+        $advancePayment = null;
+        foreach ($payments as $p) {
+            if (($p['payment_type'] ?? '') === 'advance') {
+                $advancePayment = $p;
+                break;
+            }
+        }
+
+        if ($advancePayment) {
+            $advanceStatus = strtolower((string)$advancePayment['status']);
+            $timelineEvents[] = [
+                'label' => 'Advance Payment',
+                'status' => $advanceStatus === 'approved' ? 'paid' : $advanceStatus,
+                'date' => $advancePayment['approved_at'] ?: $advancePayment['created_at'],
+                'note' => 'Amount: LKR ' . number_format((float)$advancePayment['amount'], 2)
+            ];
+        } elseif (($booking['status'] ?? '') === 'Payment_Requested') {
+            $timelineEvents[] = [
+                'label' => 'Advance Payment Required',
+                'status' => 'due_soon',
+                'date' => $booking['service_start_date'] ?? null,
+                'note' => 'Please complete the advance payment to start the service.'
+            ];
+        }
+
+        $advanceMonths = (int)($booking['advance_months'] ?? 0);
+        $basis = strtolower((string)($booking['basis'] ?? ''));
+        if (in_array($basis, ['monthly', 'yearly'], true) && $advanceMonths > 0) {
+            for ($i = 1; $i <= $advanceMonths; $i++) {
+                $timelineEvents[] = [
+                    'label' => 'Month ' . $i,
+                    'status' => 'paid',
+                    'date' => null,
+                    'note' => 'Covered by advance payment'
+                ];
+            }
+        }
+
+        $todayTs = strtotime(date('Y-m-d'));
+        $nextPayable = null;
+
+        foreach ($recurring as $rp) {
+            $status = strtolower((string)$rp['status']);
+            $dueTs = strtotime((string)$rp['due_date']);
+            $days = (int)(($dueTs - $todayTs) / 86400);
+
+            $eventStatus = 'upcoming';
+            if ($status === 'paid') {
+                $eventStatus = 'paid';
+            } elseif ($status === 'cancelled') {
+                $eventStatus = 'cancelled';
+            } elseif ($status === 'overdue') {
+                $eventStatus = 'overdue';
+            } elseif ($days <= 7) {
+                $eventStatus = 'due_soon';
+            }
+
+            $timelineEvents[] = [
+                'label' => 'Cycle ' . (int)$rp['cycle_number'] . ' (' . $rp['cycle_type'] . ')',
+                'status' => $eventStatus,
+                'date' => $rp['status'] === 'paid' ? ($rp['paid_at'] ?: $rp['due_date']) : $rp['due_date'],
+                'note' => 'Amount: LKR ' . number_format((float)$rp['amount'], 2) .
+                    (!empty($rp['grace_period_end']) ? (' | Grace Ends: ' . $rp['grace_period_end']) : '')
+            ];
+
+            if ($nextPayable === null && in_array($status, ['pending', 'overdue'], true)) {
+                $canPay = false;
+                if ($status === 'overdue') {
+                    $canPay = empty($rp['grace_period_end']) || strtotime((string)$rp['grace_period_end']) >= $todayTs;
+                } else {
+                    $canPay = $days <= 7;
+                }
+
+                if ($canPay) {
+                    $nextPayable = $rp;
+                }
+            }
+        }
+
+        $this->view('client/c_paymentDetails', [
+            'booking' => $booking,
+            'timeline_events' => $timelineEvents,
+            'payments' => $payments,
+            'recurring' => $recurring,
+            'next_payable' => $nextPayable
+        ]);
     }
 
 
@@ -562,6 +862,7 @@ class ClientController extends Controller
     public function c_makePayment()
     {
         $bookingId = $_GET['booking_id'] ?? null;
+        $recurringPaymentId = $_GET['recurring_payment_id'] ?? null;
         if (!$bookingId) {
             header("Location: " . URLROOT . "/client/c_upcomingBookings");
             exit;
@@ -575,11 +876,30 @@ class ClientController extends Controller
 
         // Ensure PaymentController is available and compute advance
         require_once APPROOT . '/controllers/PaymentController.php';
-        $payment_calc = PaymentController::calculateAdvanceFromBooking($booking);
+        $payment_calc = PaymentController::calculatePaymentDetails($booking);
+        $payment_calc['advance'] = $payment_calc['advance_amount'] ?? 0;
+        $payment_calc['remaining'] = $payment_calc['remaining_balance'] ?? 0;
+        $payment_calc['notes'] = $payment_calc['description'] ?? '';
+
+        $recurringPayment = null;
+        if (!empty($recurringPaymentId)) {
+            $recurringPayment = $this->clientModel->getRecurringPaymentByIdForClient(
+                (int)$recurringPaymentId,
+                (int)($_SESSION['user']['id'] ?? 0),
+                (int)$bookingId
+            );
+
+            if (!$recurringPayment || !in_array($recurringPayment['status'], ['pending', 'overdue'], true)) {
+                $_SESSION['error'] = "Invalid recurring payment request";
+                header("Location: " . URLROOT . "/client/c_upcomingBookings");
+                exit;
+            }
+        }
 
         $this->view('client/c_makePayment', [
             'booking' => $booking,
-            'payment_calc' => $payment_calc
+            'payment_calc' => $payment_calc,
+            'recurring_payment' => $recurringPayment
         ]);
     }
 
@@ -680,21 +1000,43 @@ class ClientController extends Controller
         // Get caretaker ID from URL
         $caretakerId = $_GET['id'] ?? null;
         if (!$caretakerId) {
+            $_SESSION['error'] = "No caretaker selected. Please select a caretaker from the search results.";
             header("Location: " . URLROOT . "/client/c_find1");
             exit;
         }
 
         // Fetch caretaker details
-        $caretaker = (array) $caretakerModel->getCaretakerById($caretakerId);
+        $caretaker = $caretakerModel->getCaretakerById($caretakerId);
+
+        // Check if caretaker exists
+        if (!$caretaker || empty($caretaker)) {
+            $_SESSION['error'] = "Selected caretaker not found. They may have been removed from the system.";
+            header("Location: " . URLROOT . "/client/c_find1");
+            exit;
+        }
+
+        $caretaker = (array) $caretaker;
+
+        // Normalize incoming basis values from search flow (e.g., "hourly" -> "Hourly").
+        $rawBasis = trim((string)($_GET['basis'] ?? ''));
+        $basisMap = [
+            'hourly' => 'Hourly',
+            'daily' => 'Daily',
+            'monthly' => 'Monthly',
+            'yearly' => 'Yearly',
+        ];
+        $normalizedBasis = $basisMap[strtolower($rawBasis)] ?? $rawBasis;
+
+        $serviceType = trim((string)($_GET['service_type'] ?? ($caretaker['service_type'] ?? '')));
         // Pre-fill data from GET parameters (from search popup)
         $prefill = [
-            'basis'    => $_GET['basis'] ?? '',
+            'basis'    => $normalizedBasis,
             'duration' => intval($_GET['duration'] ?? 1),
             'date'     => $_GET['date'] ?? '',
             'time'     => $_GET['time'] ?? '',
             'customization_hours' => intval($_GET['customization_hours'] ?? 0),
             'customization_apply' => $_GET['customization_apply'] ?? 'once',
-            'service_type' => $_GET['service_type'] ?? ($caretaker->service_type ?? ''),
+            'service_type' => $serviceType,
         ];
         $total_payment = $this->calcTotalPayment(
             (string)$prefill['service_type'],
@@ -727,11 +1069,32 @@ class ClientController extends Controller
             header("Location: " . URLROOT . "/client/c_find1");
             exit;
         }
-        $service_type    = $_POST['service_type'];
-        $basis           = $_POST['basis'];
+        $service_type    = trim((string)($_POST['service_type'] ?? ''));
+        $rawBasis        = trim((string)($_POST['basis'] ?? ''));
+        $basisMap = [
+            'hourly' => 'Hourly',
+            'daily' => 'Daily',
+            'monthly' => 'Monthly',
+            'yearly' => 'Yearly',
+        ];
+        $basis           = $basisMap[strtolower($rawBasis)] ?? $rawBasis;
         $duration        = intval($_POST['duration']);
-        $preferred_time  = $_POST['preferred_time'];
-        $booking_date    = $_POST['booking_date'];
+        $preferred_time  = trim((string)($_POST['preferred_time'] ?? ''));
+        $booking_date    = trim((string)($_POST['booking_date'] ?? ''));
+
+        // Validate daily booking limit (max 30 days)
+        require_once APPROOT . '/controllers/PaymentController.php';
+        $validation = PaymentController::validateBooking([
+            'basis' => $basis,
+            'duration' => $duration
+        ]);
+
+        if (!$validation['valid']) {
+            $_SESSION['error'] = $validation['message'];
+            header("Location: " . URLROOT . "/client/c_find1");
+            exit;
+        }
+
         $district        = $_POST['district'];
         $street          = $_POST['street'];
         $address_line1   = $_POST['address_line1'];
@@ -739,11 +1102,33 @@ class ClientController extends Controller
         $postal_code     = $_POST['postal_code'];
         $customization   = $_POST['customization'];
         $customizationHours = intval($_POST['customization_hours'] ?? 0);
-        $caretaker_id    = $_POST['caretaker_id'];
-        $client_id       = $_SESSION['user']['id'];
+        $caretaker_id    = $_POST['caretaker_id'] ?? 0;
+        $client_id       = $_SESSION['user']['id'] ?? 0;
 
-        if ($caretaker_id <= 0 || $client_id <= 0 || $service_type === '' || $basis === '' || $booking_date === '' || $preferred_time === '') {
-            $_SESSION['error'] = "Missing booking information.";
+        // Detailed validation with specific error messages
+        if ($caretaker_id <= 0) {
+            $_SESSION['error'] = "Invalid caretaker selection. Please select a caretaker from the search results.";
+            header("Location: " . URLROOT . "/client/c_find1");
+            exit;
+        }
+
+        if ($client_id <= 0) {
+            $_SESSION['error'] = "Session expired. Please log in again.";
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
+
+        if (empty($service_type) || empty($basis) || empty($booking_date) || empty($preferred_time)) {
+            $_SESSION['error'] = "Please fill in all required booking fields (service, basis, date, and time).";
+            header("Location: " . URLROOT . "/client/c_book?id=" . $caretaker_id);
+            exit;
+        }
+
+        // Verify caretaker still exists
+        $caretakerModel = $this->model('CaretakerModel');
+        $caretakerCheck = $caretakerModel->getCaretakerById($caretaker_id);
+        if (!$caretakerCheck) {
+            $_SESSION['error'] = "Selected caretaker no longer available. Please choose another caretaker.";
             header("Location: " . URLROOT . "/client/c_find1");
             exit;
         }
@@ -777,6 +1162,15 @@ class ClientController extends Controller
         );
 
         $customizationFee = $total_payment - $base_without_custom;
+
+        // Calculate payment details
+        $paymentDetails = PaymentController::calculatePaymentDetails([
+            'basis' => $basis,
+            'duration' => $duration,
+            'total_payment' => $total_payment,
+            'service_start_date' => $booking_date
+        ]);
+
         // ---- Store booking ----
         $bookingData = [
             'client_id'      => $client_id,
@@ -791,11 +1185,15 @@ class ClientController extends Controller
             'address_line2'  => $address_line2,
             'postal_code'    => $postal_code,
             'booking_date'   => $booking_date,
+            'service_start_date' => $booking_date,
             'customization'  => $customization,
             'customization_hours' => $customizationHours,
             'customization_price' => $customizationFee,
             'total_payment'  => $total_payment,
-            'status'         => 'Requested'
+            'status'         => 'Requested',
+            'advance_months' => $paymentDetails['advance_months'],
+            'total_months'   => $paymentDetails['total_months'],
+            'advance_balance' => $paymentDetails['advance_balance']
         ];
 
         $bookingId = $this->clientModel->createBooking($bookingData);
@@ -894,6 +1292,7 @@ class ClientController extends Controller
         }
 
         $bookingId = $_POST['booking_id'] ?? null;
+        $recurringPaymentId = $_POST['recurring_payment_id'] ?? null;
         $clientId = $_SESSION['user']['id'];
         $amount = $_POST['amount'] ?? null;
         $paymentMethod = $_POST['payment_method'] ?? null;
@@ -915,10 +1314,33 @@ class ClientController extends Controller
             exit;
         }
 
-        // Calculate advance on server (do not trust client amount)
-        require_once APPROOT . '/controllers/PaymentController.php';
-        $payment_calc = PaymentController::calculateAdvanceFromBooking($booking);
-        $amount = $payment_calc['advance'] ?? $amount;
+        $paymentType = 'advance';
+        $dueDate = null;
+
+        if (!empty($recurringPaymentId)) {
+            $recurringPayment = $this->clientModel->getRecurringPaymentByIdForClient(
+                (int)$recurringPaymentId,
+                (int)$clientId,
+                (int)$bookingId
+            );
+
+            if (!$recurringPayment || !in_array($recurringPayment['status'], ['pending', 'overdue'], true)) {
+                $_SESSION['error'] = "Recurring payment not found or already paid";
+                header("Location: " . URLROOT . "/client/c_upcomingBookings");
+                exit;
+            }
+
+            // Server-authoritative amount for recurring installment.
+            $amount = (float)$recurringPayment['amount'];
+            $dueDate = $recurringPayment['due_date'];
+            $paymentType = 'reminder';
+        } else {
+            // Calculate advance on server (do not trust client amount)
+            require_once APPROOT . '/controllers/PaymentController.php';
+            $payment_calc = PaymentController::calculatePaymentDetails($booking);
+            $payment_calc['advance'] = $payment_calc['advance_amount'] ?? 0;
+            $amount = $payment_calc['advance'] ?? $amount;
+        }
 
         // Save payment record
         $paymentData = [
@@ -929,14 +1351,17 @@ class ClientController extends Controller
             'customization_price' => $booking['customization_price'] ?? 0,
             'amount' => $amount,
             'payment_method' => $paymentMethod,
-            'payment_type' => 'advance'
+            'payment_type' => $paymentType,
+            'due_date' => $dueDate
         ];
 
         $paymentId = $this->clientModel->savePayment($paymentData);
 
         if ($paymentId) {
-            // Update booking status to Advance_Paid
-            $this->clientModel->updateBookingStatus($bookingId, 'Advance_Paid');
+            if ($paymentType === 'advance') {
+                // Update booking status to Advance_Paid
+                $this->clientModel->updateBookingStatus($bookingId, 'Advance_Paid');
+            }
 
             // Send notification to HR (Manager) - only to first/primary manager
             require_once APPROOT . '/models/NotificationModel.php';
@@ -945,14 +1370,18 @@ class ClientController extends Controller
 
             if (!empty($hr_users)) {
                 $clientName = $_SESSION['user']['name'] ?? $_SESSION['user']['username'];
-                $message = "Advance payment received from client {$clientName} (ID: {$clientId}) - Rs. " . number_format($amount, 2) . " for booking #{$bookingId}.";
+                $message = $paymentType === 'advance'
+                    ? "Advance payment received from client {$clientName} (ID: {$clientId}) - Rs. " . number_format($amount, 2) . " for booking #{$bookingId}."
+                    : "Recurring payment submitted by client {$clientName} (ID: {$clientId}) - Rs. " . number_format($amount, 2) . " for booking #{$bookingId}.";
+
+                $title = $paymentType === 'advance' ? 'Advance Payment Received' : 'Recurring Payment Received';
 
                 // Send to only the first manager
                 $hr_user = $hr_users[0];
                 $notifModel->addNotification(
                     $hr_user['id'],
                     'Manager',
-                    'Advance Payment Received',
+                    $title,
                     $message,
                     URLROOT . "/hr/pendingPayments"
                 );
