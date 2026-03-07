@@ -5,11 +5,13 @@ class HrLeaveController extends Controller
 
     private $leaveModel;
     private $hrLogsModel;
+    private $notifModel;
 
     public function __construct()
     {
         $this->leaveModel = $this->model('LeaveModel');
         $this->hrLogsModel = $this->model('HRLogsModel');
+        $this->notifModel = $this->model('NotificationModel');
     }
 
     private function logManagerAction($action, $section = 'Leaves')
@@ -83,14 +85,30 @@ class HrLeaveController extends Controller
         $leave = $this->leaveModel->getLeaveById($leaveId);
         if (!$leave) die("Leave not found");
 
+        $leaveDetails = $this->leaveModel->getLeaveByIdWithCaretaker($leaveId);
+        $impact = $this->leaveModel->getActiveBookingImpactSummary((int)$leave->user_id, $leave->start_date, $leave->end_date);
+
+        $year = (int)date('Y', strtotime($leave->start_date));
+        $month = (int)date('m', strtotime($leave->start_date));
+        $requestDays = $this->leaveModel->getLeaveDaysWithinMonth($leave->start_date, $leave->end_date, $year, $month);
+        $monthlyUsed = $this->leaveModel->getMonthlyLeaveUsage((int)$leave->user_id, $year, $month, true, (int)$leave->id);
+
         $result = $this->leaveModel->getEligibleReplacementCaretakers($leaveId);
 
         $this->view('hr/hr_leave_approve', [
             'leave' => $leave,
+            'leaveDetails' => $leaveDetails,
+            'impact' => $impact,
             'affected' => $result['affected'] ?? [],
             'caretakers' => $result['caretakers'] ?? [],
             'error' => ($result['ok'] ? '' : ($result['message'] ?? '')),
-            'criteria' => $result['criteria'] ?? null
+            'criteria' => $result['criteria'] ?? null,
+            'monthlyUsage' => [
+                'used_before' => $monthlyUsed,
+                'request_days' => $requestDays,
+                'used_after' => $monthlyUsed + $requestDays,
+                'limit' => LeaveModel::MONTHLY_LEAVE_LIMIT
+            ]
         ]);
     }
 
@@ -132,8 +150,20 @@ class HrLeaveController extends Controller
     public function reject($leaveId)
     {
         $this->requireManager();
+        $leave = $this->leaveModel->getLeaveById((int)$leaveId);
 
         $this->leaveModel->updateLeaveStatus((int)$leaveId, 'Rejected');
+
+        if ($leave) {
+            $this->notifModel->addNotification(
+                (int)$leave->user_id,
+                'caretaker',
+                'Leave Request Rejected',
+                'Your leave request for ' . $leave->start_date . ' to ' . $leave->end_date . ' was rejected by HR.',
+                URLROOT . '/LeaveCRUD/index'
+            );
+        }
+
         $this->logManagerAction("Rejected leave request (Leave ID: " . (int)$leaveId . ")", 'Leaves');
         header("Location: " . URLROOT . "/HrLeave/index");
         exit;
