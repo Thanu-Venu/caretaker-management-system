@@ -1,190 +1,248 @@
-# Caretaker Management System
+# 🏥 SmartCare – Caretaker Management System
 
-A web-based caretaker management system that connects clients with caretakers for elder care, babysitting, and household services.
-
-Core features include caretaker registration, service booking, leave management, payment processing, and role-based dashboards for **Admin**, **HR**, and **Clients** (and caretakers where applicable).
+A comprehensive web-based Caretaker Management System designed to connect **Clients, Caretakers, HR Managers, and Admin** through a centralized digital platform.
 
 ---
 
-## Table of Contents
+## 📌 Project Overview
 
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Roles](#project-roles)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Local Setup](#local-setup)
-  - [Database Setup](#database-setup)
-  - [Run the App](#run-the-app)
-- [Configuration](#configuration)
-- [Suggested Folder Structure](#suggested-folder-structure)
-- [Security Notes](#security-notes)
-- [Contributing](#contributing)
-- [License](#license)
+SmartCare is a web-based platform developed to streamline caretaker services such as:
 
----
+- 👵 Elder Care  
+- 👶 Babysitting  
+- 🧹 Maid Services  
 
-## Features
+The system replaces manual scheduling, paper-based coordination, and phone-based communication with a centralized digital solution.
 
-### Client
-- Browse available caretakers/services
-- Create and manage bookings
-- Payment processing for bookings (implementation-dependent)
-- View booking history and status
-
-### Caretaker
-- Register and manage caretaker profile
-- View assigned bookings
-- Request leave
-
-### HR
-- Review caretaker registrations (verify/reject)
-- Manage caretaker leave requests (approve/reject)
-- HR dashboard for pending actions
-
-### Admin
-- Manage users and roles
-- System overview dashboard
-- Reporting (implementation-dependent)
+It enables:
+- Efficient caretaker assignment  
+- Leave and attendance tracking  
+- Complaint and feedback handling  
+- Service booking and payment management  
+- Real-time dashboards and reports  
 
 ---
 
-## Tech Stack
+## 🎯 Project Goal
 
-- **Backend:** PHP
-- **Frontend:** HTML, CSS, JavaScript
-- **Database:** MySQL / MariaDB (recommended)
-- **Server:** Apache (XAMPP/LAMP/WAMP) or Nginx + PHP-FPM
-
-Language composition (GitHub): PHP (68.2%), CSS (23.5%), JavaScript (8.2%)
+To develop a centralized caretaker management system that simplifies service assignment, scheduling, leave handling, and user management while enhancing communication and transparency.
 
 ---
 
-## Project Roles
+## 👥 User Roles & Functionalities
 
-Typical roles in the system:
-- `admin`
-- `hr`
-- `client`
-- `caretaker`
+### 🔹 Admin
+- Manage HR, Caretakers, and Clients
+- Manage service categories
+- Monitor payments and financial reports
+- View system-wide dashboard analytics
+- View leave records
+- Manage feedback and ratings
+- Generate reports
 
-> Note: Exact role names and permissions may vary depending on the implementation in this repository.
+### 🔹 HR Manager
+- Assign caretakers to clients
+- Approve/reject leave requests
+- Manage caretaker schedules
+- Track attendance
+- Handle complaints
+- Assign/remove high-priority status
+- Generate service reports
+
+### 🔹 Caretaker
+- View & update profile
+- View assigned clients & schedules
+- Apply for leave
+- View leave history/status
+- Mark attendance (check-in/check-out)
+- View feedback & ratings
+- Update availability
+- View notifications
+
+### 🔹 Client
+- Register & login
+- View available caretakers
+- Filter by location
+- View caretaker profiles & ratings
+- Book services
+- Make advance payment
+- View booking & payment history
+- Submit complaints
+- Give feedback & ratings
+- Cancel/reschedule booking
+- Change caretaker
 
 ---
 
-## Getting Started
+## 🛠️ Technology Stack
 
-### Prerequisites
+### Frontend
+- HTML
+- CSS
+- JavaScript
 
-- PHP 8.x (or the version your hosting environment supports)
-- MySQL/MariaDB
-- Web server (Apache via XAMPP/WAMP/LAMP recommended for local development)
-- Git
+### Backend
+- PHP
 
-### Local Setup
+### Database
+- MySQL
+
+### Web Server
+- Apache
+
+### Tools
+- XAMPP / WAMP
+- Git & GitHub
+- VS Code
+- Figma
+- Jira
+
+---
+
+## 🔐 Security Features
+
+- Role-based authentication
+- Session-based access control
+- Encrypted password handling
+- Restricted module access per user role
+- Secure data storage practices
+
+---
+
+## 💳 Payment System
+
+- Advance payment during booking
+- Remaining balance after service completion
+- Payment tracking & history
+- Admin financial reporting
+
+---
+
+## 📊 Core Features
+
+- User Management
+- Caretaker Scheduling
+- Leave Management
+- Complaint Management
+- Feedback & Rating System
+- Attendance Tracking
+- Service History Tracking
+- Priority Tagging
+- Reports & Dashboards
+- Location-Based Filtering
+- Notifications & Alerts
+
+---
+
+## 📦 Project Scope
+
+### ✔ In Scope
+- Web-based system
+- Single caretaker company
+- Four main user roles
+- Online payment tracking
+- Reporting dashboards
+
+### ❌ Out of Scope
+- Mobile application
+- Live chat/video calls
+- Multi-company support
+- Third-party payroll integration
+
+---
+
+## ⚙️ Installation Guide
+
+### Requirements
+- PHP 8+
+- MySQL
+- Apache Server
+- XAMPP or WAMP
+- Web Browser
+
+### Setup Steps
 
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/Thanu-Venu/caretaker-management-system.git
-   cd caretaker-management-system
-   ```
+   git clone https://github.com/your-username/smartcare.git
 
-2. Place the project in your web server root:
-   - XAMPP (Windows): `C:\xampp\htdocs\caretaker-management-system`
-   - XAMPP (macOS): `/Applications/XAMPP/htdocs/caretaker-management-system`
-   - Linux (Apache): `/var/www/html/caretaker-management-system`
+2. Move the project folder to:
+   htdocs (XAMPP)
 
-### Database Setup
+3. Create a database in phpMyAdmin:
+   smartcare_db
 
-Because repository structures vary, follow one of these options:
+4. Import the provided SQL file.
 
-#### Option A: SQL file provided in repo
-- Look for a folder such as `sql/`, `database/`, or a file like `schema.sql`.
-- Import it into MySQL using phpMyAdmin or the MySQL CLI.
+5. Configure database connection in:
+   config/database.php
 
-#### Option B: No SQL file found
-- Create a database (example name: `caretaker_db`).
-- Add the required tables for:
-  - users & roles
-  - caretaker profiles
-  - services
-  - bookings
-  - leave requests
-  - payments
+6. Start Apache & MySQL from XAMPP.
 
-> Tip: If you paste your current table schema (or upload a SQL dump), we can document it cleanly in `/docs` and standardize setup.
-
-### Run the App
-
-- Start Apache + MySQL (XAMPP/WAMP/LAMP)
-- Open in browser:
-  - `http://localhost/caretaker-management-system/`
+7. Open in browser:
+   http://localhost/smartcare
 
 ---
 
-## Configuration
+## 📁 Project Structure (MVC)
 
-The project usually needs:
-- DB host, username, password, database name
-- Optional email (SMTP) settings
-- Optional payment provider keys
+app/
+  controllers/
+  models/
+  views/
+public/
+config/
+database/
 
-Search for a config file such as:
-- `config.php`
-- `db.php`
-- `database.php`
-- `.env` (if used)
-
-> If you share your repo’s config file name and location, we can update this README with exact steps.
+The project follows the MVC (Model-View-Controller) architecture for better scalability and maintainability.
 
 ---
 
-## Suggested Folder Structure
+## 📈 System Benefits
 
-This is a recommended structure (your repo may differ):
-
-- `public/` — web root (index.php, assets)
-- `assets/` — CSS/JS/images
-- `includes/` — shared PHP includes (db/auth/helpers)
-- `admin/` — admin dashboard pages
-- `hr/` — HR dashboard pages
-- `client/` — client pages
-- `caretaker/` — caretaker pages
-- `sql/` — DB schema and seed scripts
-- `docs/` — documentation
-  - `SYSTEM_ARCHITECTURE.md`
-  - `FUTURE_FEATURES.md`
+- Reduces manual errors
+- Improves scheduling efficiency
+- Enhances client satisfaction
+- Enables data-driven decision making
+- Scalable for future expansion
 
 ---
 
-## Security Notes
+## 🧮 Project Effort
 
-Recommended best practices (especially for production):
-- Use `password_hash()` and `password_verify()`
-- Use prepared statements (PDO or MySQLi prepared queries)
-- Add CSRF protection for forms
-- Validate all inputs server-side
-- Escape outputs to prevent XSS
-- Restrict access to role-based pages via session checks
+- Duration: 9 Months
+- Team Members: 4
+- Estimated Total Man-Hours: 1600+
 
 ---
 
-## Contributing
+## 📚 Documentation Included
 
-1. Fork the repository
-2. Create a feature branch:
-   ```bash
-   git checkout -b feature/my-change
-   ```
-3. Commit your changes:
-   ```bash
-   git commit -m "Add my change"
-   ```
-4. Push to your fork and open a Pull Request
+- Project Proposal
+- System Requirements Specification (SRS)
+- User Manual
+- Source Code Repository
 
 ---
 
-## License
+## 🚀 Future Improvements
 
-Add a license file (e.g., `LICENSE`) to define usage and contribution terms.
-If this is an academic or internal project, state the intended use here.
+- Mobile application version
+- Live chat integration
+- AI-based caretaker recommendation
+- Multi-branch support
+- Advanced analytics dashboard
+
+---
+
+## 👨‍💻 Academic Information
+
+Developed for:
+
+SCS2301 – Group Project I  
+Group 11  
+
+---
+
+## 📜 License
+
+This project is developed for academic purposes only.
