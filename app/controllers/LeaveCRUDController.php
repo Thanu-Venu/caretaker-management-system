@@ -1,105 +1,279 @@
 <?php
 
-class LeaveCRUDController extends Controller {
+class LeaveCRUDController extends Controller
+{
 
 
     private $leaveModel;
     private $notifModel;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->leaveModel = $this->model('LeaveModel');
         $this->notifModel = $this->model('NotificationModel');
     }
 
-    // 🔹 Display all leaves for logged-in caretaker
-    public function index() {
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
+    private function requireCaretaker(): int
+    {
+        if (!isset($_SESSION['user']) || ($_SESSION['role'] ?? '') !== 'caretaker') {
             die("Caretaker not logged in");
         }
 
-        $userId = $_SESSION['user']['id'];
-        $leaves = $this->leaveModel->getLeavesByUser($userId);
-        $this->view('caretaker/ct_leave', ['leaves' => $leaves]);
+        return (int)$_SESSION['user']['id'];
     }
 
-     // 🔹 Add new leave
-    public function add() {
-    if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
-        die("Caretaker not logged in");
+    private function baseAddViewData(array $overrides = []): array
+    {
+        $userId = (int)($_SESSION['user']['id'] ?? 0);
+        $summary = $this->leaveModel->getCurrentMonthLeaveSummary($userId, true);
+
+        $defaults = [
+            'today' => date('Y-m-d'),
+            'minStartDate' => date('Y-m-d', strtotime('+' . LeaveModel::ADVANCE_NOTICE_DAYS . ' days')),
+            'monthlySummary' => $summary,
+            'policy' => [
+                'advanceNoticeDays' => LeaveModel::ADVANCE_NOTICE_DAYS,
+                'maxPerRequest' => LeaveModel::MAX_DAYS_PER_REQUEST,
+                'monthlyLimit' => LeaveModel::MONTHLY_LEAVE_LIMIT
+            ],
+            'impactPreviewUrl' => URLROOT . '/LeaveCRUD/impactPreview',
+            'errors' => [],
+            'warnings' => [],
+            'form' => [
+                'leave_type' => '',
+                'start_date' => '',
+                'end_date' => '',
+                'start_time' => '09:00',
+                'end_time' => '17:00',
+                'reason' => ''
+            ]
+        ];
+
+        return array_replace_recursive($defaults, $overrides);
     }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Validate dates
-        $startDate = strtotime($_POST['start_date']);
-        $endDate = strtotime($_POST['end_date']);
-        $today = strtotime('today');
-        $leaveType = $_POST['leave_type'];
+    private function monthSequenceBetween(string $startDate, string $endDate): array
+    {
+        $months = [];
+        $cursor = new DateTime(date('Y-m-01', strtotime($startDate)));
+        $last = new DateTime(date('Y-m-01', strtotime($endDate)));
 
-        // Check minimum start date based on leave type
-        if ($leaveType === 'Sick Leave') {
-            $minStartDate = strtotime('tomorrow');
-        } else {
-            $minStartDate = strtotime('+5 days', $today);
+        while ($cursor <= $last) {
+            $months[] = [
+                'year' => (int)$cursor->format('Y'),
+                'month' => (int)$cursor->format('m')
+            ];
+            $cursor->modify('+1 month');
         }
 
-        if ($startDate < $minStartDate) {
-            die("Invalid start date. Sick Leave: start from tomorrow. Other leaves: start from 5 days from today.");
+        return $months;
+    }
+
+    private function validateLeaveInput(int $userId, array $input, ?int $excludeLeaveId = null): array
+    {
+        $errors = [];
+        $warnings = [];
+
+        $startDate = $input['start_date'] ?? '';
+        $endDate = $input['end_date'] ?? '';
+
+        if ($startDate === '' || $endDate === '') {
+            $errors[] = 'Start date and end date are required.';
+            return ['errors' => $errors, 'warnings' => $warnings];
+        }
+
+        $today = date('Y-m-d');
+        $minimumStart = date('Y-m-d', strtotime('+' . LeaveModel::ADVANCE_NOTICE_DAYS . ' days'));
+
+        if ($startDate < $today || $endDate < $today) {
+            $errors[] = 'Leave cannot be requested for past dates.';
+        }
+
+        if ($startDate < $minimumStart) {
+            $errors[] = 'Leave must be requested at least 3 days in advance.';
         }
 
         if ($endDate < $startDate) {
-            die("End date must be after start date.");
+            $errors[] = 'End date must be the same as or later than the start date.';
         }
 
-        // Check 28-day limit
-        $daysDifference = ($endDate - $startDate) / (60 * 60 * 24);
-        if ($daysDifference > 27) {
-            die("Leave cannot exceed 28 days. You selected " . intval($daysDifference + 1) . " days.");
+        $duration = $this->leaveModel->calculateInclusiveDays($startDate, $endDate);
+        if ($duration > LeaveModel::MAX_DAYS_PER_REQUEST) {
+            $errors[] = 'A single leave request cannot exceed 7 days.';
         }
 
-        $data = [
-            'user_id' => $_SESSION['user']['id'],
-            'leave_type' => $leaveType,
-            'start_date' => $_POST['start_date'],
-            'end_date' => $_POST['end_date'],
-            'start_time' => $_POST['start_time'],
-            'end_time' => $_POST['end_time'],
-            'reason' => $_POST['reason'],
-            'can_edit_until' => date('Y-m-d H:i:s', strtotime('+1 day'))
+        if ($this->leaveModel->hasOverlappingLeave($userId, $startDate, $endDate, ['Approved', 'Pending'], $excludeLeaveId)) {
+            $errors[] = 'This leave request overlaps with an existing approved leave.';
+        }
+
+        foreach ($this->monthSequenceBetween($startDate, $endDate) as $monthInfo) {
+            $requestDaysInMonth = $this->leaveModel->getLeaveDaysWithinMonth(
+                $startDate,
+                $endDate,
+                $monthInfo['year'],
+                $monthInfo['month']
+            );
+
+            if ($requestDaysInMonth <= 0) {
+                continue;
+            }
+
+            $usedInMonth = $this->leaveModel->getMonthlyLeaveUsage(
+                $userId,
+                $monthInfo['year'],
+                $monthInfo['month'],
+                true,
+                $excludeLeaveId
+            );
+
+            if (($usedInMonth + $requestDaysInMonth) > LeaveModel::MONTHLY_LEAVE_LIMIT) {
+                $errors[] = 'Leave request exceeds the monthly leave limit of 5 days.';
+                break;
+            }
+        }
+
+        $impact = $this->leaveModel->getActiveBookingImpactSummary($userId, $startDate, $endDate);
+        if (($impact['count'] ?? 0) > 0) {
+            $warnings[] = 'Warning: You have active bookings during the selected leave period. HR may need to assign a replacement caretaker before approving this leave request.';
+        }
+
+        return [
+            'errors' => array_values(array_unique($errors)),
+            'warnings' => $warnings,
+            'impact' => $impact
         ];
-
-        // 1️⃣ Insert leave
-        $this->leaveModel->addLeave($data);
-
-        // 2️⃣ Notify ALL admins (THIS IS THE CORRECT PLACE)
-        $this->notifModel->notifyAdmins(
-            "New Leave Request",
-            "New leave request submitted by caretaker " . ($_SESSION['user']['name'] ?? 'Caretaker'),
-            URLROOT . "/admin/ad_leave"
-        );
-
-        // 3️⃣ Redirect caretaker
-        header("Location: " . URLROOT . "/LeaveCRUD/index");
-        exit;
     }
 
-    // Pass data to view for date validation
-    $viewData = [
-        'today' => date('Y-m-d'),
-        'minStartDateNormal' => date('Y-m-d', strtotime('+5 days')),
-        'minStartDateSick' => date('Y-m-d', strtotime('tomorrow'))
-    ];
+    public function impactPreview()
+    {
+        $userId = $this->requireCaretaker();
+        header('Content-Type: application/json');
 
-    $this->view('caretaker/leave_add', $viewData);
-}
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['ok' => false, 'message' => 'Method not allowed']);
+            return;
+        }
+
+        $startDate = trim($_POST['start_date'] ?? '');
+        $endDate = trim($_POST['end_date'] ?? '');
+
+        if ($startDate === '' || $endDate === '' || $endDate < $startDate) {
+            echo json_encode([
+                'ok' => true,
+                'hasImpact' => false,
+                'count' => 0,
+                'booking_ids' => [],
+                'service_dates' => []
+            ]);
+            return;
+        }
+
+        $impact = $this->leaveModel->getActiveBookingImpactSummary($userId, $startDate, $endDate);
+        $message = '';
+
+        if (($impact['count'] ?? 0) > 0) {
+            $message = 'Warning: You have active bookings during this leave period. HR may need to assign a replacement caretaker before approval.';
+        }
+
+        echo json_encode([
+            'ok' => true,
+            'hasImpact' => (($impact['count'] ?? 0) > 0),
+            'count' => (int)($impact['count'] ?? 0),
+            'booking_ids' => $impact['booking_ids'] ?? [],
+            'service_dates' => $impact['service_dates'] ?? [],
+            'message' => $message
+        ]);
+    }
+
+    // 🔹 Display all leaves for logged-in caretaker
+    public function index()
+    {
+        $userId = $this->requireCaretaker();
+        $leaves = $this->leaveModel->getLeavesByUser($userId);
+        $this->view('caretaker/ct_leave', [
+            'leaves' => $leaves,
+            'monthlySummary' => $this->leaveModel->getCurrentMonthLeaveSummary($userId, true),
+            'success' => $_SESSION['leave_success'] ?? '',
+            'warning' => $_SESSION['leave_warning'] ?? ''
+        ]);
+
+        unset($_SESSION['leave_success'], $_SESSION['leave_warning']);
+    }
+
+    // 🔹 Add new leave
+    public function add()
+    {
+        $userId = $this->requireCaretaker();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $input = [
+                'leave_type' => trim($_POST['leave_type'] ?? ''),
+                'start_date' => trim($_POST['start_date'] ?? ''),
+                'end_date' => trim($_POST['end_date'] ?? ''),
+                'start_time' => trim($_POST['start_time'] ?? '09:00'),
+                'end_time' => trim($_POST['end_time'] ?? '17:00'),
+                'reason' => trim($_POST['reason'] ?? '')
+            ];
+
+            $validation = $this->validateLeaveInput($userId, $input);
+
+            if ($input['leave_type'] === '' || $input['reason'] === '') {
+                $validation['errors'][] = 'Leave type and reason are required.';
+            }
+
+            if (!empty($validation['errors'])) {
+                $viewData = $this->baseAddViewData([
+                    'errors' => array_values(array_unique($validation['errors'])),
+                    'warnings' => $validation['warnings'] ?? [],
+                    'form' => $input,
+                    'impact' => $validation['impact'] ?? []
+                ]);
+                $this->view('caretaker/leave_add', $viewData);
+                return;
+            }
+
+            $insertData = [
+                'user_id' => $userId,
+                'leave_type' => $input['leave_type'],
+                'start_date' => $input['start_date'],
+                'end_date' => $input['end_date'],
+                'start_time' => $input['start_time'],
+                'end_time' => $input['end_time'],
+                'reason' => $input['reason'],
+                'can_edit_until' => date('Y-m-d H:i:s', strtotime('+1 day'))
+            ];
+
+            $created = $this->leaveModel->addLeave($insertData);
+            if (!$created) {
+                $viewData = $this->baseAddViewData([
+                    'errors' => ['Unable to submit leave request right now. Please try again.'],
+                    'form' => $input
+                ]);
+                $this->view('caretaker/leave_add', $viewData);
+                return;
+            }
+
+            $_SESSION['leave_success'] = 'Leave request submitted successfully and sent to HR for approval. Status: Pending.';
+
+            if (($validation['impact']['count'] ?? 0) > 0) {
+                $ids = implode(', ', $validation['impact']['booking_ids'] ?? []);
+                $_SESSION['leave_warning'] = 'Warning: You have active bookings during this leave period ('
+                    . (int)$validation['impact']['count'] . ' affected). Booking IDs: ' . $ids;
+            }
+
+            header("Location: " . URLROOT . "/LeaveCRUD/index");
+            exit;
+        }
+
+        $this->view('caretaker/leave_add', $this->baseAddViewData());
+    }
 
 
     // 🔹 Edit leave
-    public function edit($id) {
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
-            die("Caretaker not logged in");
-        }
-
-        $userId = $_SESSION['user']['id'];
+    public function edit($id)
+    {
+        $userId = $this->requireCaretaker();
         $leave = $this->leaveModel->getLeaveById($id);
         if (!$leave) die("Leave not found");
 
@@ -108,45 +282,72 @@ class LeaveCRUDController extends Controller {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Validate dates
-            $startDate = strtotime($_POST['start_date']);
-            $endDate = strtotime($_POST['end_date']);
+            $input = [
+                'leave_type' => trim($_POST['leave_type'] ?? ''),
+                'start_date' => trim($_POST['start_date'] ?? ''),
+                'end_date' => trim($_POST['end_date'] ?? ''),
+                'start_time' => trim($_POST['start_time'] ?? '09:00'),
+                'end_time' => trim($_POST['end_time'] ?? '17:00'),
+                'reason' => trim($_POST['reason'] ?? '')
+            ];
 
-            if ($endDate < $startDate) {
-                die("End date must be after start date.");
+            $validation = $this->validateLeaveInput($userId, $input, (int)$id);
+            if ($input['leave_type'] === '' || $input['reason'] === '') {
+                $validation['errors'][] = 'Leave type and reason are required.';
             }
 
-            // Check 28-day limit
-            $daysDifference = ($endDate - $startDate) / (60 * 60 * 24);
-            if ($daysDifference > 27) {
-                die("Leave cannot exceed 28 days. You selected " . intval($daysDifference + 1) . " days.");
+            if (!empty($validation['errors'])) {
+                $leave->leave_type = $input['leave_type'];
+                $leave->start_date = $input['start_date'];
+                $leave->end_date = $input['end_date'];
+                $leave->start_time = $input['start_time'];
+                $leave->end_time = $input['end_time'];
+                $leave->reason = $input['reason'];
+
+                $this->view('caretaker/leave_edit', [
+                    'leave' => $leave,
+                    'errors' => array_values(array_unique($validation['errors'])),
+                    'warnings' => $validation['warnings'] ?? [],
+                    'policy' => [
+                        'advanceNoticeDays' => LeaveModel::ADVANCE_NOTICE_DAYS,
+                        'maxPerRequest' => LeaveModel::MAX_DAYS_PER_REQUEST,
+                        'monthlyLimit' => LeaveModel::MONTHLY_LEAVE_LIMIT
+                    ]
+                ]);
+                return;
             }
 
             $data = [
                 'id' => $id,
-                'leave_type' => $_POST['leave_type'],
-                'start_date' => $_POST['start_date'],
-                'end_date' => $_POST['end_date'],
-                'start_time' => $_POST['start_time'],
-                'end_time' => $_POST['end_time'],
-                'reason' => $_POST['reason']
+                'leave_type' => $input['leave_type'],
+                'start_date' => $input['start_date'],
+                'end_date' => $input['end_date'],
+                'start_time' => $input['start_time'],
+                'end_time' => $input['end_time'],
+                'reason' => $input['reason']
             ];
 
             $this->leaveModel->updateLeave($data);
             header("Location: " . URLROOT . "/LeaveCRUD/index");
             exit;
         } else {
-            $this->view('caretaker/leave_edit', ['leave' => $leave]);
+            $this->view('caretaker/leave_edit', [
+                'leave' => $leave,
+                'errors' => [],
+                'warnings' => [],
+                'policy' => [
+                    'advanceNoticeDays' => LeaveModel::ADVANCE_NOTICE_DAYS,
+                    'maxPerRequest' => LeaveModel::MAX_DAYS_PER_REQUEST,
+                    'monthlyLimit' => LeaveModel::MONTHLY_LEAVE_LIMIT
+                ]
+            ]);
         }
     }
 
     // 🔹 Delete leave
-    public function delete($id) {
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
-            die("Caretaker not logged in");
-        }
-
-        $userId = $_SESSION['user']['id'];
+    public function delete($id)
+    {
+        $userId = $this->requireCaretaker();
         $leave = $this->leaveModel->getLeaveById($id);
         if (!$leave) die("Leave not found");
 
@@ -154,26 +355,30 @@ class LeaveCRUDController extends Controller {
             die("You cannot delete this leave.");
         }
 
-        $this->leaveModel->deleteLeave($id);
+        if (strtolower((string)$leave->status) !== 'pending') {
+            die('Only pending leaves can be cancelled.');
+        }
+
+        $this->leaveModel->updateLeaveStatus((int)$id, 'Cancelled');
         header("Location: " . URLROOT . "/LeaveCRUD/index");
         exit;
     }
 
-    public function ct_dashboard() {
+    public function ct_dashboard()
+    {
 
-    if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
-        die("Caretaker not logged in");
+        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
+            die("Caretaker not logged in");
+        }
+
+        $userId = $_SESSION['user']['id'];
+
+        // LOAD LEAVES
+        $leaveModel = $this->model('LeaveModel');
+        $leaves = $leaveModel->getLeavesByUser($userId);
+
+        $this->view('caretaker/ct_dashboard', [
+            'leaves' => $leaves
+        ]);
     }
-
-    $userId = $_SESSION['user']['id'];
-
-    // LOAD LEAVES
-    $leaveModel = $this->model('LeaveModel');
-    $leaves = $leaveModel->getLeavesByUser($userId);
-
-    $this->view('caretaker/ct_dashboard', [
-        'leaves' => $leaves
-    ]);
-}
-
 }
