@@ -1,4 +1,4 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
+<?php  include_once APPROOT . "/views/templates/client/c_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
 
 <?php if (!empty($_SESSION['flash_message'])): ?>
@@ -45,8 +45,36 @@ function moneyLKR($amount) {
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_dashboard.css">
 </head>
 <body>
+  <body>
+
+<?php if (!empty($data['pendingAdvance'])): ?>
+<div id="advanceModal" class="modal" style="display:flex;">
+  <div class="modal-content" style="max-width:640px;">
+    <span class="close" onclick="document.getElementById('advanceModal').style.display='none'">&times;</span>
+    <h2 style="margin-bottom:12px; color:#1e88e5; font-family: 'Poppins', sans-serif; font-weight:700; font-size:24px;">Advance Payments Required</h2>
+    <p>You have pending advance payments for the following bookings:</p>
+
+    <?php foreach ($data['pendingAdvance'] as $p): ?>
+      <div class="advance-details" style="margin-bottom:15px;">
+        <div><b>Booking #:</b> <?= $p['booking_id'] ?></div>
+        <div><b>Service:</b> <?= htmlspecialchars($p['service_type']) ?></div>
+        <div><b>Date:</b> <?= htmlspecialchars($p['booking_date']) ?></div>
+        <div><b>Time:</b> <?= htmlspecialchars($p['preferred_time']) ?></div>
+        <div><b>Duration:</b> <?= htmlspecialchars($p['duration'].' '.$p['basis']) ?></div>
+
+        <a class="modal-submit-btn"
+           style="margin-top:10px;"
+           href="<?= URLROOT ?>/client/c_makePayment?booking_id=<?= $p['booking_id'] ?>">
+          Pay Now
+        </a>
+      </div>
+    <?php endforeach; ?>
+
+  </div>
+</div>
+<?php endif; ?>
 <div class="container">
- 
+
 
 <div class="client-dashboard">
 
@@ -196,7 +224,7 @@ function moneyLKR($amount) {
     <div class="actions">
       <div class="action">
         <i class='bx bx-search'></i>
-        <h3>   
+        <h3>
           <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_find1'">
            Book New Service
           </button>
@@ -206,7 +234,7 @@ function moneyLKR($amount) {
       </div>
       <div class="action">
         <i class='bx bx-calendar-edit'></i>
-          <h3>   
+          <h3>
           <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_upcomingBookings'">
            Reschedule Booking
           </button>
@@ -216,16 +244,16 @@ function moneyLKR($amount) {
       </div>
       <div class="action">
         <i class='bx bx-phone'></i>
-         <h3>   
+         <h3>
           <button id="bookBtn" class="main-btn" onclick="location.href='http://localhost/CMA/public/?url=client/c_contactCT'">Contact Caretaker</button>
-        </h3>      
+        </h3>
         <p>Manage your assigned caretaker</p>
       </div>
       <div class="action">
         <i class='bx bx-support'></i>
-         <h3>   
+         <h3>
           <button id="bookBtn" class="main-btn">Emergency Support</button>
-        </h3> 
+        </h3>
         <p>24/7 Emergency assistance</p>
       </div>
     </div>
@@ -268,40 +296,10 @@ function moneyLKR($amount) {
   <?php endforeach; ?>
 </section>
 
-
-
-  <!-- Leave Management Section -->
-  <section class="leave-management">
-    <h2>Leave Management Status</h2>
-    <table>
-      <thead>
-        <tr><th>Dates</th><th>Reason</th><th>Status</th></tr>
-      </thead>
-      <tbody>
-        <?php if (!empty($data['leaves'])): ?>
-          <?php foreach($data['leaves'] as $leave): ?>
-            <tr>
-              <td><?= date("M d", strtotime($leave['start_date'])) ?> – <?= date("M d", strtotime($leave['end_date'])) ?></td>
-              <td><?= htmlspecialchars($leave['reason']) ?></td>
-              <td>
-                <span class="status <?= strtolower($leave['status']) ?>">
-                  <?= $leave['status'] ?>
-                </span>
-              </td>
-            </tr>
-          <?php endforeach; ?>
-        <?php else: ?>
-          <tr>
-            <td colspan="3" style="text-align:center;">No leave requests found</td>
-          </tr>
-        <?php endif; ?>
-      </tbody>
-    </table>
-  </section>
-
 </div>
  <!-- your existing contzent -->
 </div>
+
 
 </body>
 </html>

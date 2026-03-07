@@ -111,3 +111,52 @@
     color: #555;
     font-size: 15px;
 }
+
+.register-btn{
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.table-wrapper{
+  overflow-x: auto;
+}
+
+.complaints-table{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.complaints-table th, .complaints-table td{
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+/* modal */
+.modal{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-content{
+  background: #fff;
+  padding: 18px;
+  border-radius: 12px;
+  width: 92%;
+  position: relative;
+}
+
+.close{
+  position: absolute;
+  right: 14px;
+  top: 10px;
+  font-size: 24px;
+  cursor: pointer;
+}

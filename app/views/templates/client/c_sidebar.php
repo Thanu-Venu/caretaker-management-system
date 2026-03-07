@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Client Dashboard Sidebar</title>
-  <link rel="stylesheet" href="<?php echo URLROOT;?>/public/css/client/c_sidebar.css">
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_sidebar.css">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -25,6 +25,7 @@
             class="bx bx-chevron-down arrow"></i></a>
         <ul class="dropdown-container">
           <li><a href="http://localhost/CMA/public?url=client/c_upcomingBookings">Upcoming Bookings</a></li>
+          <li><a href="http://localhost/CMA/public?url=client/c_ongoingBookings">Ongoing Bookings</a></li>
           <li><a href="http://localhost/CMA/public?url=client/c_pastBookings">Past Bookings</a></li>
           <li><a href="http://localhost/CMA/public?url=client/c_cancelledBookings">Cancelled Bookings</a></li>
         </ul>
@@ -32,14 +33,15 @@
 
       <!-- Payment Dropdown -->
       <li>
-        <a href="http://localhost/CMA/public?url=client/c_paymentHistory"><i class="bx bx-dollar-circle"></i> Payment
-          History </a>
+        <a href="http://localhost/CMA/public?url=client/payments"><i class="bx bx-dollar-circle"></i> Payments </a>
       </li>
 
       <li>
-        <a href="http://localhost/CMA/public?url=client/c_complaintReg"><i class="fa-solid fa-file-circle-exclamation"></i> Complaints </i></a>
+        <a href="http://localhost/CMA/public?url=client/c_complaintlist"><i class="fa-solid fa-file-circle-exclamation"></i> Complaints </i></a>
       </li>
-
+      <li>
+        <a href="http://localhost/CMA/public?url=client/c_feedback"><i class="bx bxs-star"></i> Feedback </i></a>
+      </li>
       <li>
         <a href="http://localhost/CMA/public?url=client/c_announcement"><i class='bx bxs-megaphone'></i> Announcements </i></a>
 
@@ -49,9 +51,6 @@
       <li>
         <a href="http://localhost/CMA/public?url=client/c_settings"><i class="bx bx-cog"></i> Settings </i></a>
 
-      </li>
-
-      <li class="logout"><a href="<?= URLROOT?>/index.php?url=auth/logout"><i class="bx bx-log-out"></i> Logout</a>
       </li>
     </ul>
   </div>

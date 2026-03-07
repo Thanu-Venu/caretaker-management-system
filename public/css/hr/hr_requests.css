@@ -1,0 +1,229 @@
+/* basic table styling */
+.content h1 {
+  color: #1e88e5;
+  margin:20px;
+}
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+.requests-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.requests-table th,
+.requests-table td {
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  text-align: left;
+}
+.requests-table th {
+  background: #f3f4f6;
+}
+.approve-btn {
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.reject-btn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.approve-btn:hover {
+  opacity: 0.9;
+}
+.reject-btn:hover {
+  opacity: 0.9;
+}
+.content {
+  margin-left: 270px;
+}
+
+/* Tabs Navigation */
+.tabs-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.tab-button {
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.tab-button.active {
+  color: #1e88e5;
+  border-bottom-color: #1e88e5;
+}
+
+.tab-button:hover {
+  color: #1e88e5;
+}
+
+/* Tab Content */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-approved {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* History Cards */
+.history-row {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 12px;
+}
+
+.history-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.history-row-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.history-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-field-label {
+  color: #999;
+  font-size: 11px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.history-field-value {
+  color: #333;
+  font-weight: 500;
+}
+
+.hr-note-box {
+  margin-top: 10px;
+  padding: 10px;
+  background: white;
+  border-left: 3px solid #1e88e5;
+  border-radius: 2px;
+}
+
+.hr-note-label {
+  font-size: 11px;
+  color: #999;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.hr-note-text {
+  font-size: 13px;
+  color: #333;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+/* Badge Counter in Tabs */
+.tab-button span {
+  margin-left: 8px;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Color badge based on tab type */
+.tab-button.active span {
+  background: #1e88e5;
+}
+
+.tab-button:not(.active) span {
+  background: #95a5a6;
+}
+
+@media (max-width: 1024px) {
+  .history-row-content {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .history-row-content {
+    grid-template-columns: 1fr;
+  }
+  .content {
+    margin-left: 0;
+  }
+}
+
+/* Reason Section */
+.reason-title {
+  font-size: 13px;
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 600;
+}
+
+.reason-text {
+  margin: 8px 0;
+  color: #555;
+  font-size: 13px;
+  line-height: 1.5;
+}

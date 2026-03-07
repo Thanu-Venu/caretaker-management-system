@@ -31,6 +31,20 @@ $timeOptions = [
     <main class="content">
         <h1>Book Your Caretaker</h1>
 
+        <?php if (!empty($_SESSION['error'])): ?>
+            <div class="alert alert-error" style="background-color: #f8d7da; color: #721c24; padding: 12px; margin: 15px 0; border: 1px solid #f5c6cb; border-radius: 4px;">
+                <strong>Error:</strong> <?php echo htmlspecialchars($_SESSION['error']);
+                                        unset($_SESSION['error']); ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($_SESSION['success'])): ?>
+            <div class="alert alert-success" style="background-color: #d4edda; color: #155724; padding: 12px; margin: 15px 0; border: 1px solid #c3e6cb; border-radius: 4px;">
+                <strong>Success:</strong> <?php echo htmlspecialchars($_SESSION['success']);
+                                            unset($_SESSION['success']); ?>
+            </div>
+        <?php endif; ?>
+
         <!-- ✅ Caretaker Profile Summary (IDs for JS updates) -->
         <section class="caretaker-summary">
             <h2 id="ctName"><?= htmlspecialchars($ct['name'] ?? 'N/A') ?></h2>
@@ -61,8 +75,8 @@ $timeOptions = [
                 <div class="form-group">
                     <label for="basis">Select Basis</label>
 
-                    <!-- Show disabled select for UI -->
-                    <select id="basis" required disabled>
+                    <!-- Editable select for UI -->
+                    <select id="basis" required>
                         <option value="">-- Select --</option>
                         <?php if (!empty($bases)): ?>
                             <?php foreach ($bases as $basis): ?>
@@ -83,14 +97,15 @@ $timeOptions = [
                 <!-- ===== DURATION ===== -->
                 <div class="form-group">
                     <label for="duration">Duration</label>
-                    <input type="number" id="duration" name="duration" min="1" required readonly
+                    <input type="number" id="duration" name="duration" min="1" required
                         value="<?= htmlspecialchars((string)($prefill['duration'] ?? 1), ENT_QUOTES) ?>">
+                    <small id="durationHint">Number of booking units</small>
                 </div>
 
                 <!-- ===== DATE ===== -->
                 <div class="form-group">
                     <label for="date">Preferred Date</label>
-                    <input type="date" id="date" name="booking_date" required readonly
+                    <input type="date" id="date" name="booking_date" required
                         value="<?= htmlspecialchars($prefill['date'] ?? '', ENT_QUOTES) ?>">
                 </div>
 
@@ -99,7 +114,7 @@ $timeOptions = [
                     <label for="preferredTime" id="preferredTimeLabel">Preferred Time</label>
 
                     <div id="timeContainer">
-                        <select id="preferredTime" required disabled>
+                        <select id="preferredTime" required>
                             <option value="">Select Time</option>
                             <?php
                             $times = $timeOptions[$serviceType] ?? [];

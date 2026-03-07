@@ -68,7 +68,12 @@ public function updatePassword($id, $hashedPassword) {
     return $stmt->execute();
 }
 
-
+public function getUserByRole($role){
+    $stmt = $this->conn->prepare("SELECT * FROM users WHERE role=?");
+    $stmt->bind_param("s", $role);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
 
 }
 ?>

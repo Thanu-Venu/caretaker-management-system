@@ -74,6 +74,13 @@ $profilePic = $_SESSION['user']['profile_pic'] ?? 'default.png';
                 </div>
             </div>
 
+            <div class="header-logout">
+                <a href="<?= URLROOT ?>/index.php?url=auth/logout" class="logout-btn" title="Logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+
             <!-- Profile -->
             <div class="profile-wrapper">
                 <a href="http://localhost/CMA/public?url=admin/ad_settings" class="profile-link">
