@@ -3,64 +3,64 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SmartCare Dashboard</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_reports.css">
 </head>
+
 <body>
-<div class="main-content">
-  <h1>My Reports</h1>
+  <div class="main-content">
+    <h1>My Reports</h1>
 
-  <!-- Monthly Summary -->
-  <section class="report-summary">
-    <h2>Monthly Summary</h2>
-    <div class="summary-cards">
-      <div class="card">
-        <h3>Total Services</h3>
-        <p id="totalServices">0</p>
+    <!-- Monthly Summary -->
+    <section class="report-summary">
+      <h2>Monthly Summary</h2>
+      <div class="summary-cards">
+        <div class="card">
+          <h3>Total Services</h3>
+          <p id="totalServices">0</p>
+        </div>
+        <div class="card">
+          <h3>Total Hours</h3>
+          <p id="totalHours">0</p>
+        </div>
+        <div class="card">
+          <h3>Total Earnings(LKR)</h3>
+          <p id="totalEarnings">0</p>
+        </div>
       </div>
-      <div class="card">
-        <h3>Total Hours</h3>
-        <p id="totalHours">0</p>
-      </div>
-      <div class="card">
-        <h3>Total Earnings(LKR)</h3>
-        <p id="totalEarnings">0</p>
-      </div>
-    </div>
-  </section>
-<br><br>
-  <!-- Service Details Table -->
-  <section class="report-table-section">
-    <h2>Service Details</h2><br>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th>Client</th>
-          <th>Service</th>
-          <th>Date</th>
-          <th>Hours</th>
-          <th>Payment(LKR)</th>
-        </tr>
-      </thead>
-     <tbody id="serviceTableBody">
-    <?php foreach ($data["services"] as $service): ?>
-        <tr>
-            <td><?= htmlspecialchars($service['client_name']) ?></td>
-            <td><?= htmlspecialchars($service['service_type']) ?></td>
-            <td><?= htmlspecialchars($service['booking_date']) ?></td>
-            <td><?= htmlspecialchars($service['duration']) ?> hrs</td>
-            <td><?= htmlspecialchars(number_format($service['total_payment'], 2)) ?></td>
-        </tr>
-    <?php endforeach; ?>
-</tbody>
+    </section>
+    <br><br>
+    <!-- Service Details Table -->
+    <section class="report-table-section">
+      <h2>Service Details</h2><br>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Service</th>
+            <th>Date</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
+        <tbody id="serviceTableBody">
+          <?php foreach ($data["services"] as $service): ?>
+            <tr>
+              <td><?= htmlspecialchars($service['client_name']) ?></td>
+              <td><?= htmlspecialchars($service['service_type']) ?></td>
+              <td><?= htmlspecialchars($service['booking_date']) ?></td>
+              <td><?= htmlspecialchars($service['duration']) ?> hrs</td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
 
-    </table>
-<br>
-    <button id="downloadReport" class="btn-download">Download Report</button>
-  </section>
-</div>
-    <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_reports.js"></script>
-    </body>
+      </table>
+      <br>
+      <button id="downloadReport" class="btn-download">Download Report</button>
+    </section>
+  </div>
+  <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_reports.js"></script>
+</body>
