@@ -6,26 +6,48 @@
   </div>
 <?php endif; ?>
 
+<?php
+$leaveDetails = $data['leaveDetails'] ?? [];
+$impact = $data['impact'] ?? [];
+$usage = $data['monthlyUsage'] ?? ['used_before' => 0, 'request_days' => 0, 'used_after' => 0, 'limit' => 5];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>History Logs - SmartCare</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_leave_approve.css">
 </head>
+
 <body>
   <main class="content">
     <div class="leave-approve-card">
 
       <h1>Approve Leave (Reassign Required)</h1>
 
+      <?php if (!empty($impact['count'])): ?>
+        <div class="impact-banner">
+          This leave request affects active bookings. Please review and assign a replacement caretaker if required.
+          <br>
+          Affected bookings: <strong><?= (int)$impact['count'] ?></strong>
+          <?php if (!empty($impact['booking_ids'])): ?>
+            | IDs: <?= htmlspecialchars(implode(', ', $impact['booking_ids'])) ?>
+          <?php endif; ?>
+        </div>
+      <?php endif; ?>
+
       <!-- ✅ Leave Info -->
       <div class="leave-info">
         <p><b>Leave ID:</b> <?= (int)$data['leave']->id ?></p>
+        <p><b>Caregiver Name:</b> <?= htmlspecialchars($leaveDetails['caretaker_name'] ?? 'Unknown') ?></p>
         <p><b>Caregiver ID:</b> <?= (int)$data['leave']->user_id ?></p>
         <p><b>Leave Type:</b> <?= htmlspecialchars($data['leave']->leave_type) ?></p>
         <p><b>Date Range:</b> <?= htmlspecialchars($data['leave']->start_date) ?> → <?= htmlspecialchars($data['leave']->end_date) ?></p>
+        <p><b>Total Leave Days:</b> <?= (int)$usage['request_days'] ?> day(s)</p>
+        <p><b>Monthly Usage:</b> <?= (int)$usage['used_before'] ?> + <?= (int)$usage['request_days'] ?> = <?= (int)$usage['used_after'] ?> / <?= (int)$usage['limit'] ?></p>
         <p><b>Time:</b>
           <?= htmlspecialchars($data['leave']->start_time ?? '') ?>
           <?= ($data['leave']->start_time && $data['leave']->end_time) ? '→' : '' ?>
@@ -83,19 +105,21 @@
 
         <?php $hasAffected = !empty($data['affected']); ?>
 
-<label><b>Select Replacement Caregiver</b></label>
-<select name="replacement_caretaker_id" <?= $hasAffected ? 'required' : '' ?>>
-  <option value="">-- <?= $hasAffected ? 'required' : 'not required' ?> --</option>
-  <?php foreach ($data['caretakers'] as $ct): ?>
-    <option value="<?= (int)$ct['id'] ?>">
-      <?= htmlspecialchars($ct['name']) ?> (ID: <?= (int)$ct['id'] ?>)
-    </option>
-  <?php endforeach; ?>
-</select>
+        <label><b>Select Replacement Caregiver</b></label>
+        <select name="replacement_caretaker_id" <?= $hasAffected ? 'required' : '' ?>>
+          <option value="">-- <?= $hasAffected ? 'required' : 'not required' ?> --</option>
+          <?php foreach ($data['caretakers'] as $ct): ?>
+            <option value="<?= (int)$ct['id'] ?>">
+              <?= htmlspecialchars($ct['name']) ?> (ID: <?= (int)$ct['id'] ?>)
+            </option>
+          <?php endforeach; ?>
+        </select>
 
-<?php if (!$hasAffected): ?>
-  <p class="no-bookings">✅ No bookings affected — replacement not needed.</p>
-<?php endif; ?>
+        <?php if (!$hasAffected): ?>
+          <p class="no-bookings">✅ No bookings affected — replacement not needed.</p>
+        <?php else: ?>
+          <p class="requires-replacement">Replacement caretaker selection is required for this leave.</p>
+        <?php endif; ?>
 
 
         <label for="hr_note"><b>HR Note (Optional)</b></label>
@@ -116,5 +140,5 @@
     </div>
   </main>
 </body>
-</html>
 
+</html>
