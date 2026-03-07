@@ -1,16 +1,19 @@
 <?php
 require_once APPROOT . '/core/Database.php';
 
-class CaretakerModel {
+class CaretakerModel
+{
     private $conn;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new Database();
         $this->conn = $db->conn;
     }
 
     /** @return array */
-    public function getCaretakers() {
+    public function getCaretakers()
+    {
         $result = $this->conn->query("SELECT * FROM caretakers");
         return $result->fetch_all(MYSQLI_ASSOC);
     }
@@ -19,13 +22,15 @@ class CaretakerModel {
      * Return only caretakers whose status is Active. Used by client-facing
      * listings so that inactive caregivers do not appear in search results.
      */
-    public function getActiveCaretakers() {
+    public function getActiveCaretakers()
+    {
         $stmt = $this->conn->prepare("SELECT * FROM caretakers WHERE status = 'Active'");
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function getCaretakerById($id) {
+    public function getCaretakerById($id)
+    {
         $stmt = $this->conn->prepare("SELECT * FROM caretakers WHERE id=?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -58,106 +63,108 @@ class CaretakerModel {
 
 
 
-   public function addCaretaker($data) {
-    // Ensure all expected keys exist to avoid binding nulls for NOT NULL columns
-    $expected = ['name','email','phone','service_type','status','experience','location','qualifications','profile_image','password'];
-    foreach ($expected as $key) {
-        if (!array_key_exists($key, $data) || $data[$key] === null) {
-            $data[$key] = '';
+    public function addCaretaker($data)
+    {
+        // Ensure all expected keys exist to avoid binding nulls for NOT NULL columns
+        $expected = ['name', 'email', 'phone', 'service_type', 'status', 'experience', 'location', 'qualifications', 'profile_image', 'password'];
+        foreach ($expected as $key) {
+            if (!array_key_exists($key, $data) || $data[$key] === null) {
+                $data[$key] = '';
+            }
         }
+
+        $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+
+        $stmt = $this->conn->prepare(
+            "INSERT INTO caretakers (name, email, phone, service_type, status, experience, location, qualifications, profile_image, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        $stmt->bind_param(
+            "ssssssssss",
+            $data['name'],
+            $data['email'],
+            $data['phone'],
+            $data['service_type'],
+            $data['status'],
+            $data['experience'],
+            $data['location'],
+            $data['qualifications'],
+            $data['profile_image'],
+            $hashedPassword
+        );
+
+        return $stmt->execute();
     }
 
-    $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
-
-    $stmt = $this->conn->prepare(
-        "INSERT INTO caretakers (name, email, phone, service_type, status, experience, location, qualifications, profile_image, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-    );
-
-    $stmt->bind_param(
-        "ssssssssss",
-        $data['name'],
-        $data['email'],
-        $data['phone'],
-        $data['service_type'],
-        $data['status'],
-        $data['experience'],
-        $data['location'],
-        $data['qualifications'],
-        $data['profile_image'],
-        $hashedPassword
-    );
-
-    return $stmt->execute();
- }
-
-  private $timeMap = [
-    "Morning (8am - 12pm)" => ["08:00:00", "12:00:00"],
-    "Evening (1pm - 5pm)"  => ["13:00:00", "17:00:00"],
-    "Night (6pm - 10pm)"   => ["18:00:00", "22:00:00"],
-    "Full Time (8am - 5pm)"=> ["08:00:00", "17:00:00"]
-];
+    private $timeMap = [
+        "Morning (8am - 12pm)" => ["08:00:00", "12:00:00"],
+        "Evening (1pm - 5pm)"  => ["13:00:00", "17:00:00"],
+        "Night (6pm - 10pm)"   => ["18:00:00", "22:00:00"],
+        "Full Time (8am - 5pm)" => ["08:00:00", "17:00:00"]
+    ];
 
 
 
 
 
     public function updateCaretaker($id, $data, $profileImage = null)
-{
-    if ($profileImage) {
-        // profile image update included
-        $stmt = $this->conn->prepare(
-            "UPDATE caretakers
+    {
+        if ($profileImage) {
+            // profile image update included
+            $stmt = $this->conn->prepare(
+                "UPDATE caretakers
              SET name=?, email=?, phone=?, experience=?, location=?, qualifications=?, service_type=?, status=?, profile_image=?
              WHERE id=?"
-        );
+            );
 
-        $stmt->bind_param(
-            "sssssssssi",
-            $data['name'],
-            $data['email'],
-            $data['phone'],
-            $data['experience'],
-            $data['location'],
-            $data['qualifications'],
-            $data['service_type'],
-            $data['status'],
-            $profileImage,
-            $id
-        );
-    } else {
-        // without changing profile image
-        $stmt = $this->conn->prepare(
-            "UPDATE caretakers
+            $stmt->bind_param(
+                "sssssssssi",
+                $data['name'],
+                $data['email'],
+                $data['phone'],
+                $data['experience'],
+                $data['location'],
+                $data['qualifications'],
+                $data['service_type'],
+                $data['status'],
+                $profileImage,
+                $id
+            );
+        } else {
+            // without changing profile image
+            $stmt = $this->conn->prepare(
+                "UPDATE caretakers
              SET name=?, email=?, phone=?, experience=?, location=?, qualifications=?, service_type=?, status=?
              WHERE id=?"
-        );
+            );
 
-        $stmt->bind_param(
-            "ssssssssi",
-            $data['name'],
-            $data['email'],
-            $data['phone'],
-            $data['experience'],
-            $data['location'],
-            $data['qualifications'],
-            $data['service_type'],
-            $data['status'],
-            $id
-        );
+            $stmt->bind_param(
+                "ssssssssi",
+                $data['name'],
+                $data['email'],
+                $data['phone'],
+                $data['experience'],
+                $data['location'],
+                $data['qualifications'],
+                $data['service_type'],
+                $data['status'],
+                $id
+            );
+        }
 
-    }
-
-    return $stmt->execute();
-}
-
-
-     public function updateCaretakerDetails($id, $data) {
-        $stmt = $this->conn->prepare("UPDATE caretakers SET name=?,email=?,phone=? WHERE id=?");
-        $stmt->bind_param("sssi", $data['name'],$data['email'],$data['phone'],$id);
         return $stmt->execute();
     }
 
-    public function deleteCaretaker($id) {
+
+    public function updateCaretakerDetails($id, $data)
+    {
+        $stmt = $this->conn->prepare("UPDATE caretakers SET name=?,email=?,phone=? WHERE id=?");
+        $stmt->bind_param("sssi", $data['name'], $data['email'], $data['phone'], $id);
+        return $stmt->execute();
+    }
+
+    public function deleteCaretaker($id)
+    {
         $stmt = $this->conn->prepare("DELETE FROM caretakers WHERE id=?");
         $stmt->bind_param("i", $id);
         return $stmt->execute();
@@ -166,7 +173,8 @@ class CaretakerModel {
 
 
 
-     public function updateProfileCaretaker($id, $data) {
+    public function updateProfileCaretaker($id, $data)
+    {
 
         $stmt = $this->conn->prepare(
             "UPDATE caretakers SET
@@ -193,7 +201,8 @@ class CaretakerModel {
         return $stmt->execute();
     }
 
-     public function updateCaretakerPassword($id, $hashedPassword) {
+    public function updateCaretakerPassword($id, $hashedPassword)
+    {
 
         $stmt = $this->conn->prepare(
             "UPDATE caretakers
@@ -206,51 +215,58 @@ class CaretakerModel {
         return $stmt->execute();
     }
 
-private function getTimeRangeFromString($timeString)
-{
-    $map = [
-        "Morning (8am - 12pm)" => ["08:00:00", "12:00:00"],
-        "Evening (1pm - 5pm)"  => ["13:00:00", "17:00:00"],
-        "Night (6pm - 10pm)"   => ["18:00:00", "22:00:00"],
-        "Full Time (8am - 5pm)"=> ["08:00:00", "17:00:00"]
-    ];
-
-    return $map[$timeString] ?? ["00:00:00", "23:59:59"];
-}
-
-public function getAvailableCaretakers($service, $date, $preferredTime, $basis, $duration, $location = '')
-{
-    $startDate = $date;
-    if (strtolower($basis) === 'hourly') {
-        $endDate = $date; // hourly bookings only block the same day
-    } else {
-        $endDate = date('Y-m-d', strtotime("+".($duration-1)." days", strtotime($date)));
+    public function updateAvailabilityStatus($id, $status)
+    {
+        $stmt = $this->conn->prepare("UPDATE caretakers SET status = ? WHERE id = ?");
+        $stmt->bind_param("si", $status, $id);
+        return $stmt->execute();
     }
-    list($searchStart, $searchEnd) = $this->getTimeRangeFromString($preferredTime);
 
-    // base SQL
-    $sql = "
+    private function getTimeRangeFromString($timeString)
+    {
+        $map = [
+            "Morning (8am - 12pm)" => ["08:00:00", "12:00:00"],
+            "Evening (1pm - 5pm)"  => ["13:00:00", "17:00:00"],
+            "Night (6pm - 10pm)"   => ["18:00:00", "22:00:00"],
+            "Full Time (8am - 5pm)" => ["08:00:00", "17:00:00"]
+        ];
+
+        return $map[$timeString] ?? ["00:00:00", "23:59:59"];
+    }
+
+    public function getAvailableCaretakers($service, $date, $preferredTime, $basis, $duration, $location = '')
+    {
+        $startDate = $date;
+        if (strtolower($basis) === 'hourly') {
+            $endDate = $date; // hourly bookings only block the same day
+        } else {
+            $endDate = date('Y-m-d', strtotime("+" . ($duration - 1) . " days", strtotime($date)));
+        }
+        list($searchStart, $searchEnd) = $this->getTimeRangeFromString($preferredTime);
+
+        // base SQL
+        $sql = "
 SELECT c.*
 FROM caretakers c
 WHERE c.service_type = ?
   AND c.status = 'Active'
 ";
-    // build type string and value list
-    $types = "s"; // service
-    $values = [$service];
+        // build type string and value list
+        $types = "s"; // service
+        $values = [$service];
 
-    if ($location !== '') {
-        $sql .= " AND c.location = ?";
-        $types .= "s";
-        $values[] = $location;
-    }
-    // only consider active caretakers
-    // (status is usually 'Active' or 'Inactive' in the dump)
-    // the earlier WHERE clause already includes this, but keep comments
-    // for clarity if additional filters are added later.
+        if ($location !== '') {
+            $sql .= " AND c.location = ?";
+            $types .= "s";
+            $values[] = $location;
+        }
+        // only consider active caretakers
+        // (status is usually 'Active' or 'Inactive' in the dump)
+        // the earlier WHERE clause already includes this, but keep comments
+        // for clarity if additional filters are added later.
 
 
-    $sql .= "
+        $sql .= "
 AND NOT EXISTS (
     SELECT 1 FROM bookings b
     WHERE b.caretaker_id = c.id
@@ -282,39 +298,47 @@ AND NOT EXISTS (
       )
 )";
 
-    // prepare statement
-    $stmt = $this->conn->prepare($sql);
+        // prepare statement
+        $stmt = $this->conn->prepare($sql);
 
-    // append date/time params (4 values)
-    $types .= "ssss";
-    $values = array_merge($values, [$startDate, $endDate, $searchStart, $searchEnd]);
+        // append date/time params (4 values)
+        $types .= "ssss";
+        $values = array_merge($values, [$startDate, $endDate, $searchStart, $searchEnd]);
 
-    // bind all parameters (should match types length)
-    $stmt->bind_param($types, ...$values);
+        // bind all parameters (should match types length)
+        $stmt->bind_param($types, ...$values);
 
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 
 
 
 
     // Upcoming bookings
-   // Get Upcoming Bookings for Caretaker
-public function getUpcomingBookings($caretakerId) {
-    $updateSql = "
+    // Get Upcoming Bookings for Caretaker
+    public function getUpcomingBookings($caretakerId)
+    {
+        $updateSql = "
         UPDATE bookings
         SET status = 'Completed'
         WHERE caretaker_id = ?
-          AND booking_date < CURDATE()
-          AND status IN ('Requested','Payment_Requested','Advance_Paid','Accepted')
+          AND (
+                CASE
+                    WHEN LOWER(basis) = 'hourly' THEN booking_date
+                    WHEN LOWER(basis) = 'monthly' THEN DATE_SUB(DATE_ADD(booking_date, INTERVAL duration MONTH), INTERVAL 1 DAY)
+                    WHEN LOWER(basis) = 'yearly' THEN DATE_SUB(DATE_ADD(booking_date, INTERVAL duration YEAR), INTERVAL 1 DAY)
+                    ELSE DATE_SUB(DATE_ADD(booking_date, INTERVAL duration DAY), INTERVAL 1 DAY)
+                END
+              ) < CURDATE()
+          AND status = 'Accepted'
     ";
-    $updateStmt = $this->conn->prepare($updateSql);
-    $updateStmt->bind_param("i", $caretakerId);
-    $updateStmt->execute();
-    $updateStmt->close();
+        $updateStmt = $this->conn->prepare($updateSql);
+        $updateStmt->bind_param("i", $caretakerId);
+        $updateStmt->execute();
+        $updateStmt->close();
 
-    $sql = "SELECT
+        $sql = "SELECT
                 b.id AS booking_id,
                 b.booking_date,
                 b.preferred_time,
@@ -328,22 +352,22 @@ public function getUpcomingBookings($caretakerId) {
                     b.address_line2, ', ',
                     b.postal_code
                 ) AS service_location,
-                b.total_payment,
                 c.name AS client_name
             FROM bookings b
             JOIN clients c ON c.id = b.client_id
-            WHERE b.caretaker_id = ? AND b.status IN ('Accepted','Advance_Paid','Payment_Requested','Requested') AND b.booking_date >= CURDATE()
+            WHERE b.caretaker_id = ? AND b.status = 'Accepted' AND b.booking_date > CURDATE()
             ORDER BY b.booking_date ASC";
 
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $caretakerId);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 
-// Get Past Bookings for Caretaker
-public function getPastBookings($caretakerId) {
-    $sql = "SELECT
+    // Get Ongoing Bookings for Caretaker (active today)
+    public function getOngoingBookings($caretakerId)
+    {
+        $sql = "SELECT
                 b.id AS booking_id,
                 b.booking_date,
                 b.preferred_time,
@@ -357,31 +381,121 @@ public function getPastBookings($caretakerId) {
                     b.address_line2, ', ',
                     b.postal_code
                 ) AS service_location,
-                b.total_payment,
+                c.name AS client_name
+            FROM bookings b
+            JOIN clients c ON c.id = b.client_id
+            WHERE b.caretaker_id = ?
+              AND b.status = 'Accepted'
+              AND b.booking_date <= CURDATE()
+              AND (
+                    CASE
+                        WHEN LOWER(b.basis) = 'hourly' THEN b.booking_date
+                        WHEN LOWER(b.basis) = 'monthly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL b.duration MONTH), INTERVAL 1 DAY)
+                        WHEN LOWER(b.basis) = 'yearly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL b.duration YEAR), INTERVAL 1 DAY)
+                        ELSE DATE_SUB(DATE_ADD(b.booking_date, INTERVAL b.duration DAY), INTERVAL 1 DAY)
+                    END
+                  ) >= CURDATE()
+            ORDER BY b.booking_date ASC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    // Get All Active Bookings for Schedule Calendar
+    public function getAllActiveBookings($caretakerId)
+    {
+        // Update old accepted bookings to completed first
+        $updateSql = "
+        UPDATE bookings
+        SET status = 'Completed'
+        WHERE caretaker_id = ?
+                    AND (
+                                CASE
+                                        WHEN LOWER(basis) = 'hourly' THEN booking_date
+                                        WHEN LOWER(basis) = 'monthly' THEN DATE_SUB(DATE_ADD(booking_date, INTERVAL duration MONTH), INTERVAL 1 DAY)
+                                        WHEN LOWER(basis) = 'yearly' THEN DATE_SUB(DATE_ADD(booking_date, INTERVAL duration YEAR), INTERVAL 1 DAY)
+                                        ELSE DATE_SUB(DATE_ADD(booking_date, INTERVAL duration DAY), INTERVAL 1 DAY)
+                                END
+                            ) < CURDATE()
+          AND status = 'Accepted'
+    ";
+        $updateStmt = $this->conn->prepare($updateSql);
+        $updateStmt->bind_param("i", $caretakerId);
+        $updateStmt->execute();
+        $updateStmt->close();
+
+        // Get only Accepted and Completed bookings (caregiver should not see other statuses)
+        $sql = "SELECT
+                b.id AS booking_id,
+                b.booking_date,
+                b.preferred_time,
+                b.basis,
+                b.duration,
+                b.service_type,
+                b.status,
+                CONCAT(
+                    b.district, ', ',
+                    b.street, ', ',
+                    b.address_line1, ', ',
+                    b.address_line2, ', ',
+                    b.postal_code
+                ) AS service_location,
+                c.name AS client_name
+            FROM bookings b
+            JOIN clients c ON c.id = b.client_id
+            WHERE b.caretaker_id = ?
+            AND b.status IN ('Accepted', 'Completed')
+            ORDER BY b.booking_date ASC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    // Get Past Bookings for Caretaker
+    public function getPastBookings($caretakerId)
+    {
+        $sql = "SELECT
+                b.id AS booking_id,
+                b.booking_date,
+                b.preferred_time,
+                b.basis,
+                b.duration,
+                b.service_type,
+                CONCAT(
+                    b.district, ', ',
+                    b.street, ', ',
+                    b.address_line1, ', ',
+                    b.address_line2, ', ',
+                    b.postal_code
+                ) AS service_location,
                 c.name AS client_name
             FROM bookings b
             JOIN clients c ON c.id = b.client_id
             WHERE b.caretaker_id = ? AND b.status = 'Completed' AND b.booking_date < CURDATE()
             ORDER BY b.booking_date DESC";
 
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $caretakerId);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 
 
 
-// Get approved bookings with client details
-public function getApprovedBookingsWithClientDetails($caretakerId) {
-    $sql = "SELECT
+    // Get approved bookings with client details
+    public function getApprovedBookingsWithClientDetails($caretakerId)
+    {
+        $sql = "SELECT
                 b.id AS booking_id,
                 b.booking_date,
                 b.preferred_time,
                 b.basis,
                 b.duration,
                 b.service_type,
-                b.total_payment,
                 b.status,
                 b.district,
                 b.street,
@@ -391,39 +505,37 @@ public function getApprovedBookingsWithClientDetails($caretakerId) {
                 c.id AS client_id,
                 c.name AS client_name,
                 c.phone AS client_phone,
-                c.email AS client_email,
-                p.amount AS advance_paid,
-                p.status AS payment_status
+                c.email AS client_email
             FROM bookings b
             JOIN clients c ON b.client_id = c.id
-            LEFT JOIN payments p ON b.id = p.booking_id AND p.payment_type = 'advance'
             WHERE b.caretaker_id = ? AND b.status = 'Approved'
             ORDER BY b.booking_date ASC";
 
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $caretakerId);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
-
-
-
-
-
-
-    public function login($email, $password) {
-    $stmt = $this->conn->prepare("SELECT * FROM caretakers WHERE email=?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $caretaker = $stmt->get_result()->fetch_assoc();
-    if ($caretaker && password_verify($password, $caretaker['password'])) {
-        return $caretaker;
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
-    return false;
-}
-public function getClientsByCaretaker($caretakerId)
-{
-    $sql = "SELECT 
+
+
+
+
+
+
+    public function login($email, $password)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM caretakers WHERE email=?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $caretaker = $stmt->get_result()->fetch_assoc();
+        if ($caretaker && password_verify($password, $caretaker['password'])) {
+            return $caretaker;
+        }
+        return false;
+    }
+    public function getClientsByCaretaker($caretakerId)
+    {
+        $sql = "SELECT
                 b.id AS booking_id,
                 b.client_id,
                 c.name AS client_name,
@@ -435,49 +547,50 @@ public function getClientsByCaretaker($caretakerId)
             WHERE b.caretaker_id = ?
             ORDER BY b.booking_date DESC";
 
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param('i', $caretakerId);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('i', $caretakerId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 
-public function addComplaint($data) {
-    $stmt = $this->conn->prepare(
-        "INSERT INTO ct_complaints (client_id, caretaker_id, service_type, service_date, description, status)
+    public function addComplaint($data)
+    {
+        $stmt = $this->conn->prepare(
+            "INSERT INTO ct_complaints (client_id, caretaker_id, service_type, service_date, description, status)
          VALUES (?, ?, ?, ?, ?, 'Pending')"
-    );
+        );
 
-    $stmt->bind_param(
-        "iisss",
-        $data['client_id'],
-        $data['caretaker_id'],
-        $data['service_type'],
-        $data['service_date'],
-        $data['description']
-    );
+        $stmt->bind_param(
+            "iisss",
+            $data['client_id'],
+            $data['caretaker_id'],
+            $data['service_type'],
+            $data['service_date'],
+            $data['description']
+        );
 
-    return $stmt->execute();
-}
+        return $stmt->execute();
+    }
 
-public function getResolvedComplaintsByCaretaker($caretaker_id)
-{
-    $stmt = $this->conn->prepare(
-        "SELECT * FROM ct_complaints
+    public function getResolvedComplaintsByCaretaker($caretaker_id)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM ct_complaints
          WHERE caretaker_id = ? AND status = 'Resolved'
          ORDER BY service_date DESC"
-    );
+        );
 
-    $stmt->bind_param("i", $caretaker_id);
-    $stmt->execute();
+        $stmt->bind_param("i", $caretaker_id);
+        $stmt->execute();
 
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 
 
 
-public function getCaretakerFeedbacks($caretakerId)
-{
-    $sql = "SELECT
+    public function getCaretakerFeedbacks($caretakerId)
+    {
+        $sql = "SELECT
                 cl.name AS client_name,
                 b.service_type AS service,
                 f.rating,
@@ -489,188 +602,169 @@ public function getCaretakerFeedbacks($caretakerId)
             WHERE f.caretaker_id = ?
             ORDER BY f.created_at DESC";
 
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $caretakerId);
-    $stmt->execute();
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
 
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 
-public function countCaretakers(string $search = ''): int
-{
-    if ($search !== '') {
-        $like = "%" . $search . "%";
-        $stmt = $this->conn->prepare("
+    public function countCaretakers(string $search = ''): int
+    {
+        if ($search !== '') {
+            $like = "%" . $search . "%";
+            $stmt = $this->conn->prepare("
             SELECT COUNT(*) AS total
             FROM caretakers
             WHERE name LIKE ? OR service_type LIKE ? OR status LIKE ?
         ");
-        $stmt->bind_param("sss", $like, $like, $like);
-        $stmt->execute();
-        $row = $stmt->get_result()->fetch_assoc();
+            $stmt->bind_param("sss", $like, $like, $like);
+            $stmt->execute();
+            $row = $stmt->get_result()->fetch_assoc();
+            return (int)($row['total'] ?? 0);
+        }
+
+        $res = $this->conn->query("SELECT COUNT(*) AS total FROM caretakers");
+        $row = $res ? $res->fetch_assoc() : null;
         return (int)($row['total'] ?? 0);
     }
 
-    $res = $this->conn->query("SELECT COUNT(*) AS total FROM caretakers");
-    $row = $res ? $res->fetch_assoc() : null;
-    return (int)($row['total'] ?? 0);
-}
-
-public function getCaretakersPaginated(int $limit, int $offset, string $search = ''): array
-{
-    if ($search !== '') {
-        $like = "%" . $search . "%";
-        $stmt = $this->conn->prepare("
+    public function getCaretakersPaginated(int $limit, int $offset, string $search = ''): array
+    {
+        if ($search !== '') {
+            $like = "%" . $search . "%";
+            $stmt = $this->conn->prepare("
             SELECT *
             FROM caretakers
             WHERE name LIKE ? OR service_type LIKE ? OR status LIKE ?
             ORDER BY id DESC
             LIMIT ? OFFSET ?
         ");
-        $stmt->bind_param("sssii", $like, $like, $like, $limit, $offset);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    }
+            $stmt->bind_param("sssii", $like, $like, $like, $limit, $offset);
+            $stmt->execute();
+            return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        }
 
-    $stmt = $this->conn->prepare("
+        $stmt = $this->conn->prepare("
         SELECT *
         FROM caretakers
         ORDER BY id DESC
         LIMIT ? OFFSET ?
     ");
-    $stmt->bind_param("ii", $limit, $offset);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
-
-public function getCaretakersFiltered(array $filters, int $limit, int $offset): array
-{
-    $sql = "SELECT id, name, service_type, status, location, email, phone, experience
-            FROM caretakers
-            WHERE 1=1";
-    $types = "";
-    $params = [];
-
-    if (!empty($filters['status'])) {
-        $sql .= " AND status = ?";
-        $types .= "s";
-        $params[] = $filters['status'];
+        $stmt->bind_param("ii", $limit, $offset);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    if (!empty($filters['service_type'])) {
-        $sql .= " AND service_type = ?";
-        $types .= "s";
-        $params[] = $filters['service_type'];
-    }
-
-    if (!empty($filters['location'])) {
-        $sql .= " AND LOWER(location) LIKE ?";
-        $types .= "s";
-        $params[] = "%" . strtolower($filters['location']) . "%";
-    }
-
-    if (!empty($filters['q'])) {
-        $sql .= " AND LOWER(name) LIKE ?";
-        $types .= "s";
-        $params[] = "%" . strtolower($filters['q']) . "%";
-    }
-
-    $sql .= " ORDER BY created_at DESC LIMIT ? OFFSET ?";
-    $types .= "ii";
-    $params[] = $limit;
-    $params[] = $offset;
-
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param($types, ...$params);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
-
-public function countCaretakersFiltered(array $filters): int
-{
-    $sql = "SELECT COUNT(*) AS total
-            FROM caretakers
-            WHERE 1=1";
-    $types = "";
-    $params = [];
-
-    if (!empty($filters['status'])) {
-        $sql .= " AND status = ?";
-        $types .= "s";
-        $params[] = $filters['status'];
-    }
-
-    if (!empty($filters['service_type'])) {
-        $sql .= " AND service_type = ?";
-        $types .= "s";
-        $params[] = $filters['service_type'];
-    }
-
-    if (!empty($filters['location'])) {
-        $sql .= " AND LOWER(location) LIKE ?";
-        $types .= "s";
-        $params[] = "%" . strtolower($filters['location']) . "%";
-    }
-
-    if (!empty($filters['q'])) {
-        $sql .= " AND LOWER(name) LIKE ?";
-        $types .= "s";
-        $params[] = "%" . strtolower($filters['q']) . "%";
-    }
-
-    $stmt = $this->conn->prepare($sql);
-    if (!empty($params)) {
-        $stmt->bind_param($types, ...$params);
-    }
-    $stmt->execute();
-    $row = $stmt->get_result()->fetch_assoc();
-    return (int)($row['total'] ?? 0);
-}
-
- public function getBookingsByCaretaker($caretakerId)
+    public function getCaretakersFiltered(array $filters, int $limit, int $offset): array
     {
-        $this->conn->query(
-            'SELECT b.id AS booking_id,
-                    c.name AS client_name,
-                    s.name AS service_name,
-                    b.booking_date,
-                    b.booking_time,
-                    b.status
-             FROM bookings b
-             JOIN clients c   ON b.client_id  = c.id
-             JOIN services s  ON b.service_id = s.id
-             WHERE b.caretaker_id = :cid
-             ORDER BY b.booking_date, b.booking_time'
-        );
-        $this->conn->bind(':cid', $caretakerId);
-        return $this->conn->resultSet();
+        $sql = "SELECT id, name, service_type, status, location, email, phone, experience
+            FROM caretakers
+            WHERE 1=1";
+        $types = "";
+        $params = [];
+
+        if (!empty($filters['status'])) {
+            $sql .= " AND status = ?";
+            $types .= "s";
+            $params[] = $filters['status'];
+        }
+
+        if (!empty($filters['service_type'])) {
+            $sql .= " AND service_type = ?";
+            $types .= "s";
+            $params[] = $filters['service_type'];
+        }
+
+        if (!empty($filters['location'])) {
+            $sql .= " AND LOWER(location) LIKE ?";
+            $types .= "s";
+            $params[] = "%" . strtolower($filters['location']) . "%";
+        }
+
+        if (!empty($filters['q'])) {
+            $sql .= " AND LOWER(name) LIKE ?";
+            $types .= "s";
+            $params[] = "%" . strtolower($filters['q']) . "%";
+        }
+
+        $sql .= " ORDER BY created_at DESC LIMIT ? OFFSET ?";
+        $types .= "ii";
+        $params[] = $limit;
+        $params[] = $offset;
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param($types, ...$params);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function countCaretakersFiltered(array $filters): int
+    {
+        $sql = "SELECT COUNT(*) AS total
+            FROM caretakers
+            WHERE 1=1";
+        $types = "";
+        $params = [];
+
+        if (!empty($filters['status'])) {
+            $sql .= " AND status = ?";
+            $types .= "s";
+            $params[] = $filters['status'];
+        }
+
+        if (!empty($filters['service_type'])) {
+            $sql .= " AND service_type = ?";
+            $types .= "s";
+            $params[] = $filters['service_type'];
+        }
+
+        if (!empty($filters['location'])) {
+            $sql .= " AND LOWER(location) LIKE ?";
+            $types .= "s";
+            $params[] = "%" . strtolower($filters['location']) . "%";
+        }
+
+        if (!empty($filters['q'])) {
+            $sql .= " AND LOWER(name) LIKE ?";
+            $types .= "s";
+            $params[] = "%" . strtolower($filters['q']) . "%";
+        }
+
+        $stmt = $this->conn->prepare($sql);
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        return (int)($row['total'] ?? 0);
     }
 
     public function getServiceReport($caretakerId)
-{
-    $sql = "SELECT 
+    {
+        $sql = "SELECT
                 b.id AS booking_id,
                 c.name AS client_name,
                 b.service_type,
                 b.booking_date,
-                b.duration,
-                b.total_payment
+                b.duration
             FROM bookings b
             JOIN clients c ON b.client_id = c.id
             WHERE b.caretaker_id = ?
             ORDER BY b.booking_date DESC";
 
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param('i', $caretakerId);
-    $stmt->execute();
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('i', $caretakerId);
+        $stmt->execute();
 
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 
-     // Fetch bookings for FullCalendar
-    public function getScheduleByCaretaker($caretakerId) {
+    // Fetch bookings for FullCalendar
+    public function getScheduleByCaretaker($caretakerId)
+    {
         // Select additional fields so the frontend modal can show payment/location/duration
-        $sql = "SELECT 
+        $sql = "SELECT
                     b.id AS booking_id,
                     c.name AS client_name,
                     b.service_type,
@@ -678,7 +772,6 @@ public function countCaretakersFiltered(array $filters): int
                     b.preferred_time,
                     b.duration,
                     b.service_location,
-                    b.total_payment,
                     b.status
                 FROM bookings b
                 JOIN clients c ON b.client_id = c.id
@@ -704,7 +797,6 @@ public function countCaretakersFiltered(array $filters): int
                     'time' => $row['preferred_time'],
                     'duration' => $row['duration'],
                     'location' => $row['service_location'],
-                    'payment' => $row['total_payment'],
                     'status' => $row['status']
                 ]
             ];
@@ -713,5 +805,3 @@ public function countCaretakersFiltered(array $filters): int
         return $events;
     }
 }
-
-?>
