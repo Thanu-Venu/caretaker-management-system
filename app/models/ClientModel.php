@@ -140,16 +140,27 @@ class ClientModel
 
     public function createBooking($data)
     {
+        // Set service_start_date to booking_date if not provided
+        if (!isset($data['service_start_date'])) {
+            $data['service_start_date'] = $data['booking_date'];
+        }
+
         $sql = "INSERT INTO bookings
                 (client_id, caretaker_id, service_type, basis, duration, preferred_time, booking_date,
-                 district, street, address_line1, address_line2, postal_code,
-                 customization, customization_hours, customization_price, total_payment, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                 service_start_date, district, street, address_line1, address_line2, postal_code,
+                 customization, customization_hours, customization_price, total_payment, status,
+                 advance_months, total_months, advance_balance)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $this->conn->prepare($sql);
 
+        // Set default values for new fields
+        $advanceMonths = $data['advance_months'] ?? 0;
+        $totalMonths = $data['total_months'] ?? 0;
+        $advanceBalance = $data['advance_balance'] ?? 0.00;
+
         $stmt->bind_param(
-            "iississssssssidds",
+            "iississsssssssiddsiid",
             $data['client_id'],
             $data['caretaker_id'],
             $data['service_type'],
@@ -157,6 +168,7 @@ class ClientModel
             $data['duration'],
             $data['preferred_time'],
             $data['booking_date'],
+            $data['service_start_date'],
             $data['district'],
             $data['street'],
             $data['address_line1'],
@@ -166,7 +178,10 @@ class ClientModel
             $data['customization_hours'],
             $data['customization_price'],
             $data['total_payment'],
-            $data['status']
+            $data['status'],
+            $advanceMonths,
+            $totalMonths,
+            $advanceBalance
         );
 
         if ($stmt->execute()) {
@@ -223,7 +238,7 @@ class ClientModel
             SELECT b.id, b.booking_date
             FROM bookings b
             WHERE b.client_id = ?
-              AND b.booking_date = DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+              AND COALESCE(b.service_start_date, b.booking_date) = DATE_ADD(CURDATE(), INTERVAL 1 DAY)
               AND b.status IN ('Requested','Payment_Requested')
         ");
         $reminderCheckStmt->bind_param("i", $clientId);
@@ -248,7 +263,7 @@ class ClientModel
 
         foreach ($reminderRows as $row) {
             $bookingId = (int)$row['id'];
-            $link = URLROOT . "/client/c_payment?booking_id=" . $bookingId;
+            $link = URLROOT . "/client/paymentDetails/" . $bookingId;
 
             $notifExistsStmt->bind_param("is", $clientId, $link);
             $notifExistsStmt->execute();
@@ -268,7 +283,7 @@ class ClientModel
             SET status = 'Cancelled',
                 cancellation_reason = 'Auto-cancelled: advance payment/acceptance was not completed before service date.',
                 cancelled_at = NOW()
-            WHERE booking_date < CURDATE()
+            WHERE COALESCE(service_start_date, booking_date) < CURDATE()
               AND status IN ('Requested','Payment_Requested')
         ");
 
@@ -285,8 +300,8 @@ class ClientModel
                 FROM bookings b
                 JOIN caretakers c ON b.caretaker_id = c.id
                 WHERE b.client_id = ?
-                  AND b.status IN ('Requested','Payment_Requested','Advance_Paid')
-                  AND b.booking_date > CURDATE()
+                                    AND b.status IN ('Requested','Payment_Requested','Advance_Paid','Accepted','Reschedule_Requested','Change_Requested')
+                                    AND COALESCE(b.service_start_date, b.booking_date) > CURDATE()
                 ORDER BY b.booking_date ASC";
 
         $stmt = $this->conn->prepare($sql);
@@ -591,6 +606,340 @@ class ClientModel
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function getClientPaymentSummary($clientId)
+    {
+        $summary = [
+            'pending_amount' => 0.0,
+            'due_this_week_count' => 0,
+            'overdue_count' => 0,
+            'paid_this_month' => 0.0,
+            'active_bookings_with_payments' => 0
+        ];
+
+        $stmt = $this->conn->prepare(
+            "SELECT COALESCE(SUM(amount), 0) AS pending_amount
+             FROM recurring_payments
+             WHERE client_id = ?
+               AND status IN ('pending', 'overdue')"
+        );
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        $summary['pending_amount'] = (float)($stmt->get_result()->fetch_assoc()['pending_amount'] ?? 0);
+        $stmt->close();
+
+        $stmt = $this->conn->prepare(
+            "SELECT COUNT(*) AS due_this_week_count
+             FROM recurring_payments
+             WHERE client_id = ?
+               AND status = 'pending'
+               AND due_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)"
+        );
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        $summary['due_this_week_count'] = (int)($stmt->get_result()->fetch_assoc()['due_this_week_count'] ?? 0);
+        $stmt->close();
+
+        $stmt = $this->conn->prepare(
+            "SELECT COUNT(*) AS overdue_count
+             FROM recurring_payments
+             WHERE client_id = ?
+               AND status = 'overdue'"
+        );
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        $summary['overdue_count'] = (int)($stmt->get_result()->fetch_assoc()['overdue_count'] ?? 0);
+        $stmt->close();
+
+        $stmt = $this->conn->prepare(
+            "SELECT COALESCE(SUM(amount), 0) AS paid_this_month
+             FROM payments
+             WHERE client_id = ?
+               AND status = 'approved'
+               AND DATE_FORMAT(COALESCE(approved_at, created_at), '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')"
+        );
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        $summary['paid_this_month'] = (float)($stmt->get_result()->fetch_assoc()['paid_this_month'] ?? 0);
+        $stmt->close();
+
+        $stmt = $this->conn->prepare(
+            "SELECT COUNT(DISTINCT b.id) AS booking_count
+             FROM bookings b
+             WHERE b.client_id = ?
+               AND b.status IN ('Payment_Requested', 'Advance_Paid', 'Accepted', 'Reschedule_Requested', 'Change_Requested')"
+        );
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        $summary['active_bookings_with_payments'] = (int)($stmt->get_result()->fetch_assoc()['booking_count'] ?? 0);
+        $stmt->close();
+
+        return $summary;
+    }
+
+    public function getClientActionRequiredPayments($clientId)
+    {
+        $items = [];
+
+        // Advance payments requested by HR.
+        $stmt = $this->conn->prepare(
+            "SELECT
+                b.id AS booking_id,
+                b.service_type,
+                b.basis,
+                b.duration,
+                b.total_payment,
+                b.advance_balance,
+                b.status AS booking_status,
+                COALESCE(b.service_start_date, b.booking_date) AS due_date,
+                c.name AS caretaker_name
+            FROM bookings b
+            JOIN caretakers c ON c.id = b.caretaker_id
+            WHERE b.client_id = ?
+              AND b.status = 'Payment_Requested'
+            ORDER BY due_date ASC"
+        );
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        foreach ($rows as $row) {
+            $items[] = [
+                'source_type' => 'advance',
+                'recurring_payment_id' => null,
+                'booking_id' => (int)$row['booking_id'],
+                'service_type' => $row['service_type'],
+                'basis' => $row['basis'],
+                'caretaker_name' => $row['caretaker_name'],
+                'amount_due' => (float)($row['advance_balance'] > 0 ? $row['advance_balance'] : $row['total_payment']),
+                'due_date' => $row['due_date'],
+                'payment_status' => 'advance_required',
+                'days_delta' => (int)((strtotime($row['due_date']) - strtotime(date('Y-m-d'))) / 86400),
+                'can_pay_now' => true,
+                'booking_status' => $row['booking_status']
+            ];
+        }
+
+        // Recurring payment cycles.
+        $stmt = $this->conn->prepare(
+            "SELECT
+                rp.id AS recurring_payment_id,
+                rp.booking_id,
+                rp.cycle_number,
+                rp.due_date,
+                rp.amount,
+                rp.status,
+                rp.grace_period_end,
+                b.service_type,
+                b.basis,
+                b.status AS booking_status,
+                c.name AS caretaker_name
+            FROM recurring_payments rp
+            JOIN bookings b ON b.id = rp.booking_id
+            JOIN caretakers c ON c.id = b.caretaker_id
+            WHERE rp.client_id = ?
+              AND rp.status IN ('pending', 'overdue')
+            ORDER BY
+              CASE WHEN rp.status = 'overdue' THEN 1 ELSE 2 END,
+              rp.due_date ASC"
+        );
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        $todayTs = strtotime(date('Y-m-d'));
+        $next7Ts = strtotime('+7 days', $todayTs);
+
+        foreach ($rows as $row) {
+            $dueTs = strtotime($row['due_date']);
+            $daysDelta = (int)(($dueTs - $todayTs) / 86400);
+            $withinGrace = true;
+
+            if (!empty($row['grace_period_end'])) {
+                $withinGrace = strtotime($row['grace_period_end']) >= $todayTs;
+            }
+
+            $canPayNow = false;
+            if ($row['booking_status'] !== 'Cancelled') {
+                if ($row['status'] === 'overdue') {
+                    $canPayNow = $withinGrace;
+                } else {
+                    $canPayNow = ($dueTs <= $next7Ts);
+                }
+            }
+
+            $items[] = [
+                'source_type' => 'recurring',
+                'recurring_payment_id' => (int)$row['recurring_payment_id'],
+                'booking_id' => (int)$row['booking_id'],
+                'service_type' => $row['service_type'],
+                'basis' => $row['basis'],
+                'caretaker_name' => $row['caretaker_name'],
+                'amount_due' => (float)$row['amount'],
+                'due_date' => $row['due_date'],
+                'payment_status' => $row['status'],
+                'days_delta' => $daysDelta,
+                'can_pay_now' => $canPayNow,
+                'booking_status' => $row['booking_status']
+            ];
+        }
+
+        return $items;
+    }
+
+    public function getClientBookingPaymentOverview($clientId)
+    {
+        $sql = "SELECT
+                    b.id AS booking_id,
+                    b.service_type,
+                    b.basis,
+                    b.duration,
+                    b.status,
+                    COALESCE(b.service_start_date, b.booking_date) AS service_start_date,
+                    ct.name AS caretaker_name,
+                    (
+                        SELECT rp1.due_date
+                        FROM recurring_payments rp1
+                        WHERE rp1.booking_id = b.id
+                          AND rp1.status IN ('pending', 'overdue')
+                        ORDER BY rp1.due_date ASC, rp1.cycle_number ASC
+                        LIMIT 1
+                    ) AS next_payment_due_date,
+                    (
+                        SELECT rp2.amount
+                        FROM recurring_payments rp2
+                        WHERE rp2.booking_id = b.id
+                          AND rp2.status IN ('pending', 'overdue')
+                        ORDER BY rp2.due_date ASC, rp2.cycle_number ASC
+                        LIMIT 1
+                    ) AS next_payment_amount,
+                    (
+                        SELECT COUNT(*)
+                        FROM recurring_payments rp3
+                        WHERE rp3.booking_id = b.id
+                    ) AS total_cycles,
+                    (
+                        SELECT COUNT(*)
+                        FROM recurring_payments rp4
+                        WHERE rp4.booking_id = b.id
+                          AND rp4.status = 'paid'
+                    ) AS paid_cycles
+                FROM bookings b
+                JOIN caretakers ct ON ct.id = b.caretaker_id
+                WHERE b.client_id = ?
+                  AND b.status IN ('Payment_Requested', 'Advance_Paid', 'Accepted', 'Reschedule_Requested', 'Change_Requested', 'Completed')
+                ORDER BY b.created_at DESC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getClientPaymentHistoryDetailed($clientId)
+    {
+        $sql = "SELECT
+                    p.id,
+                    p.booking_id,
+                    p.amount,
+                    p.payment_method,
+                    p.payment_type,
+                    p.status,
+                    COALESCE(p.approved_at, p.paid_date, p.created_at) AS paid_at,
+                    b.service_type,
+                    b.basis,
+                    ct.name AS caretaker_name
+                FROM payments p
+                JOIN bookings b ON b.id = p.booking_id
+                JOIN caretakers ct ON ct.id = p.caretaker_id
+                WHERE p.client_id = ?
+                ORDER BY COALESCE(p.approved_at, p.paid_date, p.created_at) DESC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getBookingPaymentTimelineData($clientId, $bookingId)
+    {
+        $result = [
+            'booking' => null,
+            'payments' => [],
+            'recurring' => []
+        ];
+
+        $stmt = $this->conn->prepare(
+            "SELECT
+                b.id AS booking_id,
+                b.client_id,
+                b.service_type,
+                b.basis,
+                b.duration,
+                b.status,
+                b.total_payment,
+                b.advance_months,
+                b.total_months,
+                b.advance_paid_date,
+                COALESCE(b.service_start_date, b.booking_date) AS service_start_date,
+                c.name AS caretaker_name
+            FROM bookings b
+            JOIN caretakers c ON c.id = b.caretaker_id
+            WHERE b.client_id = ? AND b.id = ?
+            LIMIT 1"
+        );
+        $stmt->bind_param("ii", $clientId, $bookingId);
+        $stmt->execute();
+        $result['booking'] = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        if (!$result['booking']) {
+            return $result;
+        }
+
+        $stmt = $this->conn->prepare(
+            "SELECT
+                id,
+                payment_type,
+                amount,
+                payment_method,
+                status,
+                due_date,
+                approved_at,
+                created_at
+            FROM payments
+            WHERE client_id = ? AND booking_id = ?
+            ORDER BY created_at ASC"
+        );
+        $stmt->bind_param("ii", $clientId, $bookingId);
+        $stmt->execute();
+        $result['payments'] = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        $stmt = $this->conn->prepare(
+            "SELECT
+                id,
+                cycle_number,
+                cycle_type,
+                due_date,
+                amount,
+                status,
+                paid_at,
+                grace_period_end,
+                payment_id
+            FROM recurring_payments
+            WHERE client_id = ? AND booking_id = ?
+            ORDER BY cycle_number ASC, due_date ASC"
+        );
+        $stmt->bind_param("ii", $clientId, $bookingId);
+        $stmt->execute();
+        $result['recurring'] = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $result;
+    }
+
     public function getPaymentsByStatus($status)
     {
         $sql = "SELECT p.*, b.total_payment, b.basis, c.name as client_name, ct.name as caretaker_name
@@ -670,6 +1019,22 @@ class ClientModel
         return $stmt->get_result()->fetch_assoc();
     }
 
+    public function getRecurringPaymentByIdForClient($recurringPaymentId, $clientId, $bookingId)
+    {
+        $sql = "SELECT * FROM recurring_payments
+                WHERE id = ? AND client_id = ? AND booking_id = ?
+                LIMIT 1";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("iii", $recurringPaymentId, $clientId, $bookingId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $payment = $result->fetch_assoc();
+        $stmt->close();
+
+        return $payment ?: null;
+    }
+
     public function updatePaymentStatus($paymentId, $status)
     {
         $stmt = $this->conn->prepare("UPDATE payments SET status = ?, approved_at = NOW() WHERE id = ?");
@@ -681,6 +1046,19 @@ class ClientModel
     {
         $stmt = $this->conn->prepare("UPDATE bookings SET status = ? WHERE id = ?");
         $stmt->bind_param("si", $status, $bookingId);
+        return $stmt->execute();
+    }
+
+    /**
+     * Update advance_paid_date when advance payment is approved
+     *
+     * @param int $bookingId
+     * @return bool
+     */
+    public function updateBookingAdvancePaidDate($bookingId)
+    {
+        $stmt = $this->conn->prepare("UPDATE bookings SET advance_paid_date = NOW() WHERE id = ?");
+        $stmt->bind_param("i", $bookingId);
         return $stmt->execute();
     }
 
