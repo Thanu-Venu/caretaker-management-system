@@ -77,9 +77,11 @@ function updatePopupOptions(service) {
   // disable location options not available for chosen service
   if (locSelect && window.serviceLocations) {
     const allowed = service ? window.serviceLocations[service] || [] : [];
+    // Convert allowed locations to lowercase for case-insensitive comparison
+    const allowedLower = allowed.map(loc => loc.toLowerCase());
     for (const opt of locSelect.options) {
       if (opt.value === "") continue;
-      opt.disabled = service && allowed.indexOf(opt.value) === -1;
+      opt.disabled = service && allowedLower.indexOf(opt.value.toLowerCase()) === -1;
       if (opt.disabled && opt.selected) {
         opt.selected = false;
       }
@@ -252,14 +254,14 @@ if (ratingFilter) ratingFilter.addEventListener("change", applyFilters);
 
 document.addEventListener("DOMContentLoaded", function () {
   const popupFormEl = document.querySelector("#searchPopup form");
-if (popupFormEl) {
-  popupFormEl.addEventListener("submit", function () {
-    const overlayEl = document.getElementById("popupOverlay");
-    const popupEl = document.getElementById("searchPopup");
-    if (overlayEl) overlayEl.style.display = "none";
-    if (popupEl) popupEl.style.display = "none";
-  });
-}
+  if (popupFormEl) {
+    popupFormEl.addEventListener("submit", function () {
+      const overlayEl = document.getElementById("popupOverlay");
+      const popupEl = document.getElementById("searchPopup");
+      if (overlayEl) overlayEl.style.display = "none";
+      if (popupEl) popupEl.style.display = "none";
+    });
+  }
   const openBtn = document.getElementById("openPopupBtn");
   const overlay = document.getElementById("popupOverlay");
   const popup = document.getElementById("searchPopup");

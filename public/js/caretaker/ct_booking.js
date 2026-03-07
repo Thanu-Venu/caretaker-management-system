@@ -35,7 +35,7 @@ function showTab(tabName, event) {
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const bookingId = params.get("booking_id");
-  const tab = params.get("tab") || "upcoming";
+  const tab = params.get("tab") || "ongoing";
 
   if (bookingId) {
     setActiveTab(tab);

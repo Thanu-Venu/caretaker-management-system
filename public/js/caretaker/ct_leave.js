@@ -1,153 +1,245 @@
-const leaveTypeSelect = document.getElementById("leave_type");
-const startInput = document.getElementById("start_date");
-const endInput = document.getElementById("end_date");
-const startHint = document.getElementById("start_date_hint");
-const endHint = document.getElementById("end_date_hint");
-const reasonInput = document.querySelector('textarea[name="reason"]');
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('leaveRequestForm');
+    const startInput = document.getElementById('start_date');
+    const endInput = document.getElementById('end_date');
+    const startHint = document.getElementById('start_date_hint');
+    const endHint = document.getElementById('end_date_hint');
+    const durationWrap = document.getElementById('durationWrap');
+    const durationBadge = document.getElementById('durationBadge');
+    const inlineErrors = document.getElementById('inlineErrors');
+    const bookingImpactPreview = document.getElementById('bookingImpactPreview');
+    const impactMessage = document.getElementById('impactMessage');
+    const impactCount = document.getElementById('impactCount');
+    const impactIds = document.getElementById('impactIds');
+    const impactIdsLine = document.getElementById('impactIdsLine');
 
-// Calculate days between two dates
-function calculateDays(start, end) {
-    if (!start || !end) return 0;
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-    const diffTime = Math.abs(endDate - startDate);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays + 1; // Include both start and end dates
-}
-
-// Format date to readable format
-function formatDate(dateStr) {
-    const date = new Date(dateStr + 'T00:00:00');
-    const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
-}
-
-// Update minimum start date based on leave type
-function updateStartDateMin() {
-    const leaveType = leaveTypeSelect.value;
-    
-    if (leaveType === "Sick Leave") {
-        startInput.min = startInput.dataset.minSick;
-        startHint.textContent = "🏥 Sick Leave: Available from tomorrow";
-    } else if (leaveType) {
-        startInput.min = startInput.dataset.minNormal;
-        startHint.textContent = "📅 Other Leaves: Available from 5 days onwards";
-    } else {
-        startInput.min = "";
-        startHint.textContent = "";
-    }
-    
-    // Clear dates if they don't meet new minimum
-    if (startInput.value && startInput.min && startInput.value < startInput.min) {
-        startInput.value = "";
-        endInput.value = "";
-    }
-    
-    // Recalculate end date constraints
-    if (startInput.value) {
-        updateEndDateConstraints();
-    }
-}
-
-// Update end date constraints based on start date
-function updateEndDateConstraints() {
-    if (!startInput.value) return;
-
-    let start = startInput.value;
-
-    // End date minimum = start date
-    endInput.min = start;
-
-    // End date maximum = start date + 27 days (= 28 days total)
-    let maxDate = new Date(start);
-    maxDate.setDate(maxDate.getDate() + 27);
-
-    endInput.max = maxDate.toISOString().split("T")[0];
-
-    // Clear end date if it doesn't meet constraints
-    if (endInput.value && endInput.value < endInput.min) {
-        endInput.value = "";
-    } else if (endInput.value && endInput.value > endInput.max) {
-        endInput.value = "";
-    }
-
-    // Update end date hint with duration and max date
-    updateEndDateHint();
-}
-
-// Update end date hint and day counter
-function updateEndDateHint() {
-    const start = startInput.value;
-    const end = endInput.value;
-    
-    if (!start) {
-        endHint.textContent = "";
+    if (!form || !startInput || !endInput) {
         return;
     }
 
-    const maxEnd = endInput.max;
-    const dayCount = end ? calculateDays(start, end) : 0;
+    const policy = window.leavePolicy || {
+        advanceNoticeDays: 3,
+        maxPerRequest: 7,
+        monthlyLimit: 5
+    };
+    const previewConfig = window.leavePreview || { impactUrl: '' };
+    let impactDebounceTimer = null;
+    let activeImpactController = null;
 
-    if (end) {
-        endHint.innerHTML = `✓ <strong>${dayCount} days</strong> selected (${formatDate(start)} to ${formatDate(end)})`;
-    } else {
-        endHint.innerHTML = `Maximum 28 days allowed (until ${formatDate(maxEnd)})`;
-    }
-}
-
-// Update form summary
-function updateRequestSummary() {
-    const leaveType = leaveTypeSelect.value;
-    const start = startInput.value;
-    const end = endInput.value;
-    const reason = reasonInput.value.trim();
-    const dayCount = start && end ? calculateDays(start, end) : 0;
-
-    let summary = `<div style="background: #f0f9ff; border: 1px solid #0284c7; padding: 12px; border-radius: 4px; margin-top: 10px; font-size: 13px;">
-        <strong>📋 Leave Request Summary:</strong><br>`;
-    
-    if (leaveType) summary += `Type: <strong>${leaveType}</strong><br>`;
-    if (start) summary += `From: <strong>${formatDate(start)}</strong><br>`;
-    if (end) summary += `To: <strong>${formatDate(end)}</strong><br>`;
-    if (dayCount > 0) summary += `Duration: <strong>${dayCount} days</strong><br>`;
-    if (reason) summary += `Reason: <strong>${reason.substring(0, 50)}${reason.length > 50 ? '...' : ''}</strong><br>`;
-    
-    summary += `</div>`;
-
-    let summaryContainer = document.getElementById("leave_summary");
-    if (!summaryContainer && leaveType && start && end) {
-        summaryContainer = document.createElement('div');
-        summaryContainer.id = "leave_summary";
-        reasonInput.parentElement.appendChild(summaryContainer);
+    function parseDate(value) {
+        return value ? new Date(value + 'T00:00:00') : null;
     }
 
-    if (summaryContainer && leaveType && start && end) {
-        summaryContainer.innerHTML = summary;
-    } else if (summaryContainer) {
-        summaryContainer.remove();
+    function formatDate(value) {
+        const date = parseDate(value);
+        if (!date) return '';
+        return date.toLocaleDateString('en-GB', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
     }
-}
 
-// Event listeners
-startInput.addEventListener("change", () => {
-    updateEndDateConstraints();
-    updateRequestSummary();
-});
+    function getInclusiveDays(startValue, endValue) {
+        const startDate = parseDate(startValue);
+        const endDate = parseDate(endValue);
+        if (!startDate || !endDate || endDate < startDate) {
+            return 0;
+        }
+        const diffMs = endDate.getTime() - startDate.getTime();
+        return Math.floor(diffMs / 86400000) + 1;
+    }
 
-endInput.addEventListener("change", () => {
-    updateEndDateHint();
-    updateRequestSummary();
-});
+    function getMinAdvanceDate() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        today.setDate(today.getDate() + Number(policy.advanceNoticeDays));
+        return today;
+    }
 
-leaveTypeSelect.addEventListener("change", () => {
-    updateStartDateMin();
-    updateRequestSummary();
-});
+    function syncDateHints() {
+        const minAdvance = getMinAdvanceDate();
+        const minAdvanceIso = minAdvance.toISOString().slice(0, 10);
+        startHint.textContent = `Leave must be requested at least ${policy.advanceNoticeDays} days in advance. Earliest start: ${formatDate(minAdvanceIso)}.`;
 
-reasonInput.addEventListener("input", updateRequestSummary);
+        if (startInput.value) {
+            endInput.min = startInput.value;
+            endHint.textContent = `End date must be on or after ${formatDate(startInput.value)}.`;
+        } else {
+            endInput.min = startInput.min;
+            endHint.textContent = '';
+        }
+    }
 
-// Initialize on page load
-document.addEventListener("DOMContentLoaded", () => {
-    updateStartDateMin();
-    updateEndDateHint();
+    function collectClientErrors() {
+        const errors = [];
+        const todayIso = new Date().toISOString().slice(0, 10);
+        const minAdvanceIso = getMinAdvanceDate().toISOString().slice(0, 10);
+
+        if (startInput.value && startInput.value < todayIso) {
+            errors.push('Leave cannot be requested for past dates.');
+        }
+
+        if (endInput.value && endInput.value < todayIso) {
+            errors.push('Leave cannot be requested for past dates.');
+        }
+
+        if (startInput.value && startInput.value < minAdvanceIso) {
+            errors.push('Leave must be requested at least 3 days in advance.');
+        }
+
+        if (startInput.value && endInput.value && endInput.value < startInput.value) {
+            errors.push('End date must be the same as or later than the start date.');
+        }
+
+        const days = getInclusiveDays(startInput.value, endInput.value);
+        if (days > Number(policy.maxPerRequest)) {
+            errors.push('A single leave request cannot exceed 7 days.');
+        }
+
+        return Array.from(new Set(errors));
+    }
+
+    function renderInlineErrors(errors) {
+        if (!inlineErrors) {
+            return;
+        }
+
+        if (!errors.length) {
+            inlineErrors.innerHTML = '';
+            inlineErrors.style.display = 'none';
+            return;
+        }
+
+        inlineErrors.style.display = 'block';
+        inlineErrors.innerHTML = errors.map((message) => `<p>${message}</p>`).join('');
+    }
+
+    function updateDurationBadge() {
+        const days = getInclusiveDays(startInput.value, endInput.value);
+
+        if (!durationWrap || !durationBadge) {
+            return;
+        }
+
+        if (days <= 0) {
+            durationWrap.hidden = true;
+            return;
+        }
+
+        durationWrap.hidden = false;
+        durationBadge.textContent = `${days} ${days === 1 ? 'day' : 'days'}`;
+    }
+
+    function hideImpactPreview() {
+        if (!bookingImpactPreview) {
+            return;
+        }
+        bookingImpactPreview.hidden = true;
+        if (impactIdsLine) {
+            impactIdsLine.hidden = true;
+        }
+    }
+
+    function renderImpactPreview(data) {
+        if (!bookingImpactPreview || !impactCount || !impactMessage) {
+            return;
+        }
+
+        if (!data || !data.hasImpact) {
+            hideImpactPreview();
+            return;
+        }
+
+        bookingImpactPreview.hidden = false;
+        impactCount.textContent = String(data.count || 0);
+        impactMessage.textContent = data.message || 'Warning: active bookings detected in this leave period.';
+
+        if (Array.isArray(data.booking_ids) && data.booking_ids.length > 0 && impactIds && impactIdsLine) {
+            impactIds.textContent = data.booking_ids.join(', ');
+            impactIdsLine.hidden = false;
+        } else if (impactIdsLine) {
+            impactIdsLine.hidden = true;
+        }
+    }
+
+    async function fetchImpactPreview() {
+        if (!previewConfig.impactUrl || !startInput.value || !endInput.value || endInput.value < startInput.value) {
+            hideImpactPreview();
+            return;
+        }
+
+        if (activeImpactController) {
+            activeImpactController.abort();
+        }
+
+        activeImpactController = new AbortController();
+
+        const body = new URLSearchParams({
+            start_date: startInput.value,
+            end_date: endInput.value
+        });
+
+        try {
+            const response = await fetch(previewConfig.impactUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: body.toString(),
+                signal: activeImpactController.signal
+            });
+
+            if (!response.ok) {
+                hideImpactPreview();
+                return;
+            }
+
+            const payload = await response.json();
+            renderImpactPreview(payload);
+        } catch (error) {
+            if (error.name !== 'AbortError') {
+                hideImpactPreview();
+            }
+        }
+    }
+
+    function queueImpactPreview() {
+        if (impactDebounceTimer) {
+            clearTimeout(impactDebounceTimer);
+        }
+
+        impactDebounceTimer = setTimeout(() => {
+            fetchImpactPreview();
+        }, 250);
+    }
+
+    function syncFormState() {
+        syncDateHints();
+        updateDurationBadge();
+        const errors = collectClientErrors();
+        renderInlineErrors(errors);
+
+        if (errors.length > 0) {
+            hideImpactPreview();
+            return;
+        }
+
+        queueImpactPreview();
+    }
+
+    startInput.addEventListener('change', syncFormState);
+    endInput.addEventListener('change', syncFormState);
+    startInput.addEventListener('input', syncFormState);
+    endInput.addEventListener('input', syncFormState);
+
+    form.addEventListener('submit', (event) => {
+        const errors = collectClientErrors();
+        renderInlineErrors(errors);
+        if (errors.length > 0) {
+            event.preventDefault();
+        }
+    });
+
+    syncFormState();
 });
