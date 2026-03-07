@@ -1,227 +1,346 @@
-# Future Features — Caretaker Management System
+# Future Features (Enhanced) — Caretaker Management System
 
-This document lists potential enhancements and roadmap ideas for the Caretaker Management System. Items are grouped by theme and roughly ordered from near-term to longer-term.
+This document is an expanded roadmap of potential enhancements for the Caretaker Management System. Items are grouped by theme and include suggested scope and implementation notes where helpful.
+
+> Tip: If you want, I can convert the **Top Priority Roadmap** section into GitHub Issues (with clear acceptance criteria) once you confirm which features you want first.
+
+---
+
+## 0. Top Priority Roadmap (Suggested)
+
+### Phase 1 — Stability & Trust (High value, low risk)
+1. **Availability + conflict prevention**
+   - Prevent double-booking and booking during approved leave.
+2. **Email notifications**
+   - Booking created/confirmed/cancelled, leave approved/rejected, payment receipt.
+3. **Audit logs for privileged actions**
+   - Verification decisions, role changes, booking status changes, payment state changes.
+4. **Improved validation + consistent error handling**
+   - Standardize server-side validation and user-facing messages.
+
+### Phase 2 — Product Experience
+5. **Reviews & ratings**
+6. **Reporting dashboard + CSV exports**
+7. **In-app messaging (client ↔ caretaker)**
+
+### Phase 3 — Scale & Automation
+8. **Smart matching**
+9. **Caretaker payout workflow**
+10. **Public API + mobile app**
 
 ---
 
 ## 1. Booking & Scheduling Enhancements
 
 ### 1.1 Availability Calendar (Caretaker)
-- Weekly/monthly calendar view
-- Mark recurring availability (e.g., weekdays 9am–5pm)
-- Block-out dates (vacation, personal time)
-- Prevent conflicts with approved leave and confirmed bookings
+**What**
+- Calendar UI to manage availability with recurring rules (weekly schedule) + exceptions.
+- “Unavailable” blocks (appointments, personal time).
+
+**Implementation ideas**
+- Tables: `availability_rules`, `availability_exceptions`
+- Compute availability at booking time (and cache results for common searches).
+
+**Acceptance ideas**
+- Caretaker cannot be assigned to bookings outside available times.
+
+---
 
 ### 1.2 Smart Matching (Client → Caretaker)
-- Suggest caretakers by:
-  - service type/skills
+**What**
+- Suggest caretakers based on:
+  - service/skills match
   - availability window
-  - proximity (if locations are collected)
   - price range
-  - rating/reviews
-- Explain “why this caretaker” (transparency)
+  - rating (if reviews exist)
+  - distance (if location is captured)
 
-### 1.3 Booking Lifecycle Improvements
-- Reschedule flow (client/caretaker)
-- Cancellation policy support (fees, deadlines)
-- Multi-day / recurring bookings
-- Booking chat thread with timestamps
+**Implementation ideas**
+- Ranking score = weighted factors
+- Provide “why recommended” explanation
+
+---
+
+### 1.3 Recurring Bookings
+**What**
+- Weekly/monthly recurring bookings for regular clients.
+
+**Implementation ideas**
+- Store recurrence rules (RRULE-like) and generate instances.
+- Support pausing/cancelling a single occurrence.
+
+---
+
+### 1.4 Reschedule Flow
+**What**
+- Rescheduling with conflict checks and policy rules (e.g., 24h notice).
+
+**Implementation ideas**
+- Prefer “create new booking + cancel old booking” for audit clarity.
+
+---
+
+### 1.5 Booking Chat / Timeline
+**What**
+- Booking-specific conversation thread and timeline:
+  - status changes
+  - notes
+  - attachments
 
 ---
 
 ## 2. Payments, Billing & Finance
 
-### 2.1 Online Payments (If not already integrated)
-- Stripe/PayPal integration
-- Webhooks to confirm payment status
-- Save payment receipts and provider references
+### 2.1 Online Payments + Webhooks
+**What**
+- Stripe/PayPal checkout integration
+- Webhook verification to prevent fake “success” redirects
 
-### 2.2 Invoices & Receipts
-- Auto-generated invoice PDF
-- Email receipt to client after payment
-- Invoice history page for clients and admin
-
-### 2.3 Refunds & Disputes
-- Admin-initiated refunds
-- Partial refunds (based on hours served)
-- Dispute workflow with notes and evidence upload
-
-### 2.4 Caretaker Payouts (If applicable)
-- Earnings dashboard for caretakers
-- Payout schedule (weekly/monthly)
-- Export payouts (CSV)
-- Bank transfer integration (long-term)
+**Implementation ideas**
+- Store `provider_reference`, `provider_event_id`
+- Idempotency keys for webhook processing
 
 ---
 
-## 3. HR & Compliance
+### 2.2 Invoices & Receipts (PDF)
+**What**
+- PDF invoice + receipt generation
+- Email delivery to client
+- Invoice numbering system
 
-### 3.1 Caretaker Verification Workflow
-- Document upload (ID, certifications)
-- HR checklist + approval notes
-- Expiration reminders for certifications
-- Re-verification cycle
+---
 
-### 3.2 Background Checks (Optional)
-- Integration with third-party screening services
-- Status tracking and audit logs
+### 2.3 Refunds & Disputes
+**What**
+- Admin-driven refund flow
+- Dispute workflow with evidence attachments and notes
 
-### 3.3 Training & Onboarding
-- Training modules + completion tracking
-- Required training before accepting certain services
+**Implementation ideas**
+- Tables: `refunds`, `disputes`
+- Restrict refund permissions, log actor and reason
+
+---
+
+### 2.4 Caretaker Payouts (If Applicable)
+**What**
+- Earnings dashboard and payout cycles (weekly/monthly)
+
+**Implementation ideas**
+- Tables: `payouts`, `payout_items`
+- Export payouts (CSV) for finance ops
+- Optional bank transfer integration later
+
+---
+
+## 3. HR, Verification & Compliance
+
+### 3.1 Verification Checklist + Notes
+**What**
+- HR verification page with structured checklist items:
+  - identity verified
+  - certifications checked
+  - interview completed (optional)
+- Add internal notes
+
+---
+
+### 3.2 Document Management + Expiration Reminders
+**What**
+- Upload caretaker documents (IDs/certificates)
+- Track expiry dates and notify caretaker/HR before expiry
+
+**Implementation ideas**
+- Table: `caretaker_documents` with `expires_at`
+- Cron job (or scheduled task) to send reminders
+
+---
+
+### 3.3 Background Checks Integration (Optional)
+**What**
+- Integrate with a third-party screening provider
+- Store check status + results summary
+
+---
+
+### 3.4 Training & Onboarding Modules
+**What**
+- Required training modules per service type
+- Completion tracking and gating (can’t accept certain bookings without training)
 
 ---
 
 ## 4. Leave Management Improvements
 
-### 4.1 Leave Policies
-- Leave categories (sick, vacation, unpaid)
-- Accrual rules (if applicable)
-- Maximum consecutive days
-- Attach medical notes (optional, access-controlled)
-
-### 4.2 Conflict Resolution
-- Auto-detect impacted bookings
-- Suggested replacement caretakers
-- Workflow for reassignment approval
+### 4.1 Leave Types & Policies
+**What**
+- Leave type: sick/vacation/unpaid
+- Policy rules: max days, blackout dates, documentation requirements
 
 ---
 
-## 5. User Experience & Communication
-
-### 5.1 Notifications
-- Email notifications for:
-  - booking requested/confirmed/completed/cancelled
-  - leave approved/rejected
-  - payment success/failure
-- Optional SMS/WhatsApp notifications
-- Notification preferences per user
-
-### 5.2 In-App Messaging
-- Secure client ↔ caretaker messaging
-- Admin/HR can intervene when needed
-- Attachment support (images, PDFs)
-- Message moderation and reporting
-
-### 5.3 Reviews & Ratings
-- Post-booking review request
-- Rating categories (punctuality, care quality, communication)
-- Admin tools for removing abusive reviews
-- Caretaker profile shows averages and review excerpts
+### 4.2 Leave/Booking Conflict Resolution Tools
+**What**
+- When approving leave:
+  - show impacted future bookings
+  - suggest replacement caretakers
+  - optionally block approval until reassignment is planned
 
 ---
 
-## 6. Administration & Reporting
+## 5. Communication & Notifications
 
-### 6.1 Advanced Reporting Dashboard
-- Bookings per day/week/month
-- Revenue over time
-- Caretaker utilization rate
-- Leave statistics
-- Funnel metrics (signups → bookings → paid)
+### 5.1 Notification Preferences
+**What**
+- Let users choose which events trigger notifications and channels.
 
-### 6.2 Data Export
-- CSV exports for:
-  - bookings
-  - payments
-  - caretakers
-  - clients
-  - leave requests
-
-### 6.3 Audit Logs
-- Track changes to:
-  - booking status
-  - leave approvals
-  - caretaker verification
-  - payment state changes
-- Filterable audit log view for admins
+**Implementation ideas**
+- Table: `notification_preferences`
 
 ---
 
-## 7. Security & Platform Hardening
+### 5.2 SMS / WhatsApp Notifications (Optional)
+**What**
+- Critical booking updates via SMS/WhatsApp
 
-### 7.1 Security Features
-- CSRF protection on all forms
-- Rate limiting (login, password reset)
-- Account lockout / CAPTCHA after repeated failed logins
-- Enforce strong passwords
-
-### 7.2 Role & Permission Refinement
-- Granular permissions (beyond role-level)
-- Permission groups (HR assistant, finance admin, super admin)
-
-### 7.3 Privacy Controls
-- Limit visibility of personal info
-- Mask sensitive data in logs
-- Document access control (only HR/admin)
+**Implementation ideas**
+- Use a provider (Twilio, etc.)
+- Rate limit and opt-in/opt-out controls
 
 ---
 
-## 8. Mobile & API
+### 5.3 In-App Messaging
+**What**
+- Secure client ↔ caretaker messages
+- Attachments
+- Admin/HR visibility rules
 
-### 8.1 REST API Layer (Optional)
-- Auth endpoints
-- Booking endpoints
-- Leave endpoints
-- Payments endpoints (status only)
-- Versioning strategy (e.g., `/api/v1/...`)
-
-### 8.2 Mobile App
-- Client app: search, book, pay, chat
-- Caretaker app: schedule, bookings, leave requests, earnings
+**Implementation ideas**
+- Tables: `conversations`, `messages`, `message_attachments`
 
 ---
 
-## 9. Localization & Accessibility
+## 6. Reviews, Quality & Trust
 
-### 9.1 Multi-Language Support
+### 6.1 Reviews & Ratings
+**What**
+- Client can rate caretaker after completed booking
+- Optional review moderation by admin
+
+**Implementation ideas**
+- Only allow reviews for `completed` bookings.
+- Table: `reviews` linked to `booking_id`.
+
+---
+
+### 6.2 Attendance / Check-in / Check-out (Optional)
+**What**
+- Caretaker check-in/out timestamps to confirm actual service duration.
+
+**Implementation ideas**
+- Store geo-location optionally (privacy careful)
+- Use timestamps for accurate billing and dispute resolution
+
+---
+
+## 7. Administration, Reporting & Data Export
+
+### 7.1 Advanced Reporting Dashboard
+**What**
+- Bookings by status, revenue trends, caretaker utilization
+
+**Implementation ideas**
+- Add indexes for heavy queries
+- Cache summary stats (optional)
+
+---
+
+### 7.2 CSV Export & Import Tools
+**What**
+- Export: bookings, payments, users, caretakers, leave requests
+- Import: services, caretaker list (for migration)
+
+---
+
+### 7.3 Audit Logs (Critical for Admin/HR Actions)
+**What**
+- Track actor/action/entity/before/after/time
+
+**Implementation ideas**
+- Table: `audit_logs`
+- Log high-risk actions:
+  - role changes, verification, refunds, cancellations
+
+---
+
+## 8. Security & Platform Hardening
+
+### 8.1 CSRF Protection Everywhere
+- Add CSRF tokens to all state-changing forms.
+
+### 8.2 Rate Limiting
+- Login attempt throttling
+- Rate limit booking creation to prevent abuse
+
+### 8.3 Stronger Permission Model
+- Beyond roles: permissions/groups (finance admin, HR assistant, etc.)
+
+### 8.4 Security Headers (If applicable)
+- Content Security Policy (CSP)
+- HSTS (HTTPS only)
+- X-Frame-Options / frame-ancestors
+
+---
+
+## 9. Developer Experience & Quality
+
+### 9.1 Standardize Architecture (MVC-ish)
+**What**
+- Consistent structure for controllers/services/models/views
+- Centralize DB access (PDO recommended)
+- Centralize auth guards
+
+---
+
+### 9.2 Testing Strategy (Optional but recommended)
+- Unit tests for service rules (booking overlap, leave conflict)
+- Integration tests for booking + payment lifecycle
+- Smoke tests for dashboards
+
+---
+
+## 10. Localization & Accessibility
+
+### 10.1 Multi-language Support
+- Translation files
 - Language switcher
-- Translation file structure
-- Admin-managed translations (optional)
+- Admin-managed text (optional)
 
-### 9.2 Accessibility Improvements
+### 10.2 Accessibility Improvements
 - Keyboard navigation
-- ARIA labels
-- Color contrast checks
-- Screen-reader-friendly forms
+- Proper labels and ARIA attributes
+- Contrast improvements
 
 ---
 
-## 10. Reliability & Operations
+## 11. Reliability & Operations
 
-### 10.1 Better Error Handling
-- Unified error page templates
-- User-friendly validation messages
-- Internal error logging with correlation IDs
-
-### 10.2 Backups & Disaster Recovery
+### 11.1 Backups & Restore Procedure
 - Automated DB backups
-- Restore procedure documentation
-- Optional “maintenance mode”
+- Documented restore steps
+- Periodic restore test
+
+### 11.2 Maintenance Mode
+- Admin can enable maintenance mode for upgrades
+- Show a friendly downtime page to users
 
 ---
 
-## 11. Quality & Developer Experience
+## 12. Ideas Parking Lot (Optional)
 
-### 11.1 Testing (If you choose to add)
-- Unit tests for service logic
-- Integration tests for booking/payment flows
-- Basic UI smoke tests
-
-### 11.2 Codebase Structure Improvements
-- Move toward MVC consistently (if currently mixed)
-- Centralize configuration
-- Standardize DB access (PDO recommended)
-- Introduce a router (if not present)
+- Multi-branch support (multiple service locations/regions)
+- Promotions / discount codes
+- Membership/subscription plans
+- Public caretaker profiles with SEO pages (if intended)
+- Internal task assignments for HR/admin
 
 ---
-
-## 12. Prioritization (Suggested Next 5)
-
-If you want a pragmatic roadmap, these are usually the highest impact:
-
-1. Availability calendar + conflict prevention
-2. Notifications (email at minimum)
-3. Reviews & ratings
-4. Better reporting + CSV export
-5. Audit logs for admin/HR actions
