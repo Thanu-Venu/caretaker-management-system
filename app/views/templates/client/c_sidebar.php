@@ -33,8 +33,7 @@
 
       <!-- Payment Dropdown -->
       <li>
-        <a href="http://localhost/CMA/public?url=client/c_paymentHistory"><i class="bx bx-dollar-circle"></i> Payment
-          History </a>
+        <a href="http://localhost/CMA/public?url=client/payments"><i class="bx bx-dollar-circle"></i> Payments </a>
       </li>
 
       <li>
