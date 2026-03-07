@@ -39,8 +39,11 @@
         <?= htmlspecialchars($data['caretaker']['service_type']) ?>
     </button>
 </h4>
-            
-           <button   onclick="openProfile()" class="btn"  >Edit profile</button>
+
+<button class="btn" type="button"
+  onclick="window.location.href='<?= URLROOT ?>/index.php?url=Caretaker/ct_settings'">
+  Edit profile
+</button>
           </div>
           
           <p class="profile-desc">
@@ -104,18 +107,26 @@
       </div>
     </section>
 
-      <!-- Schedule -->
-    <section class="card schedule">
-      <h3>Schedule</h3>
-      <div class="calendar">
-        <p>September 2025</p>
-        <div class="days">
-          <span>Su</span><span>Mo</span><span>Tu</span><span>We</span>
-          <span>Th</span><span>Fr</span><span>Sa</span>
-        </div>
-        <div class="dates" id="calendarDates"></div>
-      </div>
-    </section>
+  <!-- Schedule -->
+<section class="card schedule">
+  <h3>Schedule</h3>
+  <div class="calendar">
+    <p id="calendarMonthLabel"></p>
+
+    <div class="days">
+      <span>Su</span><span>Mo</span><span>Tu</span><span>We</span>
+      <span>Th</span><span>Fr</span><span>Sa</span>
+    </div>
+
+    <div class="dates" id="calendarDates"></div>
+  </div>
+</section>
+
+<script>
+  // Pass booking dates (YYYY-MM-DD) to JS
+  window.CT_DASHBOARD_BOOKING_DATES = <?= json_encode(array_values(array_unique(array_map(fn($b) => $b['booking_date'], $data['upcoming'] ?? [])))) ?>;
+  window.URLROOT = "<?= URLROOT ?>";
+</script>
 
     <!-- Leave Management -->
     <section class="card leave">
@@ -161,7 +172,7 @@
       </div>
     </section>
   </main>
-  </div>
+  <
 
 </div>
 
