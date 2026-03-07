@@ -1,0 +1,12 @@
+[2026-03-07 07:07:32] === Starting Daily Payment Processing ===
+[2026-03-07 07:09:21] === Starting Daily Payment Processing ===
+[2026-03-07 07:09:21] Database connection established
+[2026-03-07 07:09:21] Step 1: Sending payment reminders...
+[2026-03-07 07:09:21]   - 7-day reminders sent: 0
+[2026-03-07 07:09:21]   - 3-day reminders sent: 0
+[2026-03-07 07:09:21]   - Due date reminders sent: 0
+[2026-03-07 07:09:21] Step 2: Marking overdue payments...
+[2026-03-07 07:09:21]   - Payments marked as overdue: 0
+[2026-03-07 07:09:21] Step 3: Auto-cancelling unpaid bookings...
+[2026-03-07 07:09:21]   - Bookings auto-cancelled: 0
+[2026-03-07 07:09:21] === Payment Processing Completed Successfully ===
