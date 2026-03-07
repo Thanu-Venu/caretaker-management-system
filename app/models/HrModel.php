@@ -300,4 +300,199 @@ class HrModel
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
     }
+
+    public function getPaymentSummary(): array
+    {
+        $summary = [
+            'pending_approvals' => 0,
+            'approved_payments' => 0,
+            'rejected_payments' => 0,
+            'pending_recurring' => 0,
+            'overdue_recurring' => 0,
+            'paid_recurring' => 0,
+            'amount_pending_approval' => 0,
+            'amount_approved' => 0,
+            'amount_overdue' => 0
+        ];
+
+        $paymentsSql = "SELECT
+                SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending_approvals,
+                SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) AS approved_payments,
+                SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) AS rejected_payments,
+                SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS amount_pending_approval,
+                SUM(CASE WHEN status = 'approved' THEN amount ELSE 0 END) AS amount_approved
+            FROM payments";
+
+        $res1 = $this->conn->query($paymentsSql);
+        if ($res1) {
+            $row = $res1->fetch_assoc();
+            $summary['pending_approvals'] = (int)($row['pending_approvals'] ?? 0);
+            $summary['approved_payments'] = (int)($row['approved_payments'] ?? 0);
+            $summary['rejected_payments'] = (int)($row['rejected_payments'] ?? 0);
+            $summary['amount_pending_approval'] = (float)($row['amount_pending_approval'] ?? 0);
+            $summary['amount_approved'] = (float)($row['amount_approved'] ?? 0);
+        }
+
+        $recurringSql = "SELECT
+                SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending_recurring,
+                SUM(CASE WHEN status = 'overdue' THEN 1 ELSE 0 END) AS overdue_recurring,
+                SUM(CASE WHEN status = 'paid' THEN 1 ELSE 0 END) AS paid_recurring,
+                SUM(CASE WHEN status = 'overdue' THEN amount ELSE 0 END) AS amount_overdue
+            FROM recurring_payments";
+
+        $res2 = $this->conn->query($recurringSql);
+        if ($res2) {
+            $row = $res2->fetch_assoc();
+            $summary['pending_recurring'] = (int)($row['pending_recurring'] ?? 0);
+            $summary['overdue_recurring'] = (int)($row['overdue_recurring'] ?? 0);
+            $summary['paid_recurring'] = (int)($row['paid_recurring'] ?? 0);
+            $summary['amount_overdue'] = (float)($row['amount_overdue'] ?? 0);
+        }
+
+        return $summary;
+    }
+
+    public function getRecurringPaymentOverview(int $limit = 100, array $filters = []): array
+    {
+        $limit = max(1, $limit);
+        $allowedStatuses = ['pending', 'paid', 'overdue', 'cancelled'];
+        $conditions = [];
+
+        $recurringStatus = $filters['recurring_status'] ?? 'all';
+        if (in_array($recurringStatus, $allowedStatuses, true)) {
+            $conditions[] = "rp.status = '" . $recurringStatus . "'";
+        }
+
+        $client = trim((string)($filters['client'] ?? ''));
+        if ($client !== '') {
+            $escapedClient = $this->conn->real_escape_string($client);
+            $conditions[] = "c.name LIKE '%{$escapedClient}%'";
+        }
+
+        $fromDate = $this->sanitizeDate($filters['from_date'] ?? '');
+        if ($fromDate !== null) {
+            $conditions[] = "rp.due_date >= '" . $fromDate . "'";
+        }
+
+        $toDate = $this->sanitizeDate($filters['to_date'] ?? '');
+        if ($toDate !== null) {
+            $conditions[] = "rp.due_date <= '" . $toDate . "'";
+        }
+
+        $whereSql = '';
+        if (!empty($conditions)) {
+            $whereSql = ' WHERE ' . implode(' AND ', $conditions);
+        }
+
+        $sql = "SELECT
+                rp.id,
+                rp.booking_id,
+                rp.cycle_number,
+                rp.cycle_type,
+                rp.due_date,
+                rp.amount,
+                rp.status,
+                rp.paid_at,
+                rp.payment_id,
+                rp.grace_period_end,
+                c.name AS client_name,
+                ct.name AS caretaker_name,
+                b.service_type,
+                b.basis,
+                b.booking_date
+            FROM recurring_payments rp
+            JOIN clients c ON c.id = rp.client_id
+            JOIN caretakers ct ON ct.id = rp.caretaker_id
+            JOIN bookings b ON b.id = rp.booking_id
+            {$whereSql}
+            ORDER BY
+                CASE rp.status
+                    WHEN 'overdue' THEN 1
+                    WHEN 'pending' THEN 2
+                    WHEN 'paid' THEN 3
+                    ELSE 4
+                END,
+                rp.due_date ASC,
+                rp.id DESC
+            LIMIT {$limit}";
+
+        $result = $this->conn->query($sql);
+        $rows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
+        return $rows;
+    }
+
+    public function getRecentPaymentTimeline(int $limit = 100, array $filters = []): array
+    {
+        $limit = max(1, $limit);
+        $allowedStatuses = ['pending', 'approved', 'rejected'];
+        $conditions = [];
+
+        $paymentStatus = $filters['payment_status'] ?? 'all';
+        if (in_array($paymentStatus, $allowedStatuses, true)) {
+            $conditions[] = "p.status = '" . $paymentStatus . "'";
+        }
+
+        $client = trim((string)($filters['client'] ?? ''));
+        if ($client !== '') {
+            $escapedClient = $this->conn->real_escape_string($client);
+            $conditions[] = "c.name LIKE '%{$escapedClient}%'";
+        }
+
+        $fromDate = $this->sanitizeDate($filters['from_date'] ?? '');
+        if ($fromDate !== null) {
+            $conditions[] = "DATE(p.created_at) >= '" . $fromDate . "'";
+        }
+
+        $toDate = $this->sanitizeDate($filters['to_date'] ?? '');
+        if ($toDate !== null) {
+            $conditions[] = "DATE(p.created_at) <= '" . $toDate . "'";
+        }
+
+        $whereSql = '';
+        if (!empty($conditions)) {
+            $whereSql = ' WHERE ' . implode(' AND ', $conditions);
+        }
+
+        $sql = "SELECT
+                p.id,
+                p.booking_id,
+                p.amount,
+                p.payment_type,
+                p.payment_method,
+                p.status,
+                p.due_date,
+                p.created_at,
+                p.approved_at,
+                c.name AS client_name,
+                ct.name AS caretaker_name,
+                b.service_type
+            FROM payments p
+            JOIN clients c ON c.id = p.client_id
+            JOIN caretakers ct ON ct.id = p.caretaker_id
+            JOIN bookings b ON b.id = p.booking_id
+            {$whereSql}
+            ORDER BY p.created_at DESC
+            LIMIT {$limit}";
+
+        $result = $this->conn->query($sql);
+        $rows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
+        return $rows;
+    }
+
+    private function sanitizeDate($value): ?string
+    {
+        $value = trim((string)$value);
+        if ($value === '') {
+            return null;
+        }
+
+        $dt = DateTime::createFromFormat('Y-m-d', $value);
+        if (!$dt || $dt->format('Y-m-d') !== $value) {
+            return null;
+        }
+
+        return $value;
+    }
 }
