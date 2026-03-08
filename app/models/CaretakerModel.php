@@ -1,14 +1,36 @@
 <?php
 require_once APPROOT . '/core/Database.php';
+require_once APPROOT . '/models/AccountModel.php';
 
 class CaretakerModel
 {
     private $conn;
+    private $accountLinkChecked = false;
+    private $accountLinkEnabled = false;
 
     public function __construct()
     {
         $db = new Database();
         $this->conn = $db->conn;
+    }
+
+    private function hasAccountLinking(): bool
+    {
+        if ($this->accountLinkChecked) {
+            return $this->accountLinkEnabled;
+        }
+
+        $tables = $this->conn->query("SHOW TABLES LIKE 'accounts'");
+        if (!$tables || $tables->num_rows === 0) {
+            $this->accountLinkChecked = true;
+            $this->accountLinkEnabled = false;
+            return false;
+        }
+
+        $cols = $this->conn->query("SHOW COLUMNS FROM caretakers LIKE 'account_id'");
+        $this->accountLinkChecked = true;
+        $this->accountLinkEnabled = (bool)($cols && $cols->num_rows > 0);
+        return $this->accountLinkEnabled;
     }
 
     /** @return array */
@@ -75,25 +97,73 @@ class CaretakerModel
 
         $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
 
-        $stmt = $this->conn->prepare(
-            "INSERT INTO caretakers (name, email, phone, service_type, status, experience, location, qualifications, profile_image, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-        );
+        if (!$this->hasAccountLinking()) {
+            $stmt = $this->conn->prepare(
+                "INSERT INTO caretakers (name, email, phone, service_type, status, experience, location, qualifications, profile_image, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            );
 
-        $stmt->bind_param(
-            "ssssssssss",
-            $data['name'],
-            $data['email'],
-            $data['phone'],
-            $data['service_type'],
-            $data['status'],
-            $data['experience'],
-            $data['location'],
-            $data['qualifications'],
-            $data['profile_image'],
-            $hashedPassword
-        );
+            $stmt->bind_param(
+                "ssssssssss",
+                $data['name'],
+                $data['email'],
+                $data['phone'],
+                $data['service_type'],
+                $data['status'],
+                $data['experience'],
+                $data['location'],
+                $data['qualifications'],
+                $data['profile_image'],
+                $hashedPassword
+            );
 
-        return $stmt->execute();
+            return $stmt->execute();
+        }
+
+        $this->conn->begin_transaction();
+        try {
+            $role = 'caretaker';
+            $status = $data['status'] === 'Inactive' ? 'Inactive' : 'Active';
+            $stmt = $this->conn->prepare(
+                "INSERT INTO accounts (name, email, password, role, status) VALUES (?, ?, ?, ?, ?)"
+            );
+            $stmt->bind_param("sssss", $data['name'], $data['email'], $hashedPassword, $role, $status);
+            if (!$stmt->execute()) {
+                throw new Exception('Failed to create caretaker account');
+            }
+            $accountId = (int)$this->conn->insert_id;
+            $stmt->close();
+
+            $stmt = $this->conn->prepare(
+                "INSERT INTO caretakers (account_id, name, email, phone, service_type, status, experience, location, qualifications, profile_image, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            );
+
+            $stmt->bind_param(
+                "issssssssss",
+                $accountId,
+                $data['name'],
+                $data['email'],
+                $data['phone'],
+                $data['service_type'],
+                $data['status'],
+                $data['experience'],
+                $data['location'],
+                $data['qualifications'],
+                $data['profile_image'],
+                $hashedPassword
+            );
+
+            if (!$stmt->execute()) {
+                throw new Exception('Failed to create caretaker profile');
+            }
+            $stmt->close();
+
+            $this->conn->commit();
+            return true;
+        } catch (Throwable $e) {
+            $this->conn->rollback();
+            error_log('CaretakerModel::addCaretaker transaction failed: ' . $e->getMessage());
+            return false;
+        }
     }
 
     private $timeMap = [
@@ -160,14 +230,63 @@ class CaretakerModel
     {
         $stmt = $this->conn->prepare("UPDATE caretakers SET name=?,email=?,phone=? WHERE id=?");
         $stmt->bind_param("sssi", $data['name'], $data['email'], $data['phone'], $id);
-        return $stmt->execute();
+        $ok = $stmt->execute();
+
+        if ($ok && $this->hasAccountLinking()) {
+            $ct = $this->getCaretakerById($id);
+            $accountId = (int)($ct['account_id'] ?? 0);
+            if ($accountId > 0) {
+                $role = 'caretaker';
+                $status = $ct['status'] === 'Inactive' ? 'Inactive' : 'Active';
+                $sync = $this->conn->prepare("UPDATE accounts SET name=?, email=?, role=?, status=? WHERE id=?");
+                $sync->bind_param("ssssi", $data['name'], $data['email'], $role, $status, $accountId);
+                $sync->execute();
+                $sync->close();
+            }
+        }
+
+        return $ok;
     }
 
     public function deleteCaretaker($id)
     {
-        $stmt = $this->conn->prepare("DELETE FROM caretakers WHERE id=?");
-        $stmt->bind_param("i", $id);
-        return $stmt->execute();
+        if (!$this->hasAccountLinking()) {
+            $stmt = $this->conn->prepare("DELETE FROM caretakers WHERE id=?");
+            $stmt->bind_param("i", $id);
+            return $stmt->execute();
+        }
+
+        $ct = $this->getCaretakerById($id);
+        if (!$ct) {
+            return false;
+        }
+
+        $this->conn->begin_transaction();
+        try {
+            $stmt = $this->conn->prepare("DELETE FROM caretakers WHERE id=?");
+            $stmt->bind_param("i", $id);
+            if (!$stmt->execute()) {
+                throw new Exception('Failed to delete caretaker profile');
+            }
+            $stmt->close();
+
+            $accountId = (int)($ct['account_id'] ?? 0);
+            if ($accountId > 0) {
+                $stmt = $this->conn->prepare("DELETE FROM accounts WHERE id=?");
+                $stmt->bind_param("i", $accountId);
+                if (!$stmt->execute()) {
+                    throw new Exception('Failed to delete caretaker account');
+                }
+                $stmt->close();
+            }
+
+            $this->conn->commit();
+            return true;
+        } catch (Throwable $e) {
+            $this->conn->rollback();
+            error_log('CaretakerModel::deleteCaretaker transaction failed: ' . $e->getMessage());
+            return false;
+        }
     }
 
 
@@ -212,7 +331,20 @@ class CaretakerModel
 
         $stmt->bind_param("si", $hashedPassword, $id);
 
-        return $stmt->execute();
+        $ok = $stmt->execute();
+
+        if ($ok && $this->hasAccountLinking()) {
+            $ct = $this->getCaretakerById($id);
+            $accountId = (int)($ct['account_id'] ?? 0);
+            if ($accountId > 0) {
+                $sync = $this->conn->prepare("UPDATE accounts SET password=? WHERE id=?");
+                $sync->bind_param("si", $hashedPassword, $accountId);
+                $sync->execute();
+                $sync->close();
+            }
+        }
+
+        return $ok;
     }
 
     public function updateAvailabilityStatus($id, $status)
@@ -237,10 +369,17 @@ class CaretakerModel
     public function getAvailableCaretakers($service, $date, $preferredTime, $basis, $duration, $location = '')
     {
         $startDate = $date;
-        if (strtolower($basis) === 'hourly') {
+        $duration = max(1, (int)$duration);
+        $normalizedBasis = strtolower(trim((string)$basis));
+
+        if ($normalizedBasis === 'hourly') {
             $endDate = $date; // hourly bookings only block the same day
+        } elseif ($normalizedBasis === 'monthly') {
+            $endDate = date('Y-m-d', strtotime('+' . $duration . ' month -1 day', strtotime($date)));
+        } elseif ($normalizedBasis === 'yearly') {
+            $endDate = date('Y-m-d', strtotime('+' . $duration . ' year -1 day', strtotime($date)));
         } else {
-            $endDate = date('Y-m-d', strtotime("+" . ($duration - 1) . " days", strtotime($date)));
+            $endDate = date('Y-m-d', strtotime('+' . ($duration - 1) . ' days', strtotime($date)));
         }
         list($searchStart, $searchEnd) = $this->getTimeRangeFromString($preferredTime);
 
@@ -275,7 +414,14 @@ AND NOT EXISTS (
         'accepted','approved','change_requested','reschedule_requested'
       )
       AND b.booking_date <= ?
-      AND DATE_ADD(b.booking_date, INTERVAL b.duration-1 DAY) >= ?
+    AND (
+        CASE
+            WHEN LOWER(b.basis) = 'hourly' THEN b.booking_date
+            WHEN LOWER(b.basis) = 'monthly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) MONTH), INTERVAL 1 DAY)
+            WHEN LOWER(b.basis) = 'yearly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) YEAR), INTERVAL 1 DAY)
+            ELSE DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) DAY), INTERVAL 1 DAY)
+        END
+    ) >= ?
       AND (
           LOWER(b.basis) <> 'hourly'
           OR (
@@ -303,7 +449,8 @@ AND NOT EXISTS (
 
         // append date/time params (4 values)
         $types .= "ssss";
-        $values = array_merge($values, [$startDate, $endDate, $searchStart, $searchEnd]);
+        // True overlap: existing_start <= requested_end AND existing_end >= requested_start
+        $values = array_merge($values, [$endDate, $startDate, $searchStart, $searchEnd]);
 
         // bind all parameters (should match types length)
         $stmt->bind_param($types, ...$values);
