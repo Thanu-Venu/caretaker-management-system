@@ -15,16 +15,16 @@ class LeaveCRUDController extends Controller
 
     private function requireCaretaker(): int
     {
-        if (!isset($_SESSION['user']) || ($_SESSION['role'] ?? '') !== 'caretaker') {
+        if (!AuthSession::hasRole('caretaker')) {
             die("Caretaker not logged in");
         }
 
-        return (int)$_SESSION['user']['id'];
+        return (int)AuthSession::profileId();
     }
 
     private function baseAddViewData(array $overrides = []): array
     {
-        $userId = (int)($_SESSION['user']['id'] ?? 0);
+        $userId = (int)AuthSession::profileId();
         $summary = $this->leaveModel->getCurrentMonthLeaveSummary($userId, true);
 
         $defaults = [
@@ -367,11 +367,11 @@ class LeaveCRUDController extends Controller
     public function ct_dashboard()
     {
 
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
+        if (!AuthSession::hasRole('caretaker')) {
             die("Caretaker not logged in");
         }
 
-        $userId = $_SESSION['user']['id'];
+        $userId = AuthSession::profileId();
 
         // LOAD LEAVES
         $leaveModel = $this->model('LeaveModel');
