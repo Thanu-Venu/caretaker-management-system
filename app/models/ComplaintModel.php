@@ -198,3 +198,4 @@ class ComplaintModel
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 }
+?>
