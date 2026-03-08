@@ -63,14 +63,14 @@
                             </td>
                             <td>
                                 <?php if ($payment['status'] === 'pending'): ?>
-                                    <form method="post" class="confirm-action-form" data-action-label="approve" style="display: inline;">
+                                    <form method="post" action="<?= URLROOT ?>/hr/approvePayment" class="confirm-action-form" data-action-label="approve" style="display: inline;">
                                         <input type="hidden" name="payment_id" value="<?= $payment['id'] ?>">
-                                        <button type="submit" formaction="<?= URLROOT ?>/hr/approvePayment" class="btn btn-success">Approve</button>
+                                        <button type="submit" class="btn btn-success">Approve</button>
                                     </form>
-                                    <form method="post" class="confirm-action-form" data-action-label="reject" data-requires-reason="1" style="display: inline;">
+                                    <form method="post" action="<?= URLROOT ?>/hr/rejectPayment" class="confirm-action-form" data-action-label="reject" data-requires-reason="1" style="display: inline;">
                                         <input type="hidden" name="payment_id" value="<?= $payment['id'] ?>">
                                         <input type="text" name="reason" placeholder="Reason" style="width: 100px; padding: 6px; border: 1px solid #ddd; border-radius: 4px;">
-                                        <button type="submit" formaction="<?= URLROOT ?>/hr/rejectPayment" class="btn btn-danger">Reject</button>
+                                        <button type="submit" class="btn btn-danger">Reject</button>
                                     </form>
                                 <?php else: ?>
                                     <span class="no-action">—</span>

@@ -1,4 +1,3 @@
-
 <?php
 require_once APPROOT . "/models/NotificationModel.php";
 
@@ -8,11 +7,17 @@ if (!isset($_SESSION['user'])) {
 }
 
 $notifModel = new NotificationModel();
-$user_id = $_SESSION['user']['id'];
-$user_role = $_SESSION['role'];
-$template_role = $user_role === 'Manager' ? 'hr' : $user_role;
+$user_id = AuthSession::profileId();
+$canonicalRole = strtolower(trim((string)($_SESSION['role'] ?? '')));
+$allowedRoles = ['admin', 'manager', 'client', 'caretaker'];
+if (!in_array($canonicalRole, $allowedRoles, true)) {
+    header("Location: " . URLROOT . "/auth/login");
+    exit;
+}
+$user_role = $canonicalRole === 'manager' ? 'Manager' : $canonicalRole;
+$template_role = $canonicalRole === 'manager' ? 'hr' : $canonicalRole;
 
-$header_file = match($template_role) {
+$header_file = match ($template_role) {
     'admin' => 'admin/ad_header.php',
     'client' => 'client/c_header.php',
     'caretaker' => 'caretaker/ct_header.php',
@@ -23,7 +28,7 @@ $header_file = match($template_role) {
 include APPROOT . "/views/templates/" . $header_file;
 
 
-$sidebar_file = match($template_role) {
+$sidebar_file = match ($template_role) {
     'admin' => 'admin/ad_sidebar.php',
     'client' => 'client/c_sidebar.php',
     'caretaker' => 'caretaker/ct_sidebar.php',
@@ -42,6 +47,7 @@ $user_display = $_SESSION['user']['name'] ?? $_SESSION['user']['username'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,7 +57,7 @@ $user_display = $_SESSION['user']['name'] ?? $_SESSION['user']['username'];
 </head>
 
 <body>
-    
+
     <main class="notif-page">
         <h2>Notifications for <?= htmlspecialchars($user_display) ?></h2>
         <div class="notif-container">
@@ -61,17 +67,17 @@ $user_display = $_SESSION['user']['name'] ?? $_SESSION['user']['username'];
                 <ul class="notif-list">
                     <?php foreach ($notifications as $n): ?>
                         <li class="notif-item <?= $n['is_read'] == 0 ? 'unread' : '' ?>">
-  <a href="<?= URLROOT ?>/notification/open/<?= (int)$n['id'] ?>">
-      <strong><?= htmlspecialchars($n['title']) ?></strong>
-      <span><?= htmlspecialchars($n['message']) ?></span>
-      <small><?= date("d M Y, H:i", strtotime($n['created_at'])) ?></small>
-  </a>
-</li>
+                            <a href="<?= URLROOT ?>/notification/open/<?= (int)$n['id'] ?>">
+                                <strong><?= htmlspecialchars($n['title']) ?></strong>
+                                <span><?= htmlspecialchars($n['message']) ?></span>
+                                <small><?= date("d M Y, H:i", strtotime($n['created_at'])) ?></small>
+                            </a>
+                        </li>
                     <?php endforeach; ?>
                 </ul>
             <?php endif; ?>
         </div>
     </main>
 </body>
-</html>
 
+</html>

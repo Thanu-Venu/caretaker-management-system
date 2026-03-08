@@ -36,6 +36,7 @@
                     <tr>
                         <th>Client ID</th>
                         <th>Client</th>
+                        <th>Caretaker ID</th>
                         <th>Service</th>
                         <th>Duration & Basis</th>
                         <th>Date & Time</th>
@@ -49,7 +50,7 @@
                 <tbody>
                     <?php if (!empty($data['bookings'])): ?>
                         <?php foreach ($data['bookings'] as $b): ?>
-                            <tr>
+                            <tr class="<?= (!empty($b['caretaker_overlap'])) ? 'booking-overlap-alert' : '' ?>">
                                 <?php
 
                                 $rawStatus = $b['status'] ?? '';
@@ -57,6 +58,16 @@
                                 ?>
                                 <td><?= $b['booking_id'] ?></td>
                                 <td><?= htmlspecialchars($b['client_name']) ?></td>
+                                <td>
+                                    <span class="caretaker-id-badge">
+                                        <?= $b['caretaker_id'] ?? '—' ?>
+                                    </span>
+                                    <?php if (!empty($b['caretaker_overlap'])): ?>
+                                        <span class="overlap-warning" title="This caretaker has overlapping bookings">
+                                            <i class="fas fa-exclamation-triangle"></i> Overlap
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
                                 <td><span class="service-badge"><?= htmlspecialchars($b['service_type']) ?></span></td>
                                 <td>
                                     <div class="duration-info">
