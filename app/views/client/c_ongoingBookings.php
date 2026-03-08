@@ -57,7 +57,20 @@
 
                                     $isAccepted = ($status === 'accepted');
                                     $isChangeRequested = ($status === 'change_requested');
+
+                                    // Check if advance payment has been made
+                                    $advancePaidStatuses = ['advance_paid', 'accepted', 'reschedule_requested', 'change_requested'];
+                                    $canViewContact = in_array($status, $advancePaidStatuses);
                                     ?>
+
+                                    <!-- VIEW CONTACT (only after advance payment) -->
+                                    <?php if ($canViewContact): ?>
+                                        <a class="action-btn" id="contact-btn"
+                                            href="<?= URLROOT ?>/client/c_contactCT?booking_id=<?= (int)$b['booking_id'] ?>"
+                                            style="background-color: #28a745; border-color: #28a745;">
+                                            View Contact
+                                        </a>
+                                    <?php endif; ?>
 
                                     <?php if ($isChangeRequested): ?>
                                         <button class="action-btn" id="change-btn" disabled
