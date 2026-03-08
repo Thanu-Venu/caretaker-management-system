@@ -41,6 +41,7 @@
                         <th>Date & Time</th>
                         <th>Customization</th>
                         <th>Total Amount</th>
+                        <th>Availability Check</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -96,6 +97,18 @@
                                     </div>
                                 </td>
                                 <td>
+                                    <?php if (!empty($b['availability_ok'])): ?>
+                                        <span class="availability-badge availability-ok">Available</span>
+                                    <?php else: ?>
+                                        <?php $conflict = $b['availability_conflict'] ?? null; ?>
+                                        <span
+                                            class="availability-badge availability-conflict"
+                                            title="<?= !empty($conflict) ? htmlspecialchars('Conflicts with Booking #' . ($conflict['conflict_booking_id'] ?? 'N/A') . ' (' . ($conflict['start_date'] ?? 'N/A') . ' to ' . ($conflict['end_date'] ?? 'N/A') . ', status: ' . ($conflict['status'] ?? 'N/A') . ')') : 'Caregiver conflict detected' ?>">
+                                            Conflict
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
                                     <span class="status-<?= strtolower($status) ?>"><?= $status ?></span>
                                 </td>
                                 <td>
@@ -124,7 +137,7 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="9" class="empty-state">No bookings found</td>
+                            <td colspan="10" class="empty-state">No bookings found</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
