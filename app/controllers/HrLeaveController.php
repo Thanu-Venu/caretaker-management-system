@@ -16,7 +16,7 @@ class HrLeaveController extends Controller
 
     private function logManagerAction($action, $section = 'Leaves')
     {
-        $userId = (int)($_SESSION['user']['id'] ?? 0);
+        $userId = (int)AuthSession::profileId();
         if ($userId <= 0) {
             return;
         }
@@ -35,15 +35,12 @@ class HrLeaveController extends Controller
     // ✅ Central role check (Manager)
     private function requireManager()
     {
-        if (!isset($_SESSION['user'])) {
+        if (!AuthSession::isLoggedIn()) {
             die("Not logged in");
         }
 
-        // Your system uses 'Manager'
-        $role = $_SESSION['role'] ?? ($_SESSION['user']['role'] ?? '');
-        $role = trim($role);
-
-        if ($role !== 'Manager') {
+        $role = AuthSession::role();
+        if (AuthSession::normalizeRole($role) !== 'manager') {
             die("HR not logged in");
         }
     }
@@ -127,7 +124,7 @@ class HrLeaveController extends Controller
         $hrNote = trim($_POST['hr_note'] ?? '');
 
         // HR ID (Manager ID) - store who approved
-        $hrId = (int)($_SESSION['user']['id'] ?? 0);
+        $hrId = (int)AuthSession::profileId();
 
         if (!$leaveId || !$hrId) {
             die("Leave ID missing or session missing");
