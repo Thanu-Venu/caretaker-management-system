@@ -23,7 +23,7 @@ class AdminController extends Controller
         if (session_status() === PHP_SESSION_NONE)
             session_start();
 
-        if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 'admin') {
+        if (!AuthSession::hasRole('admin')) {
             header("Location: index.php?url=auth/login");
             exit;
         }
@@ -39,7 +39,7 @@ class AdminController extends Controller
         $this->historyModel = $this->model('HistoryModel');
         $this->profileChangeRequestModel = $this->model('ProfileChangeRequestModel');
         // Revalidate caretaker from DB
-        $user = $this->userModel->getUserById($_SESSION['user']['id']); // lowercase usage
+        $user = $this->userModel->getUserById(AuthSession::profileId()); // lowercase usage
         if (!$user) {
             session_destroy();
             header("Location: index.php?url=auth/login");
@@ -118,7 +118,7 @@ class AdminController extends Controller
 
         // 2️⃣ Log admin action
         $this->historyModel->log([
-            'user_id' => $_SESSION['user']['id'],
+            'user_id' => AuthSession::profileId(),
             'username' => $_SESSION['user']['username'],   // adjust if needed
             'role' => $_SESSION['user']['role'],
             'action' => "Updated leave status to $status (Leave ID: $id)",
@@ -197,13 +197,13 @@ class AdminController extends Controller
     public function ad_settings()
     {
         // Session already started in constructor
-        if (!isset($_SESSION['user'])) {
+        if (!AuthSession::isLoggedIn()) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
         }
 
         // Optional: allow only admin role
-        if ($_SESSION['user']['role'] !== 'admin') {
+        if (!AuthSession::hasRole('admin')) {
             die("Access denied. Only admin can access this page.");
         }
 
@@ -255,7 +255,7 @@ class AdminController extends Controller
         }
 
         $request = $this->profileChangeRequestModel->getById($requestId);
-        $ok = $this->profileChangeRequestModel->approveRequest($requestId, (int)$_SESSION['user']['id'], $adminNote);
+        $ok = $this->profileChangeRequestModel->approveRequest($requestId, (int)AuthSession::profileId(), $adminNote);
 
         if ($ok && $request) {
             require_once APPROOT . '/models/NotificationModel.php';
@@ -267,7 +267,7 @@ class AdminController extends Controller
             $notif->addNotification((int)$request['caretaker_id'], 'caretaker', 'Profile Update Approved', $msg, URLROOT . '/caretaker/ct_settings');
 
             $this->historyModel->log([
-                'user_id' => $_SESSION['user']['id'],
+                'user_id' => AuthSession::profileId(),
                 'username' => $_SESSION['user']['username'],
                 'role' => $_SESSION['user']['role'],
                 'action' => "Approved caretaker profile update request (Request ID: {$requestId})",
@@ -300,7 +300,7 @@ class AdminController extends Controller
         }
 
         $request = $this->profileChangeRequestModel->getById($requestId);
-        $ok = $this->profileChangeRequestModel->rejectRequest($requestId, (int)$_SESSION['user']['id'], $adminNote);
+        $ok = $this->profileChangeRequestModel->rejectRequest($requestId, (int)AuthSession::profileId(), $adminNote);
 
         if ($ok && $request) {
             require_once APPROOT . '/models/NotificationModel.php';
@@ -312,7 +312,7 @@ class AdminController extends Controller
             $notif->addNotification((int)$request['caretaker_id'], 'caretaker', 'Profile Update Rejected', $msg, URLROOT . '/caretaker/ct_settings');
 
             $this->historyModel->log([
-                'user_id' => $_SESSION['user']['id'],
+                'user_id' => AuthSession::profileId(),
                 'username' => $_SESSION['user']['username'],
                 'role' => $_SESSION['user']['role'],
                 'action' => "Rejected caretaker profile update request (Request ID: {$requestId})",
