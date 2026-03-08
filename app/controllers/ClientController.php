@@ -9,13 +9,13 @@ class ClientController extends Controller
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
 
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+        if (!AuthSession::hasRole('client')) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
         }
 
         $this->clientModel = $this->model('ClientModel');
-        $user = $this->clientModel->getClientById($_SESSION['user']['id']);
+        $user = $this->clientModel->getClientById(AuthSession::profileId());
 
         if (!$user) { // user deleted
             session_destroy();
@@ -35,10 +35,44 @@ class ClientController extends Controller
         ];
     }
 
+    /**
+     * Validate that a booking belongs to the current client
+     * Prevents IDOR attacks by verifying ownership before operations
+     *
+     * @param int $bookingId The booking ID to validate
+     * @param int $clientId The client ID to check ownership against
+     * @param string $redirectUrl URL to redirect to on failure
+     * @return array|null Returns booking data if valid, redirects and exits if invalid
+     */
+    private function assertBookingOwnership($bookingId, $clientId, $redirectUrl = null)
+    {
+        if (!$bookingId || !$clientId) {
+            $_SESSION['error'] = "Invalid request";
+            header("Location: " . ($redirectUrl ?? URLROOT . "/client/c_dashboard"));
+            exit;
+        }
+
+        $booking = $this->clientModel->getBookingById($bookingId);
+
+        if (!$booking) {
+            $_SESSION['error'] = "Booking not found";
+            header("Location: " . ($redirectUrl ?? URLROOT . "/client/c_dashboard"));
+            exit;
+        }
+
+        // Check ownership
+        if ((int)$booking['client_id'] !== (int)$clientId) {
+            $_SESSION['error'] = "Unauthorized access to booking";
+            header("Location: " . ($redirectUrl ?? URLROOT . "/client/c_dashboard"));
+            exit;
+        }
+
+        return $booking;
+    }
 
     public function c_dashboard()
     {
-        $clientId = $_SESSION['user']['id'];
+        $clientId = AuthSession::profileId();
 
         $data = [
             'activeBookings' => $this->clientModel->getActiveBookingsCount($clientId),
@@ -57,7 +91,7 @@ class ClientController extends Controller
 
     public function c_profile()
     {
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+        if (!AuthSession::hasRole('client')) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
         }
@@ -120,7 +154,7 @@ class ClientController extends Controller
 
     public function c_feedback()
     {
-        $clientId = $_SESSION['user']['id'] ?? null;
+        $clientId = AuthSession::profileId() ?: null;
         if (!$clientId) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
@@ -140,8 +174,13 @@ class ClientController extends Controller
         }
 
         $clientModel = $this->model('ClientModel');
+        $clientId = AuthSession::profileId();
 
         $bookingId = $_POST['booking_Id'];
+
+        // Validate booking ownership (prevents IDOR)
+        $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/c_pastBookings");
+
         $caretakerId = $clientModel->getCaretakerIdByBooking($bookingId);
 
         if (!$caretakerId) {
@@ -159,7 +198,7 @@ class ClientController extends Controller
 
         $data = [
             'booking_id'   => $bookingId,
-            'client_id'    => $_SESSION['user']['id'],
+            'client_id'    => $clientId,
             'caretaker_id' => $caretakerId,
             'rating'       => $_POST['rating'],
             'feedback'     => $_POST['feedback']
@@ -176,6 +215,7 @@ class ClientController extends Controller
     {
         $booking_id = $_GET['booking_id'] ?? null;
         $recurringPaymentId = $_GET['recurring_payment_id'] ?? null;
+        $clientId = AuthSession::profileId();
 
         if (!$booking_id) {
             $_SESSION['error'] = "No booking selected";
@@ -183,14 +223,8 @@ class ClientController extends Controller
             exit;
         }
 
-        // Get booking details
-        $booking = $this->clientModel->getBookingById($booking_id);
-
-        if (!$booking) {
-            $_SESSION['error'] = "Booking not found";
-            header("Location: " . URLROOT . "/client/c_upcomingBookings");
-            exit;
-        }
+        // Validate booking ownership (prevents IDOR)
+        $booking = $this->assertBookingOwnership($booking_id, $clientId, URLROOT . "/client/c_upcomingBookings");
 
         // Calculate payment info
         require_once APPROOT . '/controllers/PaymentController.php';
@@ -203,7 +237,7 @@ class ClientController extends Controller
         if (!empty($recurringPaymentId)) {
             $recurringPayment = $this->clientModel->getRecurringPaymentByIdForClient(
                 (int)$recurringPaymentId,
-                (int)($_SESSION['user']['id'] ?? 0),
+                (int)AuthSession::profileId(),
                 (int)$booking_id
             );
 
@@ -228,7 +262,7 @@ class ClientController extends Controller
         exit;
 
         // Legacy code (intentionally unreachable after redirect)
-        $clientId = $_SESSION['user']['id'] ?? null;
+        $clientId = AuthSession::profileId() ?: null;
         if (!$clientId) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
@@ -240,7 +274,7 @@ class ClientController extends Controller
 
     public function payments()
     {
-        $clientId = $_SESSION['user']['id'] ?? null;
+        $clientId = AuthSession::profileId() ?: null;
         if (!$clientId) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
@@ -396,7 +430,7 @@ class ClientController extends Controller
 
     public function paymentDetails($bookingId = null)
     {
-        $clientId = $_SESSION['user']['id'] ?? null;
+        $clientId = AuthSession::profileId() ?: null;
         if (!$clientId) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
@@ -412,14 +446,10 @@ class ClientController extends Controller
             exit;
         }
 
-        $timelineData = $this->clientModel->getBookingPaymentTimelineData((int)$clientId, $bookingId);
-        $booking = $timelineData['booking'] ?? null;
+        // Validate booking ownership (prevents IDOR)
+        $booking = $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/payments");
 
-        if (!$booking) {
-            $_SESSION['error'] = "Booking not found";
-            header("Location: " . URLROOT . "/client/payments");
-            exit;
-        }
+        $timelineData = $this->clientModel->getBookingPaymentTimelineData((int)$clientId, $bookingId);
 
         $timelineEvents = [];
         $payments = $timelineData['payments'] ?? [];
@@ -531,7 +561,7 @@ class ClientController extends Controller
 
     public function c_pastBookings()
     {
-        $clientId = $_SESSION['user']['id'];
+        $clientId = AuthSession::profileId();
         $bookings = $this->clientModel->getPastBookingsWithFeedback($clientId);
         $this->view("client/c_pastBookings", ['bookings' => $bookings]);
     }
@@ -539,7 +569,7 @@ class ClientController extends Controller
 
     public function c_upcomingBookings()
     {
-        $clientId = $_SESSION['user']['id'];
+        $clientId = AuthSession::profileId();
         $bookings = $this->clientModel->getUpcomingBookings($clientId);
         $pendingAdvance = $this->clientModel->getAdvancePaymentPendingBookings($clientId);
 
@@ -552,7 +582,7 @@ class ClientController extends Controller
     // New ongoing bookings page for client
     public function c_ongoingBookings()
     {
-        $clientId = $_SESSION['user']['id'];
+        $clientId = AuthSession::profileId();
         $bookings = $this->clientModel->getOngoingBookings($clientId);
 
         $this->view("client/c_ongoingBookings", ['bookings' => $bookings]);
@@ -569,7 +599,7 @@ class ClientController extends Controller
         $bookingId = (int)($_POST['booking_id'] ?? 0);
         $newCaretakerId = (int)($_POST['new_caretaker_id'] ?? 0);
         $reason = trim($_POST['reason'] ?? '');
-        $clientId = (int)($_SESSION['user']['id'] ?? 0);
+        $clientId = (int)AuthSession::profileId();
 
         if ($bookingId <= 0 || $newCaretakerId <= 0 || $clientId <= 0 || $reason === '') {
             $_SESSION['error'] = "Missing details.";
@@ -666,6 +696,8 @@ class ClientController extends Controller
         $prev = error_reporting(0);
 
         $bookingId = isset($_GET['booking_id']) ? (int)$_GET['booking_id'] : 0;
+        $clientId = AuthSession::profileId();
+
         if ($bookingId <= 0) {
             error_reporting($prev);
             echo json_encode(['error' => 'missing booking_id']);
@@ -676,6 +708,13 @@ class ClientController extends Controller
         if (!$booking) {
             error_reporting($prev);
             echo json_encode(['error' => 'booking not found']);
+            exit;
+        }
+
+        // Validate booking ownership (prevents IDOR)
+        if ((int)$booking['client_id'] !== (int)$clientId) {
+            error_reporting($prev);
+            echo json_encode(['error' => 'unauthorized access']);
             exit;
         }
 
@@ -735,12 +774,16 @@ class ClientController extends Controller
 
         $bookingId = $_POST['booking_id'] ?? null;
         $reason    = $_POST['reason'] ?? '';
+        $clientId = AuthSession::profileId();
 
         if (!$bookingId || empty($reason)) {
             $_SESSION['error'] = 'Invalid booking or reason not provided.';
             header("Location: " . URLROOT . "/client/c_upcomingBookings");
             exit;
         }
+
+        // Validate booking ownership (prevents IDOR)
+        $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/c_upcomingBookings");
 
         // Load refund calculation service
         require_once APPROOT . '/core/RefundCalculationService.php';
@@ -903,7 +946,7 @@ class ClientController extends Controller
             exit;
         }
 
-        $clientId = $_SESSION['user']['id'];
+        $clientId = AuthSession::profileId();
         $rrModel = $this->model('RescheduleRequestModel');
 
         // ============ COMPREHENSIVE VALIDATION ============
@@ -997,16 +1040,15 @@ class ClientController extends Controller
     {
         $bookingId = $_GET['booking_id'] ?? null;
         $recurringPaymentId = $_GET['recurring_payment_id'] ?? null;
+        $clientId = AuthSession::profileId();
+
         if (!$bookingId) {
             header("Location: " . URLROOT . "/client/c_upcomingBookings");
             exit;
         }
 
-        $booking = $this->clientModel->getBookingById($bookingId);
-        if (!$booking) {
-            header("Location: " . URLROOT . "/client/c_upcomingBookings");
-            exit;
-        }
+        // Validate booking ownership (prevents IDOR)
+        $booking = $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/c_upcomingBookings");
 
         // Ensure PaymentController is available and compute advance
         require_once APPROOT . '/controllers/PaymentController.php';
@@ -1019,7 +1061,7 @@ class ClientController extends Controller
         if (!empty($recurringPaymentId)) {
             $recurringPayment = $this->clientModel->getRecurringPaymentByIdForClient(
                 (int)$recurringPaymentId,
-                (int)($_SESSION['user']['id'] ?? 0),
+                (int)AuthSession::profileId(),
                 (int)$bookingId
             );
 
@@ -1039,7 +1081,7 @@ class ClientController extends Controller
 
     public function c_cancelledBookings()
     {
-        $clientId = $_SESSION['user']['id'];
+        $clientId = AuthSession::profileId();
 
         // Use the correct model method
         $bookings = $this->clientModel->getCancelledBookings($clientId);
@@ -1051,7 +1093,16 @@ class ClientController extends Controller
     /* ================= PAYMENT SUCCESS ================= */
     public function paymentSuccess()
     {
-        $bookingId = $_GET['booking_id'];
+        $bookingId = $_GET['booking_id'] ?? null;
+        $clientId = AuthSession::profileId();
+
+        if (!$bookingId) {
+            header("Location: " . URLROOT . "/client/c_dashboard");
+            exit;
+        }
+
+        // Validate booking ownership (prevents IDOR)
+        $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/c_dashboard");
 
         $this->clientModel->markAsPaid($bookingId);
 
@@ -1237,7 +1288,7 @@ class ClientController extends Controller
         $customization   = $_POST['customization'];
         $customizationHours = intval($_POST['customization_hours'] ?? 0);
         $caretaker_id    = $_POST['caretaker_id'] ?? 0;
-        $client_id       = $_SESSION['user']['id'] ?? 0;
+        $client_id       = AuthSession::profileId();
 
         // Detailed validation with specific error messages
         if ($caretaker_id <= 0) {
@@ -1277,6 +1328,22 @@ class ClientController extends Controller
             header("Location: " . URLROOT . "/client/c_find1");
             exit;
         }
+
+        // Final server-side overlap checks (cannot be bypassed via dev tools / forged requests).
+        $caretakerConflict = $this->clientModel->hasCaretakerBookingConflict(
+            (int)$caretaker_id,
+            (string)$booking_date,
+            (string)$preferred_time,
+            (string)$basis,
+            (int)$duration
+        );
+
+        if ($caretakerConflict) {
+            $_SESSION['error'] = "Selected caregiver is no longer available for the chosen date/time. Please choose another slot or caregiver.";
+            header("Location: " . URLROOT . "/client/c_book?id=" . (int)$caretaker_id);
+            exit;
+        }
+
         $customizationApply = $_POST['customization_apply'] ?? 'once';
         $total_payment = $this->calcTotalPayment(
             $service_type,
@@ -1403,11 +1470,10 @@ class ClientController extends Controller
         }
 
         $bookingId = $_GET['booking_id'];
-        $booking = $this->clientModel->getBookingById($bookingId);
+        $clientId = AuthSession::profileId();
 
-        if (!$booking) {
-            die("Booking not found");
-        }
+        // Validate booking ownership (prevents IDOR)
+        $booking = $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/c_dashboard");
 
         $this->view("client/c_bookingConfirm", ['booking' => $booking]);
     }
@@ -1427,7 +1493,7 @@ class ClientController extends Controller
 
         $bookingId = $_POST['booking_id'] ?? null;
         $recurringPaymentId = $_POST['recurring_payment_id'] ?? null;
-        $clientId = $_SESSION['user']['id'];
+        $clientId = AuthSession::profileId();
         $amount = $_POST['amount'] ?? null;
         $paymentMethod = $_POST['payment_method'] ?? null;
 
@@ -1440,13 +1506,8 @@ class ClientController extends Controller
             exit;
         }
 
-        // Get booking details
-        $booking = $this->clientModel->getBookingById($bookingId);
-        if (!$booking) {
-            $_SESSION['error'] = "Booking not found";
-            header("Location: " . URLROOT . "/client/c_upcomingBookings");
-            exit;
-        }
+        // Validate booking ownership (prevents IDOR)
+        $booking = $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/c_upcomingBookings");
 
         $paymentType = 'advance';
         $dueDate = null;
@@ -1532,7 +1593,7 @@ class ClientController extends Controller
     }
     public function c_settings()
     {
-        if (!isset($_SESSION['user'])) {
+        if (!AuthSession::isLoggedIn()) {
             header("Location: index.php?url=auth/login");
             exit;
         }
@@ -1544,7 +1605,7 @@ class ClientController extends Controller
 
     public function editClientDetails()
     {
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+        if (!AuthSession::hasRole('client')) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
         }
@@ -1582,7 +1643,7 @@ class ClientController extends Controller
 
     public function editPasswordDetails()
     {
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+        if (!AuthSession::hasRole('client')) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
         }
@@ -1609,7 +1670,7 @@ class ClientController extends Controller
     public function c_contactCT()
     {
         $caretaker = null;
-        $clientId = $_SESSION['user']['id'];
+        $clientId = AuthSession::profileId();
         $bookingId = $_GET['booking_id'] ?? null;
         $caretakerId = null;
         $hasAccess = false;
@@ -1665,7 +1726,7 @@ class ClientController extends Controller
         $complaintModel = $this->model('ComplaintModel');
         $clientModel = $this->model('ClientModel');
         $client_name = $_SESSION['user']['name'];
-        $client_id = $_SESSION['user']['id'];
+        $client_id = AuthSession::profileId();
         $complaints = $complaintModel->getComplaintsByClient($client_name);
         $caretakers = $clientModel->getBookedCaretakersByClient($client_id);
         $data = [
