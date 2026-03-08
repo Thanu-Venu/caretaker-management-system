@@ -737,16 +737,150 @@ class ClientController extends Controller
         $reason    = $_POST['reason'] ?? '';
 
         if (!$bookingId || empty($reason)) {
+            $_SESSION['error'] = 'Invalid booking or reason not provided.';
             header("Location: " . URLROOT . "/client/c_upcomingBookings");
             exit;
         }
 
-        // Call model
-        $this->clientModel->cancelBooking($bookingId, $reason);
+        // Load refund calculation service
+        require_once APPROOT . '/core/RefundCalculationService.php';
+        $refundService = new RefundCalculationService();
+
+        // Calculate refund
+        $refundCalculation = $refundService->calculateRefund($bookingId, $reason, false);
+
+        if (!$refundCalculation['success']) {
+            $_SESSION['error'] = $refundCalculation['message'] ?? 'Failed to calculate refund.';
+            header("Location: " . URLROOT . "/client/c_upcomingBookings");
+            exit;
+        }
+
+        // Cancel the booking
+        $cancelled = $this->clientModel->cancelBooking($bookingId, $reason);
+
+        if ($cancelled) {
+            // Create refund record
+            $refundResult = $refundService->createRefundRecord($refundCalculation);
+
+            if ($refundResult['success']) {
+                // Cancel future recurring payments
+                $this->cancelFutureRecurringPayments($bookingId);
+
+                // Send notifications
+                $this->sendCancellationNotifications($bookingId, $refundCalculation);
+
+                $_SESSION['success'] = 'Booking cancelled successfully. ';
+
+                if ($refundCalculation['refund_amount'] > 0) {
+                    $_SESSION['success'] .= 'A refund of LKR ' . number_format($refundCalculation['refund_amount'], 2) .
+                        ' will be processed after HR approval.';
+                } else {
+                    $_SESSION['success'] .= 'No refund applicable for this cancellation.';
+                }
+            } else {
+                $_SESSION['error'] = 'Booking cancelled but refund record creation failed. Please contact support.';
+            }
+        } else {
+            $_SESSION['error'] = 'Failed to cancel booking. Please try again.';
+        }
 
         // Redirect back to upcoming bookings
         header("Location: " . URLROOT . "/client/c_upcomingBookings");
         exit;
+    }
+
+    /**
+     * Cancel future recurring payments for a cancelled booking
+     */
+    private function cancelFutureRecurringPayments($bookingId)
+    {
+        require_once APPROOT . '/core/RecurringPaymentService.php';
+        $recurringService = new RecurringPaymentService();
+
+        // This method should cancel all pending/overdue recurring payments
+        $sql = "UPDATE recurring_payments
+                SET status = 'cancelled'
+                WHERE booking_id = ?
+                AND status IN ('pending', 'overdue')";
+
+        $db = new Database();
+        $conn = $db->conn;
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $bookingId);
+        $stmt->execute();
+        $stmt->close();
+    }
+
+    /**
+     * Send cancellation notifications to relevant parties
+     */
+    private function sendCancellationNotifications($bookingId, $refundCalculation)
+    {
+        require_once APPROOT . '/models/NotificationModel.php';
+        $notificationModel = new NotificationModel();
+
+        // Get booking details
+        $booking = $this->clientModel->getBookingById($bookingId);
+        if (!$booking) return;
+
+        $clientId = $booking['client_id'];
+        $caretakerId = $booking['caretaker_id'];
+        $refundAmount = $refundCalculation['refund_amount'];
+
+        // Notify client
+        $clientMessage = "Your booking #{$bookingId} has been cancelled.\n\n" .
+            "Service: {$booking['service_type']}\n" .
+            "Booking Date: {$booking['booking_date']}\n\n";
+
+        if ($refundAmount > 0) {
+            $clientMessage .= "Refund Amount: LKR " . number_format($refundAmount, 2) . "\n" .
+                "Your refund is pending HR approval and will be processed shortly.";
+        } else {
+            $clientMessage .= "No refund applicable for this cancellation based on our refund policy.";
+        }
+
+        $notificationModel->addNotification(
+            $clientId,
+            'client',
+            'Booking Cancelled',
+            $clientMessage,
+            URLROOT . "/client/c_cancelledBookings"
+        );
+
+        // Notify caretaker
+        $caretakerMessage = "Booking #{$bookingId} has been cancelled by the client.\n\n" .
+            "Service: {$booking['service_type']}\n" .
+            "Booking Date: {$booking['booking_date']}\n\n" .
+            "This booking is no longer active.";
+
+        $notificationModel->addNotification(
+            $caretakerId,
+            'caretaker',
+            'Booking Cancelled',
+            $caretakerMessage,
+            URLROOT . "/caretaker/ct_bookings"
+        );
+
+        // Notify HR
+        $hrMessage = "Booking #{$bookingId} has been cancelled.\n\n" .
+            "Client ID: {$clientId}\n" .
+            "Service: {$booking['service_type']}\n" .
+            "Caretaker ID: {$caretakerId}\n\n";
+
+        if ($refundAmount > 0) {
+            $hrMessage .= "Refund Amount: LKR " . number_format($refundAmount, 2) . "\n" .
+                "Action Required: Approve and process refund.";
+        } else {
+            $hrMessage .= "No refund applicable.";
+        }
+
+        $notificationModel->addNotification(
+            5, // HR Manager ID
+            'Manager',
+            'Booking Cancellation - Action Required',
+            $hrMessage,
+            URLROOT . "/hr/refunds"
+        );
     }
 
     /* ================= RESCHEDULE BOOKING ================= */
@@ -936,19 +1070,19 @@ class ClientController extends Controller
 
         $serviceBasisRates = [
             'Elder Care' => [
+                'Monthly' => 50000,
+                'Yearly'  => 550000,
+            ],
+            'Babysitter' => [
+                'Daily'   => 2200,
                 'Monthly' => 45000,
                 'Yearly'  => 500000,
             ],
-            'Babysitter' => [
-                'Daily'   => 3200,
-                'Monthly' => 42000,
-                'Yearly'  => 480000,
-            ],
             'Maid' => [
                 'Hourly'  => 500,
-                'Daily'   => 3000,
+                'Daily'   => 2000,
                 'Monthly' => 38000,
-                'Yearly'  => 450000,
+                'Yearly'  => 420000,
             ],
         ];
 
@@ -1475,36 +1609,50 @@ class ClientController extends Controller
     public function c_contactCT()
     {
         $caretaker = null;
-        $paymentId = $_GET['payment_id'] ?? null;
-        $caretakerId = $_GET['caretaker_id'] ?? null;
+        $clientId = $_SESSION['user']['id'];
         $bookingId = $_GET['booking_id'] ?? null;
+        $caretakerId = null;
+        $hasAccess = false;
 
-        // Try to get caretaker from payment
-        if ($paymentId) {
-            $payment = $this->clientModel->getPaymentById($paymentId);
-            if ($payment && !empty($payment['caretaker_id'])) {
-                $caretakerId = $payment['caretaker_id'];
-            }
-        }
-
-        // Try to get caretaker from booking
-        if (!$caretakerId && $bookingId) {
+        // Primary method: Get from booking (with payment verification)
+        if ($bookingId) {
             $booking = $this->clientModel->getBookingById($bookingId);
-            if ($booking && !empty($booking['caretaker_id'])) {
-                $caretakerId = $booking['caretaker_id'];
+
+            // Security Check 1: Verify booking belongs to logged-in client
+            if ($booking && (int)$booking['client_id'] === (int)$clientId) {
+                // Security Check 2: Verify advance payment has been made
+                $advancePaidStatuses = ['Advance_Paid', 'Accepted', 'Reschedule_Requested', 'Change_Requested', 'Completed', 'Paid'];
+
+                if (in_array($booking['status'], $advancePaidStatuses)) {
+                    $caretakerId = $booking['caretaker_id'];
+                    $hasAccess = true;
+                } else {
+                    $_SESSION['error'] = "Caretaker contact details are only available after advance payment has been made.";
+                }
+            } else {
+                $_SESSION['error'] = "Unauthorized access to booking details.";
             }
         }
 
-        // If still no caretaker_id, get from most recent booking
-        if (!$caretakerId) {
-            $clientId = $_SESSION['user']['id'];
+        // Fallback: Get from most recent paid booking if no booking_id provided
+        if (!$hasAccess && !$bookingId) {
             $recentBookings = $this->clientModel->getRecentBookings($clientId);
-            if (!empty($recentBookings[0]['caretaker_id'])) {
-                $caretakerId = $recentBookings[0]['caretaker_id'];
+            foreach ($recentBookings as $recentBooking) {
+                $advancePaidStatuses = ['Advance_Paid', 'Accepted', 'Reschedule_Requested', 'Change_Requested', 'Completed', 'Paid'];
+                if (in_array($recentBooking['status'], $advancePaidStatuses)) {
+                    $caretakerId = $recentBooking['caretaker_id'];
+                    $hasAccess = true;
+                    break;
+                }
+            }
+
+            if (!$hasAccess) {
+                $_SESSION['error'] = "No caretaker details available. Please make advance payment for a booking first.";
             }
         }
 
-        if ($caretakerId) {
+        // Get caretaker details if access is granted
+        if ($hasAccess && $caretakerId) {
             $caretakerModel = $this->model('CaretakerModel');
             $caretaker = $caretakerModel->getCaretakerById($caretakerId);
         }
