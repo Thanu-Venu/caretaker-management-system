@@ -979,7 +979,8 @@ class ClientModel
                     b.preferred_time,
                     b.basis,
                     b.duration,
-                    b.total_payment
+                    b.total_payment,
+                    b.status AS booking_status
                 FROM payments p
                 JOIN clients c ON p.client_id = c.id
                 JOIN caretakers ct ON p.caretaker_id = ct.id
@@ -1006,7 +1007,8 @@ class ClientModel
                     b.booking_date,
                     b.preferred_time,
                     b.basis,
-                    b.duration
+                    b.duration,
+                    b.status AS booking_status
                 FROM payments p
                 JOIN clients c ON p.client_id = c.id
                 JOIN caretakers ct ON p.caretaker_id = ct.id
@@ -1485,17 +1487,39 @@ class ClientModel
 
     public function cancelBooking($bookingId, $reason)
     {
-        $sql = "UPDATE bookings
-            SET status = 'cancelled',
-                cancellation_reason = ?,
-                cancelled_at = NOW()
-            WHERE id = ?";
+        $this->conn->begin_transaction();
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("si", $reason, $bookingId);
-        $stmt->execute();
+        try {
+            $sql = "UPDATE bookings
+                SET status = 'cancelled',
+                    cancellation_reason = ?,
+                    cancelled_at = NOW()
+                WHERE id = ?";
 
-        return $stmt->affected_rows > 0;
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("si", $reason, $bookingId);
+            $stmt->execute();
+            $bookingUpdated = $stmt->affected_rows > 0;
+            $stmt->close();
+
+            // Keep payment state in sync with booking cancellation for HR payment management.
+            $payStmt = $this->conn->prepare(
+                "UPDATE payments
+                 SET status = 'rejected'
+                 WHERE booking_id = ?
+                   AND status = 'pending'"
+            );
+            $payStmt->bind_param("i", $bookingId);
+            $payStmt->execute();
+            $payStmt->close();
+
+            $this->conn->commit();
+            return $bookingUpdated;
+        } catch (Throwable $e) {
+            $this->conn->rollback();
+            error_log("Cancel booking failed for booking #{$bookingId}: " . $e->getMessage());
+            return false;
+        }
     }
 
     public function getAdvancePaymentPendingBookings($clientId)
