@@ -14,7 +14,7 @@ class CaretakerController extends Controller
         if (session_status() === PHP_SESSION_NONE)
             session_start();
 
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
+        if (!AuthSession::hasRole('caretaker')) {
             header("Location: index.php?url=auth/login");
             exit;
         }
@@ -26,7 +26,7 @@ class CaretakerController extends Controller
         $this->profileChangeRequestModel = $this->model("ProfileChangeRequestModel");
 
         // Revalidate caretaker from DB
-        $user = $this->caretakerModel->getCaretakerById($_SESSION['user']['id']); // lowercase usage
+        $user = $this->caretakerModel->getCaretakerById(AuthSession::profileId()); // lowercase usage
         if (!$user) {
             session_destroy();
             header("Location: index.php?url=auth/login");
@@ -38,7 +38,7 @@ class CaretakerController extends Controller
 
     public function ct_dashboard()
     {
-        $userId = $_SESSION['user']['id'];
+        $userId = AuthSession::profileId();
 
         // Get caretaker details
         $caretakerModel = $this->model('CaretakerModel');
@@ -127,7 +127,7 @@ class CaretakerController extends Controller
             exit;
         }
 
-        $caretakerId = $_SESSION['user']['id'];
+        $caretakerId = AuthSession::profileId();
         $isAvailable = isset($_POST['is_available']) && $_POST['is_available'] === '1';
         $status = $isAvailable ? 'Active' : 'Inactive';
 
@@ -175,12 +175,12 @@ class CaretakerController extends Controller
 
     public function ct_leave()
     {
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
+        if (!AuthSession::hasRole('caretaker')) {
             die("Caretaker not logged in");
         }
 
         $leaveModel = $this->model('LeaveModel');
-        $userId = $_SESSION['user']['id'];
+        $userId = AuthSession::profileId();
         $leaves = $leaveModel->getLeavesByUser($userId);
         $monthlySummary = $leaveModel->getCurrentMonthLeaveSummary($userId, true);
 
@@ -223,7 +223,7 @@ class CaretakerController extends Controller
     {
         header('Content-Type: application/json');
 
-        $caretakerId = $_SESSION['user']['id'];
+        $caretakerId = AuthSession::profileId();
         $bookings = $this->caretakerModel->getAllActiveBookings($caretakerId);
 
         $events = [];
@@ -326,7 +326,7 @@ class CaretakerController extends Controller
 
     public function ct_complaints()
     {
-        $caretakerId = $_SESSION['user']['id'];
+        $caretakerId = AuthSession::profileId();
         $complaints = $this->complaintModel->getComplaintsByCaretaker($caretakerId);
 
         $this->view('caretaker/ct_complaints', [
@@ -347,7 +347,7 @@ class CaretakerController extends Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $data = [
-                'caretaker_id' => $_SESSION['user']['id'],
+                'caretaker_id' => AuthSession::profileId(),
                 'client_name' => $_POST['client_name'],
                 'service_type' => $_POST['service_type'],
                 'date_of_service' => $_POST['date_of_service'],
@@ -367,7 +367,7 @@ class CaretakerController extends Controller
 
     public function ct_settings()
     {
-        if (!isset($_SESSION['user'])) {
+        if (!AuthSession::isLoggedIn()) {
             header("Location: index.php?url=auth/login");
             exit;
         }
@@ -385,7 +385,7 @@ class CaretakerController extends Controller
     public function editCaretakerDetails()
     {
 
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
+        if (!AuthSession::hasRole('caretaker')) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
         }
@@ -434,7 +434,7 @@ class CaretakerController extends Controller
 
     public function editPasswordDetails()
     {
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'caretaker') {
+        if (!AuthSession::hasRole('caretaker')) {
             header("Location: " . URLROOT . "/auth/login");
             exit();
         }
@@ -467,12 +467,12 @@ class CaretakerController extends Controller
 
     public function ct_reviews()
     {
-        if (!isset($_SESSION['user'])) {
+        if (!AuthSession::isLoggedIn()) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
         }
 
-        $caretakerId = $_SESSION['user']['id'];
+        $caretakerId = AuthSession::profileId();
 
         $caretakerModel = $this->model('CaretakerModel');
         $feedbacks = $caretakerModel->getCaretakerFeedbacks($caretakerId);
@@ -502,7 +502,7 @@ class CaretakerController extends Controller
                 'service_type' => $_POST['service_type'],
                 'date_of_service' => $_POST['date_of_service'],
                 'description' => $_POST['description'],
-                'caretaker_id' => $_SESSION['user']['id']
+                'caretaker_id' => AuthSession::profileId()
             ];
 
             $this->complaintModel->addComplaint($data);
