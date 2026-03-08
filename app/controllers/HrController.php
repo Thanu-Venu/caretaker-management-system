@@ -27,7 +27,7 @@ class HrController extends Controller
 
         if (session_status() === PHP_SESSION_NONE) session_start();
 
-        if (!isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 'Manager') {
+        if (!AuthSession::hasRole('manager')) {
             header("Location: index.php?url=auth/login");
             exit;
         }
@@ -36,7 +36,7 @@ class HrController extends Controller
 
 
         // Revalidate caretaker from DB
-        $user = $this->userModel->getUserById($_SESSION['user']['id']); // lowercase usage
+        $user = $this->userModel->getUserById(AuthSession::profileId()); // lowercase usage
         if (!$user) {
             session_destroy();
             header("Location: index.php?url=auth/login");
@@ -95,7 +95,7 @@ class HrController extends Controller
     {
         $perPage = 10;
         $currentPage = max(1, (int)($_GET['page'] ?? 1));
-        $currentUserId = (int)($_SESSION['user']['id'] ?? 0);
+        $currentUserId = (int)AuthSession::profileId();
 
         $totalLogs = $this->hrLogsModel->getTotalLogsByUser($currentUserId);
         $totalPages = max(1, (int)ceil($totalLogs / $perPage));
@@ -116,7 +116,7 @@ class HrController extends Controller
 
     private function logHrAction($action, $section)
     {
-        $userId = (int)($_SESSION['user']['id'] ?? 0);
+        $userId = (int)AuthSession::profileId();
         if ($userId <= 0) return;
 
         $this->hrLogsModel->log([
@@ -225,12 +225,109 @@ class HrController extends Controller
         }
         unset($booking);
 
+        // Detect overlapping bookings for the same caretaker within this result set
+        $caretakerBookings = [];
+        foreach ($bookings as &$booking) {
+            $caretakerId = (int)($booking['caretaker_id'] ?? 0);
+            if ($caretakerId > 0) {
+                if (!isset($caretakerBookings[$caretakerId])) {
+                    $caretakerBookings[$caretakerId] = [];
+                }
+                $caretakerBookings[$caretakerId][] = &$booking;
+            }
+        }
+        unset($booking);
+
+        // Mark overlapping bookings
+        foreach ($caretakerBookings as $caretakerId => $bookingList) {
+            if (count($bookingList) >= 2) {
+                // Check for overlaps between bookings for this caretaker
+                for ($i = 0; $i < count($bookingList); $i++) {
+                    for ($j = $i + 1; $j < count($bookingList); $j++) {
+                        if ($this->doBookingsOverlap($bookingList[$i], $bookingList[$j])) {
+                            $bookingList[$i]['caretaker_overlap'] = true;
+                            $bookingList[$j]['caretaker_overlap'] = true;
+                        }
+                    }
+                }
+            }
+        }
+
         $this->view('hr/hr_pending_request', [
             'bookings' => $bookings,
             'page' => $page,
             'totalPages' => $totalPages,
             'status' => $status
         ]);
+    }
+
+    /**
+     * Check if two bookings overlap in time (helper for caretaker overlap detection)
+     */
+    private function doBookingsOverlap($booking1, $booking2)
+    {
+        try {
+            $date1 = $booking1['booking_date'] ?? null;
+            $date2 = $booking2['booking_date'] ?? null;
+            $basis1 = strtolower(trim($booking1['basis'] ?? ''));
+            $basis2 = strtolower(trim($booking2['basis'] ?? ''));
+            $duration1 = max(1, (int)($booking1['duration'] ?? 1));
+            $duration2 = max(1, (int)($booking2['duration'] ?? 1));
+            $time1 = $booking1['preferred_time'] ?? 'Full Time (8am - 5pm)';
+            $time2 = $booking2['preferred_time'] ?? 'Full Time (8am - 5pm)';
+
+            if (!$date1 || !$date2) return false;
+
+            // Calculate end dates
+            $end1 = $this->calculateBookingEndDate($date1, $basis1, $duration1);
+            $end2 = $this->calculateBookingEndDate($date2, $basis2, $duration2);
+
+            // Check date overlap: date1_start <= date2_end AND date1_end >= date2_start
+            if ($date1 > $end2 || $date2 > $end1) {
+                return false; // No date overlap
+            }
+
+            // If both are hourly, check time overlap
+            if ($basis1 === 'hourly' && $basis2 === 'hourly') {
+                $timeMap = [
+                    "Morning (8am - 12pm)" => ["08:00:00", "12:00:00"],
+                    "Evening (1pm - 5pm)"  => ["13:00:00", "17:00:00"],
+                    "Night (6pm - 10pm)"   => ["18:00:00", "22:00:00"],
+                    "Full Time (8am - 5pm)" => ["08:00:00", "17:00:00"]
+                ];
+                [$start1, $end1_time] = $timeMap[$time1] ?? ["00:00:00", "23:59:59"];
+                [$start2, $end2_time] = $timeMap[$time2] ?? ["00:00:00", "23:59:59"];
+
+                // Time overlap check
+                if ($start1 >= $end2_time || $start2 >= $end1_time) {
+                    return false;
+                }
+            }
+
+            return true; // Overlap detected
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Calculate end date for a booking based on basis
+     */
+    private function calculateBookingEndDate($date, $basis, $duration)
+    {
+        try {
+            $start = new DateTime($date);
+            if ($basis === 'monthly') {
+                $start->modify('+' . $duration . ' month -1 day');
+            } elseif ($basis === 'yearly') {
+                $start->modify('+' . $duration . ' year -1 day');
+            } else {
+                $start->modify('+' . ($duration - 1) . ' day');
+            }
+            return $start->format('Y-m-d');
+        } catch (Exception $e) {
+            return $date;
+        }
     }
 
     public function requestAdvancePayment()
@@ -336,13 +433,13 @@ class HrController extends Controller
     public function hr_settings()
     {
         // Session already started in constructor
-        if (!isset($_SESSION['user'])) {
+        if (!AuthSession::isLoggedIn()) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
         }
 
         // Optional: allow only hr role
-        if ($_SESSION['user']['role'] !== 'Manager') {
+        if (!AuthSession::hasRole('manager')) {
             die("Access denied. Only HR can access this page.");
         }
 
@@ -436,7 +533,13 @@ class HrController extends Controller
         // Update payment status to approved
         $clientModel->updatePaymentStatus($paymentId, 'approved');
 
-        if ($payment['payment_type'] === 'advance') {
+        $paymentType = strtolower(trim((string)($payment['payment_type'] ?? '')));
+        $bookingStatus = (string)($payment['booking_status'] ?? '');
+        // Fallback: treat payment as advance-stage approval if booking is still in pre-accepted states.
+        $isAdvanceApproval = ($paymentType === 'advance')
+            || in_array($bookingStatus, ['Payment_Requested', 'Advance_Paid'], true);
+
+        if ($isAdvanceApproval) {
             // Update booking status to Accepted
             $clientModel->updateBookingStatus($payment['booking_id'], 'Accepted');
 
@@ -878,7 +981,7 @@ class HrController extends Controller
         require_once APPROOT . '/core/RefundCalculationService.php';
         $refundService = new RefundCalculationService();
 
-        $userId = $_SESSION['user']['id'];
+        $userId = AuthSession::profileId();
 
         if ($action === 'approve') {
             $status = 'approved';
@@ -937,7 +1040,7 @@ class HrController extends Controller
         require_once APPROOT . '/core/RefundCalculationService.php';
         $refundService = new RefundCalculationService();
 
-        $userId = $_SESSION['user']['id'];
+        $userId = AuthSession::profileId();
         $result = $refundService->updateRefundStatus($refundId, 'completed', $userId, $notes, $refundMethod, $refundReference);
 
         if ($result) {
