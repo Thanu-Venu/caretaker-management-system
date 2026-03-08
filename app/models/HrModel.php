@@ -5,6 +5,13 @@ class HrModel
 {
     private $conn;
 
+    private const TIME_RANGE_MAP = [
+        "Morning (8am - 12pm)" => ["08:00:00", "12:00:00"],
+        "Evening (1pm - 5pm)" => ["13:00:00", "17:00:00"],
+        "Night (6pm - 10pm)" => ["18:00:00", "22:00:00"],
+        "Full Time (8am - 5pm)" => ["08:00:00", "17:00:00"]
+    ];
+
     public function __construct()
     {
         $db = new Database();
@@ -299,6 +306,120 @@ class HrModel
         $stmt->bind_param("i", $bookingId);
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
+    }
+
+    private function getTimeRangeFromBookingTime($timeString): array
+    {
+        return self::TIME_RANGE_MAP[$timeString] ?? ["00:00:00", "23:59:59"];
+    }
+
+    private function rangesOverlap(string $startA, string $endA, string $startB, string $endB): bool
+    {
+        return ($startA < $endB) && ($endA > $startB);
+    }
+
+    /**
+     * Returns first conflicting booking for assigned caretaker, or null if available.
+     */
+    public function findCaretakerConflictForBooking(int $bookingId): ?array
+    {
+        $targetSql = "SELECT
+                b.id,
+                b.caretaker_id,
+                b.basis,
+                b.duration,
+                b.preferred_time,
+                COALESCE(b.service_start_date, b.booking_date) AS start_date,
+                CASE
+                    WHEN LOWER(TRIM(b.basis)) = 'hourly' THEN COALESCE(b.service_start_date, b.booking_date)
+                    WHEN LOWER(TRIM(b.basis)) = 'monthly' THEN DATE_SUB(DATE_ADD(COALESCE(b.service_start_date, b.booking_date), INTERVAL GREATEST(b.duration, 1) MONTH), INTERVAL 1 DAY)
+                    WHEN LOWER(TRIM(b.basis)) = 'yearly' THEN DATE_SUB(DATE_ADD(COALESCE(b.service_start_date, b.booking_date), INTERVAL GREATEST(b.duration, 1) YEAR), INTERVAL 1 DAY)
+                    ELSE DATE_SUB(DATE_ADD(COALESCE(b.service_start_date, b.booking_date), INTERVAL GREATEST(b.duration, 1) DAY), INTERVAL 1 DAY)
+                END AS end_date
+            FROM bookings b
+            WHERE b.id = ?
+            LIMIT 1";
+
+        $targetStmt = $this->conn->prepare($targetSql);
+        $targetStmt->bind_param("i", $bookingId);
+        $targetStmt->execute();
+        $target = $targetStmt->get_result()->fetch_assoc();
+        $targetStmt->close();
+
+        if (!$target || empty($target['caretaker_id'])) {
+            return null;
+        }
+
+        $conflictSql = "SELECT
+                b.id AS conflict_booking_id,
+                b.client_id,
+                b.status,
+                b.basis,
+                b.duration,
+                b.preferred_time,
+                COALESCE(b.service_start_date, b.booking_date) AS start_date,
+                CASE
+                    WHEN LOWER(TRIM(b.basis)) = 'hourly' THEN COALESCE(b.service_start_date, b.booking_date)
+                    WHEN LOWER(TRIM(b.basis)) = 'monthly' THEN DATE_SUB(DATE_ADD(COALESCE(b.service_start_date, b.booking_date), INTERVAL GREATEST(b.duration, 1) MONTH), INTERVAL 1 DAY)
+                    WHEN LOWER(TRIM(b.basis)) = 'yearly' THEN DATE_SUB(DATE_ADD(COALESCE(b.service_start_date, b.booking_date), INTERVAL GREATEST(b.duration, 1) YEAR), INTERVAL 1 DAY)
+                    ELSE DATE_SUB(DATE_ADD(COALESCE(b.service_start_date, b.booking_date), INTERVAL GREATEST(b.duration, 1) DAY), INTERVAL 1 DAY)
+                END AS end_date
+            FROM bookings b
+            WHERE b.caretaker_id = ?
+              AND b.id <> ?
+              AND LOWER(TRIM(b.status)) IN ('requested','payment_requested','advance_paid','accepted','change_requested','reschedule_requested')
+              AND COALESCE(b.service_start_date, b.booking_date) <= ?
+              AND (
+                CASE
+                    WHEN LOWER(TRIM(b.basis)) = 'hourly' THEN COALESCE(b.service_start_date, b.booking_date)
+                    WHEN LOWER(TRIM(b.basis)) = 'monthly' THEN DATE_SUB(DATE_ADD(COALESCE(b.service_start_date, b.booking_date), INTERVAL GREATEST(b.duration, 1) MONTH), INTERVAL 1 DAY)
+                    WHEN LOWER(TRIM(b.basis)) = 'yearly' THEN DATE_SUB(DATE_ADD(COALESCE(b.service_start_date, b.booking_date), INTERVAL GREATEST(b.duration, 1) YEAR), INTERVAL 1 DAY)
+                    ELSE DATE_SUB(DATE_ADD(COALESCE(b.service_start_date, b.booking_date), INTERVAL GREATEST(b.duration, 1) DAY), INTERVAL 1 DAY)
+                END
+              ) >= ?
+            ORDER BY start_date ASC";
+
+        $conflictStmt = $this->conn->prepare($conflictSql);
+        $caretakerId = (int)$target['caretaker_id'];
+        $startDate = (string)$target['start_date'];
+        $endDate = (string)$target['end_date'];
+        $conflictStmt->bind_param("iiss", $caretakerId, $bookingId, $endDate, $startDate);
+        $conflictStmt->execute();
+        $candidates = $conflictStmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $conflictStmt->close();
+
+        if (empty($candidates)) {
+            return null;
+        }
+
+        $targetBasis = strtolower(trim((string)$target['basis']));
+        [$targetStartTime, $targetEndTime] = $this->getTimeRangeFromBookingTime((string)($target['preferred_time'] ?? ''));
+
+        foreach ($candidates as $candidate) {
+            $candidateBasis = strtolower(trim((string)$candidate['basis']));
+
+            // Any non-hourly conflicting booking blocks availability.
+            if ($candidateBasis !== 'hourly') {
+                return $candidate;
+            }
+
+            // Hourly vs non-hourly: check target time window overlap with hourly booking.
+            if ($targetBasis !== 'hourly') {
+                [$candidateStartTime, $candidateEndTime] = $this->getTimeRangeFromBookingTime((string)($candidate['preferred_time'] ?? ''));
+                if ($this->rangesOverlap($targetStartTime, $targetEndTime, $candidateStartTime, $candidateEndTime)) {
+                    return $candidate;
+                }
+                continue;
+            }
+
+            // Hourly vs hourly: check time overlap.
+            [$candidateStartTime, $candidateEndTime] = $this->getTimeRangeFromBookingTime((string)($candidate['preferred_time'] ?? ''));
+            if ($this->rangesOverlap($targetStartTime, $targetEndTime, $candidateStartTime, $candidateEndTime)) {
+                return $candidate;
+            }
+        }
+
+        return null;
     }
 
     public function getPaymentSummary(): array
