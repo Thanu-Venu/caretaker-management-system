@@ -20,7 +20,7 @@ class ComplaintController
 
     private function logManagerAction($action, $section)
     {
-        $userId = (int)($_SESSION['user']['id'] ?? 0);
+        $userId = (int)AuthSession::profileId();
         if ($userId <= 0) {
             return;
         }
@@ -84,7 +84,7 @@ class ComplaintController
     public function complaintReg()
     {
         // Ensure client is logged in
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+        if (!AuthSession::hasRole('client')) {
             echo "<script>alert('Please login first'); window.location.href='/CMA/public/index.php?url=auth/login';</script>";
             exit;
         }
@@ -194,7 +194,7 @@ class ComplaintController
     {
 
 
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+        if (!AuthSession::hasRole('client')) {
             echo "<script>alert('Please login first.'); window.location.href='/CMA/public/index.php?url=auth/login';</script>";
             exit;
         }
@@ -274,7 +274,7 @@ class ComplaintController
 
     public function updateStatus()
     {
-        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Manager') {
+        if (!AuthSession::hasRole('manager')) {
             echo "<script>alert('Unauthorized');</script>";
             exit;
         }
@@ -324,7 +324,7 @@ class ComplaintController
 
     public function updateCaretakerComplaintStatus()
     {
-        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Manager') {
+        if (!AuthSession::hasRole('manager')) {
             echo "<script>alert('Unauthorized');</script>";
             exit;
         }
