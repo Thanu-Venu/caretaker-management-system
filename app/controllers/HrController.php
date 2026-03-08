@@ -218,6 +218,13 @@ class HrController extends Controller
             $status
         );
 
+        foreach ($bookings as &$booking) {
+            $conflict = $this->hrModel->findCaretakerConflictForBooking((int)$booking['booking_id']);
+            $booking['availability_ok'] = empty($conflict);
+            $booking['availability_conflict'] = $conflict ?: null;
+        }
+        unset($booking);
+
         $this->view('hr/hr_pending_request', [
             'bookings' => $bookings,
             'page' => $page,
@@ -239,6 +246,21 @@ class HrController extends Controller
 
         if (!$booking_id || !$client_id) {
             $_SESSION['error'] = "Invalid booking or client information.";
+            header("Location: " . URLROOT . "/hr/hr_pending_request");
+            exit;
+        }
+
+        // Ensure assigned caregiver is still available for the booking period before requesting advance payment.
+        $conflict = $this->hrModel->findCaretakerConflictForBooking((int)$booking_id);
+        if (!empty($conflict)) {
+            $conflictId = (int)($conflict['conflict_booking_id'] ?? 0);
+            $conflictStatus = (string)($conflict['status'] ?? 'unknown');
+            $conflictStart = (string)($conflict['start_date'] ?? 'N/A');
+            $conflictEnd = (string)($conflict['end_date'] ?? 'N/A');
+
+            $_SESSION['error'] = "Cannot request advance payment for Booking #{$booking_id}. " .
+                "Assigned caregiver has a schedule conflict with Booking #{$conflictId} " .
+                "({$conflictStart} to {$conflictEnd}, status: {$conflictStatus}).";
             header("Location: " . URLROOT . "/hr/hr_pending_request");
             exit;
         }
@@ -747,7 +769,11 @@ class HrController extends Controller
         $clientModel->updatePaymentStatus($paymentId, 'rejected');
 
         // Revert only advance-payment bookings back to Requested.
-        if ($payment['payment_type'] === 'advance') {
+        $bookingStatus = strtolower(trim((string)($payment['booking_status'] ?? '')));
+        if (
+            $payment['payment_type'] === 'advance'
+            && !in_array($bookingStatus, ['cancelled', 'rejected', 'completed'], true)
+        ) {
             $clientModel->updateBookingStatus($payment['booking_id'], 'Requested');
         }
 
@@ -768,4 +794,234 @@ class HrController extends Controller
         header("Location: " . URLROOT . "/hr/pendingPayments");
         exit;
     }
+    /* ================= REFUND MANAGEMENT ================= */
+
+    /**
+     * Display refunds management page
+     */
+    public function refunds()
+    {
+        require_once APPROOT . '/core/RefundCalculationService.php';
+        $refundService = new RefundCalculationService();
+
+        $statusFilter = $_GET['status'] ?? 'all';
+
+        // Get refunds based on filter
+        if ($statusFilter === 'all') {
+            $refunds = $refundService->getAllRefunds(null, 100);
+        } else {
+            $refunds = $refundService->getAllRefunds($statusFilter, 100);
+        }
+
+        $data = [
+            'refunds' => $refunds,
+            'status_filter' => $statusFilter,
+            'pending_count' => count(array_filter($refunds, function ($r) {
+                return $r['status'] === 'pending';
+            }))
+        ];
+
+        $this->view('hr/hr_refunds', $data);
+    }
+
+    /**
+     * View refund details
+     */
+    public function refundDetails()
+    {
+        $refundId = $_GET['refund_id'] ?? null;
+
+        if (!$refundId) {
+            $_SESSION['error'] = 'Invalid refund ID.';
+            header("Location: " . URLROOT . "/hr/refunds");
+            exit;
+        }
+
+        require_once APPROOT . '/core/RefundCalculationService.php';
+        $refundService = new RefundCalculationService();
+
+        $refund = $refundService->getRefundById($refundId);
+
+        if (!$refund) {
+            $_SESSION['error'] = 'Refund not found.';
+            header("Location: " . URLROOT . "/hr/refunds");
+            exit;
+        }
+
+        // Parse refund calculation JSON
+        $refund['calculation_details'] = json_decode($refund['refund_calculation'], true);
+
+        $data = ['refund' => $refund];
+        $this->view('hr/hr_refund_details', $data);
+    }
+
+    /**
+     * Approve or decline a refund
+     */
+    public function processRefund()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: " . URLROOT . "/hr/refunds");
+            exit;
+        }
+
+        $refundId = $_POST['refund_id'] ?? null;
+        $action = $_POST['action'] ?? null;
+        $notes = $_POST['notes'] ?? '';
+
+        if (!$refundId || !$action) {
+            $_SESSION['error'] = 'Invalid refund or action.';
+            header("Location: " . URLROOT . "/hr/refunds");
+            exit;
+        }
+
+        require_once APPROOT . '/core/RefundCalculationService.php';
+        $refundService = new RefundCalculationService();
+
+        $userId = $_SESSION['user']['id'];
+
+        if ($action === 'approve') {
+            $status = 'approved';
+            $result = $refundService->updateRefundStatus($refundId, $status, $userId, $notes);
+            $message = 'Refund approved successfully.';
+            $logAction = "Approved Refund #{$refundId}";
+        } elseif ($action === 'decline') {
+            $status = 'declined';
+            $result = $refundService->updateRefundStatus($refundId, $status, $userId, $notes);
+            $message = 'Refund declined.';
+            $logAction = "Declined Refund #{$refundId}";
+        } else {
+            $_SESSION['error'] = 'Invalid action.';
+            header("Location: " . URLROOT . "/hr/refunds");
+            exit;
+        }
+
+        if ($result) {
+            // Send notification to client
+            $refund = $refundService->getRefundById($refundId);
+            if ($refund) {
+                $this->sendRefundStatusNotification($refund, $status, $notes);
+            }
+
+            $_SESSION['success'] = $message;
+            $this->logHrAction($logAction, 'Refunds');
+        } else {
+            $_SESSION['error'] = 'Failed to process refund.';
+        }
+
+        header("Location: " . URLROOT . "/hr/refunds");
+        exit;
+    }
+
+    /**
+     * Mark refund as processed/completed
+     */
+    public function completeRefund()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: " . URLROOT . "/hr/refunds");
+            exit;
+        }
+
+        $refundId = $_POST['refund_id'] ?? null;
+        $refundMethod = $_POST['refund_method'] ?? '';
+        $refundReference = $_POST['refund_reference'] ?? '';
+        $notes = $_POST['notes'] ?? '';
+
+        if (!$refundId) {
+            $_SESSION['error'] = 'Invalid refund ID.';
+            header("Location: " . URLROOT . "/hr/refunds");
+            exit;
+        }
+
+        require_once APPROOT . '/core/RefundCalculationService.php';
+        $refundService = new RefundCalculationService();
+
+        $userId = $_SESSION['user']['id'];
+        $result = $refundService->updateRefundStatus($refundId, 'completed', $userId, $notes, $refundMethod, $refundReference);
+
+        if ($result) {
+            // Send notification to client
+            $refund = $refundService->getRefundById($refundId);
+            if ($refund) {
+                $this->sendRefundCompletedNotification($refund, $refundMethod, $refundReference);
+            }
+
+            $_SESSION['success'] = 'Refund marked as completed.';
+            $this->logHrAction("Completed Refund #{$refundId} via {$refundMethod}", 'Refunds');
+        } else {
+            $_SESSION['error'] = 'Failed to complete refund.';
+        }
+
+        header("Location: " . URLROOT . "/hr/refunds");
+        exit;
+    }
+
+    /**
+     * Send refund status notification to client
+     */
+    private function sendRefundStatusNotification($refund, $status, $notes)
+    {
+        $clientId = $refund['client_id'];
+        $bookingId = $refund['booking_id'];
+        $refundAmount = $refund['refund_amount'];
+
+        if ($status === 'approved') {
+            $title = 'Refund Approved';
+            $message = "Your refund request for Booking #{$bookingId} has been approved.\n\n" .
+                "Refund Amount: LKR " . number_format($refundAmount, 2) . "\n" .
+                "The refund will be processed and transferred to your account shortly.\n";
+
+            if (!empty($notes)) {
+                $message .= "\nNote: {$notes}";
+            }
+        } else {
+            $title = 'Refund Declined';
+            $message = "Your refund request for Booking #{$bookingId} has been declined.\n\n";
+
+            if (!empty($notes)) {
+                $message .= "Reason: {$notes}\n";
+            }
+
+            $message .= "\nPlease contact our support team if you have any questions.";
+        }
+
+        $this->notificationModel->addNotification(
+            $clientId,
+            'client',
+            $title,
+            $message,
+            URLROOT . "/client/c_cancelledBookings"
+        );
+    }
+
+    /**
+     * Send refund completed notification to client
+     */
+    private function sendRefundCompletedNotification($refund, $refundMethod, $refundReference)
+    {
+        $clientId = $refund['client_id'];
+        $bookingId = $refund['booking_id'];
+        $refundAmount = $refund['refund_amount'];
+
+        $message = "Your refund for Booking #{$bookingId} has been processed.\n\n" .
+            "Refund Amount: LKR " . number_format($refundAmount, 2) . "\n" .
+            "Method: {$refundMethod}\n";
+
+        if (!empty($refundReference)) {
+            $message .= "Reference: {$refundReference}\n";
+        }
+
+        $message .= "\nPlease allow 3-5 business days for the funds to reflect in your account.";
+
+        $this->notificationModel->addNotification(
+            $clientId,
+            'client',
+            'Refund Completed',
+            $message,
+            URLROOT . "/client/c_cancelledBookings"
+        );
+    }
+
+    /* ================= END REFUND MANAGEMENT ================= */
 }
