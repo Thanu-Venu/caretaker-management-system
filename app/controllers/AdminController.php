@@ -18,6 +18,7 @@ class AdminController extends Controller
 
     private $historyModel;
     private $profileChangeRequestModel;
+    private $adminPaymentModel;
     public function __construct()
     {
         if (session_status() === PHP_SESSION_NONE)
@@ -38,6 +39,7 @@ class AdminController extends Controller
         $this->feedbackModel = $this->model('FeedbackModel');
         $this->historyModel = $this->model('HistoryModel');
         $this->profileChangeRequestModel = $this->model('ProfileChangeRequestModel');
+        $this->adminPaymentModel = $this->model('AdminPaymentModel');
         // Revalidate caretaker from DB
         $user = $this->userModel->getUserById(AuthSession::profileId()); // lowercase usage
         if (!$user) {
@@ -215,12 +217,266 @@ class AdminController extends Controller
 
     public function ad_reports()
     {
-        $this->view("admin/ad_reports");
+        // Check for export request
+        if (isset($_GET['export'])) {
+            $this->exportAdminReport();
+            return;
+        }
+
+        $reportsModel = $this->model('AdminReportsModel');
+
+        $fromDate = $_GET['from'] ?? null;
+        $toDate = $_GET['to'] ?? null;
+
+        // Get comprehensive report data using the specialized admin model
+        $data = $reportsModel->getCompleteReportData($fromDate, $toDate);
+        $data['fromDate'] = $fromDate;
+        $data['toDate'] = $toDate;
+
+        $this->view("admin/ad_reports", $data);
+    }
+
+    /**
+     * AJAX endpoint to fetch filtered report data
+     */
+    public function getReportData()
+    {
+        header('Content-Type: application/json');
+
+        $reportsModel = $this->model('AdminReportsModel');
+
+        $fromDate = $_GET['from'] ?? null;
+        $toDate = $_GET['to'] ?? null;
+
+        $data = $reportsModel->getCompleteReportData($fromDate, $toDate);
+
+        echo json_encode($data);
+        exit;
+    }
+
+    /**
+     * Export admin report to CSV or PDF
+     */
+    private function exportAdminReport()
+    {
+        require_once APPROOT . '/core/ReportExporter.php';
+
+        $reportsModel = $this->model('AdminReportsModel');
+
+        $fromDate = $_GET['from'] ?? null;
+        $toDate = $_GET['to'] ?? null;
+        $format = $_GET['format'] ?? 'csv'; // csv or pdf
+
+        // Get all report data
+        $data = $reportsModel->getCompleteReportData($fromDate, $toDate);
+
+        // Generate filename
+        $dateRange = ($fromDate && $toDate) ? "_" . $fromDate . "_to_" . $toDate : "_all_time";
+        $filename = "admin_report" . $dateRange;
+
+        // Export based on format
+        if ($format === 'pdf') {
+            ReportExporter::exportToPDF($data, $filename, 'admin');
+        } else {
+            ReportExporter::exportToCSV($data, $filename, 'admin');
+        }
     }
 
     public function ad_payments()
     {
-        $this->view("admin/ad_payments");
+        $filters = $this->getPaymentFilters();
+
+        // Export request keeps existing filters and bypasses page render.
+        if (isset($_GET['export'])) {
+            $format = strtolower((string)($_GET['format'] ?? 'csv'));
+            if ($format === 'pdf') {
+                $this->exportPaymentReportPDF($filters);
+            } else {
+                $this->exportPaymentReportCSV($filters);
+            }
+            return;
+        }
+
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($page < 1) {
+            $page = 1;
+        }
+
+        $limit = 20;
+        $offset = ($page - 1) * $limit;
+
+        $payments = $this->adminPaymentModel->getPayments($filters, $limit, $offset);
+        $summary = $this->adminPaymentModel->getPaymentSummary($filters);
+        $totalRecords = $this->adminPaymentModel->getPaymentsCount($filters);
+        $totalPages = (int)ceil($totalRecords / $limit);
+        if ($totalPages < 1) {
+            $totalPages = 1;
+        }
+
+        $this->view("admin/ad_payments", [
+            'summary' => $summary,
+            'payments' => $payments,
+            'filters' => $filters,
+            'filterOptions' => $this->adminPaymentModel->getFilterOptions(),
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'totalRecords' => $totalRecords,
+        ]);
+    }
+
+    public function ad_payment_detail($paymentId = null)
+    {
+        $id = (int)$paymentId;
+        if ($id <= 0) {
+            $_SESSION['error'] = 'Invalid payment ID.';
+            header('Location: ' . URLROOT . '/admin/ad_payments');
+            exit;
+        }
+
+        $payment = $this->adminPaymentModel->getPaymentById($id);
+        if (!$payment) {
+            $_SESSION['error'] = 'Payment not found.';
+            header('Location: ' . URLROOT . '/admin/ad_payments');
+            exit;
+        }
+
+        $this->view('admin/ad_payment_detail', [
+            'payment' => $payment,
+        ]);
+    }
+
+    private function getPaymentFilters(): array
+    {
+        return [
+            'search' => trim((string)($_GET['search'] ?? '')),
+            'status' => trim((string)($_GET['status'] ?? '')),
+            'payment_type' => trim((string)($_GET['payment_type'] ?? '')),
+            'payment_method' => trim((string)($_GET['payment_method'] ?? '')),
+            'booking_status' => trim((string)($_GET['booking_status'] ?? '')),
+            'from' => trim((string)($_GET['from'] ?? '')),
+            'to' => trim((string)($_GET['to'] ?? '')),
+        ];
+    }
+
+    private function exportPaymentReportCSV(array $filters): void
+    {
+        $rows = $this->adminPaymentModel->getAllPaymentsForExport($filters);
+
+        $filename = 'payment_summary_' . date('Ymd_His') . '.csv';
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $output = fopen('php://output', 'w');
+        fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+        fputcsv($output, ['SmartCare Admin Payment Summary']);
+        fputcsv($output, ['Generated at', date('Y-m-d H:i:s')]);
+        fputcsv($output, []);
+        fputcsv($output, [
+            'Payment ID',
+            'Booking ID',
+            'Client',
+            'Caretaker',
+            'Service',
+            'Basis',
+            'Payment Type',
+            'Payment Method',
+            'Amount',
+            'Remaining Balance',
+            'Payment Status',
+            'Due Date',
+            'Paid Date',
+            'Created At',
+            'Booking Status',
+        ]);
+
+        foreach ($rows as $row) {
+            fputcsv($output, [
+                $row['payment_id'],
+                $row['booking_id'],
+                $row['client_name'],
+                $row['caretaker_name'],
+                $row['service_type'],
+                $row['basis'],
+                $row['payment_type'],
+                $row['payment_method'],
+                number_format((float)$row['amount'], 2, '.', ''),
+                number_format((float)$row['remaining_balance'], 2, '.', ''),
+                $row['status'],
+                $row['due_date'],
+                $row['paid_date'],
+                $row['created_at'],
+                $row['booking_status'],
+            ]);
+        }
+
+        fclose($output);
+        exit;
+    }
+
+    private function exportPaymentReportPDF(array $filters): void
+    {
+        $rows = $this->adminPaymentModel->getAllPaymentsForExport($filters);
+        $summary = $this->adminPaymentModel->getPaymentSummary($filters);
+
+        header('Content-Type: text/html; charset=utf-8');
+
+        echo '<!DOCTYPE html><html><head><meta charset="UTF-8">';
+        echo '<title>Payment Summary Report</title>';
+        echo '<style>';
+        echo 'body{font-family:Arial,sans-serif;margin:24px;color:#111827;}';
+        echo 'h1{margin:0 0 8px;font-size:24px;}';
+        echo '.meta{margin:0 0 16px;color:#4b5563;}';
+        echo '.summary{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;}';
+        echo '.card{border:1px solid #d1d5db;border-radius:6px;padding:10px 12px;min-width:180px;background:#f8fafc;}';
+        echo '.card b{display:block;color:#374151;font-size:12px;margin-bottom:4px;text-transform:uppercase;}';
+        echo 'table{width:100%;border-collapse:collapse;font-size:12px;}';
+        echo 'th,td{border:1px solid #d1d5db;padding:6px 8px;text-align:left;}';
+        echo 'th{background:#0f172a;color:#fff;}';
+        echo '@media print{button{display:none;}}';
+        echo '</style></head><body>';
+        echo '<button onclick="window.print()">Print / Save as PDF</button>';
+        echo '<h1>SmartCare Admin Payment Summary</h1>';
+        echo '<p class="meta">Generated at: ' . htmlspecialchars(date('Y-m-d H:i:s'), ENT_QUOTES, 'UTF-8') . '</p>';
+
+        echo '<div class="summary">';
+        echo '<div class="card"><b>Total Records</b>' . (int)$summary['total_records'] . '</div>';
+        echo '<div class="card"><b>Unique Clients</b>' . (int)$summary['unique_clients'] . '</div>';
+        echo '<div class="card"><b>Total Collected</b>LKR ' . number_format((float)$summary['total_collected'], 2) . '</div>';
+        echo '<div class="card"><b>Pending</b>' . (int)$summary['pending_count'] . '</div>';
+        echo '<div class="card"><b>Rejected</b>' . (int)$summary['rejected_count'] . '</div>';
+        echo '<div class="card"><b>Outstanding</b>LKR ' . number_format((float)$summary['outstanding_balance'], 2) . '</div>';
+        echo '</div>';
+
+        echo '<table><thead><tr>';
+        echo '<th>Payment ID</th><th>Booking ID</th><th>Client</th><th>Caretaker</th><th>Service</th><th>Type</th><th>Method</th><th>Amount</th><th>Balance</th><th>Status</th><th>Created</th>';
+        echo '</tr></thead><tbody>';
+
+        if (empty($rows)) {
+            echo '<tr><td colspan="11">No payment records found for selected filters.</td></tr>';
+        } else {
+            foreach ($rows as $row) {
+                echo '<tr>';
+                echo '<td>' . (int)$row['payment_id'] . '</td>';
+                echo '<td>' . (int)$row['booking_id'] . '</td>';
+                echo '<td>' . htmlspecialchars($row['client_name'] ?? '', ENT_QUOTES, 'UTF-8') . '</td>';
+                echo '<td>' . htmlspecialchars($row['caretaker_name'] ?? '', ENT_QUOTES, 'UTF-8') . '</td>';
+                echo '<td>' . htmlspecialchars($row['service_type'] ?? '', ENT_QUOTES, 'UTF-8') . '</td>';
+                echo '<td>' . htmlspecialchars($row['payment_type'] ?? '', ENT_QUOTES, 'UTF-8') . '</td>';
+                echo '<td>' . htmlspecialchars($row['payment_method'] ?? '', ENT_QUOTES, 'UTF-8') . '</td>';
+                echo '<td>LKR ' . number_format((float)$row['amount'], 2) . '</td>';
+                echo '<td>LKR ' . number_format((float)$row['remaining_balance'], 2) . '</td>';
+                echo '<td>' . htmlspecialchars($row['status'] ?? '', ENT_QUOTES, 'UTF-8') . '</td>';
+                echo '<td>' . htmlspecialchars($row['created_at'] ?? '', ENT_QUOTES, 'UTF-8') . '</td>';
+                echo '</tr>';
+            }
+        }
+
+        echo '</tbody></table>';
+        echo '</body></html>';
+        exit;
     }
 
     public function ad_profile_requests()
