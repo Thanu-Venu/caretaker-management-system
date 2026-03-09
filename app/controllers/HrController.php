@@ -427,7 +427,69 @@ class HrController extends Controller
 
     public function hr_reports()
     {
-        $this->view("hr/hr_reports");
+        // Check for export request
+        if (isset($_GET['export'])) {
+            $this->exportHrReport();
+            return;
+        }
+
+        $reportsModel = $this->model('HrReportsModel');
+
+        $fromDate = $_GET['from'] ?? null;
+        $toDate = $_GET['to'] ?? null;
+
+        // Get comprehensive operational report data using the specialized HR model
+        $data = $reportsModel->getCompleteReportData($fromDate, $toDate);
+        $data['fromDate'] = $fromDate;
+        $data['toDate'] = $toDate;
+
+        $this->view("hr/hr_reports", $data);
+    }
+
+    /**
+     * AJAX endpoint to fetch filtered report data
+     */
+    public function getReportData()
+    {
+        header('Content-Type: application/json');
+
+        $reportsModel = $this->model('HrReportsModel');
+
+        $fromDate = $_GET['from'] ?? null;
+        $toDate = $_GET['to'] ?? null;
+
+        $data = $reportsModel->getCompleteReportData($fromDate, $toDate);
+
+        echo json_encode($data);
+        exit;
+    }
+
+    /**
+     * Export HR report to CSV or PDF
+     */
+    private function exportHrReport()
+    {
+        require_once APPROOT . '/core/ReportExporter.php';
+
+        $reportsModel = $this->model('HrReportsModel');
+
+        $fromDate = $_GET['from'] ?? null;
+        $toDate = $_GET['to'] ?? null;
+        $format = $_GET['format'] ?? 'csv'; // csv or pdf
+
+        // Get all operational report data
+        $data = $reportsModel->getCompleteReportData($fromDate, $toDate);
+
+        // Generate filename
+        $dateRange = ($fromDate && $toDate) ? "_" . $fromDate . "_to_" . $toDate : "_all_time";
+        $filename = "hr_report" . $dateRange;
+
+        // Export based on format
+        if ($format === 'pdf') {
+            ReportExporter::exportToPDF($data, $filename, 'hr');
+        } else {
+            ReportExporter::exportToCSV($data, $filename, 'hr');
+        }
     }
 
     public function hr_settings()
