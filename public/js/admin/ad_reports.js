@@ -1,91 +1,204 @@
-// Dummy data for per service engagement
-const serviceEngagements = [
-  { caretaker:"Mary", client:"Mr. Silva", type:"Elder Care", basis:"Monthly", location:"Colombo", hours:120, rating:4.8, earnings:40000, status:"Active" },
-  { caretaker:"Mary", client:"Mrs. Perera", type:"Babysitting", basis:"Hourly", location:"Colombo", hours:12, rating:4.7, earnings:6000, status:"Completed" },
-  { caretaker:"Kamal", client:"Raj Family", type:"Babysitting", basis:"Weekly", location:"Kandy", hours:40, rating:4.5, earnings:15000, status:"Active" },
-  { caretaker:"Sita", client:"Jaffna House", type:"Maid Service", basis:"Weekly", location:"Jaffna", hours:60, rating:4.6, earnings:20000, status:"Completed" }
-];
+// Initialize Charts
+let revenueChart = null;
+let bookingsChart = null;
 
-// Populate Per Service Engagement Table
-const serviceBody = document.getElementById("serviceEngagementBody");
-serviceEngagements.forEach(s => {
-  const row = `<tr>
-    <td>${s.caretaker}</td>
-    <td>${s.client}</td>
-    <td>${s.type}</td>
-    <td>${s.basis}</td>
-    <td>${s.location}</td>
-    <td>${s.hours}</td>
-    <td>${s.rating}</td>
-    <td>LKR ${s.earnings.toLocaleString()}</td>
-    <td>${s.status}</td>
-  </tr>`;
-  serviceBody.innerHTML += row;
+document.addEventListener('DOMContentLoaded', function () {
+  initializeCharts();
+
+  // Download Report button
+  document.getElementById('downloadReport').addEventListener('click', downloadReport);
 });
 
-// Generate Caretaker Monthly Summary
-const summaryMap = {};
-serviceEngagements.forEach(s => {
-  if(!summaryMap[s.caretaker]){
-    summaryMap[s.caretaker] = { totalHours:0, totalEarnings:0, clients:new Set(), ratings:[] };
+/**
+ * Initialize Charts with data from PHP
+ */
+function initializeCharts() {
+  // Revenue by Service Type Chart
+  const ctx1 = document.getElementById("revenueChart").getContext("2d");
+
+  if (revenueChart) {
+    revenueChart.destroy();
   }
-  summaryMap[s.caretaker].totalHours += s.hours;
-  summaryMap[s.caretaker].totalEarnings += s.earnings;
-  summaryMap[s.caretaker].clients.add(s.client);
-  summaryMap[s.caretaker].ratings.push(s.rating);
-});
 
-const summaryBody = document.getElementById("summaryBody");
-for(let caretaker in summaryMap){
-  const data = summaryMap[caretaker];
-  const avgRating = (data.ratings.reduce((a,b)=>a+b,0)/data.ratings.length).toFixed(2);
-  const row = `<tr>
-    <td>${caretaker}</td>
-    <td>${data.totalHours}</td>
-    <td>LKR ${data.totalEarnings.toLocaleString()}</td>
-    <td>${data.clients.size}</td>
-    <td>${avgRating}</td>
-  </tr>`;
-  summaryBody.innerHTML += row;
+  revenueChart = new Chart(ctx1, {
+    type: "pie",
+    data: {
+      labels: revenueChartData.labels,
+      datasets: [{
+        label: "Revenue",
+        data: revenueChartData.data,
+        backgroundColor: ["#00bfa5", "#1E88E5", "#FFC107", "#E53935", "#8E24AA"]
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              return context.label + ': LKR ' + context.parsed.toLocaleString();
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Monthly Bookings Trend Chart
+  const ctx2 = document.getElementById("bookingsChart").getContext("2d");
+
+  if (bookingsChart) {
+    bookingsChart.destroy();
+  }
+
+  bookingsChart = new Chart(ctx2, {
+    type: "line",
+    data: {
+      labels: bookingsTrendData.labels,
+      datasets: [{
+        label: "Bookings",
+        data: bookingsTrendData.data,
+        borderColor: "#1E88E5",
+        backgroundColor: "rgba(30,136,229,0.2)",
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1
+          }
+        }
+      }
+    }
+  });
 }
 
-// Charts
-const ctx1 = document.getElementById("revenueChart").getContext("2d");
-new Chart(ctx1, {
-  type: "pie",
-  data: {
-    labels: ["Elder Care", "Babysitting", "Maid Services"],
-    datasets: [{
-      label: "Revenue",
-      data: [40000+0, 6000+15000, 20000], // summed revenue by type
-      backgroundColor: ["#00bfa5", "#1E88E5", "#FFC107"]
-    }]
-  }
-});
+/**
+ * Apply date filters and reload data via AJAX
+ */
+function applyFilters() {
+  const fromDate = document.getElementById("fromDate").value;
+  const toDate = document.getElementById("toDate").value;
 
-const ctx2 = document.getElementById("bookingsChart").getContext("2d");
-new Chart(ctx2, {
-  type: "line",
-  data: {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [{
-      label: "Bookings",
-      data: [5, 8, 6, 10, 7, 12], // dummy monthly booking counts
-      borderColor: "#1E88E5",
-      backgroundColor: "rgba(30,136,229,0.2)",
-      fill: true,
-      tension: 0.3
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false
+  if (!fromDate || !toDate) {
+    alert("Please select both From and To dates.");
+    return;
   }
-});
 
-// Dummy filter function
-function applyFilters(){
-  const from = document.getElementById("fromDate").value;
-  const to = document.getElementById("toDate").value;
-  alert(`Filtering reports from ${from} to ${to}`);
+  if (new Date(fromDate) > new Date(toDate)) {
+    alert("From date cannot be after To date.");
+    return;
+  }
+
+  // Reload page with query parameters
+  window.location.href = `${URLROOT}/admin/ad_reports?from=${fromDate}&to=${toDate}`;
+}
+
+/**
+ * Download Report as CSV
+ */
+function downloadReport() {
+  const fromDate = document.getElementById("fromDate").value;
+  const toDate = document.getElementById("toDate").value;
+
+  // Get all data from the page
+  const summary = {
+    totalCaretakers: document.getElementById('caretakersCount').textContent,
+    totalClients: document.getElementById('clientsCount').textContent,
+    ongoingServices: document.getElementById('ongoingCount').textContent,
+    totalRevenue: document.getElementById('revenueCount').textContent,
+    pendingRequests: document.getElementById('pendingCount').textContent
+  };
+
+  // Get service engagement data
+  const engagementRows = document.querySelectorAll('#serviceEngagementBody tr');
+  const engagements = [];
+  engagementRows.forEach(row => {
+    const cells = row.querySelectorAll('td');
+    if (cells.length > 1) {
+      engagements.push({
+        caretaker: cells[0].textContent,
+        client: cells[1].textContent,
+        serviceType: cells[2].textContent,
+        basis: cells[3].textContent,
+        location: cells[4].textContent,
+        hours: cells[5].textContent,
+        rating: cells[6].textContent,
+        earnings: cells[7].textContent,
+        status: cells[8].textContent
+      });
+    }
+  });
+
+  // Get caretaker summary data
+  const summaryRows = document.querySelectorAll('#summaryBody tr');
+  const caretakerSummary = [];
+  summaryRows.forEach(row => {
+    const cells = row.querySelectorAll('td');
+    if (cells.length > 1) {
+      caretakerSummary.push({
+        caretaker: cells[0].textContent,
+        totalHours: cells[1].textContent,
+        totalEarnings: cells[2].textContent,
+        numClients: cells[3].textContent,
+        avgRating: cells[4].textContent
+      });
+    }
+  });
+
+  // Generate CSV content
+  let csv = "SmartCare Admin Reports\n\n";
+
+  if (fromDate && toDate) {
+    csv += `Date Range: ${fromDate} to ${toDate}\n\n`;
+  } else {
+    csv += "Date Range: All Time\n\n";
+  }
+
+  csv += "SUMMARY STATISTICS\n";
+  csv += `Total Caregivers,${summary.totalCaretakers}\n`;
+  csv += `Total Clients,${summary.totalClients}\n`;
+  csv += `Ongoing Services,${summary.ongoingServices}\n`;
+  csv += `Total Revenue,${summary.totalRevenue}\n`;
+  csv += `Pending Requests,${summary.pendingRequests}\n\n`;
+
+  csv += "PER SERVICE ENGAGEMENT\n";
+  csv += "Caregiver,Client,Service Type,Basis,Location,Hours,Rating,Earnings,Status\n";
+  engagements.forEach(e => {
+    csv += `${e.caretaker},${e.client},${e.serviceType},${e.basis},${e.location},${e.hours},${e.rating},${e.earnings},${e.status}\n`;
+  });
+
+  csv += "\nCAREGIVER MONTHLY SUMMARY\n";
+  csv += "Caregiver,Total Hours,Total Earnings,No. of Clients,Average Rating\n";
+  caretakerSummary.forEach(c => {
+    csv += `${c.caretaker},${c.totalHours},${c.totalEarnings},${c.numClients},${c.avgRating}\n`;
+  });
+
+  // Create download link
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+
+  link.setAttribute('href', url);
+  link.setAttribute('download', `admin_report_${new Date().toISOString().split('T')[0]}.csv`);
+  link.style.visibility = 'hidden';
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }

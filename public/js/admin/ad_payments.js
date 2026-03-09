@@ -1,68 +1,89 @@
-const tabButtons = document.querySelectorAll('.tab-btn');
-const historySection = document.getElementById('historySection');
-const pendingSection = document.getElementById('pendingSection');
-const invoicesSection = document.getElementById('invoicesSection');
+(() => {
+  const modal = document.getElementById('paymentModal');
+  const modalBody = document.getElementById('paymentModalBody');
+  const closeBtn = document.getElementById('modalCloseBtn');
+  const detailButtons = document.querySelectorAll('.js-view-detail');
 
-// Switch tabs
-tabButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    tabButtons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    if (btn.dataset.tab === "history") {
-      showSection("history");
-      history.pushState(null, "", "?url=admin/payment_history");
-    } else if (btn.dataset.tab === "pending") {
-      showSection("pending");
-      history.pushState(null, "", "?url=admin/pending_payment");
-    } else {
-      showSection("invoices");
-      history.pushState(null, "", "?url=admin/invoices");
-    }
-  });
-});
-
-function showSection(section) {
-  historySection.style.display = section === "history" ? "block" : "none";
-  pendingSection.style.display = section === "pending" ? "block" : "none";
-  invoicesSection.style.display = section === "invoices" ? "block" : "none";
-}
-
-// Load correct tab on page refresh
-window.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const urlValue = params.get("url");
-
-  if (urlValue === "admin/pending_payment") {
-    switchTab("pending");
-  } else if (urlValue === "admin/invoices") {
-    switchTab("invoices");
-  } else {
-    switchTab("history");
+  if (!modal || !modalBody || !closeBtn || detailButtons.length === 0) {
+    return;
   }
-});
 
-function switchTab(tabName) {
-  tabButtons.forEach(b => b.classList.remove('active'));
-  document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-  showSection(tabName);
-}
+  const fields = [
+    ['payment_id', 'Payment ID', (v) => `#${v}`],
+    ['booking_id', 'Booking ID', (v) => `#${v}`],
+    ['client_name', 'Client'],
+    ['caretaker_name', 'Caretaker'],
+    ['service_type', 'Service'],
+    ['basis', 'Basis'],
+    ['payment_type', 'Payment Type', (v) => ucfirst(v)],
+    ['payment_method', 'Payment Method', (v) => ucfirst(String(v || '').replace(/_/g, ' '))],
+    ['status', 'Payment Status', (v) => ucfirst(v)],
+    ['booking_status', 'Booking Status'],
+    ['amount', 'Amount', (v) => toMoney(v)],
+    ['remaining_balance', 'Remaining Balance', (v) => toMoney(v)],
+    ['created_at', 'Created At'],
+    ['paid_date', 'Paid Date'],
+  ];
 
-// Search filtering
-function setupSearch(inputId, tableId) {
-  const searchInput = document.getElementById(inputId);
-  const table = document.getElementById(tableId);
-  const rows = table.querySelectorAll("tbody tr");
+  detailButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      let payload = {};
+      try {
+        payload = JSON.parse(button.dataset.payment || '{}');
+      } catch (error) {
+        payload = {};
+      }
 
-  searchInput.addEventListener("keyup", () => {
-    const filter = searchInput.value.toLowerCase();
+      modalBody.innerHTML = fields
+        .map(([key, label, formatter]) => {
+          const value = payload[key] ?? '-';
+          const formatted = typeof formatter === 'function' ? formatter(value) : value;
+          return `<dt>${escapeHtml(label)}</dt><dd>${escapeHtml(String(formatted || '-'))}</dd>`;
+        })
+        .join('');
 
-    rows.forEach(row => {
-      const text = row.textContent.toLowerCase();
-      row.style.display = text.includes(filter) ? "" : "none";
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
     });
   });
-}
 
-setupSearch("historySearch", "historyTable");
-setupSearch("pendingSearch", "pendingTable");
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modal.classList.contains('show')) {
+      closeModal();
+    }
+  });
+
+  function closeModal() {
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  function ucfirst(value) {
+    const normalized = String(value || '').trim();
+    if (!normalized) {
+      return '-';
+    }
+    return normalized.charAt(0).toUpperCase() + normalized.slice(1);
+  }
+
+  function toMoney(value) {
+    const num = Number(value || 0);
+    return `LKR ${num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+})();
