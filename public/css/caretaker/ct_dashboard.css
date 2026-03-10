@@ -7,7 +7,7 @@ body {
   color: #333;
 }
 
-.welcome h1{
+.welcome h1 {
   color: #1e88e5;
   font-size: 28px;
 }
@@ -80,6 +80,12 @@ body {
   color: #555;
 }
 
+.profile-request-status {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #455a64;
+}
+
 .tags .tag {
   display: inline-block;
   padding: 6px 12px;
@@ -93,7 +99,10 @@ body {
 }
 
 /* Buttons */
-.btn, .btn-small, .butn, .btn-le {
+.btn,
+.btn-small,
+.butn,
+.btn-le {
   background: #1e88e5;
   color: #fff;
   padding: 8px 16px;
@@ -104,7 +113,10 @@ body {
   transition: all 0.2s ease;
 }
 
-.btn:hover, .btn-small:hover, .butn:hover, .btn-le:hover {
+.btn:hover,
+.btn-small:hover,
+.butn:hover,
+.btn-le:hover {
   background: #1565c0;
 }
 
@@ -125,14 +137,22 @@ body {
   width: 42px;
   height: 22px;
 }
-.switch input { display: none; }
+
+.switch input {
+  display: none;
+}
+
 .slider {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: #ccc;
   border-radius: 20px;
   transition: 0.3s;
 }
+
 .slider:before {
   content: "";
   position: absolute;
@@ -144,10 +164,12 @@ body {
   border-radius: 50%;
   transition: 0.3s;
 }
-input:checked + .slider {
+
+input:checked+.slider {
   background: #00bfa5;
 }
-input:checked + .slider:before {
+
+input:checked+.slider:before {
   transform: translateX(20px);
 }
 
@@ -159,16 +181,19 @@ table {
   border-radius: 8px;
   overflow: hidden;
 }
+
 th {
   background: #f1f6fb;
   text-align: left;
   padding: 12px;
   color: #1565c0;
 }
+
 td {
   padding: 12px;
   border-bottom: 1px solid #eee;
 }
+
 tbody tr:nth-child(even) {
   background: #fafafa;
 }
@@ -213,56 +238,75 @@ tbody tr:nth-child(even) {
   background: #f9fcff;
   border: 1px solid #e0e0e0;
 }
-.calendar .days, .calendar .dates {
+
+.calendar .days,
+.calendar .dates {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 4px;
 }
-.calendar span, .calendar div {
+
+.calendar span,
+.calendar div {
   padding: 6px;
 }
+
 .calendar .date {
   background: #eee;
   border-radius: 6px;
   cursor: pointer;
   transition: 0.2s;
 }
+
 .calendar .date:hover {
   background: #1e88e5;
   color: #fff;
 }
+
 .calendar .date.active {
   background: #00bfa5;
   color: #fff;
 }
 
 /* Modal */
-.modal, .le-modal {
+.modal,
+.le-modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
-.modal-content, .le-modal-content {
+.modal-content,
+.le-modal-content {
   background: #fff;
   padding: 25px;
   width: 500px;
   max-width: 95%;
   border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   animation: fadeIn 0.3s ease;
 }
+
 @keyframes fadeIn {
-  from { transform: translateY(-20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
-.modal-content input, .le-modal-content input, 
-.le-modal-content select, .le-modal-content textarea {
+.modal-content input,
+.le-modal-content input,
+.le-modal-content select,
+.le-modal-content textarea {
   width: 100%;
   padding: 10px;
   margin: 8px 0;
@@ -270,7 +314,9 @@ tbody tr:nth-child(even) {
   border-radius: 8px;
   font-size: 14px;
 }
-.submit-btn, .save-btn {
+
+.submit-btn,
+.save-btn {
   background: #1e88e5;
   color: #fff;
   padding: 10px;
@@ -278,23 +324,29 @@ tbody tr:nth-child(even) {
   border-radius: 8px;
   cursor: pointer;
 }
-.submit-btn:hover, .save-btn:hover {
+
+.submit-btn:hover,
+.save-btn:hover {
   background: #1565c0;
 }
-.close-btn, .close {
+
+.close-btn,
+.close {
   background: #f1f1f1;
   padding: 10px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
 }
+
 .close-btn:hover {
   background: #ddd;
 }
 
 .leave .button-container {
   display: flex;
-  justify-content: flex-end;   /* Push button to right */
+  justify-content: flex-end;
+  /* Push button to right */
   margin-bottom: 15px;
 }
 
@@ -307,13 +359,30 @@ tbody tr:nth-child(even) {
   cursor: pointer;
   font-size: 14px;
 }
+
 .btn-le:hover {
   background-color: #1a75c5;
 }
 
-.btn-small{
+.btn-small {
   margin-top: 15px;
   margin-left: 10px;
+}
+
+a.btn-small {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.modal-content textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 90px;
 }
 
 /* =====================
@@ -326,9 +395,9 @@ body {
 /* Smooth transitions everywhere */
 * {
   transition: background-color 0.2s ease,
-              color 0.2s ease,
-              box-shadow 0.2s ease,
-              transform 0.2s ease;
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 /* =====================
@@ -376,15 +445,24 @@ body {
 /* =====================
    Buttons – More Feedback
 ===================== */
-.btn, .btn-small, .butn, .btn-le {
+.btn,
+.btn-small,
+.butn,
+.btn-le {
   box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
 }
 
-.btn:hover, .btn-small:hover, .butn:hover, .btn-le:hover {
+.btn:hover,
+.btn-small:hover,
+.butn:hover,
+.btn-le:hover {
   transform: translateY(-2px);
 }
 
-.btn:active, .btn-small:active, .butn:active, .btn-le:active {
+.btn:active,
+.btn-small:active,
+.butn:active,
+.btn-le:active {
   transform: translateY(0);
   box-shadow: 0 3px 8px rgba(30, 136, 229, 0.2);
 }
@@ -397,7 +475,7 @@ body {
    Switch – Cleaner Look
 ===================== */
 .slider {
-  box-shadow: inset 0 0 4px rgba(0,0,0,0.15);
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.15);
 }
 
 /* =====================
@@ -436,7 +514,8 @@ tbody tr:hover {
 /* =====================
    Modal – More Depth
 ===================== */
-.modal-content, .le-modal-content {
+.modal-content,
+.le-modal-content {
   box-shadow: 0 14px 35px rgba(30, 136, 229, 0.25);
 }
 
@@ -452,14 +531,47 @@ tbody tr:hover {
 /* =====================
    Close Buttons
 ===================== */
-.close-btn:hover, .close:hover {
+.close-btn:hover,
+.close:hover {
   background: #e3f2fd;
   color: #1565c0;
 }
-/* Today highlight */
-.calendar .date.today {
-  border: 2px solid #1e88e5;
-  background: #e8f2ff;
-  color: #1e88e5;
+
+.leave-progress-mini {
+  margin-bottom: 14px;
+  background: #f5f9ff;
+  border: 1px solid #dce8fb;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.leave-progress-mini .mini-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #1b3a6f;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.leave-progress-mini .mini-track {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: #e8effa;
+  overflow: hidden;
+}
+
+.leave-progress-mini .mini-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #11a38f, #2a7de6);
+}
+
+.leave-progress-mini small {
+  display: block;
+  margin-top: 7px;
+  color: #1b3a6f;
   font-weight: 600;
 }

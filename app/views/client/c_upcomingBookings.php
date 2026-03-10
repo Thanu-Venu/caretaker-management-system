@@ -115,6 +115,18 @@
                                 </td>
 
                                 <td class="actions">
+                                    <!-- VIEW CONTACT (only after advance payment) -->
+                                    <?php
+                                    $advancePaidStatuses = ['Advance_Paid', 'Accepted', 'Reschedule_Requested', 'Change_Requested'];
+                                    if (in_array($b['status'], $advancePaidStatuses)):
+                                    ?>
+                                        <a class="action-btn" id="contact-btn"
+                                            href="<?= URLROOT ?>/client/c_contactCT?booking_id=<?= (int)$b['booking_id'] ?>"
+                                            style="background-color: #28a745; border-color: #28a745;">
+                                            View Contact
+                                        </a>
+                                    <?php endif; ?>
+
                                     <button class="action-btn" id="cancel-btn"
                                         onclick="openCancelModal(<?= $b['booking_id'] ?>)">
                                         Cancel

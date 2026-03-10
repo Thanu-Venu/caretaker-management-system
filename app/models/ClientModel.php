@@ -1,9 +1,12 @@
 <?php
 require_once APPROOT . '/core/Database.php';
+require_once APPROOT . '/models/AccountModel.php';
 
 class ClientModel
 {
     private $conn;
+    private $accountLinkChecked = false;
+    private $accountLinkEnabled = false;
 
     public function __construct()
     {
@@ -11,7 +14,48 @@ class ClientModel
         $this->conn = $db->conn;
     }
 
+    private function hasAccountLinking(): bool
+    {
+        if ($this->accountLinkChecked) {
+            return $this->accountLinkEnabled;
+        }
+
+        $tables = $this->conn->query("SHOW TABLES LIKE 'accounts'");
+        if (!$tables || $tables->num_rows === 0) {
+            $this->accountLinkChecked = true;
+            $this->accountLinkEnabled = false;
+            return false;
+        }
+
+        $cols = $this->conn->query("SHOW COLUMNS FROM clients LIKE 'account_id'");
+        $this->accountLinkChecked = true;
+        $this->accountLinkEnabled = (bool)($cols && $cols->num_rows > 0);
+        return $this->accountLinkEnabled;
+    }
+
     /* ===================== CLIENT CRUD ===================== */
+
+    public function findUserByEmail($email)
+    {
+        $stmt = $this->conn->prepare("SELECT id FROM clients WHERE email = ? LIMIT 1");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->num_rows > 0;
+    }
+
+    public function register($data)
+    {
+        $sql = "INSERT INTO clients (name, email, phone, password, role) VALUES (?, ?, ?, ?, 'client')";
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            return false;
+        }
+
+        $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+        $stmt->bind_param("ssss", $data['name'], $data['email'], $data['phone'], $hashedPassword);
+        return $stmt->execute();
+    }
 
     public function getAllClients()
     {
@@ -26,7 +70,7 @@ class ClientModel
     public function getClientById($id)
     {
         $stmt = $this->conn->prepare(
-            "SELECT id, name, email, phone, profile_image, created_at
+            "SELECT id, account_id, name, email, phone, profile_image, created_at
              FROM clients
              WHERE id=?"
         );
@@ -39,7 +83,7 @@ class ClientModel
     public function getClientDetails($id)
     {
         $stmt = $this->conn->prepare(
-            "SELECT id, name, email, phone, profile_image, created_at
+            "SELECT id, account_id, name, email, phone, profile_image, created_at
              FROM clients
              WHERE id=?"
         );
@@ -62,14 +106,42 @@ class ClientModel
         $img   = $data['profile_image'] ?? 'default.png';
 
         $stmt->bind_param("ssssi", $name, $email, $phone, $img, $id);
-        return $stmt->execute();
+        $ok = $stmt->execute();
+
+        if ($ok && $this->hasAccountLinking()) {
+            $client = $this->getClientById($id);
+            $accountId = (int)($client['account_id'] ?? 0);
+            if ($accountId > 0) {
+                $role = 'client';
+                $status = 'Active';
+                $sync = $this->conn->prepare("UPDATE accounts SET name=?, email=?, role=?, status=? WHERE id=?");
+                $sync->bind_param("ssssi", $name, $email, $role, $status, $accountId);
+                $sync->execute();
+                $sync->close();
+            }
+        }
+
+        return $ok;
     }
 
     public function updateClientPassword($id, $hashedPassword)
     {
         $stmt = $this->conn->prepare("UPDATE clients SET password=? WHERE id=?");
         $stmt->bind_param("si", $hashedPassword, $id);
-        return $stmt->execute();
+        $ok = $stmt->execute();
+
+        if ($ok && $this->hasAccountLinking()) {
+            $client = $this->getClientById($id);
+            $accountId = (int)($client['account_id'] ?? 0);
+            if ($accountId > 0) {
+                $sync = $this->conn->prepare("UPDATE accounts SET password=? WHERE id=?");
+                $sync->bind_param("si", $hashedPassword, $accountId);
+                $sync->execute();
+                $sync->close();
+            }
+        }
+
+        return $ok;
     }
 
     public function deleteClient($id)
@@ -137,6 +209,124 @@ class ClientModel
     }
 
     /* ===================== BOOKINGS ===================== */
+
+    private function getTimeRangeFromString($timeString)
+    {
+        $map = [
+            "Morning (8am - 12pm)" => ["08:00:00", "12:00:00"],
+            "Evening (1pm - 5pm)"  => ["13:00:00", "17:00:00"],
+            "Night (6pm - 10pm)"   => ["18:00:00", "22:00:00"],
+            "Full Time (8am - 5pm)" => ["08:00:00", "17:00:00"]
+        ];
+
+        return $map[$timeString] ?? ["00:00:00", "23:59:59"];
+    }
+
+    private function calculateBookingEndDate($bookingDate, $basis, $duration)
+    {
+        try {
+            $start = new DateTime($bookingDate);
+            $duration = max(1, (int)$duration);
+            $basis = strtolower(trim((string)$basis));
+
+            if ($basis === 'hourly') {
+                return $start->format('Y-m-d');
+            }
+
+            if ($basis === 'monthly') {
+                $start->modify('+' . $duration . ' month');
+                $start->modify('-1 day');
+                return $start->format('Y-m-d');
+            }
+
+            if ($basis === 'yearly') {
+                $start->modify('+' . $duration . ' year');
+                $start->modify('-1 day');
+                return $start->format('Y-m-d');
+            }
+
+            // Default to day-based booking window.
+            $start->modify('+' . ($duration - 1) . ' day');
+            return $start->format('Y-m-d');
+        } catch (Exception $e) {
+            return $bookingDate;
+        }
+    }
+
+    private function hasBookingConflictForField($field, $fieldId, $bookingDate, $preferredTime, $basis, $duration)
+    {
+        $allowedFields = ['caretaker_id', 'client_id'];
+        if (!in_array($field, $allowedFields, true)) {
+            return false;
+        }
+
+        $startDate = (string)$bookingDate;
+        $endDate = $this->calculateBookingEndDate($startDate, $basis, $duration);
+        [$searchStart, $searchEnd] = $this->getTimeRangeFromString((string)$preferredTime);
+
+        $sql = "SELECT b.id
+                FROM bookings b
+                WHERE b.{$field} = ?
+                  AND LOWER(b.status) IN (
+                    'requested','payment_requested','advance_paid',
+                    'accepted','approved','change_requested','reschedule_requested'
+                  )
+                  AND b.booking_date <= ?
+                  AND (
+                        CASE
+                            WHEN LOWER(b.basis) = 'hourly' THEN b.booking_date
+                            WHEN LOWER(b.basis) = 'monthly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) MONTH), INTERVAL 1 DAY)
+                            WHEN LOWER(b.basis) = 'yearly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) YEAR), INTERVAL 1 DAY)
+                            ELSE DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) DAY), INTERVAL 1 DAY)
+                        END
+                  ) >= ?
+                  AND (
+                        LOWER(?) <> 'hourly'
+                        OR LOWER(b.basis) <> 'hourly'
+                        OR (
+                            ? < CASE b.preferred_time
+                                WHEN 'Morning (8am - 12pm)' THEN '12:00:00'
+                                WHEN 'Evening (1pm - 5pm)' THEN '17:00:00'
+                                WHEN 'Night (6pm - 10pm)' THEN '22:00:00'
+                                WHEN 'Full Time (8am - 5pm)' THEN '17:00:00'
+                                ELSE '23:59:59'
+                            END
+                            AND
+                            ? > CASE b.preferred_time
+                                WHEN 'Morning (8am - 12pm)' THEN '08:00:00'
+                                WHEN 'Evening (1pm - 5pm)' THEN '13:00:00'
+                                WHEN 'Night (6pm - 10pm)' THEN '18:00:00'
+                                WHEN 'Full Time (8am - 5pm)' THEN '08:00:00'
+                                ELSE '00:00:00'
+                            END
+                        )
+                  )
+                LIMIT 1";
+
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            return false;
+        }
+
+        $normalizedBasis = strtolower(trim((string)$basis));
+        // True overlap: existing_start <= requested_end AND existing_end >= requested_start
+        $stmt->bind_param("isssss", $fieldId, $endDate, $startDate, $normalizedBasis, $searchStart, $searchEnd);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        return !empty($row);
+    }
+
+    public function hasCaretakerBookingConflict($caretakerId, $bookingDate, $preferredTime, $basis, $duration)
+    {
+        return $this->hasBookingConflictForField('caretaker_id', (int)$caretakerId, $bookingDate, $preferredTime, $basis, $duration);
+    }
+
+    public function hasClientBookingConflict($clientId, $bookingDate, $preferredTime, $basis, $duration)
+    {
+        return $this->hasBookingConflictForField('client_id', (int)$clientId, $bookingDate, $preferredTime, $basis, $duration);
+    }
 
     public function createBooking($data)
     {
@@ -216,7 +406,7 @@ class ClientModel
                     b.cancelled_at,
                     c.name AS caretaker_name
                 FROM bookings b
-                JOIN caretakers c ON b.caretaker_id = c.id
+                LEFT JOIN caretakers c ON b.caretaker_id = c.id
                 WHERE b.id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $bookingId);
@@ -979,7 +1169,8 @@ class ClientModel
                     b.preferred_time,
                     b.basis,
                     b.duration,
-                    b.total_payment
+                    b.total_payment,
+                    b.status AS booking_status
                 FROM payments p
                 JOIN clients c ON p.client_id = c.id
                 JOIN caretakers ct ON p.caretaker_id = ct.id
@@ -1006,7 +1197,8 @@ class ClientModel
                     b.booking_date,
                     b.preferred_time,
                     b.basis,
-                    b.duration
+                    b.duration,
+                    b.status AS booking_status
                 FROM payments p
                 JOIN clients c ON p.client_id = c.id
                 JOIN caretakers ct ON p.caretaker_id = ct.id
@@ -1485,17 +1677,39 @@ class ClientModel
 
     public function cancelBooking($bookingId, $reason)
     {
-        $sql = "UPDATE bookings
-            SET status = 'cancelled',
-                cancellation_reason = ?,
-                cancelled_at = NOW()
-            WHERE id = ?";
+        $this->conn->begin_transaction();
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("si", $reason, $bookingId);
-        $stmt->execute();
+        try {
+            $sql = "UPDATE bookings
+                SET status = 'cancelled',
+                    cancellation_reason = ?,
+                    cancelled_at = NOW()
+                WHERE id = ?";
 
-        return $stmt->affected_rows > 0;
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("si", $reason, $bookingId);
+            $stmt->execute();
+            $bookingUpdated = $stmt->affected_rows > 0;
+            $stmt->close();
+
+            // Keep payment state in sync with booking cancellation for HR payment management.
+            $payStmt = $this->conn->prepare(
+                "UPDATE payments
+                 SET status = 'rejected'
+                 WHERE booking_id = ?
+                   AND status = 'pending'"
+            );
+            $payStmt->bind_param("i", $bookingId);
+            $payStmt->execute();
+            $payStmt->close();
+
+            $this->conn->commit();
+            return $bookingUpdated;
+        } catch (Throwable $e) {
+            $this->conn->rollback();
+            error_log("Cancel booking failed for booking #{$bookingId}: " . $e->getMessage());
+            return false;
+        }
     }
 
     public function getAdvancePaymentPendingBookings($clientId)

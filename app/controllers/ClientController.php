@@ -9,13 +9,13 @@ class ClientController extends Controller
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
 
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+        if (!AuthSession::hasRole('client')) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
         }
 
         $this->clientModel = $this->model('ClientModel');
-        $user = $this->clientModel->getClientById($_SESSION['user']['id']);
+        $user = $this->clientModel->getClientById(AuthSession::profileId());
 
         if (!$user) { // user deleted
             session_destroy();
@@ -35,10 +35,44 @@ class ClientController extends Controller
         ];
     }
 
+    /**
+     * Validate that a booking belongs to the current client
+     * Prevents IDOR attacks by verifying ownership before operations
+     *
+     * @param int $bookingId The booking ID to validate
+     * @param int $clientId The client ID to check ownership against
+     * @param string $redirectUrl URL to redirect to on failure
+     * @return array|null Returns booking data if valid, redirects and exits if invalid
+     */
+    private function assertBookingOwnership($bookingId, $clientId, $redirectUrl = null)
+    {
+        if (!$bookingId || !$clientId) {
+            $_SESSION['error'] = "Invalid request";
+            header("Location: " . ($redirectUrl ?? URLROOT . "/client/c_dashboard"));
+            exit;
+        }
+
+        $booking = $this->clientModel->getBookingById($bookingId);
+
+        if (!$booking) {
+            $_SESSION['error'] = "Booking not found";
+            header("Location: " . ($redirectUrl ?? URLROOT . "/client/c_dashboard"));
+            exit;
+        }
+
+        // Check ownership
+        if ((int)$booking['client_id'] !== (int)$clientId) {
+            $_SESSION['error'] = "Unauthorized access to booking";
+            header("Location: " . ($redirectUrl ?? URLROOT . "/client/c_dashboard"));
+            exit;
+        }
+
+        return $booking;
+    }
 
     public function c_dashboard()
     {
-        $clientId = $_SESSION['user']['id'];
+        $clientId = AuthSession::profileId();
 
         $data = [
             'activeBookings' => $this->clientModel->getActiveBookingsCount($clientId),
@@ -57,7 +91,7 @@ class ClientController extends Controller
 
     public function c_profile()
     {
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+        if (!AuthSession::hasRole('client')) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
         }
@@ -120,7 +154,7 @@ class ClientController extends Controller
 
     public function c_feedback()
     {
-        $clientId = $_SESSION['user']['id'] ?? null;
+        $clientId = AuthSession::profileId() ?: null;
         if (!$clientId) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
@@ -140,8 +174,13 @@ class ClientController extends Controller
         }
 
         $clientModel = $this->model('ClientModel');
+        $clientId = AuthSession::profileId();
 
         $bookingId = $_POST['booking_Id'];
+
+        // Validate booking ownership (prevents IDOR)
+        $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/c_pastBookings");
+
         $caretakerId = $clientModel->getCaretakerIdByBooking($bookingId);
 
         if (!$caretakerId) {
@@ -159,7 +198,7 @@ class ClientController extends Controller
 
         $data = [
             'booking_id'   => $bookingId,
-            'client_id'    => $_SESSION['user']['id'],
+            'client_id'    => $clientId,
             'caretaker_id' => $caretakerId,
             'rating'       => $_POST['rating'],
             'feedback'     => $_POST['feedback']
@@ -176,6 +215,7 @@ class ClientController extends Controller
     {
         $booking_id = $_GET['booking_id'] ?? null;
         $recurringPaymentId = $_GET['recurring_payment_id'] ?? null;
+        $clientId = AuthSession::profileId();
 
         if (!$booking_id) {
             $_SESSION['error'] = "No booking selected";
@@ -183,14 +223,8 @@ class ClientController extends Controller
             exit;
         }
 
-        // Get booking details
-        $booking = $this->clientModel->getBookingById($booking_id);
-
-        if (!$booking) {
-            $_SESSION['error'] = "Booking not found";
-            header("Location: " . URLROOT . "/client/c_upcomingBookings");
-            exit;
-        }
+        // Validate booking ownership (prevents IDOR)
+        $booking = $this->assertBookingOwnership($booking_id, $clientId, URLROOT . "/client/c_upcomingBookings");
 
         // Calculate payment info
         require_once APPROOT . '/controllers/PaymentController.php';
@@ -203,7 +237,7 @@ class ClientController extends Controller
         if (!empty($recurringPaymentId)) {
             $recurringPayment = $this->clientModel->getRecurringPaymentByIdForClient(
                 (int)$recurringPaymentId,
-                (int)($_SESSION['user']['id'] ?? 0),
+                (int)AuthSession::profileId(),
                 (int)$booking_id
             );
 
@@ -228,7 +262,7 @@ class ClientController extends Controller
         exit;
 
         // Legacy code (intentionally unreachable after redirect)
-        $clientId = $_SESSION['user']['id'] ?? null;
+        $clientId = AuthSession::profileId() ?: null;
         if (!$clientId) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
@@ -240,7 +274,7 @@ class ClientController extends Controller
 
     public function payments()
     {
-        $clientId = $_SESSION['user']['id'] ?? null;
+        $clientId = AuthSession::profileId() ?: null;
         if (!$clientId) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
@@ -396,7 +430,7 @@ class ClientController extends Controller
 
     public function paymentDetails($bookingId = null)
     {
-        $clientId = $_SESSION['user']['id'] ?? null;
+        $clientId = AuthSession::profileId() ?: null;
         if (!$clientId) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
@@ -412,14 +446,10 @@ class ClientController extends Controller
             exit;
         }
 
-        $timelineData = $this->clientModel->getBookingPaymentTimelineData((int)$clientId, $bookingId);
-        $booking = $timelineData['booking'] ?? null;
+        // Validate booking ownership (prevents IDOR)
+        $booking = $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/payments");
 
-        if (!$booking) {
-            $_SESSION['error'] = "Booking not found";
-            header("Location: " . URLROOT . "/client/payments");
-            exit;
-        }
+        $timelineData = $this->clientModel->getBookingPaymentTimelineData((int)$clientId, $bookingId);
 
         $timelineEvents = [];
         $payments = $timelineData['payments'] ?? [];
@@ -531,7 +561,7 @@ class ClientController extends Controller
 
     public function c_pastBookings()
     {
-        $clientId = $_SESSION['user']['id'];
+        $clientId = AuthSession::profileId();
         $bookings = $this->clientModel->getPastBookingsWithFeedback($clientId);
         $this->view("client/c_pastBookings", ['bookings' => $bookings]);
     }
@@ -539,7 +569,7 @@ class ClientController extends Controller
 
     public function c_upcomingBookings()
     {
-        $clientId = $_SESSION['user']['id'];
+        $clientId = AuthSession::profileId();
         $bookings = $this->clientModel->getUpcomingBookings($clientId);
         $pendingAdvance = $this->clientModel->getAdvancePaymentPendingBookings($clientId);
 
@@ -552,7 +582,7 @@ class ClientController extends Controller
     // New ongoing bookings page for client
     public function c_ongoingBookings()
     {
-        $clientId = $_SESSION['user']['id'];
+        $clientId = AuthSession::profileId();
         $bookings = $this->clientModel->getOngoingBookings($clientId);
 
         $this->view("client/c_ongoingBookings", ['bookings' => $bookings]);
@@ -569,7 +599,7 @@ class ClientController extends Controller
         $bookingId = (int)($_POST['booking_id'] ?? 0);
         $newCaretakerId = (int)($_POST['new_caretaker_id'] ?? 0);
         $reason = trim($_POST['reason'] ?? '');
-        $clientId = (int)($_SESSION['user']['id'] ?? 0);
+        $clientId = (int)AuthSession::profileId();
 
         if ($bookingId <= 0 || $newCaretakerId <= 0 || $clientId <= 0 || $reason === '') {
             $_SESSION['error'] = "Missing details.";
@@ -666,6 +696,8 @@ class ClientController extends Controller
         $prev = error_reporting(0);
 
         $bookingId = isset($_GET['booking_id']) ? (int)$_GET['booking_id'] : 0;
+        $clientId = AuthSession::profileId();
+
         if ($bookingId <= 0) {
             error_reporting($prev);
             echo json_encode(['error' => 'missing booking_id']);
@@ -676,6 +708,13 @@ class ClientController extends Controller
         if (!$booking) {
             error_reporting($prev);
             echo json_encode(['error' => 'booking not found']);
+            exit;
+        }
+
+        // Validate booking ownership (prevents IDOR)
+        if ((int)$booking['client_id'] !== (int)$clientId) {
+            error_reporting($prev);
+            echo json_encode(['error' => 'unauthorized access']);
             exit;
         }
 
@@ -735,18 +774,156 @@ class ClientController extends Controller
 
         $bookingId = $_POST['booking_id'] ?? null;
         $reason    = $_POST['reason'] ?? '';
+        $clientId = AuthSession::profileId();
 
         if (!$bookingId || empty($reason)) {
+            $_SESSION['error'] = 'Invalid booking or reason not provided.';
             header("Location: " . URLROOT . "/client/c_upcomingBookings");
             exit;
         }
 
-        // Call model
-        $this->clientModel->cancelBooking($bookingId, $reason);
+        // Validate booking ownership (prevents IDOR)
+        $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/c_upcomingBookings");
+
+        // Load refund calculation service
+        require_once APPROOT . '/core/RefundCalculationService.php';
+        $refundService = new RefundCalculationService();
+
+        // Calculate refund
+        $refundCalculation = $refundService->calculateRefund($bookingId, $reason, false);
+
+        if (!$refundCalculation['success']) {
+            $_SESSION['error'] = $refundCalculation['message'] ?? 'Failed to calculate refund.';
+            header("Location: " . URLROOT . "/client/c_upcomingBookings");
+            exit;
+        }
+
+        // Cancel the booking
+        $cancelled = $this->clientModel->cancelBooking($bookingId, $reason);
+
+        if ($cancelled) {
+            // Create refund record
+            $refundResult = $refundService->createRefundRecord($refundCalculation);
+
+            if ($refundResult['success']) {
+                // Cancel future recurring payments
+                $this->cancelFutureRecurringPayments($bookingId);
+
+                // Send notifications
+                $this->sendCancellationNotifications($bookingId, $refundCalculation);
+
+                $_SESSION['success'] = 'Booking cancelled successfully. ';
+
+                if ($refundCalculation['refund_amount'] > 0) {
+                    $_SESSION['success'] .= 'A refund of LKR ' . number_format($refundCalculation['refund_amount'], 2) .
+                        ' will be processed after HR approval.';
+                } else {
+                    $_SESSION['success'] .= 'No refund applicable for this cancellation.';
+                }
+            } else {
+                $_SESSION['error'] = 'Booking cancelled but refund record creation failed. Please contact support.';
+            }
+        } else {
+            $_SESSION['error'] = 'Failed to cancel booking. Please try again.';
+        }
 
         // Redirect back to upcoming bookings
         header("Location: " . URLROOT . "/client/c_upcomingBookings");
         exit;
+    }
+
+    /**
+     * Cancel future recurring payments for a cancelled booking
+     */
+    private function cancelFutureRecurringPayments($bookingId)
+    {
+        require_once APPROOT . '/core/RecurringPaymentService.php';
+        $recurringService = new RecurringPaymentService();
+
+        // This method should cancel all pending/overdue recurring payments
+        $sql = "UPDATE recurring_payments
+                SET status = 'cancelled'
+                WHERE booking_id = ?
+                AND status IN ('pending', 'overdue')";
+
+        $db = new Database();
+        $conn = $db->conn;
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $bookingId);
+        $stmt->execute();
+        $stmt->close();
+    }
+
+    /**
+     * Send cancellation notifications to relevant parties
+     */
+    private function sendCancellationNotifications($bookingId, $refundCalculation)
+    {
+        require_once APPROOT . '/models/NotificationModel.php';
+        $notificationModel = new NotificationModel();
+
+        // Get booking details
+        $booking = $this->clientModel->getBookingById($bookingId);
+        if (!$booking) return;
+
+        $clientId = $booking['client_id'];
+        $caretakerId = $booking['caretaker_id'];
+        $refundAmount = $refundCalculation['refund_amount'];
+
+        // Notify client
+        $clientMessage = "Your booking #{$bookingId} has been cancelled.\n\n" .
+            "Service: {$booking['service_type']}\n" .
+            "Booking Date: {$booking['booking_date']}\n\n";
+
+        if ($refundAmount > 0) {
+            $clientMessage .= "Refund Amount: LKR " . number_format($refundAmount, 2) . "\n" .
+                "Your refund is pending HR approval and will be processed shortly.";
+        } else {
+            $clientMessage .= "No refund applicable for this cancellation based on our refund policy.";
+        }
+
+        $notificationModel->addNotification(
+            $clientId,
+            'client',
+            'Booking Cancelled',
+            $clientMessage,
+            URLROOT . "/client/c_cancelledBookings"
+        );
+
+        // Notify caretaker
+        $caretakerMessage = "Booking #{$bookingId} has been cancelled by the client.\n\n" .
+            "Service: {$booking['service_type']}\n" .
+            "Booking Date: {$booking['booking_date']}\n\n" .
+            "This booking is no longer active.";
+
+        $notificationModel->addNotification(
+            $caretakerId,
+            'caretaker',
+            'Booking Cancelled',
+            $caretakerMessage,
+            URLROOT . "/caretaker/ct_bookings"
+        );
+
+        // Notify HR
+        $hrMessage = "Booking #{$bookingId} has been cancelled.\n\n" .
+            "Client ID: {$clientId}\n" .
+            "Service: {$booking['service_type']}\n" .
+            "Caretaker ID: {$caretakerId}\n\n";
+
+        if ($refundAmount > 0) {
+            $hrMessage .= "Refund Amount: LKR " . number_format($refundAmount, 2) . "\n" .
+                "Action Required: Approve and process refund.";
+        } else {
+            $hrMessage .= "No refund applicable.";
+        }
+
+        $notificationModel->addNotification(
+            5, // HR Manager ID
+            'Manager',
+            'Booking Cancellation - Action Required',
+            $hrMessage,
+            URLROOT . "/hr/refunds"
+        );
     }
 
     /* ================= RESCHEDULE BOOKING ================= */
@@ -769,7 +946,7 @@ class ClientController extends Controller
             exit;
         }
 
-        $clientId = $_SESSION['user']['id'];
+        $clientId = AuthSession::profileId();
         $rrModel = $this->model('RescheduleRequestModel');
 
         // ============ COMPREHENSIVE VALIDATION ============
@@ -863,16 +1040,15 @@ class ClientController extends Controller
     {
         $bookingId = $_GET['booking_id'] ?? null;
         $recurringPaymentId = $_GET['recurring_payment_id'] ?? null;
+        $clientId = AuthSession::profileId();
+
         if (!$bookingId) {
             header("Location: " . URLROOT . "/client/c_upcomingBookings");
             exit;
         }
 
-        $booking = $this->clientModel->getBookingById($bookingId);
-        if (!$booking) {
-            header("Location: " . URLROOT . "/client/c_upcomingBookings");
-            exit;
-        }
+        // Validate booking ownership (prevents IDOR)
+        $booking = $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/c_upcomingBookings");
 
         // Ensure PaymentController is available and compute advance
         require_once APPROOT . '/controllers/PaymentController.php';
@@ -885,7 +1061,7 @@ class ClientController extends Controller
         if (!empty($recurringPaymentId)) {
             $recurringPayment = $this->clientModel->getRecurringPaymentByIdForClient(
                 (int)$recurringPaymentId,
-                (int)($_SESSION['user']['id'] ?? 0),
+                (int)AuthSession::profileId(),
                 (int)$bookingId
             );
 
@@ -905,7 +1081,7 @@ class ClientController extends Controller
 
     public function c_cancelledBookings()
     {
-        $clientId = $_SESSION['user']['id'];
+        $clientId = AuthSession::profileId();
 
         // Use the correct model method
         $bookings = $this->clientModel->getCancelledBookings($clientId);
@@ -917,7 +1093,16 @@ class ClientController extends Controller
     /* ================= PAYMENT SUCCESS ================= */
     public function paymentSuccess()
     {
-        $bookingId = $_GET['booking_id'];
+        $bookingId = $_GET['booking_id'] ?? null;
+        $clientId = AuthSession::profileId();
+
+        if (!$bookingId) {
+            header("Location: " . URLROOT . "/client/c_dashboard");
+            exit;
+        }
+
+        // Validate booking ownership (prevents IDOR)
+        $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/c_dashboard");
 
         $this->clientModel->markAsPaid($bookingId);
 
@@ -936,19 +1121,19 @@ class ClientController extends Controller
 
         $serviceBasisRates = [
             'Elder Care' => [
+                'Monthly' => 50000,
+                'Yearly'  => 550000,
+            ],
+            'Babysitter' => [
+                'Daily'   => 2200,
                 'Monthly' => 45000,
                 'Yearly'  => 500000,
             ],
-            'Babysitter' => [
-                'Daily'   => 3200,
-                'Monthly' => 42000,
-                'Yearly'  => 480000,
-            ],
             'Maid' => [
                 'Hourly'  => 500,
-                'Daily'   => 3000,
+                'Daily'   => 2000,
                 'Monthly' => 38000,
-                'Yearly'  => 450000,
+                'Yearly'  => 420000,
             ],
         ];
 
@@ -1103,7 +1288,7 @@ class ClientController extends Controller
         $customization   = $_POST['customization'];
         $customizationHours = intval($_POST['customization_hours'] ?? 0);
         $caretaker_id    = $_POST['caretaker_id'] ?? 0;
-        $client_id       = $_SESSION['user']['id'] ?? 0;
+        $client_id       = AuthSession::profileId();
 
         // Detailed validation with specific error messages
         if ($caretaker_id <= 0) {
@@ -1143,6 +1328,22 @@ class ClientController extends Controller
             header("Location: " . URLROOT . "/client/c_find1");
             exit;
         }
+
+        // Final server-side overlap checks (cannot be bypassed via dev tools / forged requests).
+        $caretakerConflict = $this->clientModel->hasCaretakerBookingConflict(
+            (int)$caretaker_id,
+            (string)$booking_date,
+            (string)$preferred_time,
+            (string)$basis,
+            (int)$duration
+        );
+
+        if ($caretakerConflict) {
+            $_SESSION['error'] = "Selected caregiver is no longer available for the chosen date/time. Please choose another slot or caregiver.";
+            header("Location: " . URLROOT . "/client/c_book?id=" . (int)$caretaker_id);
+            exit;
+        }
+
         $customizationApply = $_POST['customization_apply'] ?? 'once';
         $total_payment = $this->calcTotalPayment(
             $service_type,
@@ -1269,11 +1470,10 @@ class ClientController extends Controller
         }
 
         $bookingId = $_GET['booking_id'];
-        $booking = $this->clientModel->getBookingById($bookingId);
+        $clientId = AuthSession::profileId();
 
-        if (!$booking) {
-            die("Booking not found");
-        }
+        // Validate booking ownership (prevents IDOR)
+        $booking = $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/c_dashboard");
 
         $this->view("client/c_bookingConfirm", ['booking' => $booking]);
     }
@@ -1293,7 +1493,7 @@ class ClientController extends Controller
 
         $bookingId = $_POST['booking_id'] ?? null;
         $recurringPaymentId = $_POST['recurring_payment_id'] ?? null;
-        $clientId = $_SESSION['user']['id'];
+        $clientId = AuthSession::profileId();
         $amount = $_POST['amount'] ?? null;
         $paymentMethod = $_POST['payment_method'] ?? null;
 
@@ -1306,13 +1506,8 @@ class ClientController extends Controller
             exit;
         }
 
-        // Get booking details
-        $booking = $this->clientModel->getBookingById($bookingId);
-        if (!$booking) {
-            $_SESSION['error'] = "Booking not found";
-            header("Location: " . URLROOT . "/client/c_upcomingBookings");
-            exit;
-        }
+        // Validate booking ownership (prevents IDOR)
+        $booking = $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/c_upcomingBookings");
 
         $paymentType = 'advance';
         $dueDate = null;
@@ -1398,7 +1593,7 @@ class ClientController extends Controller
     }
     public function c_settings()
     {
-        if (!isset($_SESSION['user'])) {
+        if (!AuthSession::isLoggedIn()) {
             header("Location: index.php?url=auth/login");
             exit;
         }
@@ -1410,7 +1605,7 @@ class ClientController extends Controller
 
     public function editClientDetails()
     {
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+        if (!AuthSession::hasRole('client')) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
         }
@@ -1448,7 +1643,7 @@ class ClientController extends Controller
 
     public function editPasswordDetails()
     {
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+        if (!AuthSession::hasRole('client')) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
         }
@@ -1475,36 +1670,50 @@ class ClientController extends Controller
     public function c_contactCT()
     {
         $caretaker = null;
-        $paymentId = $_GET['payment_id'] ?? null;
-        $caretakerId = $_GET['caretaker_id'] ?? null;
+        $clientId = AuthSession::profileId();
         $bookingId = $_GET['booking_id'] ?? null;
+        $caretakerId = null;
+        $hasAccess = false;
 
-        // Try to get caretaker from payment
-        if ($paymentId) {
-            $payment = $this->clientModel->getPaymentById($paymentId);
-            if ($payment && !empty($payment['caretaker_id'])) {
-                $caretakerId = $payment['caretaker_id'];
-            }
-        }
-
-        // Try to get caretaker from booking
-        if (!$caretakerId && $bookingId) {
+        // Primary method: Get from booking (with payment verification)
+        if ($bookingId) {
             $booking = $this->clientModel->getBookingById($bookingId);
-            if ($booking && !empty($booking['caretaker_id'])) {
-                $caretakerId = $booking['caretaker_id'];
+
+            // Security Check 1: Verify booking belongs to logged-in client
+            if ($booking && (int)$booking['client_id'] === (int)$clientId) {
+                // Security Check 2: Verify advance payment has been made
+                $advancePaidStatuses = ['Advance_Paid', 'Accepted', 'Reschedule_Requested', 'Change_Requested', 'Completed', 'Paid'];
+
+                if (in_array($booking['status'], $advancePaidStatuses)) {
+                    $caretakerId = $booking['caretaker_id'];
+                    $hasAccess = true;
+                } else {
+                    $_SESSION['error'] = "Caretaker contact details are only available after advance payment has been made.";
+                }
+            } else {
+                $_SESSION['error'] = "Unauthorized access to booking details.";
             }
         }
 
-        // If still no caretaker_id, get from most recent booking
-        if (!$caretakerId) {
-            $clientId = $_SESSION['user']['id'];
+        // Fallback: Get from most recent paid booking if no booking_id provided
+        if (!$hasAccess && !$bookingId) {
             $recentBookings = $this->clientModel->getRecentBookings($clientId);
-            if (!empty($recentBookings[0]['caretaker_id'])) {
-                $caretakerId = $recentBookings[0]['caretaker_id'];
+            foreach ($recentBookings as $recentBooking) {
+                $advancePaidStatuses = ['Advance_Paid', 'Accepted', 'Reschedule_Requested', 'Change_Requested', 'Completed', 'Paid'];
+                if (in_array($recentBooking['status'], $advancePaidStatuses)) {
+                    $caretakerId = $recentBooking['caretaker_id'];
+                    $hasAccess = true;
+                    break;
+                }
+            }
+
+            if (!$hasAccess) {
+                $_SESSION['error'] = "No caretaker details available. Please make advance payment for a booking first.";
             }
         }
 
-        if ($caretakerId) {
+        // Get caretaker details if access is granted
+        if ($hasAccess && $caretakerId) {
             $caretakerModel = $this->model('CaretakerModel');
             $caretaker = $caretakerModel->getCaretakerById($caretakerId);
         }
@@ -1517,7 +1726,7 @@ class ClientController extends Controller
         $complaintModel = $this->model('ComplaintModel');
         $clientModel = $this->model('ClientModel');
         $client_name = $_SESSION['user']['name'];
-        $client_id = $_SESSION['user']['id'];
+        $client_id = AuthSession::profileId();
         $complaints = $complaintModel->getComplaintsByClient($client_name);
         $caretakers = $clientModel->getBookedCaretakersByClient($client_id);
         $data = [

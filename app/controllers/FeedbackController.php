@@ -28,7 +28,7 @@ class FeedbackController extends Controller
     public function hrList()
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
-        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'hr') {
+        if (!AuthSession::hasRole('manager')) {
             die('Forbidden');
         }
         $data = $this->feedbackModel->getAll();
@@ -53,7 +53,7 @@ class FeedbackController extends Controller
 
         // Use session client_id if not provided in URL
         if (!$client_id) {
-            $client_id = $_SESSION['user']['id'] ?? null;
+            $client_id = AuthSession::profileId() ?: null;
         }
 
         if (!$client_id) {
@@ -77,7 +77,7 @@ class FeedbackController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Get client ID from session
             if (session_status() === PHP_SESSION_NONE) session_start();
-            $client_id = $_SESSION['user']['id'] ?? null;
+            $client_id = AuthSession::profileId() ?: null;
 
             if (!$client_id) {
                 die('User not logged in');

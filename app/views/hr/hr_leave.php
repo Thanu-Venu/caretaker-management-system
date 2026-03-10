@@ -50,6 +50,10 @@
               <th>Leave Type</th>
               <th>Start Date</th>
               <th>End Date</th>
+              <th>Total Days</th>
+              <th>Monthly Usage</th>
+              <th>Affected Bookings</th>
+              <th>Replacement</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -57,11 +61,23 @@
           <tbody>
             <?php if (!empty($data['leaves'])): ?>
               <?php foreach ($data['leaves'] as $leave): ?>
-                <tr>
+                <tr class="<?= !empty($leave['replacement_required']) ? 'row-impact' : '' ?>">
                   <td><?= htmlspecialchars($leave['caretaker_name']) ?></td>
                   <td><?= htmlspecialchars($leave['leave_type']) ?></td>
                   <td><?= htmlspecialchars($leave['start_date']) ?></td>
                   <td><?= htmlspecialchars($leave['end_date']) ?></td>
+                  <td><?= (int)($leave['request_days'] ?? 0) ?> day(s)</td>
+                  <td>
+                    <?= (int)($leave['monthly_used_after_request'] ?? 0) ?> / <?= (int)($leave['monthly_limit'] ?? 5) ?>
+                  </td>
+                  <td><?= (int)($leave['affected_booking_count'] ?? 0) ?></td>
+                  <td>
+                    <?php if (!empty($leave['replacement_required'])): ?>
+                      <span class="replacement-badge needed">Required</span>
+                    <?php else: ?>
+                      <span class="replacement-badge not-needed">Not Required</span>
+                    <?php endif; ?>
+                  </td>
                   <td><span
                       class="status <?= strtolower($leave['status']) ?>"><?= htmlspecialchars($leave['status']) ?></span>
                   </td>
@@ -83,58 +99,59 @@
               <?php endforeach; ?>
             <?php else: ?>
               <tr>
-                <td colspan="6">No leave requests found.</td>
+                <td colspan="10">No leave requests found.</td>
               </tr>
             <?php endif; ?>
           </tbody>
         </table>
-       
+
 
         <?php
-$page = $data['page'] ?? 1;
-$totalPages = $data['totalPages'] ?? 1;
+        $page = $data['page'] ?? 1;
+        $totalPages = $data['totalPages'] ?? 1;
 
-function pageUrl($p) {
-    $params = $_GET;
-    $params['page'] = $p;
-    $params['url']  = 'HrLeave/index';
-    return URLROOT . "/public/?" . http_build_query($params);
-}
+        function pageUrl($p)
+        {
+          $params = $_GET;
+          $params['page'] = $p;
+          $params['url']  = 'HrLeave/index';
+          return URLROOT . "/public/?" . http_build_query($params);
+        }
 
-?>
-<?php if ($totalPages > 1): ?>
-  
-  <div class="pagination">
-    <!-- Prev -->
-    <a class="pg <?= ($page <= 1) ? 'disabled' : '' ?>" 
-       href="<?= ($page <= 1) ? '#' : pageUrl($page - 1) ?>">Prev</a>
+        ?>
+        <?php if ($totalPages > 1): ?>
 
-    <?php
-      // show compact pages like: 1 2 3 4 ... last
-      $start = max(1, $page - 2);
-      $end   = min($totalPages, $page + 2);
+          <div class="pagination">
+            <!-- Prev -->
+            <a class="pg <?= ($page <= 1) ? 'disabled' : '' ?>"
+              href="<?= ($page <= 1) ? '#' : pageUrl($page - 1) ?>">Prev</a>
 
-      if ($start > 1) {
-        echo '<a class="pg" href="'.pageUrl(1).'">1</a>';
-        if ($start > 2) echo '<span class="dots">...</span>';
-      }
+            <?php
+            // show compact pages like: 1 2 3 4 ... last
+            $start = max(1, $page - 2);
+            $end   = min($totalPages, $page + 2);
 
-      for ($i = $start; $i <= $end; $i++) {
-        $active = ($i == $page) ? 'active' : '';
-        echo '<a class="pg '.$active.'" href="'.pageUrl($i).'">'.$i.'</a>';
-      }
+            if ($start > 1) {
+              echo '<a class="pg" href="' . pageUrl(1) . '">1</a>';
+              if ($start > 2) echo '<span class="dots">...</span>';
+            }
 
-      if ($end < $totalPages) {
-        if ($end < $totalPages - 1) echo '<span class="dots">...</span>';
-        echo '<a class="pg" href="'.pageUrl($totalPages).'">'.$totalPages.'</a>';
-      }
-    ?>
+            for ($i = $start; $i <= $end; $i++) {
+              $active = ($i == $page) ? 'active' : '';
+              echo '<a class="pg ' . $active . '" href="' . pageUrl($i) . '">' . $i . '</a>';
+            }
 
-    <!-- Next -->
-    <a class="pg <?= ($page >= $totalPages) ? 'disabled' : '' ?>" 
-       href="<?= ($page >= $totalPages) ? '#' : pageUrl($page + 1) ?>">Next</a>
-  </div>
-<?php endif; ?>
+            if ($end < $totalPages) {
+              if ($end < $totalPages - 1) echo '<span class="dots">...</span>';
+              echo '<a class="pg" href="' . pageUrl($totalPages) . '">' . $totalPages . '</a>';
+            }
+            ?>
+
+            <!-- Next -->
+            <a class="pg <?= ($page >= $totalPages) ? 'disabled' : '' ?>"
+              href="<?= ($page >= $totalPages) ? '#' : pageUrl($page + 1) ?>">Next</a>
+          </div>
+        <?php endif; ?>
 
       </div>
     </section>
@@ -147,7 +164,7 @@ function pageUrl($p) {
 
       document.querySelectorAll('#leaveTable tbody tr').forEach(row => {
         const type = row.cells[1].innerText.toLowerCase();
-        const status = row.cells[4].innerText.toLowerCase();
+        const status = row.cells[8].innerText.toLowerCase();
 
         const typeMatch = typeFilter === 'all' || type === typeFilter;
         const statusMatch = statusFilter === 'all' || status === statusFilter;

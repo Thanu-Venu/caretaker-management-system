@@ -46,7 +46,7 @@
       <?php if (!empty($recurringPayment['id'])): ?>
         <input type="hidden" name="recurring_payment_id" value="<?= (int)$recurringPayment['id'] ?>">
       <?php endif; ?>
-      <input type="hidden" name="client_id" value="<?= $_SESSION['user']['id'] ?? '' ?>">
+      <input type="hidden" name="client_id" value="<?= AuthSession::profileId() ?? '' ?>">
       <input type="hidden" name="amount" value="<?= $finalAmount ?>">
 
 

@@ -1,9 +1,6 @@
-
-
-
-
 .main-content {
-  margin-left: 270px; /* sidebar space */
+  margin-left: 270px;
+  /* sidebar space */
   padding: 40px;
   margin-right: 20px;
   font-family: 'Poppins', Arial, sans-serif;
@@ -13,7 +10,37 @@ h1 {
   font-size: 28px;
   margin-bottom: 20px;
   color: #1e88e5;
+}
 
+/* Status Legend */
+.status-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.legend-label {
+  font-size: 13px;
+  color: #34495e;
+  font-weight: 500;
 }
 
 /* Calendar tweaks */
@@ -21,7 +48,7 @@ h1 {
   background: #fff;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Modal overlay */
@@ -30,7 +57,7 @@ h1 {
   position: fixed;
   z-index: 1000;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   animation: fadeIn 0.3s ease-in-out;
 }
 
@@ -42,7 +69,7 @@ h1 {
   margin: 80px auto;
   padding: 20px;
   animation: slideUp 0.3s ease-in-out;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* Modal header */
@@ -71,7 +98,7 @@ h1 {
   margin-top: 15px;
 }
 
-#scheduleTable th, 
+#scheduleTable th,
 #scheduleTable td {
   padding: 12px;
   text-align: left;
@@ -193,6 +220,30 @@ h1 {
   border: 1px solid #b8daff;
 }
 
+.status-advance-paid {
+  background: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.status-payment-requested {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.status-requested {
+  background: #e7e7ff;
+  color: #383d95;
+  border: 1px solid #c7c7f5;
+}
+
+.status-default {
+  background: #e2e3e5;
+  color: #383d41;
+  border: 1px solid #d6d8db;
+}
+
 /* Payment styling */
 .detail-value.payment {
   color: #000;
@@ -202,13 +253,25 @@ h1 {
 
 /* Animations */
 @keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from {transform: translateY(50px); opacity: 0;}
-  to {transform: translateY(0); opacity: 1;}
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* Calendar container */
@@ -216,7 +279,7 @@ h1 {
   background: #fff;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-family: "Poppins", sans-serif;
   color: #2c3e50;
 }
@@ -244,12 +307,14 @@ h1 {
 
 /* Calendar grid */
 .fc .fc-daygrid-day {
-  cursor: pointer; /* so it looks clickable */
+  cursor: pointer;
+  /* so it looks clickable */
   transition: background 0.2s ease;
 }
 
 .fc .fc-daygrid-day:hover {
-  background: #f0f8ff; /* light hover */
+  background: #f0f8ff;
+  /* light hover */
 }
 
 /* Today highlight */
@@ -301,18 +366,20 @@ h1 {
 .status-badge.approved {
   background-color: #2ecc71;
 }
+
 .status-badge.pending {
   background-color: #f1c40f;
   color: #2c3e50;
 }
+
 .status-badge.rejected {
   background-color: #e74c3c;
 }
 
 /* Month/Year title color */
 .fc .fc-toolbar-title {
-  color: #1e88e5;   /* Your theme blue */
-  font-weight: 700; /* make it bold */
+  color: #1e88e5;
+  /* Your theme blue */
+  font-weight: 700;
+  /* make it bold */
 }
-
-

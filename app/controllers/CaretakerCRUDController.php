@@ -84,7 +84,7 @@ class CaretakerCRUDController extends Controller
 
             // ✅ History log (only after successful insert)
             $this->historyModel->log([
-                'user_id' => $_SESSION['user']['id'] ?? null,
+                'user_id' => AuthSession::profileId() ?: null,
                 'username' => $_SESSION['user']['username'] ?? 'unknown',
                 'role' => 'admin',
                 'action' => "Added caretaker: " . ($data['name'] ?? 'Unknown'),
@@ -104,7 +104,7 @@ class CaretakerCRUDController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->caretakerModel->updateCaretaker($id, $_POST);
             $this->historyModel->log([
-                'user_id' => $_SESSION['user']['id'],
+                'user_id' => AuthSession::profileId(),
                 'username' => $_SESSION['user']['username'],
                 'role' => 'admin',
                 'action' => "Updated caretaker (ID: $id)",
@@ -124,7 +124,7 @@ class CaretakerCRUDController extends Controller
     {
         $this->caretakerModel->deleteCaretaker($id);
         $this->historyModel->log([
-            'user_id' => $_SESSION['user']['id'],
+            'user_id' => AuthSession::profileId(),
             'username' => $_SESSION['user']['username'],
             'role' => 'admin',
             'action' => "Deleted caretaker (ID: $id)",

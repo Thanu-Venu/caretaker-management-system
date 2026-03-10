@@ -32,19 +32,19 @@ document.addEventListener("DOMContentLoaded", () => {
   // ✅ NEW: service + basis fixed rates
   const serviceBasisRates = {
     "Elder Care": {
+      Monthly: 50000,
+      Yearly: 550000,
+    },
+    Babysitter: {
+      Daily: 2200,
       Monthly: 45000,
       Yearly: 500000,
     },
-    Babysitter: {
-      Daily: 3200,
-      Monthly: 42000,
-      Yearly: 480000,
-    },
     Maid: {
       Hourly: 500,
-      Daily: 3000,
+      Daily: 2000,
       Monthly: 38000,
-      Yearly: 450000,
+      Yearly: 420000,
     },
   };
 

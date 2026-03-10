@@ -8,7 +8,7 @@ if (!isset($_SESSION['user'])) {
 
 $notifModel = new NotificationModel();
 
-$user_id = $_SESSION['user']['id'];
+$user_id = AuthSession::profileId();
 $user_role = $_SESSION['user']['role'];   // ✅ FIXED
 
 $notifications = $notifModel->getNotifications($user_id, $user_role);

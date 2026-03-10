@@ -36,11 +36,13 @@
                     <tr>
                         <th>Client ID</th>
                         <th>Client</th>
+                        <th>Caretaker ID</th>
                         <th>Service</th>
                         <th>Duration & Basis</th>
                         <th>Date & Time</th>
                         <th>Customization</th>
                         <th>Total Amount</th>
+                        <th>Availability Check</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -48,7 +50,7 @@
                 <tbody>
                     <?php if (!empty($data['bookings'])): ?>
                         <?php foreach ($data['bookings'] as $b): ?>
-                            <tr>
+                            <tr class="<?= (!empty($b['caretaker_overlap'])) ? 'booking-overlap-alert' : '' ?>">
                                 <?php
 
                                 $rawStatus = $b['status'] ?? '';
@@ -56,6 +58,16 @@
                                 ?>
                                 <td><?= $b['booking_id'] ?></td>
                                 <td><?= htmlspecialchars($b['client_name']) ?></td>
+                                <td>
+                                    <span class="caretaker-id-badge">
+                                        <?= $b['caretaker_id'] ?? '—' ?>
+                                    </span>
+                                    <?php if (!empty($b['caretaker_overlap'])): ?>
+                                        <span class="overlap-warning" title="This caretaker has overlapping bookings">
+                                            <i class="fas fa-exclamation-triangle"></i> Overlap
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
                                 <td><span class="service-badge"><?= htmlspecialchars($b['service_type']) ?></span></td>
                                 <td>
                                     <div class="duration-info">
@@ -96,6 +108,18 @@
                                     </div>
                                 </td>
                                 <td>
+                                    <?php if (!empty($b['availability_ok'])): ?>
+                                        <span class="availability-badge availability-ok">Available</span>
+                                    <?php else: ?>
+                                        <?php $conflict = $b['availability_conflict'] ?? null; ?>
+                                        <span
+                                            class="availability-badge availability-conflict"
+                                            title="<?= !empty($conflict) ? htmlspecialchars('Conflicts with Booking #' . ($conflict['conflict_booking_id'] ?? 'N/A') . ' (' . ($conflict['start_date'] ?? 'N/A') . ' to ' . ($conflict['end_date'] ?? 'N/A') . ', status: ' . ($conflict['status'] ?? 'N/A') . ')') : 'Caregiver conflict detected' ?>">
+                                            Conflict
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
                                     <span class="status-<?= strtolower($status) ?>"><?= $status ?></span>
                                 </td>
                                 <td>
@@ -124,7 +148,7 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="9" class="empty-state">No bookings found</td>
+                            <td colspan="10" class="empty-state">No bookings found</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

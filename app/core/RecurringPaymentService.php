@@ -258,8 +258,19 @@ class RecurringPaymentService
 
         $cancelledBookings = [];
 
+        // Load refund calculation service
+        require_once __DIR__ . '/RefundCalculationService.php';
+        $refundService = new RefundCalculationService($this->conn);
+
         while ($payment = $result->fetch_assoc()) {
             $bookingId = $payment['booking_id'];
+
+            // Calculate refund (will be 0 for auto-cancellation)
+            $refundCalculation = $refundService->calculateRefund(
+                $bookingId,
+                'Auto-cancelled due to non-payment after grace period',
+                true // isAutoCancellation = true
+            );
 
             // Cancel the booking
             $cancelSql = "UPDATE bookings
@@ -283,8 +294,13 @@ class RecurringPaymentService
                 $cancelPaymentsStmt->execute();
                 $cancelPaymentsStmt->close();
 
+                // Create refund record (will show no refund for auto-cancellation)
+                if ($refundCalculation['success']) {
+                    $refundService->createRefundRecord($refundCalculation);
+                }
+
                 // Send notifications
-                $this->sendCancellationNotifications($payment);
+                $this->sendCancellationNotifications($payment, $refundCalculation);
 
                 $cancelledBookings[] = [
                     'booking_id' => $bookingId,
@@ -303,7 +319,7 @@ class RecurringPaymentService
     /**
      * Send cancellation notifications to all parties
      */
-    private function sendCancellationNotifications($payment)
+    private function sendCancellationNotifications($payment, $refundCalculation = null)
     {
         $bookingId = $payment['booking_id'];
 
@@ -311,8 +327,19 @@ class RecurringPaymentService
         $clientMessage = "Your booking #{$bookingId} has been automatically cancelled due to non-payment.\n\n" .
             "Service: {$payment['service_type']}\n" .
             "Caretaker: {$payment['caretaker_name']}\n\n" .
-            "Payment was due on {$payment['due_date']} with a 3-day grace period.\n" .
-            "Please contact us if you wish to rebook this service.";
+            "Payment was due on {$payment['due_date']} with a 3-day grace period.\n\n";
+
+        // Add refund information
+        if ($refundCalculation && isset($refundCalculation['refund_amount'])) {
+            if ($refundCalculation['refund_amount'] > 0) {
+                $clientMessage .= "Refund Amount: LKR " . number_format($refundCalculation['refund_amount'], 2) . "\n" .
+                    "A refund record has been created for HR review.";
+            } else {
+                $clientMessage .= "No refund applicable as per our cancellation policy for non-payment.\n";
+            }
+        }
+
+        $clientMessage .= "\nPlease contact us if you wish to rebook this service.";
 
         $this->notificationModel->addNotification(
             $payment['client_id'],
@@ -327,14 +354,21 @@ class RecurringPaymentService
             "Client: {$payment['client_name']} (ID: {$payment['client_id']})\n" .
             "Service: {$payment['service_type']}\n" .
             "Caretaker: {$payment['caretaker_name']}\n" .
-            "Payment was due: {$payment['due_date']}";
+            "Payment was due: {$payment['due_date']}\n\n";
+
+        if ($refundCalculation && isset($refundCalculation['refund_amount'])) {
+            $hrMessage .= "Refund: LKR " . number_format($refundCalculation['refund_amount'], 2);
+            if ($refundCalculation['refund_amount'] == 0) {
+                $hrMessage .= " (No refund for auto-cancellation)";
+            }
+        }
 
         $this->notificationModel->addNotification(
             5, // HR Manager ID
             'Manager',
             'Booking Auto-Cancelled',
             $hrMessage,
-            "http://localhost/CMA/hr/cancelledBookings"
+            "http://localhost/CMA/hr/refunds"
         );
 
         // Notify caretaker
