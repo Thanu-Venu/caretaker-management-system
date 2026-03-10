@@ -18,6 +18,8 @@ unset($_SESSION['flash_success'], $_SESSION['flash_error']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Settings</title>
     <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/ad_settings.css">
+    <!-- Design System Override (ensures consistency) -->
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/legacy-overrides.css">
 </head>
 
 <body>

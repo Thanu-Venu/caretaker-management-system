@@ -366,7 +366,7 @@ class CaretakerModel
         return $map[$timeString] ?? ["00:00:00", "23:59:59"];
     }
 
-    public function getAvailableCaretakers($service, $date, $preferredTime, $basis, $duration, $location = '')
+    public function getAvailableCaretakers($service, $date, $preferredTime, $basis, $duration, $location = '', $excludeBookingId = null)
     {
         $startDate = $date;
         $duration = max(1, (int)$duration);
@@ -441,8 +441,14 @@ AND NOT EXISTS (
                   WHEN 'Full Time (8am - 5pm)' THEN '08:00:00'
               END
           )
-      )
-)";
+      )";
+
+        // Add exclusion for current booking if rescheduling
+        if ($excludeBookingId !== null) {
+            $sql .= " AND b.id != ?";
+        }
+
+        $sql .= ")";
 
         // prepare statement
         $stmt = $this->conn->prepare($sql);
@@ -451,6 +457,12 @@ AND NOT EXISTS (
         $types .= "ssss";
         // True overlap: existing_start <= requested_end AND existing_end >= requested_start
         $values = array_merge($values, [$endDate, $startDate, $searchStart, $searchEnd]);
+
+        // Add exclusion param if rescheduling
+        if ($excludeBookingId !== null) {
+            $types .= "i";
+            $values[] = $excludeBookingId;
+        }
 
         // bind all parameters (should match types length)
         $stmt->bind_param($types, ...$values);

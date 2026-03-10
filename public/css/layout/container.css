@@ -1,0 +1,126 @@
+/* ================================================
+   SMARTCARE - CONTAINER & PAGE LAYOUT
+   Page structure and content containers
+   ================================================ */
+
+/* ===== MAIN CONTENT WRAPPER ===== */
+/* This wraps the entire content area next to the sidebar */
+/* Support multiple legacy class names for consistency */
+.main-content,
+.content,
+.admin-dashboard,
+.booking-container,
+.caretaker-container,
+.client-container,
+.reports-container,
+.payments-page,
+main.content {
+    margin-left: var(--sidebar-width);
+    margin-top: 60px;
+    /* Below fixed header */
+    min-height: calc(100vh - 60px);
+    padding: var(--page-padding);
+    transition: margin-left var(--transition-base);
+    background: transparent;
+    position: relative;
+}
+
+/* ===== PAGE CONTAINER ===== */
+/* Standard max-width container for page content */
+.container {
+    width: 100%;
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+}
+
+.container-fluid {
+    width: 100%;
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+}
+
+.container-sm {
+    width: 100%;
+    max-width: 768px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+}
+
+/* ===== CONTENT WRAPPER ===== */
+/* Wrapper for dashboard content sections */
+.content-wrapper {
+    background: transparent;
+    width: 100%;
+}
+
+/* ===== PAGE HEADER ===== */
+.page-header {
+    margin-bottom: var(--space-6);
+}
+
+.page-header-with-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-6);
+    flex-wrap: wrap;
+    gap: var(--space-4);
+}
+
+/* ===== SECTION SPACING ===== */
+.section {
+    margin-bottom: var(--space-8);
+}
+
+.section:last-child {
+    margin-bottom: 0;
+}
+
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+
+/* Tablet (768px - 1023px) */
+@media (max-width: 1023px) {
+    .main-content {
+        margin-left: var(--sidebar-width-tablet);
+    }
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 767px) {
+    .main-content {
+        margin-left: 0;
+        /* Sidebar becomes off-canvas */
+        padding: var(--page-padding-mobile);
+    }
+
+    .main-content.sidebar-open {
+        overflow: hidden;
+    }
+
+    .container {
+        padding-left: var(--space-3);
+        padding-right: var(--space-3);
+    }
+
+    .page-header-with-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* Small mobile (< 480px) */
+@media (max-width: 479px) {
+    .main-content {
+        padding: var(--space-4);
+    }
+
+    .container {
+        padding-left: var(--space-2);
+        padding-right: var(--space-2);
+    }
+}

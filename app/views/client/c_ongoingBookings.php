@@ -161,11 +161,23 @@
             <span class="close" onclick="closeRescheduleModal()">&times;</span>
             <h2>Reschedule Booking</h2>
 
+            <div class="warning-box" style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; margin-bottom: 15px; border-radius: 4px;">
+                <strong>⚠️ Important:</strong>
+                <ul style="margin: 8px 0 0 20px; padding: 0;">
+                    <li>Only the <strong>date</strong> can be changed through reschedule</li>
+                    <li>Service type, duration, and caregiver remain the same</li>
+                    <li>You can only reschedule <strong>once per booking</strong></li>
+                    <li>Requests must be made at least <strong>5 days in advance</strong></li>
+                </ul>
+            </div>
+
             <form method="POST" action="<?= URLROOT ?>/client/rescheduleBooking">
                 <input type="hidden" name="booking_id" id="rescheduleBookingId">
 
                 <label>New Date</label>
-                <input type="date" name="new_date" required>
+                <input type="date" name="new_date" required
+                    min="<?= date('Y-m-d', strtotime('+5 days')) ?>"
+                    title="Must be at least 5 days from now">
 
 
                 <label>Reason for rescheduling</label>

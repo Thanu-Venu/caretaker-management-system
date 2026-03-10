@@ -1,0 +1,283 @@
+/* ================================================
+   SMARTCARE - TABLE COMPONENTS
+   Standardized table design with responsiveness
+   ================================================ */
+
+/* ===== TABLE CONTAINER ===== */
+.table-container {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-light);
+    overflow-x: auto;
+    margin-bottom: var(--space-6);
+}
+
+/* Remove scrollbar styling for cleaner look (optional) */
+.table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: var(--gray-100);
+    border-radius: var(--radius-full);
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: var(--gray-400);
+    border-radius: var(--radius-full);
+}
+
+/* ===== BASE TABLE ===== */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    font-size: var(--text-sm);
+}
+
+/* ===== TABLE HEADER ===== */
+.table thead {
+    background: var(--primary-500);
+    color: var(--text-inverse);
+}
+
+.table thead tr {
+    background: var(--primary-500);
+}
+
+.table th {
+    padding: var(--space-4);
+    text-align: left;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-inverse);
+    white-space: nowrap;
+    border-bottom: 2px solid var(--primary-700);
+}
+
+/* ===== TABLE BODY ===== */
+.table tbody tr {
+    border-bottom: 1px solid var(--border-light);
+    transition: background-color var(--transition-base);
+}
+
+.table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.table td {
+    padding: var(--space-4);
+    color: var(--text-primary);
+    vertical-align: middle;
+}
+
+/* ===== TABLE HOVER ==== */
+.table-hover tbody tr:hover {
+    background-color: var(--bg-hover);
+}
+
+/* ===== TABLE STRIPED ===== */
+.table-striped tbody tr:nth-child(even) {
+    background-color: var(--gray-50);
+}
+
+.table-striped.table-hover tbody tr:hover {
+    background-color: var(--bg-hover);
+}
+
+/* ===== TABLE BORDERED ===== */
+.table-bordered {
+    border: 1px solid var(--border-light);
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid var(--border-light);
+}
+
+/* ===== TABLE COMPACT ===== */
+.table-compact th,
+.table-compact td {
+    padding: var(--space-2) var(--space-3);
+}
+
+/* ===== TABLE ACTIONS COLUMN ===== */
+.table-actions {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.table-actions .btn {
+    padding: var(--space-2) var(--space-3);
+    height: auto;
+    font-size: var(--text-xs);
+}
+
+.table-actions .btn-icon {
+    width: 32px;
+    height: 32px;
+}
+
+/* ===== EMPTY STATE ===== */
+.table-empty {
+    text-align: center;
+    padding: var(--space-12) var(--space-4);
+    color: var(--text-muted);
+    font-size: var(--text-base);
+}
+
+.table-empty i {
+    font-size: var(--text-5xl);
+    color: var(--gray-300);
+    margin-bottom: var(--space-4);
+    display: block;
+}
+
+/* ===== LEGACY TABLE CLASS SUPPORT ===== */
+.booking-table,
+.caretaker-table,
+.complaint-table,
+.payment-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    font-size: var(--text-sm);
+}
+
+.booking-table thead,
+.caretaker-table thead,
+.complaint-table thead,
+.payment-table thead {
+    background: var(--primary-500);
+}
+
+.booking-table th,
+.caretaker-table th,
+.complaint-table th,
+.payment-table th {
+    padding: var(--space-4);
+    text-align: left;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-inverse);
+    white-space: nowrap;
+}
+
+.booking-table td,
+.caretaker-table td,
+.complaint-table td,
+.payment-table td {
+    padding: var(--space-4);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.booking-table tbody tr:hover,
+.caretaker-table tbody tr:hover,
+.complaint-table tbody tr:hover,
+.payment-table tbody tr:hover {
+    background-color: var(--bg-hover);
+}
+
+/* ===== RESPONSIVE TABLE ===== */
+@media (max-width: 1023px) {
+    .table-container {
+        padding: var(--space-4);
+    }
+
+    .table th,
+    .table td {
+        padding: var(--space-3);
+        font-size: var(--text-xs);
+    }
+
+    .table-actions {
+        flex-direction: column;
+        gap: var(--space-1);
+    }
+}
+
+@media (max-width: 767px) {
+    .table-container {
+        padding: var(--space-3);
+        border-radius: var(--radius-lg);
+    }
+
+    /* Stack table on mobile (optional - for very small tables) */
+    .table-responsive-stack {
+        display: block;
+    }
+
+    .table-responsive-stack thead {
+        display: none;
+    }
+
+    .table-responsive-stack tbody,
+    .table-responsive-stack tr,
+    .table-responsive-stack td {
+        display: block;
+        width: 100%;
+    }
+
+    .table-responsive-stack tr {
+        margin-bottom: var(--space-4);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        padding: var(--space-3);
+        background: var(--bg-card);
+    }
+
+    .table-responsive-stack td {
+        text-align: right;
+        padding: var(--space-2) 0;
+        border-bottom: 1px solid var(--border-light);
+        position: relative;
+        padding-left: 50%;
+    }
+
+    .table-responsive-stack td:last-child {
+        border-bottom: none;
+    }
+
+    .table-responsive-stack td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 45%;
+        padding-right: var(--space-2);
+        font-weight: var(--font-semibold);
+        text-align: left;
+        color: var(--text-secondary);
+    }
+}
+
+/* ===== TABLE LOADING STATE ===== */
+.table-loading {
+    position: relative;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.table-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 4px solid var(--gray-200);
+    border-top-color: var(--primary-500);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -1,3 +1,9 @@
+<?php
+// Include badge helper
+require_once APPROOT . '/core/SidebarBadgeHelper.php';
+// Get badge counts once for this sidebar
+$badgeCounts = getSidebarBadgeCounts();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,6 +12,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Client Dashboard Sidebar</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_sidebar.css">
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/common/sidebar-badges.css">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -21,8 +28,15 @@
 
       <!-- My Bookings Dropdown -->
       <li class="submenu">
-        <a href="#" class="dropdown-btn"><i class="bx bx-calendar"></i> My Bookings <i
-            class="bx bx-chevron-down arrow"></i></a>
+        <a href="#" class="dropdown-btn">
+          <span class="menu-item-content">
+            <span class="menu-left">
+              <i class="bx bx-calendar"></i> My Bookings
+            </span>
+            <?php echo renderBadge('bookings', $badgeCounts); ?>
+            <i class="bx bx-chevron-down arrow"></i>
+          </span>
+        </a>
         <ul class="dropdown-container">
           <li><a href="http://localhost/CMA/public?url=client/c_upcomingBookings">Upcoming Bookings</a></li>
           <li><a href="http://localhost/CMA/public?url=client/c_ongoingBookings">Ongoing Bookings</a></li>
@@ -33,7 +47,14 @@
 
       <!-- Payment Dropdown -->
       <li>
-        <a href="http://localhost/CMA/public?url=client/payments"><i class="bx bx-dollar-circle"></i> Payments </a>
+        <a href="http://localhost/CMA/public?url=client/payments">
+          <span class="menu-item-content">
+            <span class="menu-left">
+              <i class="bx bx-dollar-circle"></i> Payments
+            </span>
+            <?php echo renderBadge('payments', $badgeCounts); ?>
+          </span>
+        </a>
       </li>
 
       <li>

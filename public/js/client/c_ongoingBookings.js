@@ -14,11 +14,12 @@ function openRescheduleModal(id) {
   );
   if (dateInput) {
     const today = new Date();
-    today.setDate(today.getDate() + 1); // at least 24 hours notice
+    today.setDate(today.getDate() + 5); // 5-day advance notice requirement
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, "0");
     const dd = String(today.getDate()).padStart(2, "0");
     dateInput.min = `${yyyy}-${mm}-${dd}`;
+    dateInput.value = ""; // Clear any previously selected date
   }
   document.getElementById("rescheduleModal").style.display = "flex";
 }
