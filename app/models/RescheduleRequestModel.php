@@ -256,12 +256,12 @@ class RescheduleRequestModel
             return ['valid' => false, 'error' => 'The new date cannot be in the past.'];
         }
 
-        // 6. Date validation: minimum 24 hours advance notice
-        $minDate = date('Y-m-d', strtotime('+1 day'));
+        // 6. Date validation: minimum 5 days advance notice
+        $minDate = date('Y-m-d', strtotime('+5 days'));
         if ($newDate < $minDate) {
             return [
                 'valid' => false,
-                'error' => 'Reschedule requests must be made at least 24 hours in advance.'
+                'error' => 'Reschedule requests must be made at least 5 days in advance.'
             ];
         }
 

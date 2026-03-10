@@ -1,0 +1,826 @@
+/* ================================================
+   LEGACY CSS OVERRIDES & FIXES
+   Neutralizes conflicting styles from individual page CSS files
+   Allows design system to work properly
+   ================================================ */
+
+/* ===== STANDARDIZE ALL HEADINGS ===== */
+/* Override all heading styles to match design system */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-primary) !important;
+    color: var(--primary-600) !important;
+    font-weight: var(--font-bold) !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+}
+
+h1 {
+    font-size: var(--text-3xl) !important;
+    /* 1.875rem / 30px */
+}
+
+h2 {
+    font-size: var(--text-2xl) !important;
+    /* 1.5rem / 24px */
+}
+
+h3 {
+    font-size: var(--text-xl) !important;
+    /* 1.25rem / 20px */
+}
+
+h4 {
+    font-size: var(--text-lg) !important;
+    /* 1.125rem / 18px */
+}
+
+h5 {
+    font-size: var(--text-base) !important;
+    /* 1rem / 16px */
+    font-weight: var(--font-semibold) !important;
+}
+
+h6 {
+    font-size: var(--text-sm) !important;
+    /* 0.875rem / 14px */
+    font-weight: var(--font-semibold) !important;
+}
+
+/* Add bottom margin for headings in content areas */
+.main-content h1,
+.main-content h2,
+.main-content h3,
+.content h1,
+.content h2,
+.content h3,
+.admin-dashboard h1,
+.admin-dashboard h2,
+.admin-dashboard h3 {
+    margin-bottom: var(--space-5) !important;
+}
+
+/* ===== FIX NESTED CONTAINERS ===== */
+/* Remove margin-left from containers inside main content areas */
+.content .container,
+.main-content .container,
+.admin-dashboard .container {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-top: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+}
+
+/* Fix cards inside content that have their own margins */
+.content .card,
+.main-content .card {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Fix sections inside content */
+.content section,
+.main-content section,
+.admin-dashboard section {
+    margin-top: 0 !important;
+    padding: 0 !important;
+}
+
+/* ===== REMOVE CONFLICTING LAYOUTS ===== */
+/* These override the individual CSS files that have hardcoded margins */
+.main-content,
+.content,
+.admin-dashboard,
+.booking-container,
+.caretaker-container,
+.client-container,
+.payment-container,
+.user-container,
+.reports-container,
+.payments-page,
+main.content {
+    /* Let container.css handle all margins and padding */
+    margin-left: var(--sidebar-width) !important;
+    margin-top: 60px !important;
+    margin-right: 0 !important;
+    padding: var(--page-padding) !important;
+    min-height: calc(100vh - 60px) !important;
+    position: relative !important;
+}
+
+/* ===== REMOVE BODY BACKGROUNDS ===== */
+/* Let global.css handle body styling */
+body {
+    background: var(--background) !important;
+    margin: 0 !important;
+}
+
+/* ===== FIX ALL HEADERS ===== */
+/* Standardize all page headers regardless of their class name */
+.booking-header,
+.client-header,
+.caretaker-header,
+.payment-header,
+.user-header,
+.feedback-header,
+.announcement-header,
+.history-header,
+.leave-header,
+.report-header,
+.settings-header,
+.payments-header,
+.reports-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: var(--space-6) !important;
+    margin-top: 0 !important;
+    padding-bottom: var(--space-4) !important;
+    border-bottom: 2px solid var(--border-light) !important;
+    flex-wrap: wrap !important;
+    gap: var(--space-4) !important;
+}
+
+/* ===== FIX ALL TABLES ===== */
+/* Override individual table styles */
+.booking-table,
+.client-table,
+.caretaker-table,
+.payment-table,
+.user-table,
+.feedback-table,
+.announcement-table,
+.history-table,
+.leave-table,
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+    background: white;
+}
+
+.booking-table thead,
+.client-table thead,
+.caretaker-table thead,
+.payment-table thead,
+.user-table thead,
+.table thead {
+    background: var(--primary-500) !important;
+}
+
+.booking-table th,
+.client-table th,
+.caretaker-table th,
+.payment-table th,
+.user-table th,
+.table th {
+    padding: var(--space-4) !important;
+    text-align: left;
+    font-weight: var(--font-semibold) !important;
+    color: var(--text-inverse) !important;
+    font-size: var(--text-base) !important;
+    border-bottom: 2px solid var(--primary-700);
+}
+
+.booking-table td,
+.client-table td,
+.caretaker-table td,
+.payment-table td,
+.user-table td,
+.table td {
+    padding: var(--space-4) !important;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-primary) !important;
+    font-size: var(--text-sm) !important;
+}
+
+.booking-table tbody tr:hover,
+.client-table tbody tr:hover,
+.caretaker-table tbody tr:hover,
+.payment-table tbody tr:hover,
+.user-table tbody tr:hover,
+.table tbody tr:hover {
+    background: var(--background-hover) !important;
+}
+
+/* ===== FIX TABLE CONTAINERS ===== */
+.table-container,
+.table-wrapper {
+    background: white !important;
+    border-radius: var(--radius-xl) !important;
+    padding: var(--space-5) !important;
+    box-shadow: var(--shadow-sm) !important;
+    border: 1px solid var(--border-light) !important;
+    overflow-x: auto;
+    margin-bottom: var(--space-6);
+}
+
+/* ===== FIX CARDS ===== */
+.card,
+.stats-cards .card {
+    background: white !important;
+    border-radius: var(--radius-xl) !important;
+    padding: var(--card-padding) !important;
+    box-shadow: var(--shadow-sm) !important;
+    border: 1px solid var(--border-light) !important;
+    transition: all var(--transition-fast);
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    max-width: 100% !important;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md) !important;
+}
+
+/* Remove any conflicting pseudo-elements from old card styles */
+.card::before,
+.card::after {
+    display: none !important;
+}
+
+/* ===== FIX STATS GRID ===== */
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-6);
+    margin-bottom: var(--space-6);
+}
+
+/* ===== FIX BUTTONS ===== */
+.add-btn,
+.edit-btn,
+.view-btn,
+.delete-btn,
+.approve-btn,
+.reject-btn,
+.submit-btn,
+.cancel-btn {
+    /* Let buttons.css and page-fixes.css handle button styling */
+    height: 44px !important;
+    padding: 0 var(--space-5) !important;
+    border-radius: var(--radius-lg) !important;
+    font-size: var(--text-base) !important;
+    font-weight: var(--font-semibold) !important;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    border: none;
+}
+
+.add-btn {
+    background: var(--gradient-primary) !important;
+    color: var(--text-inverse) !important;
+}
+
+.add-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+
+/* ===== FIX FILTER SECTIONS ===== */
+.filter-section,
+.filter-bar {
+    background: var(--background-secondary) !important;
+    padding: var(--space-5) !important;
+    border-radius: var(--radius-xl) !important;
+    margin-bottom: var(--space-6) !important;
+    border: 1px solid var(--border-light) !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: var(--space-4) !important;
+}
+
+.filter-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--space-2) !important;
+    min-width: 160px !important;
+}
+
+.filter-group label,
+.filter-section label {
+    font-size: var(--text-sm) !important;
+    font-weight: var(--font-medium) !important;
+    color: var(--text-secondary) !important;
+}
+
+.filter-group select,
+.filter-group input,
+.filter-section select,
+.filter-section input,
+.filter-bar select,
+.filter-bar input[type="text"],
+.filter-bar input[type="date"] {
+    height: 44px !important;
+    padding: 0 var(--space-4) !important;
+    border: 1px solid var(--border-light) !important;
+    border-radius: var(--radius-lg) !important;
+    font-size: var(--text-base) !important;
+    background: white !important;
+}
+
+/* ===== FIX SEARCH BOXES ===== */
+.search-box,
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: white !important;
+    border-radius: var(--radius-lg) !important;
+    padding: var(--space-3) var(--space-4) !important;
+    margin-bottom: var(--space-5) !important;
+    border: 1px solid var(--border-light) !important;
+    gap: var(--space-2);
+}
+
+.search-box input,
+.search-wrapper input {
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    font-size: var(--text-base) !important;
+    flex: 1;
+    padding: 0 !important;
+}
+
+.search-box i,
+.search-wrapper i {
+    color: var(--text-muted) !important;
+    font-size: var(--text-lg) !important;
+}
+
+/* ===== FIX STATUS BADGES ===== */
+.status {
+    padding: 4px 12px !important;
+    border-radius: var(--radius-full) !important;
+    font-size: var(--text-xs) !important;
+    font-weight: var(--font-semibold) !important;
+    display: inline-block;
+    text-transform: capitalize;
+}
+
+.status.pending,
+.status.AwaitingPayment {
+    background: var(--warning-100) !important;
+    color: var(--warning-700) !important;
+}
+
+.status.ongoing,
+.status.approved {
+    background: var(--info-100) !important;
+    color: var(--info-700) !important;
+}
+
+.status.completed {
+    background: var(--success-500) !important;
+    color: var(--text-inverse) !important;
+}
+
+.status.rejected,
+.status.Cancelled,
+.status.Canceled {
+    background: var(--danger-100) !important;
+    color: var(--danger-700) !important;
+}
+
+/* ===== FIX ACTIVITY SECTION ===== */
+.recent-activity,
+.activity-section {
+    background: white !important;
+    border-radius: var(--radius-xl) !important;
+    padding: var(--space-5) !important;
+    box-shadow: var(--shadow-sm) !important;
+    border: 1px solid var(--border-light) !important;
+    margin-bottom: var(--space-6);
+}
+
+.activity-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-5);
+    flex-wrap: wrap;
+    gap: var(--space-4);
+}
+
+.activity-top h2 {
+    font-size: var(--text-xl) !important;
+    font-weight: var(--font-semibold) !important;
+    color: var(--primary-600) !important;
+    margin: 0 !important;
+}
+
+/* ===== FIX ANALYTICS/CHARTS ===== */
+.analytics,
+.chart-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--space-6);
+    margin-bottom: var(--space-6);
+}
+
+.chart-box {
+    background: white !important;
+    border-radius: var(--radius-xl) !important;
+    padding: var(--space-5) !important;
+    box-shadow: var(--shadow-sm) !important;
+    border: 1px solid var(--border-light) !important;
+}
+
+.chart-box h3 {
+    font-size: var(--text-lg) !important;
+    font-weight: var(--font-semibold) !important;
+    color: var(--primary-600) !important;
+    margin: 0 0 var(--space-4) 0 !important;
+}
+
+/* ===== STANDARDIZE ALL FORMS ===== */
+/* Form wrapper for consistent form layout */
+.form-wrapper,
+.form-section {
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    background: white !important;
+    padding: var(--space-8) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+/* Form headings */
+.form-wrapper h1,
+.form-wrapper h2,
+.form-section h1,
+.form-section h2 {
+    text-align: center !important;
+    margin-bottom: var(--space-6) !important;
+    color: var(--primary-600) !important;
+}
+
+/* Form grid layout */
+.form-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: var(--space-5) !important;
+    margin-bottom: var(--space-6) !important;
+}
+
+.form-grid .field {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.form-grid .field.full {
+    grid-column: 1 / -1 !important;
+}
+
+/* Form inputs standardization */
+.form-wrapper input,
+.form-wrapper select,
+.form-wrapper textarea,
+.form-section input,
+.form-section select,
+.form-section textarea,
+.user-form input,
+.user-form select,
+.caretaker-form input,
+.caretaker-form select,
+.announcement-form input,
+.announcement-form select,
+.announcement-form textarea {
+    width: 100% !important;
+    padding: var(--space-3) !important;
+    border: 1px solid var(--border-default) !important;
+    border-radius: var(--radius-md) !important;
+    font-size: var(--text-base) !important;
+    font-family: var(--font-primary) !important;
+    transition: border-color 0.2s !important;
+}
+
+.form-wrapper input:focus,
+.form-wrapper select:focus,
+.form-wrapper textarea:focus,
+.form-section input:focus,
+.form-section select:focus,
+.form-section textarea:focus,
+.user-form input:focus,
+.user-form select:focus,
+.caretaker-form input:focus,
+.caretaker-form select:focus,
+.announcement-form input:focus,
+.announcement-form select:focus,
+.announcement-form textarea:focus {
+    outline: none !important;
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 3px var(--primary-50) !important;
+}
+
+/* Form labels */
+.form-wrapper label,
+.form-section label,
+.user-form label,
+.caretaker-form label,
+.announcement-form label {
+    display: block !important;
+    margin-bottom: var(--space-2) !important;
+    font-weight: var(--font-medium) !important;
+    color: var(--text-primary) !important;
+    font-size: var(--text-sm) !important;
+}
+
+/* Form actions (buttons) */
+.form-actions {
+    display: flex !important;
+    gap: var(--space-3) !important;
+    justify-content: center !important;
+    margin-top: var(--space-6) !important;
+}
+
+.submit-btn,
+.form-wrapper button[type=\"submit\"],
+.form-section button[type=\"submit\"],
+.announcement-form button[type=\"submit\"] {
+    padding: var(--space-3) var(--space-6) !important;
+    background: var(--primary-500) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: var(--radius-md) !important;
+    font-size: var(--text-base) !important;
+    font-weight: var(--font-semibold) !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+}
+
+.submit-btn:hover,
+.form-wrapper button[type=\"submit\"]:hover,
+.form-section button[type=\"submit\"]:hover,
+.announcement-form button[type=\"submit\"]:hover {
+    background: var(--primary-600) !important;
+}
+
+.btn-cancel {
+    padding: var(--space-3) var(--space-6) !important;
+    background: var(--gray-200) !important;
+    color: var(--text-primary) !important;
+    border: none !important;
+    border-radius: var(--radius-md) !important;
+    font-size: var(--text-base) !important;
+    font-weight: var(--font-semibold) !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+    display: inline-block !important;
+}
+
+.btn-cancel:hover {
+    background: var(--gray-300) !important;
+}
+
+/* Add filter section label/badge */
+.filter-section::before,
+.filters::before,
+.filter-bar::before,
+.filter-bar form::before {
+    content: '' !important;
+    display: none !important;
+}
+
+/* ===== STANDARDIZE ALL FILTERS ===== */
+/* Ensure all filter sections are horizontal */
+.filter-section,
+.filters,
+.filter-bar,
+.filter-bar form {
+    display: flex !important;
+    gap: var(--space-4) !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    margin-bottom: var(--space-6) !important;
+    padding: var(--space-4) !important;
+    background: var(--gray-50) !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid var(--gray-300) !important;
+}
+
+.filter-group,
+.filter-bar>*,
+.filters>* {
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--space-2) !important;
+}
+
+.filter-section label,
+.filters label,
+.filter-bar label {
+    font-weight: var(--font-medium) !important;
+    color: var(--text-secondary) !important;
+    font-size: var(--text-sm) !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+}
+
+.filter-section select,
+.filter-section input,
+.filters select,
+.filters input,
+.filter-bar select,
+.filter-bar input {
+    padding: var(--space-2) var(--space-3) !important;
+    border: 1px solid var(--gray-300) !important;
+    border-radius: var(--radius-md) !important;
+    font-size: var(--text-sm) !important;
+    background: white !important;
+    min-width: 150px !important;
+    transition: all 0.2s !important;
+}
+
+.filter-section select:focus,
+.filter-section input:focus,
+.filters select:focus,
+.filters input:focus,
+.filter-bar select:focus,
+.filter-bar input:focus {
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 2px var(--primary-100) !important;
+    outline: none !important;
+}
+
+.filter-section button,
+.filters button,
+.filter-bar button {
+    padding: var(--space-2) var(--space-4) !important;
+    background: var(--primary-500) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: var(--radius-md) !important;
+    font-size: var(--text-sm) !important;
+    font-weight: var(--font-medium) !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+    white-space: nowrap !important;
+}
+
+.filter-section button:hover,
+.filters button:hover,
+.filter-bar button:hover {
+    background: var(--primary-600) !important;
+}
+
+.reset-btn {
+    padding: var(--space-2) var(--space-4) !important;
+    background: var(--gray-200) !important;
+    color: var(--text-primary) !important;
+    border: none !important;
+    border-radius: var(--radius-md) !important;
+    font-size: var(--text-sm) !important;
+    font-weight: var(--font-medium) !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+    display: inline-block !important;
+    white-space: nowrap !important;
+}
+
+.reset-btn:hover {
+    background: var(--gray-300) !important;
+}
+
+/* ===== RESPONSIVE FIXES ===== */
+@media (max-width: 1023px) and (min-width: 768px) {
+
+    .main-content,
+    .content,
+    .admin-dashboard,
+    .booking-container {
+        margin-left: var(--sidebar-width-tablet) !important;
+    }
+
+    /* Ensure nested containers don't have conflicting margins */
+    .content .container,
+    .content .card {
+        margin-left: 0 !important;
+    }
+
+    /* Form responsive for tablet */
+    .form-wrapper,
+    .form-section {
+        padding: var(--space-6) !important;
+    }
+}
+
+@media (max-width: 767px) {
+
+    .main-content,
+    .content,
+    .admin-dashboard,
+    .booking-container {
+        margin-left: 0 !important;
+        padding: var(--space-5) !important;
+    }
+
+    /* Remove any nested margins on mobile */
+    .content .container,
+    .content .card {
+        margin-left: 0 !important;
+    }
+
+    .stats-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .analytics,
+    .chart-section {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-section,
+    .filter-bar {
+        flex-direction: column;
+    }
+
+    .filter-group {
+        width: 100%;
+    }
+
+    .booking-header,
+    .client-header,
+    .caretaker-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .add-btn {
+        width: 100%;
+    }
+
+    /* Form responsiveness */
+    .form-wrapper,
+    .form-section {
+        padding: var(--space-5) !important;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .form-actions {
+        flex-direction: column !important;
+    }
+
+    .form-actions button,
+    .form-actions a {
+        width: 100% !important;
+    }
+
+    /* Filter responsiveness */
+    .filter-section,
+    .filters,
+    .filter-bar,
+    .filter-bar form {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .filter-group {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: 100% !important;
+    }
+
+    .filter-section select,
+    .filter-section input,
+    .filters select,
+    .filters input,
+    .filter-bar select,
+    .filter-bar input {
+        width: 100% !important;
+        min-width: 100% !important;
+    }
+
+    .filter-section button,
+    .filters button,
+    .filter-bar button,
+    .reset-btn {
+        width: 100% !important;
+    }
+}
+
+/* ===== ENSURE PROPER Z-INDEX ===== */
+.main-content,
+.content,
+.admin-dashboard {
+    position: relative;
+    z-index: 1;
+}

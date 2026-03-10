@@ -218,7 +218,7 @@
                         <li>Only the <strong>date</strong> can be changed through reschedule</li>
                         <li>Service type, duration, and caregiver remain the same</li>
                         <li>You can only reschedule <strong>once per booking</strong></li>
-                        <li>Requests must be made at least <strong>24 hours in advance</strong></li>
+                        <li>Requests must be made at least <strong>5 days in advance</strong></li>
                         <li>Status must be 'Requested' to allow reschedule</li>
                     </ul>
                 </div>
@@ -228,8 +228,8 @@
 
                     <label>New Date <span style="color: red;">*</span></label>
                     <input type="date" name="new_date" required
-                        min="<?= date('Y-m-d', strtotime('+1 day')) ?>"
-                        title="Must be at least 24 hours from now">
+                        min="<?= date('Y-m-d', strtotime('+5 days')) ?>"
+                        title="Must be at least 5 days from now">
 
                     <label>Reason for Rescheduling <span style="color: #666; font-size: 0.9em;">(Optional)</span></label>
                     <textarea name="reason" rows="3" placeholder="Provide a reason for HR review (optional)"></textarea>

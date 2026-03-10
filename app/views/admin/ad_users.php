@@ -3,6 +3,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,20 +11,21 @@
 
   <!-- Boxicons -->
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  
+
   <!-- Custom CSS -->
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_users.css">
+  <!-- Design System Override (ensures consistency) -->
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 </head>
-<body>
-<main class="main-content">
-<div class="content">
-  <h2>Staff Roles and Access Control</h2>
-  <!-- Add User Button -->
-  <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/userCRUD/add'">Add User</button>
-</div>
 
-<!-- Users Table -->
-  <div class="table-container">
+<body>
+  <main class="main-content">
+    <h2>Staff Roles and Access Control</h2>
+    <!-- Add User Button -->
+    <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/userCRUD/add'">Add User</button>
+
+    <!-- Users Table -->
+    <div class="table-container">
       <table>
         <thead>
           <tr>
@@ -33,7 +35,7 @@
             <th>Role</th>
             <th>Status</th>
             <th>Action</th>
-            
+
           </tr>
         </thead>
         <tbody>
@@ -59,20 +61,21 @@
         </tbody>
       </table>
     </div>
-</main>
-<!-- JS for Search Filter -->
-<script>
-  const searchInput = document.getElementById('searchInput');
-  searchInput.addEventListener('keyup', function() {
-    const filter = this.value.toLowerCase();
-    document.querySelectorAll('tbody tr').forEach(row => {
-      row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
+  </main>
+  <!-- JS for Search Filter -->
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('keyup', function() {
+      const filter = this.value.toLowerCase();
+      document.querySelectorAll('tbody tr').forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
+      });
     });
-  });
-</script>
+  </script>
 
-<!-- Custom JS -->
-<script src="<?php echo URLROOT; ?>/public/js/admin/ad_users.js"></script>
+  <!-- Custom JS -->
+  <script src="<?php echo URLROOT; ?>/public/js/admin/ad_users.js"></script>
 
 </body>
+
 </html>
