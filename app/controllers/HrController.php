@@ -86,7 +86,6 @@ class HrController extends Controller
         $this->view("hr/hr_addct", ['caretakers' => $caretakers]);
     }
 
-
     public function hr_logs()
     {
         $perPage = 10;
