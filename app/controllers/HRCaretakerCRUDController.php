@@ -162,6 +162,18 @@ class HRCaretakerCRUDController extends Controller
         }
     }
 
+    // View caretaker details
+    public function viewCaretaker($id)
+    {
+        $caretaker = $this->caretakerModel->getCaretakerById($id);
+        if (!$caretaker) {
+            $_SESSION['error'] = "Caretaker not found.";
+            header("Location: " . URLROOT . "/HRCaretakerCRUD/list");
+            exit;
+        }
+        $this->view("hr/caretaker_view", ['caretaker' => $caretaker]);
+    }
+
     // Delete caretaker
     public function delete($id)
     {
