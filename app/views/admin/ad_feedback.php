@@ -3,140 +3,141 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin dashboard</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_feedback.css">
+  <!-- Design System Override (ensures consistency) -->
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 </head>
+
 <body>
 
-<div class="content"> 
-  <h2>Feedback & Complaints</h2>
-</div>
+  <div class="main-content">
+    <h2>Feedback & Complaints</h2>
 
-<div class="card">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="feedback">Client Feedback</button>
+      <button class="tab-btn" data-tab="complaints">Complaints</button>
+    </div>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="feedback">Client Feedback</button>
-    <button class="tab-btn" data-tab="complaints">Complaints</button>
-  </div>
+    <!-- FEEDBACK TAB -->
+    <div id="feedbackSection" class="tab-section">
 
-  <!-- FEEDBACK TAB -->
-  <div id="feedbackSection" class="tab-section">
-
-    <!-- Filters -->
-    <div class="filters">
-      <label for="ratingFilter">Rating:</label>
-      <select id="ratingFilter">
+      <!-- Filters -->
+      <div class="filters">
+        <label for="ratingFilter">Rating:</label>
+        <select id="ratingFilter">
           <option value="">All</option>
           <option value="5">★★★★★</option>
           <option value="4">★★★★☆</option>
           <option value="3">★★★☆☆</option>
           <option value="2">★★☆☆☆</option>
           <option value="1">★☆☆☆☆</option>
-      </select>
+        </select>
 
-      <label for="dateFilter">Date Received:</label>
-      <input type="date" id="dateFilter">
+        <label for="dateFilter">Date Received:</label>
+        <input type="date" id="dateFilter">
+      </div>
+
+      <div class="table-container">
+        <table id="feedbackTable">
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Caregiver</th>
+              <th>Rating</th>
+              <th>Feedback</th>
+              <th>Date Received</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <?php if (!empty($feedbacks)): ?>
+              <?php foreach ($feedbacks as $fb): ?>
+                <tr>
+                  <td><?= $fb['client_name'] ?></td>
+                  <td><?= $fb['caretaker_name'] ?></td>
+
+                  <!-- Star rating -->
+                  <td class="stars" data-rating="<?= $fb['rating'] ?>">
+                    <?= str_repeat("★", $fb['rating']) . str_repeat("☆", 5 - $fb['rating']) ?>
+                  </td>
+
+                  <td><?= $fb['feedback'] ?></td>
+
+                  <td data-date="<?= $fb['created_at'] ?>">
+                    <?= $fb['created_at'] ?>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <tr>
+                <td colspan="5" style="text-align:center;">No feedback found</td>
+              </tr>
+            <?php endif; ?>
+          </tbody>
+
+        </table>
+
+        <p id="noResults" style="display:none; text-align:center; margin-top:15px; font-weight:500; color:#ef4444;">
+          No matching results found.
+        </p>
+
+      </div>
     </div>
 
-    <div class="table-container">
-      <table id="feedbackTable">
-        <thead>
-          <tr>
-            <th>Client</th>
-            <th>Caregiver</th>
-            <th>Rating</th>
-            <th>Feedback</th>
-            <th>Date Received</th>
-          </tr>
-        </thead>
+    <!-- ADMIN – COMPLAINTS TAB (VIEW ONLY) -->
+    <div id="complaintsSection" class="tab-section" style="display:none;">
 
-        <tbody>
-          <?php if (!empty($feedbacks)): ?>
-            <?php foreach($feedbacks as $fb): ?>
+
+      <div class="table-container">
+        <table class="complaint-table">
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Caregiver</th>
+              <th>Category</th>
+              <th>Complaint</th>
+              <th>Status</th>
+
+            </tr>
+          </thead>
+
+          <tbody>
+            <?php if (!empty($complaints)): ?>
+              <?php foreach ($complaints as $c): ?>
+                <tr>
+                  <td><?= htmlspecialchars($c['client_name']) ?></td>
+                  <td><?= htmlspecialchars($c['caretaker_name']) ?></td>
+                  <td><?= htmlspecialchars($c['category']) ?></td>
+                  <td><?= htmlspecialchars($c['details']) ?></td>
+
+
+                  <td>
+                    <span class="status <?= strtolower(str_replace(' ', '-', $c['status'])) ?>">
+                      <?= $c['status'] ?>
+                    </span>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            <?php else: ?>
               <tr>
-                <td><?= $fb['client_name'] ?></td>
-                <td><?= $fb['caretaker_name'] ?></td>
-
-                <!-- Star rating -->
-                <td class="stars" data-rating="<?= $fb['rating'] ?>">
-                  <?= str_repeat("★", $fb['rating']) . str_repeat("☆", 5 - $fb['rating']) ?>
-                </td>
-
-                <td><?= $fb['feedback'] ?></td>
-
-                <td data-date="<?= $fb['created_at'] ?>">
-                  <?= $fb['created_at'] ?>
+                <td colspan="6" style="text-align:center;">
+                  No complaints found
                 </td>
               </tr>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <tr><td colspan="5" style="text-align:center;">No feedback found</td></tr>
-          <?php endif; ?>
-        </tbody>
-
-      </table>
-
-      <p id="noResults" style="display:none; text-align:center; margin-top:15px; font-weight:500; color:#ef4444;">
-        No matching results found.
-      </p>
-
+            <?php endif; ?>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
 
- <!-- ADMIN – COMPLAINTS TAB (VIEW ONLY) -->
-<div id="complaintsSection" class="tab-section" style="display:none;">
-
-
-  <div class="table-container">
-    <table class="complaint-table">
-      <thead>
-        <tr>
-          <th>Client</th>
-          <th>Caregiver</th>
-          <th>Category</th>
-          <th>Complaint</th>
-          <th>Status</th>
-         
-        </tr>
-      </thead>
-
-      <tbody>
-        <?php if (!empty($complaints)): ?>
-          <?php foreach ($complaints as $c): ?>
-            <tr>
-              <td><?= htmlspecialchars($c['client_name']) ?></td>
-              <td><?= htmlspecialchars($c['caretaker_name']) ?></td>
-              <td><?= htmlspecialchars($c['category']) ?></td>
-              <td><?= htmlspecialchars($c['details']) ?></td>
-              
-
-              <td>
-                <span class="status <?= strtolower(str_replace(' ', '-', $c['status'])) ?>">
-                  <?= $c['status'] ?>
-                </span>
-              </td>
-            </tr>
-          <?php endforeach; ?>
-        <?php else: ?>
-          <tr>
-            <td colspan="6" style="text-align:center;">
-              No complaints found
-            </td>
-          </tr>
-        <?php endif; ?>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-
-</div>
-
-<script src="<?php echo URLROOT; ?>/public/js/admin/ad_feedback.js"></script>
+    <script src="<?php echo URLROOT; ?>/public/js/admin/ad_feedback.js"></script>
 </body>
+
 </html>

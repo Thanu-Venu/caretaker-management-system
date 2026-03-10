@@ -34,6 +34,8 @@ $bookingStatuses = $filterOptions['booking_statuses'] ?? [];
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Payment Summary</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_payments.css">
+  <!-- Design System Override (ensures consistency) -->
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 </head>
 
 <body>

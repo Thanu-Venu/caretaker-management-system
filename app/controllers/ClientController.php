@@ -964,13 +964,16 @@ class ClientController extends Controller
         $booking = $validation['booking'];
 
         // Additional validation: Check caretaker availability for the new date
+        // EXCLUDE the current booking from availability check since we're rescheduling it
         $caretakerModel = $this->model('CaretakerModel');
         $available = $caretakerModel->getAvailableCaretakers(
             $booking['service_type'],
             $newDate,
             $booking['preferred_time'],
             $booking['basis'],
-            $booking['duration']
+            $booking['duration'],
+            '',
+            $bookingId  // Exclude current booking from conflict check
         );
 
         $availableIds = array_column($available, 'id');
