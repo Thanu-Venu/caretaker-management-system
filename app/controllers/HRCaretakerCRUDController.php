@@ -17,6 +17,49 @@ class HRCaretakerCRUDController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $data = $_POST;
+            
+            // ✅ SERVER-SIDE VALIDATION
+            $errors = [];
+
+            // Check required fields
+            $requiredFields = ['name', 'email', 'password', 'phone', 'experience', 'location', 'qualifications', 'service_type'];
+            foreach ($requiredFields as $field) {
+                if (empty(trim($data[$field] ?? ''))) {
+                    $errors[] = "Field '$field' is required.";
+                }
+            }
+
+            // Email validation
+            if (!empty($data['email'])) {
+                if (!filter_var(trim($data['email']), FILTER_VALIDATE_EMAIL)) {
+                    $errors[] = "Invalid email format. Use format like abc@gmail.com";
+                }
+            }
+
+            // Phone validation
+            if (!empty($data['phone'])) {
+                $phone = trim($data['phone']);
+                // Accepts Sri Lankan numbers: +94XXXXXXXXX or 0XXXXXXXXX (with optional spaces/dashes/dots)
+                $phoneRegex = '/^(\+94|0)[0-9\s\-\.]{8,10}$/';
+                if (!preg_match($phoneRegex, $phone)) {
+                    $errors[] = "Invalid phone number format. Please use a Sri Lankan number (e.g., +94771234567, 0771234567, or +94-77-123-4567)";
+                }
+            }
+
+            // Password validation
+            if (!empty($data['password'])) {
+                if (strlen(trim($data['password'])) < 6) {
+                    $errors[] = "Password must be at least 6 characters long.";
+                }
+            }
+
+            // If there are validation errors, store and redirect
+            if (!empty($errors)) {
+                $_SESSION['error'] = implode("; ", $errors);
+                header("Location: " . URLROOT . "/HRCaretakerCRUD/add");
+                exit;
+            }
+
             $data['profile_image'] = 'default.png';
 
             // ✅ upload folder
@@ -117,6 +160,18 @@ class HRCaretakerCRUDController extends Controller
             $caretaker = $this->caretakerModel->getCaretakerById($id);
             $this->view("hr/caretaker_edit", ['caretaker' => $caretaker]);
         }
+    }
+
+    // View caretaker details
+    public function viewCaretaker($id)
+    {
+        $caretaker = $this->caretakerModel->getCaretakerById($id);
+        if (!$caretaker) {
+            $_SESSION['error'] = "Caretaker not found.";
+            header("Location: " . URLROOT . "/HRCaretakerCRUD/list");
+            exit;
+        }
+        $this->view("hr/caretaker_view", ['caretaker' => $caretaker]);
     }
 
     // Delete caretaker

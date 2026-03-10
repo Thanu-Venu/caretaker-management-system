@@ -130,6 +130,10 @@ tbody tr:hover {
   color: #0056b3;
 }
 
+.actions .bx-show:hover {
+  color: #1e88e5;
+}
+
 .actions .bx-trash:hover {
     color: #a71d2a;
 }
