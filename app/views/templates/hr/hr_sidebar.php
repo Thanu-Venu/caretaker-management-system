@@ -26,7 +26,7 @@
         <li class="submenu">
           <a href="#" class="dropdown-btn"><i class='bx bx-group'></i> <span>Caregivers</span> <i class='bx bx-chevron-down arrow'></i></a>
           <ul class="dropdown-container">
-            <li><a href="http://localhost/CMA/public?url=hr/hr_addct">Add Caregivers</a></li>
+
 
           </ul>
         </li>
