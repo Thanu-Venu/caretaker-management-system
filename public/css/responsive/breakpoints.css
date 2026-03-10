@@ -1,0 +1,304 @@
+/* ================================================
+   SMARTCARE - RESPONSIVE BREAKPOINTS
+   Media queries and responsive utilities
+   ================================================ */
+
+/* ===== BREAKPOINT REFERENCE ===== */
+/*
+  sm:  640px  - Small tablets (portrait)
+  md:  768px  - Tablets (portrait) and larger phones
+  lg:  1024px - Small laptops and tablets (landscape)
+  xl:  1280px - Desktops
+  2xl: 1536px - Large screens
+*/
+
+/* ===== RESPONSIVE UTILITIES ===== */
+
+/* Hide on mobile */
+@media (max-width: 767px) {
+    .hidden-mobile {
+        display: none !important;
+    }
+}
+
+/* Hide on tablet and up */
+@media (min-width: 768px) {
+    .hidden-tablet-up {
+        display: none !important;
+    }
+}
+
+/* Hide on desktop only */
+@media (min-width: 1024px) {
+    .hidden-desktop {
+        display: none !important;
+    }
+}
+
+/* Show only on mobile */
+.mobile-only {
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .mobile-only {
+        display: none !important;
+    }
+}
+
+/* Show only on desktop */
+.desktop-only {
+    display: none;
+}
+
+@media (min-width: 1024px) {
+    .desktop-only {
+        display: block;
+    }
+}
+
+/* ===== PAGE LAYOUT BREAKPOINTS ===== */
+
+/* Mobile First: Base styles above, overrides below */
+
+/* Small devices (landscape phones, 640px and up) */
+@media (min-width: 640px) {
+    .container-sm {
+        max-width: 640px;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .container {
+        max-width: 768px;
+    }
+
+    .container-md {
+        max-width: 768px;
+    }
+}
+
+/* Large devices (desktops, 1024px and up) */
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1024px;
+    }
+
+    .container-lg {
+        max-width: 1024px;
+    }
+}
+
+/* Extra large devices (large desktops, 1280px and up) */
+@media (min-width: 1280px) {
+    .container {
+        max-width: 1280px;
+    }
+
+    .container-xl {
+        max-width: 1280px;
+    }
+}
+
+/* 2XL devices (very large screens, 1536px and up) */
+@media (min-width: 1536px) {
+    .container {
+        max-width: 1320px;
+    }
+
+    .container-2xl {
+        max-width: 1536px;
+    }
+}
+
+/* ===== MOBILE LAYOUT ADJUSTMENTS ===== */
+@media (max-width: 767px) {
+
+    /* Reduce spacing on mobile */
+    h1 {
+        font-size: var(--text-3xl);
+    }
+
+    h2 {
+        font-size: var(--text-2xl);
+    }
+
+    h3 {
+        font-size: var(--text-xl);
+    }
+
+    .page-title {
+        font-size: var(--text-2xl);
+        margin-bottom: var(--space-4);
+    }
+
+    .section-title {
+        font-size: var(--text-lg);
+        margin-bottom: var(--space-3);
+    }
+
+    /* Stack buttons vertically */
+    .btn-group,
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-group .btn,
+    .form-actions .btn {
+        width: 100%;
+    }
+
+    /* Make stat cards full width */
+    .stats-grid,
+    .stats-grid-2,
+    .stats-grid-3,
+    .stats-grid-4 {
+        grid-template-columns: 1fr;
+    }
+
+    /* Stack form fields */
+    .form-grid,
+    .form-grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    /* Adjust modal/dialog width */
+    .modal-content {
+        width: 95vw !important;
+        margin: var(--space-4);
+    }
+}
+
+/* ===== SMALL MOBILE ===== */
+@media (max-width: 479px) {
+
+    /* Further reduce spacing */
+    .card,
+    .table-container {
+        padding: var(--space-3);
+    }
+
+    /* Smaller buttons on very small screens */
+    .btn {
+        padding: var(--space-2) var(--space-4);
+        font-size: var(--text-sm);
+    }
+
+    /* Compact table cells */
+    .table th,
+    .table td {
+        padding: var(--space-2);
+        font-size: 11px;
+    }
+}
+
+/* ===== TABLET PORTRAIT ===== */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .main-content {
+        margin-left: var(--sidebar-width-tablet);
+    }
+
+    .stats-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats-grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ===== PRINT MEDIA ===== */
+@media print {
+
+    /* Hide navigation and interactive elements */
+    .sidebar,
+    .sidebar-toggle,
+    .sidebar-overlay,
+    .btn,
+    button,
+    .no-print {
+        display: none !important;
+    }
+
+    /* Remove margins for sidebar */
+    .main-content {
+        margin-left: 0 !important;
+    }
+
+    /* Optimize for printing */
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        page-break-inside: avoid;
+    }
+
+    /* Show URLs for links */
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+}
+
+/* ===== LANDSCAPE ORIENTATION ===== */
+@media (max-width: 767px) and (orientation: landscape) {
+
+    /* Adjust height-dependent elements */
+    .sidebar {
+        width: 240px;
+    }
+}
+
+/* ===== TOUCH DEVICES ===== */
+@media (hover: none) and (pointer: coarse) {
+
+    /* Increase tap targets for touch */
+    .btn,
+    button,
+    a {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Remove hover effects on touch devices */
+    .card:hover {
+        transform: none;
+    }
+
+    .btn:hover {
+        transform: none;
+    }
+}
+
+/* ===== HIGH DPI DISPLAYS ===== */
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+
+    /* Sharper borders and shadows */
+    .card,
+    .table-container {
+        border-width: 0.5px;
+    }
+}
+
+/* ===== DARK MODE SUPPORT (Future) ===== */
+@media (prefers-color-scheme: dark) {
+    /* Dark mode styles would go here */
+    /* Currently not implemented - placeholder for future */
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
