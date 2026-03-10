@@ -84,9 +84,9 @@ $filters = $data['filters'] ?? [];
                 </span>
               </td>
               <td class="actions">
-                      <a href="<?php echo URLROOT; ?>/HRCaretakerCRUD/edit/<?php echo $caretaker['id']; ?>"><i class="bx bx-edit"></i></a>              
-                      <a href="<?php echo URLROOT; ?>/HRCaretakerCRUD/delete/<?php echo $caretaker['id']; ?>" onclick="return confirm('Are you sure you want to delete this caretaker?');"><i class="bx bx-trash"></i></a>
-                </a>
+                      <a href="<?php echo URLROOT; ?>/HRCaretakerCRUD/viewCaretaker/<?php echo $caretaker['id']; ?>" title="View"><i class="bx bx-show"></i></a>
+                      <a href="<?php echo URLROOT; ?>/HRCaretakerCRUD/edit/<?php echo $caretaker['id']; ?>" title="Edit"><i class="bx bx-edit"></i></a>              
+                      <a href="<?php echo URLROOT; ?>/HRCaretakerCRUD/delete/<?php echo $caretaker['id']; ?>" onclick="return confirm('Are you sure you want to delete this caretaker?');" title="Delete"><i class="bx bx-trash"></i></a>
               </td>
             </tr>
           <?php endforeach; ?>
