@@ -12,6 +12,8 @@ $selectedStatus = $data['selectedStatus'] ?? 'All';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Update Requests</title>
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_profile_requests.css">
+    <!-- Design System Override (ensures consistency) -->
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 </head>
 
 <body>

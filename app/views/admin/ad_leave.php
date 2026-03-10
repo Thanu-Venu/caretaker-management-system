@@ -16,6 +16,8 @@ $selectedStatus = $data['selectedStatus'] ?? 'All';
   <title>Leave Management</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_leave.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <!-- Design System Override (ensures consistency) -->
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 
 </head>
 
@@ -40,7 +42,7 @@ $selectedStatus = $data['selectedStatus'] ?? 'All';
         <div class="filter-group">
           <label for="status">Status</label>
           <select id="status" onchange="applyFilters()">
-  <option value="All" <?= ($selectedStatus == "All") ? 'selected' : '' ?>>All</option>
+            <option value="All" <?= ($selectedStatus == "All") ? 'selected' : '' ?>>All</option>
             <option value="Pending" <?= ($selectedStatus == "Pending") ? 'selected' : '' ?>>Pending</option>
             <option value="Approved" <?= ($selectedStatus == "Approved") ? 'selected' : '' ?>>Approved</option>
             <option value="Rejected" <?= ($selectedStatus == "Rejected") ? 'selected' : '' ?>>Rejected</option>
@@ -79,50 +81,50 @@ $selectedStatus = $data['selectedStatus'] ?? 'All';
           </tbody>
         </table>
         <div class="pagination">
-  <?php
-$currentPage = $data['currentPage'] ?? 1;
-$totalPages  = $data['totalPages'] ?? 1;
+          <?php
+          $currentPage = $data['currentPage'] ?? 1;
+          $totalPages  = $data['totalPages'] ?? 1;
 
-$query = $_GET; // keeps type/status
-?>
+          $query = $_GET; // keeps type/status
+          ?>
 
-<div class="pagination">
-  <?php if ($currentPage > 1): ?>
-    <?php $query['page'] = $currentPage - 1; ?>
-    <a href="<?= URLROOT ?>/admin/ad_leave?<?= http_build_query($query) ?>">Prev</a>
-  <?php endif; ?>
+          <div class="pagination">
+            <?php if ($currentPage > 1): ?>
+              <?php $query['page'] = $currentPage - 1; ?>
+              <a href="<?= URLROOT ?>/admin/ad_leave?<?= http_build_query($query) ?>">Prev</a>
+            <?php endif; ?>
 
-  <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-    <?php $query['page'] = $i; ?>
-    <a class="<?= ($i == $currentPage) ? 'active' : '' ?>"
-       href="<?= URLROOT ?>/admin/ad_leave?<?= http_build_query($query) ?>">
-      <?= $i ?>
-    </a>
-  <?php endfor; ?>
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+              <?php $query['page'] = $i; ?>
+              <a class="<?= ($i == $currentPage) ? 'active' : '' ?>"
+                href="<?= URLROOT ?>/admin/ad_leave?<?= http_build_query($query) ?>">
+                <?= $i ?>
+              </a>
+            <?php endfor; ?>
 
-  <?php if ($currentPage < $totalPages): ?>
-    <?php $query['page'] = $currentPage + 1; ?>
-    <a href="<?= URLROOT ?>/admin/ad_leave?<?= http_build_query($query) ?>">Next</a>
-  <?php endif; ?>
-</div>
+            <?php if ($currentPage < $totalPages): ?>
+              <?php $query['page'] = $currentPage + 1; ?>
+              <a href="<?= URLROOT ?>/admin/ad_leave?<?= http_build_query($query) ?>">Next</a>
+            <?php endif; ?>
+          </div>
 
-      </div>
+        </div>
     </section>
   </main>
 
   <script>
-function applyFilters() {
-  const type = document.getElementById('type').value;
-  const status = document.getElementById('status').value;
+    function applyFilters() {
+      const type = document.getElementById('type').value;
+      const status = document.getElementById('status').value;
 
-  const params = new URLSearchParams(window.location.search);
-  params.set("page", "1");
-  params.set("type", type);
-  params.set("status", status);
+      const params = new URLSearchParams(window.location.search);
+      params.set("page", "1");
+      params.set("type", type);
+      params.set("status", status);
 
-  window.location = window.location.pathname + "?" + params.toString();
-}
-</script>
+      window.location = window.location.pathname + "?" + params.toString();
+    }
+  </script>
 
 </body>
 
