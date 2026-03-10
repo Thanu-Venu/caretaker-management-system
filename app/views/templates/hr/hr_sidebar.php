@@ -22,15 +22,7 @@
     <div class="menu-scroll">
       <ul class="menu">
         <li><a href="http://localhost/CMA/public?url=hr/hr_dashboard"><i class='bx bx-home'></i> <span>Dashboard</span></a></li>
-
-        <li class="submenu">
-          <a href="#" class="dropdown-btn"><i class='bx bx-group'></i> <span>Caregivers</span> <i class='bx bx-chevron-down arrow'></i></a>
-          <ul class="dropdown-container">
-
-
-          </ul>
-        </li>
-
+        <li><a href="http://localhost/CMA/public?url=hr/hr_addct"><i class='bx bx-group'></i><span>Caregivers</span></a></li>
         <li><a href="http://localhost/CMA/public?url=hr/hr_pending_request"><i class="fas fa-hourglass-half"></i> <span>Pending Request</span></a></li>
         <li><a href="http://localhost/CMA/public?url=hr/pendingPayments"><i class='bx bx-money'></i> <span>Pending Payments</span></a></li>
         <li><a href="http://localhost/CMA/public?url=hr/paymentMonitor"><i class='bx bx-line-chart'></i> <span>Payment Monitor</span></a></li>
