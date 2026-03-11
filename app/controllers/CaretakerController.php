@@ -367,8 +367,8 @@ class CaretakerController extends Controller
 
     public function ct_settings()
     {
-        if (!AuthSession::isLoggedIn()) {
-            header("Location: index.php?url=auth/login");
+        if (!AuthSession::hasRole('caretaker')) {
+            header("Location: " . URLROOT . "/auth/login");
             exit;
         }
 
@@ -467,7 +467,7 @@ class CaretakerController extends Controller
 
     public function ct_reviews()
     {
-        if (!AuthSession::isLoggedIn()) {
+        if (!AuthSession::hasRole('caretaker')) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
         }

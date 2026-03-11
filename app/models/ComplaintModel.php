@@ -173,7 +173,23 @@ public function getResolvedCaretakerComplaints($caretaker_id) {
 }
 
 // Fetch resolved complaints for a specific caretaker
-
+ // Fetch all complaints for a specific caretaker
+    public function getComplaintsByCaretaker($caretaker_id)
+    {
+        $stmt = $this->db->prepare("
+        SELECT cc.complaint_id, cc.caretaker_id, cc.client_id, cc.service_type, cc.service_date, cc.description, cc.status,
+               c.name AS client_name, ct.name AS caretaker_name
+        FROM ct_complaints cc
+        LEFT JOIN clients c ON cc.client_id = c.id
+        LEFT JOIN caretakers ct ON cc.caretaker_id = ct.id
+        WHERE cc.caretaker_id = ?
+        ORDER BY cc.created_at DESC
+    ");
+        $stmt->bind_param("i", $caretaker_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
 
 
 
