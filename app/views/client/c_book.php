@@ -20,22 +20,6 @@ $serviceOptions = $data['serviceOptions'];
     <main class="content">
         <h1>Book Your Caretaker</h1>
 
-        <!-- Caretaker Profile Summary -->
-        <section class="caretaker-summary">
-            <h2><?= htmlspecialchars($ct['name']) ?></h2>
-            <p><strong>Service:</strong> <?= htmlspecialchars($ct['service_type']) ?></p>
-            <p><strong>Location:</strong> <?= htmlspecialchars($ct['location']) ?></p>
-            <p><strong>Rating:</strong> ⭐ <?= htmlspecialchars($ct['rating'] ?? 'N/A') ?></p>
-        </section>
-
-        <!-- Base Price Display -->
-        <div class="form-group">
-            <label>Base Price:</label>
-            <span id="basePrice">Select a service to see price</span>
-            <p>Note: The base price may differ according to preferred time</p>
-        </div>
-    
-
     <section class="caretaker-summary">
         <h2 id="ctName"><?= htmlspecialchars($ct['name'] ?? 'N/A') ?></h2>
         <p><strong>Service:</strong> <span id="ctService"><?= htmlspecialchars($ct['service_type'] ?? 'N/A') ?></span></p>
@@ -50,38 +34,7 @@ $serviceOptions = $data['serviceOptions'];
     </div>
 
     <section class="booking-form">
-        <form id="bookingForm" method="POST" action="<?= URLROOT ?>/public/?url=client/bookCaretaker">
-
-            <!-- ✅ JS will update caretaker_id if alternative selected -->
-            <input type="hidden" name="caretaker_id" id="caretaker_id" value="<?= (int)$ct['id'] ?>">
-
-            <!-- ✅ JS uses this for pricing/service validations -->
-            <input type="hidden" name="service_type" id="service_type" value="<?= htmlspecialchars($serviceType, ENT_QUOTES) ?>">
-
-            <input type="hidden" name="total_payment" id="total_payment" value="0">
-            <input type="hidden" name="end_date" id="end_date" value="">
-
-            <!-- ===== BASIS ===== -->
-            <div class="form-group">
-                <label for="basis">Select Basis</label>
-                <select id="basis" name="basis" required>
-                    <option value="">-- Select --</option>
-
-                    <?php if (!empty($bases)): ?>
-                        <?php foreach ($bases as $b): ?>
-                            <option value="<?= htmlspecialchars($b, ENT_QUOTES) ?>">
-                                <?= htmlspecialchars($b) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <option value="">No basis options available</option>
-                    <?php endif; ?>
-                </select>
-            </div>
-
-        <!-- ================= Booking Form ================= -->
-        <section class="booking-form">
-            <form id="bookingForm" method="POST" action="<?= URLROOT ?>/client/bookCaretaker">
+            <form id="bookingForm" method="POST" action="<?= URLROOT ?>/public/?url=client/bookCaretaker">
 
                 <!-- Hidden caretaker ID -->
                 <input type="hidden" name="caretaker_id" value="<?= $ct['id'] ?>">
@@ -163,7 +116,7 @@ $serviceOptions = $data['serviceOptions'];
                 <div class="form-group">
                     <label for="customization_hours">Customization (Extra Hours)</label>
                     <small>Extra hours are charged at LKR 300 per hour </small>
-                    <input type="number" id="customization_hours" name="customization_hours" min="0" max="8" value="0">
+                    <input type="number" id="customization_hours" name="customization_hours" min="0" max="5" value="0">
                     
 
                     <label for="customization">Customization Notes</label>

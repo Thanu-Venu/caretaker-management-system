@@ -1,360 +1,172 @@
-/* =========================
-   Base Layout
-========================= */
 .content {
-  margin-left: 250px;
-  padding: 28px;
-  font-family: "Poppins", sans-serif;
-  background: #f6f8fc;
+  margin-left: 270px;
+  padding: 30px;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f9fafc;
   min-height: 100vh;
 }
 
 .content h1 {
-  font-size: 28px;
-  margin-bottom: 18px;
+  font-size: 26px;
+  margin-bottom: 20px;
   color: #1e88e5;
-  font-weight: 700;
-  letter-spacing: 0.2px;
 }
 
-.no-bookings {
-  font-size: 15px;
-  color: #6b7280;
-  background: #ffffff;
-  border: 1px solid #eef2f7;
-  padding: 14px 16px;
-  border-radius: 12px;
-  display: inline-block;
-}
-
-/* =========================
-   Table
 .table-wrapper {
   overflow-x: auto;
-  background: #ffffff;
-  border-radius: 14px;
-  border: 1px solid #eef2f7;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
 .bookings-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 850px; /* helps on desktop */
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
-.bookings-table thead th {
+.bookings-table th,
+.bookings-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #eef2f7;
+  text-align: left;
+  vertical-align: top;
+}
+
+.bookings-table th {
   background: #1e88e5;
-  color: #fff;
   font-weight: 700;
-  font-size: 14px;
-  padding: 14px 14px;
-  border-bottom: 1px solid #e9eef6;
-  white-space: nowrap;
+  color: #fff;
 }
 
-.bookings-table tbody td {
-  padding: 14px 14px;
-  font-size: 14px;
-  color: #0f172a;
-  border-bottom: 1px solid #f1f5f9;
-  vertical-align: middle;
-}
-
-.bookings-table tbody tr:hover {
+.bookings-table tr:hover {
   background: #fafcff;
 }
 
-.bookings-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-/* Improve text feel */
-.bookings-table td:nth-child(1) {
-  font-weight: 600;
-  color: #0b3b66;
-}
-
-/* Actions */
 .actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  white-space: nowrap;
 }
 
-/* =========================
-   Buttons
-========================= */
+.actions .cancel-btn,
+.actions .reschedule-btn {
+  margin-right: 12px;
+}
+
+.actions .reschedule-btn {
+  margin-right: 0;
+}
+
 .cancel-btn,
 .reschedule-btn,
-.payment-btn,
-.cancel1-btn,
-.save-btn {
+.cancel1-btn {
   border: none;
+  padding: 8px 12px;
   border-radius: 10px;
-  padding: 9px 12px;
-  font-size: 13.5px;
-  font-weight: 600;
   cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.cancel-btn {
-  background: #ef4444;
+  font-weight: 600;
   color: #fff;
 }
-.cancel-btn:hover {
-  opacity: 0.95;
-  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.25);
+
+.cancel-btn,
+.cancel1-btn {
+  background: #e74c3c;
 }
-.cancel-btn:active { transform: scale(0.98); }
+
+.cancel-btn:hover,
+.cancel1-btn:hover {
+  background: #c0392b;
+}
 
 .reschedule-btn {
   background: #f59e0b;
-  color: #fff;
 }
+
 .reschedule-btn:hover {
-  opacity: 0.95;
-  box-shadow: 0 8px 18px rgba(245, 158, 11, 0.25);
-}
-.reschedule-btn:active { transform: scale(0.98); }
-
-.payment-btn {
-  background: #22c55e;
-  color: #fff;
-}
-.payment-btn:hover {
-  opacity: 0.95;
-  box-shadow: 0 8px 18px rgba(34, 197, 94, 0.25);
-}
-.payment-btn:active { transform: scale(0.98); }
-
-/* Modal confirm cancel button */
-.cancel1-btn {
-  background: #ef4444;
-  color: #fff;
-  width: 100%;
-}
-.cancel1-btn:hover {
-  opacity: 0.95;
-  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.25);
+  background: #d97706;
 }
 
-/* Save button for reschedule (if you use save-btn class) */
-.save-btn {
-  background: #2563eb;
-  color: #fff;
-  width: 100%;
-}
-.save-btn:hover {
-  opacity: 0.95;
-  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+.no-bookings {
+  display: block;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  color: #555;
 }
 
-/* =========================
-   Modal (single clean version)
-========================= */
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+  }
+}
+
 .modal {
   display: none;
   position: fixed;
-  inset: 0;
   z-index: 1000;
-  background: rgba(15, 23, 42, 0.55);
-  backdrop-filter: blur(4px);
-
-  /* these make it centered when shown */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
   justify-content: center;
   align-items: center;
-  padding: 18px;
 }
 
 .modal-content {
   background: #ffffff;
-  width: 100%;
-  max-width: 420px;
-  border-radius: 14px;
-  border: 1px solid #eef2f7;
-  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.25);
-  padding: 18px 18px 16px;
+  padding: 25px 30px;
+  width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   position: relative;
-  animation: modalPop 0.18s ease;
-}
-
-.modal-content h2 {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0 0 12px;
-  color: #0f172a;
+  animation: slideDown 0.3s ease;
+  font-family: "Poppins", sans-serif;
 }
 
 .close {
   position: absolute;
-  top: 10px;
-  right: 12px;
+  top: 12px;
+  right: 15px;
   font-size: 22px;
   cursor: pointer;
-  color: #64748b;
-  transition: color 0.2s ease;
+  color: #555;
 }
-.close:hover { color: #0f172a; }
 
-/* Form elements inside modals */
+.close:hover {
+  color: #e74c3c;
+}
+
 .modal-content label {
   display: block;
   font-weight: 600;
-  color: #334155;
-  margin: 10px 0 6px;
-  font-size: 13px;
+  margin-bottom: 8px;
+  color: #333;
 }
 
 .modal-content input,
 .modal-content textarea,
 .modal-content select {
   width: 100%;
-  padding: 10px 10px;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  outline: none;
-  font-size: 14px;
-  background: #fbfdff;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
-}
-
-.modal-content textarea {
-  min-height: 90px;
-  resize: vertical;
-}
-
-.modal-content input:focus,
-.modal-content textarea:focus,
-.modal-content select:focus {
-  border-color: #60a5fa;
-  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.22);
-}
-
-/* For modal action rows (if you use them) */
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-/* =========================
-   Messages / warnings
-========================= */
-.payment-warning {
-  background: #fff7ed;
-  color: #92400e;
-  padding: 10px 12px;
-  border: 1px solid #fed7aa;
-  border-radius: 12px;
-  font-size: 13px;
-  margin-bottom: 12px;
-}
-
-/* =========================
-   Responsive
-========================= */
-@media (max-width: 768px) {
-  .content { margin-left: 0; padding: 18px; }
-  .bookings-table { min-width: 720px; } /* horizontal scroll on phones */
-}
-
-/* =========================
-   Animations
-========================= */
-@keyframes modalPop {
-  from { transform: translateY(8px) scale(0.98); opacity: 0; }
-  to   { transform: translateY(0) scale(1); opacity: 1; }
-}
-
-.payment-deadline{
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.cancel1-btn-secondary:hover {
-  background: #95a5a6;
-}
-
-#cancelReason{
-    width: 100%;
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-}
-
-
-/* Modal container */
-.modal {
-  display: none; 
-  position: fixed; 
-  z-index: 1000; 
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5);
-  justify-content: center; 
-  align-items: center;
-}
-
-/* Modal content box */
-.modal-content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-}
-
-/* Close button */
-.modal-content .close {
-  float: right;
-  font-size: 24px;
-  cursor: pointer;
-}
-
-/* Form elements */
-.modal-content input, 
-.modal-content textarea, 
-.modal-content select {
-  width: 100%;
   padding: 8px;
   margin: 8px 0;
-  border-radius: 4px;
+  border-radius: 6px;
   border: 1px solid #ccc;
 }
 
-/* Ensure date picker icon is visible in reschedule modal */
-.modal-content input[type="date"] {
-  appearance: auto;
-  -webkit-appearance: auto;
-  background-color: #fff;
-}
-
-.modal-content input[type="date"]::-webkit-calendar-picker-indicator {
-  opacity: 1;
-  cursor: pointer;
-}
-
-/* Buttons */
-.cancel1-btn, .reschedule-btn {
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  padding: 10px;
+#rescheduleModal .reschedule-btn,
+.cancel1-btn {
   width: 100%;
-  border-radius: 4px;
-  cursor: pointer;
 }
-.cancel1-btn:hover, .reschedule-btn:hover {
-  background-color: #0056b3;
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 

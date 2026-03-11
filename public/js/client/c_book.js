@@ -28,7 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const basis = basisSelect.value;
         const duration = parseInt(durationInput.value) || 0;
         const preferredTime = preferredTimeSelect.value;
-        const customizationHours = parseInt(customizationHoursInput?.value || "0", 10) || 0;
+        let customizationHours = parseInt(customizationHoursInput?.value || "0", 10) || 0;
+        customizationHours = Math.min(5, Math.max(0, customizationHours));
+        if (customizationHoursInput && parseInt(customizationHoursInput.value || "0", 10) !== customizationHours) {
+            customizationHoursInput.value = String(customizationHours);
+        }
 
         if (basis && duration > 0 && preferredTime) {
             const base = priceRates[basis] || 0;

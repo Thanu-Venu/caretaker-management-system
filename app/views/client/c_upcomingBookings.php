@@ -19,11 +19,6 @@
             <p>You don't have any upcoming bookings at the moment.</p>
         </div>
     <?php else: ?>
-
-    <?php if (empty($data['bookings'])): ?>
-    <p class="no-bookings">You don’t have any upcoming bookings yet.</p>
-<?php else: ?>
-
 <div class="table-wrapper">
 <table class="bookings-table">
     <thead>
@@ -55,15 +50,13 @@
                         onclick="openRescheduleModal(<?= $b['booking_id'] ?>)">
                         Reschedule
                     </button>
-                </div>
-
-            </div>
+                </td>
+            </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
 </div>
 
-<?php endif; ?>
     <?php endif; ?>
 
 
