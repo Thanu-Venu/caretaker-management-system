@@ -1596,12 +1596,12 @@ class ClientController extends Controller
     }
     public function c_settings()
     {
-        if (!AuthSession::isLoggedIn()) {
-            header("Location: index.php?url=auth/login");
+        if (!AuthSession::hasRole('client')) {
+            header("Location: " . URLROOT . "/auth/login");
             exit;
         }
 
-        $user = $_SESSION['user']; // <--- assign it here
+        $user = $_SESSION['user'] ?? [];
 
         $this->view("client/c_settings", ['user' => $user]);
     }

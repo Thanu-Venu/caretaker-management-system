@@ -258,9 +258,14 @@ p.hint {
     border-radius: 16px;
     z-index: 1000;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    max-height: 90vh;
-    overflow-y: auto;
+    overflow: visible;
 }
+
+  .popup form {
+    max-height: calc(90vh - 20px);
+    overflow-y: auto;
+    padding-right: 6px;
+  }
 
 /* Popup Form Title */
 .popup h3 {
