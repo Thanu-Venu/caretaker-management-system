@@ -74,5 +74,6 @@ public static function calculateAdvanceFromBooking(array $booking, ?string $toda
 
 
 
+
     
 }
