@@ -1585,6 +1585,22 @@ class ClientController extends Controller
                 );
             }
 
+            // ✅ Notify CLIENT that payment was recorded successfully
+            $caretakerName = $booking['caretaker_name'] ?? 'Your Caretaker';
+            $clientNotificationMessage = $paymentType === 'advance'
+                ? "Advance payment of Rs. " . number_format($amount, 2) . " has been recorded for {$caretakerName}. Waiting for HR approval."
+                : "Payment of Rs. " . number_format($amount, 2) . " has been recorded. Thank you!";
+
+            $clientNotificationTitle = $paymentType === 'advance' ? 'Advance Payment Recorded' : 'Payment Recorded';
+
+            $notifModel->addNotification(
+                $clientId,
+                'client',
+                $clientNotificationTitle,
+                $clientNotificationMessage,
+                URLROOT . "/client/paymentDetails?booking_id=" . $bookingId
+            );
+
             $_SESSION['success'] = "Payment submitted successfully! Waiting for HR approval.";
             header("Location: " . URLROOT . "/client/c_paymentSuccess?payment_id=" . $paymentId);
             exit;

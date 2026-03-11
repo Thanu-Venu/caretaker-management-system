@@ -44,7 +44,7 @@
             <td>
               <?= $b['booking_date'] ?> - <?= $b['preferred_time'] ?>
              </td>
-            <td>LKR <?= number_format($b['total_payment'], 2) ?></td>
+            <td>LKR <?= number_format($b['total_payment'] ?? 0, 2) ?></td>
         </tr>
     <?php endforeach; ?>
 <?php else : ?>
@@ -80,7 +80,7 @@
                    <?= $b['booking_date'] ?> - <?= $b['preferred_time'] ?>
 
                   </td>
-                  <td>LKR <?= number_format($b['total_payment'], 2) ?></td>
+                  <td>LKR <?= number_format($b['total_payment'] ?? 0, 2) ?></td>
                 </tr>
               <?php endforeach; ?>
             <?php else : ?>

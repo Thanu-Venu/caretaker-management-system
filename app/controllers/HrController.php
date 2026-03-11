@@ -129,13 +129,24 @@ public function requestAdvancePayment() {
     $updated = $this->hrModel->requestAdvancePayment($booking_id);
 
     if ($updated) {
+        $bookingSummary = $this->clientModel->getBookingSummaryForNotification((int)$booking_id);
+
+        $title = "Advance Payment Required";
+        $message = "HR has requested your advance payment. Please pay the advance payment to proceed with your booking.";
+
+        if ($bookingSummary) {
+            $message = "HR has requested your advance payment for booking #" . (int)$booking_id
+                . " with " . ($bookingSummary['caretaker_name'] ?? 'your caretaker')
+                . ". Please pay the advance payment to confirm the booking.";
+        }
+
         // 2️⃣ Notify client with link to payment page
         $this->notificationModel->addNotification(
-            $client_id,
+            (int)$client_id,
             'client',
-            "Advance Payment Required",
-            "Please pay the advance payment to proceed with your booking.",
-            URLROOT . "/client/c_makePayment?booking_id=" . $booking_id
+            $title,
+            $message,
+            URLROOT . "/client/c_makePayment?booking_id=" . (int)$booking_id
         );
         $_SESSION['success'] = "Advance payment requested successfully!";
     } else {
