@@ -7,22 +7,18 @@ class ClientController extends Controller {
 public function __construct() {
     if (session_status() === PHP_SESSION_NONE) session_start();
 
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
-            header("Location: " . URLROOT . "/auth/login");
-            exit;
-        }
+    if (!isset($_SESSION['user'])) {
+        header("Location: index.php?url=auth/login");
+        exit;
+    }
 
     $this->clientModel = $this->model('ClientModel');
     $user = $this->clientModel->getClientById($_SESSION['user']['id']);
 
-        if (!$user) { // user deleted
-            session_destroy();
-            header("Location: " . URLROOT . "/auth/login");
-            exit;
-        }
-
-        // Update session with latest data
-        $_SESSION['user'] = $user;
+    if (!$user) {
+        session_destroy();
+        header("Location: index.php?url=auth/login");
+        exit;
     }
 
     $_SESSION['user'] = $user;
@@ -47,8 +43,7 @@ public function __construct() {
         'totalSpent'     => $this->clientModel->getTotalSpent($clientId),
         'avgRating'      => $this->clientModel->getAverageRatingGiven($clientId),
         'recentBookings' => $this->clientModel->getRecentBookings($clientId),
-        'notifications'  => $this->clientModel->getClientNotifications($clientId),
-        'assignedCaretaker' => $this->clientModel->getAssignedCaretaker($clientId)
+        'notifications'  => $this->clientModel->getClientNotifications($clientId)
     ];
 
     $this->view("client/c_dashboard", $data);
@@ -62,11 +57,11 @@ public function __construct() {
         exit;
     }
 
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+    $user = $_SESSION['user'];
 
-            header("Location: " . URLROOT . "/auth/login");
-            exit;
-        }
+    // pass user info to the view
+    $this->view("client/c_profile", ['user' => $user]);
+}
 
 public function c_find1() {
     $caretakerModel = $this->model('CaretakerModel');
@@ -398,7 +393,6 @@ public function c_book()
 }
 
 
-
 public function bookCaretaker()
 {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -493,7 +487,6 @@ public function bookCaretaker()
         exit;
     }
 }
-
 
 
  
@@ -642,19 +635,21 @@ public function processPayment() {
     }
 
     public function editClientDetails()
-    {
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
-            header("Location: " . URLROOT . "/auth/login");
-            exit;
-        }
+{
+    if (!isset($_SESSION['user'])) {
+        header("Location: index.php?url=auth/login");
+        exit;
+    }
 
     $user = $_SESSION['user'];
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            $profileImage = $user['profile_image'] ?? 'default.png';
+        // KEEP OLD IMAGE
+        $profileImage = $user['profile_image'] ?? 'default.png';
 
-            if (!empty($_FILES['profile_image']['name'])) {
+        // IF NEW IMAGE SELECTED
+        if (!empty($_FILES['profile_image']['name'])) {
 
             $fileName = time() . "_" . basename($_FILES['profile_image']['name']);
             $targetPath = APPROOT . "/../public/uploads/" . $fileName;
@@ -673,18 +668,17 @@ public function processPayment() {
         // REFRESH SESSION
         $_SESSION['user'] = $this->clientModel->getClientById($user['id']);
 
-            $_SESSION['success'] = "Profile updated successfully!";
-            header("Location: " . URLROOT . "/Client/c_settings");
-            exit();
-        }
+        $_SESSION['success'] = "Profile updated successfully!";
+        header("Location: index.php?url=Client/c_settings");
+        exit();
     }
 }
 
 
     public function editPasswordDetails()
     {
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
-            header("Location: " . URLROOT . "/auth/login");
+        if (!isset($_SESSION['user'])) {
+            header("Location: index.php?url=auth/login");
             exit;
         }
 
@@ -747,11 +741,7 @@ public function processPayment() {
     }
 
      public function c_complaintlist() {
-        $complaintModel = $this->model('ComplaintModel');
-        $client_name = $_SESSION['user']['name'];
-        $complaints = $complaintModel->getComplaintsByClient($client_name);
-        
-        $this->view("client/c_complaintlist", ['complaints' => $complaints]);
+        $this->view("client/c_complaintlist");
     }
  public function c_announcement() {
     $announcementModel = $this->model('AnnouncementModel');
