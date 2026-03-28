@@ -132,14 +132,14 @@ body, html {
 }
 
 .price-overview .price-grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 20px;
 }
 
 
 .price-overview .price-card {
-  flex: 1 1 0 !important;
-  min-width: 280px;               /* keeps box shape */
+  min-width: 0;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -684,7 +684,7 @@ body, html {
   }
 
   .price-overview .price-grid {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .modifier-grid {
