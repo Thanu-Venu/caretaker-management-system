@@ -641,17 +641,17 @@ body, html {
 /* ===================== Responsive ===================== */
 @media (max-width: 1100px) {
   .client-dashboard {
-    margin-left: 0;
-    margin-right: 0;
+    margin-left: 270px;
+    margin-right: 12px;
     padding: 18px 16px;
   }
 
   .alert.success {
-    margin-left: 0;
-    margin-right: 0;
+    margin-left: 270px;
+    margin-right: 12px;
   }
 
-  .stats-cards .cards-grid {
+  .stats-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -665,11 +665,26 @@ body, html {
   }
 }
 
+@media (max-width: 900px) {
+  .client-dashboard {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .alert.success {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
 @media (max-width: 650px) {
-  .stats-cards .cards-grid,
-  .price-grid,
+  .stats-cards,
   .quick-actions .actions {
     grid-template-columns: 1fr;
+  }
+
+  .price-overview .price-grid {
+    flex-direction: column;
   }
 
   .modifier-grid {
