@@ -31,7 +31,7 @@ $badgeCounts = getSidebarBadgeCounts();
     <div class="menu-scroll">
       <ul class="menu">
         <li><a href="http://localhost/CMA/public?url=hr/hr_dashboard"><i class='bx bx-home'></i> <span>Dashboard</span></a></li>
-        <li><a href="http://localhost/CMA/public?url=hr/hr_addct"><i class='bx bx-group'></i> <span>Caregivers</span></a></li>
+        <li><a href="http://localhost/CMA/public/HRCaretakerCRUD/list"><i class='bx bx-group'></i> <span>Caregivers</span></a></li>
         <li>
           <a href="http://localhost/CMA/public?url=hr/hr_pending_request">
             <span class="menu-item-content">
