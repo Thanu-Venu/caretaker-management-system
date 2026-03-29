@@ -28,4 +28,16 @@ public function getAllLeaves() {
         $stmt->bind_param("si", $status, $leave_id);
         return $stmt->execute();
     }
+
+      public function isCaretakerOnLeave($caretakerId, $date) {
+        $stmt = $this->conn->prepare(
+            "SELECT COUNT(*) AS cnt FROM leaves 
+             WHERE user_id = ? AND status = 'Approved' 
+               AND ? BETWEEN start_date AND end_date"
+        );
+        $stmt->bind_param("is", $caretakerId, $date);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        return !empty($row) && $row['cnt'] > 0;
+    }
 }
