@@ -10,7 +10,15 @@ $pendingRequests = $data['pendingRequests'] ?? 0;
 
 $recentLeaves     = $data['recentLeaves'] ?? [];
 $recentComplaints = $data['recentComplaints'] ?? [];
-$recentBookings   = $data['recentBookings'] ?? []; // prevent undefined variable
+$recentBookings   = $data['recentBookings'] ?? [];
+
+// Chart data from database
+$attendanceLabels = $data['attendanceLabels'] ?? json_encode(['No data']);
+$attendanceDays = $data['attendanceDays'] ?? json_encode([0]);
+$attendanceNames = $data['attendanceNames'] ?? json_encode([]);
+$performanceLabels = $data['performanceLabels'] ?? json_encode(['Excellent', 'Good', 'Average', 'Poor']);
+$performanceCounts = $data['performanceCounts'] ?? json_encode([5, 10, 7, 3]);
+$performanceColors = $data['performanceColors'] ?? json_encode(['#1E88E5', '#00BFA5', '#FFC107', '#F44336']);
 ?>
 
 <!DOCTYPE html>
@@ -101,7 +109,7 @@ $recentBookings   = $data['recentBookings'] ?? []; // prevent undefined variable
       <div class="card-header">
         <div>
           <h3>Attendance Summary</h3>
-          <div class="subtitle">Demo chart (connect DB later)</div>
+          <div class="subtitle">Last 30 days data</div>
         </div>
       </div>
       <div class="chart-wrap">
@@ -113,7 +121,7 @@ $recentBookings   = $data['recentBookings'] ?? []; // prevent undefined variable
       <div class="card-header">
         <div>
           <h3>Performance Ratings</h3>
-          <div class="subtitle">Demo chart (connect DB later)</div>
+          <div class="subtitle">Active caretakers</div>
         </div>
       </div>
       <div class="chart-wrap">
@@ -233,40 +241,91 @@ $recentBookings   = $data['recentBookings'] ?? []; // prevent undefined variable
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-  // Demo charts (replace with DB data later)
-  const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
-  const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+  // Parse chart data from PHP
+  const attendanceLabels = <?= $attendanceLabels ?>;
+  const attendanceDays = <?= $attendanceDays ?>;
+  const attendanceNames = <?= $attendanceNames ?>;
+  const performanceLabels = <?= $performanceLabels ?>;
+  const performanceCounts = <?= $performanceCounts ?>;
+  const performanceColors = <?= $performanceColors ?>;
 
+  // Attendance Chart - Bar Chart with IDs on axis, names in tooltip
+  const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
   new Chart(attendanceCtx, {
     type: 'bar',
     data: {
-      labels: ['Jane', 'John', 'Michael', 'Emily', 'David'],
+      labels: attendanceLabels,
       datasets: [{
-        label: 'Days Present',
-        data: [20, 18, 22, 19, 21],
-        backgroundColor: '#1E88E5'
+        label: 'Days Present (Last 30 Days)',
+        data: attendanceDays,
+        backgroundColor: '#1E88E5',
+        borderRadius: 4
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } }
+      plugins: { 
+        legend: { display: true },
+        title: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          titleFont: { size: 14, weight: 'bold' },
+          bodyFont: { size: 13 },
+          callbacks: {
+            title: function(tooltipItems) {
+              const index = tooltipItems[0].dataIndex;
+              return attendanceNames[index] || 'Unknown';
+            },
+            label: function(context) {
+              return 'Days Present: ' + context.parsed.y + ' days';
+            }
+          }
+        }
+      },
+      scales: { 
+        y: { 
+          beginAtZero: true,
+          ticks: { stepSize: 5 }
+        }
+      }
     }
   });
 
+  // Performance Ratings Chart - Pie Chart
+  const performanceCtx = document.getElementById('performanceChart').getContext('2d');
   new Chart(performanceCtx, {
     type: 'pie',
     data: {
-      labels: ['Excellent', 'Good', 'Average', 'Poor'],
+      labels: performanceLabels,
       datasets: [{
-        data: [5, 10, 7, 3],
-        backgroundColor: ['#1E88E5', '#00BFA5', '#FFC107', '#F44336']
+        data: performanceCounts,
+        backgroundColor: performanceColors,
+        borderColor: '#fff',
+        borderWidth: 2
       }]
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            padding: 15
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const count = context.parsed || 0;
+              return label + ': ' + count + ' caretaker(s)';
+            }
+          }
+        }
+      }
     }
   });
 </script>
