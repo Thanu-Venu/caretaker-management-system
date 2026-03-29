@@ -167,7 +167,9 @@ function applyFilters() {
     const location = locationEl ? locationEl.value.trim().toLowerCase() : "";
     const minRating = ratingEl ? parseFloat(ratingEl.value) : NaN;
 
-  const cards = document.querySelectorAll(".card");
+    const cards = document.querySelectorAll(".card");
+    const noCaretakerMessage = document.getElementById("noCaretakerMessage");
+    let visibleCount = 0;
 
   cards.forEach(card => {
     const cardService = (card.dataset.service || "").trim().toLowerCase();
@@ -182,10 +184,19 @@ function applyFilters() {
       card.style.display = "flex";
       card.style.flexDirection = "column";
       card.style.minHeight = "550px";
+            visibleCount += 1;
     } else {
       card.style.display = "none";
     }
   });
+
+    if (noCaretakerMessage) {
+        if (cards.length > 0 && visibleCount === 0) {
+            noCaretakerMessage.classList.remove("hidden");
+        } else {
+            noCaretakerMessage.classList.add("hidden");
+        }
+    }
 }
 
 

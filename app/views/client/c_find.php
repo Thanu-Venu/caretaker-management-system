@@ -160,10 +160,15 @@ class="book-btn">Book Now</a>
 
             <?php endforeach; ?>
           <?php else: ?>
-            <p>Use the Book Caretaker button to search for availability.</p>
+            <?php if ($showResults): ?>
+              <p>No caretakers available for your selected booking details.</p>
+            <?php else: ?>
+              <p>Use the Book Caretaker button to search for availability.</p>
+            <?php endif; ?>
           <?php endif; ?>
 
         </div>
+        <p id="noCaretakerMessage" class="no-results-message hidden">No caretakers available for this filter.</p>
       </section>
 
     </div>

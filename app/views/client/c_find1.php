@@ -15,10 +15,9 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
 
 <body>
 
-  <!-- ================= POPUP OVERLAY ================= -->
   <div id="popupOverlay" class="overlay"></div>
 
-  <!-- ================= POPUP FORM ================= -->
+  <!-- popupform -->
   <div id="searchPopup" class="popup">
     <form id="popupForm" method="POST" action="<?= URLROOT ?>/client/c_find">
 
