@@ -239,22 +239,32 @@ function moneyLKR($amount) {
 <section class="recent-bookings">
   <h2>Recent Bookings</h2>
 
-  <?php foreach ($data['recentBookings'] as $booking): ?>
-    <div class="booking">
-      <img src="../public/images/find.png" alt="">
-      <div>
-        <h3><?= $booking['service_type']; ?> with <?= $booking['caretaker_name']; ?></h3>
-        <p>
-          <?= date('m/d/Y', strtotime($booking['booking_date'])); ?>
-          at <?= $booking['preferred_time']; ?>
-          • <?= $booking['duration']; ?> hours
-        </p>
+  <?php if (!empty($data['recentBookings'])): ?>
+    <?php foreach ($data['recentBookings'] as $booking): ?>
+      <div class="booking">
+        <img src="../public/images/find.png" alt="">
+        <div>
+          <h3><?= $booking['service_type']; ?> with <?= $booking['caretaker_name']; ?></h3>
+          <p>
+            <?= date('m/d/Y', strtotime($booking['booking_date'])); ?>
+            at <?= $booking['preferred_time']; ?>
+            • <?= $booking['duration']; ?> hours
+          </p>
+        </div>
+        <span class="status <?= strtolower($booking['status']); ?>">
+          <?= $booking['status']; ?>
+        </span>
       </div>
-      <span class="status <?= strtolower($booking['status']); ?>">
-        <?= $booking['status']; ?>
-      </span>
+    <?php endforeach; ?>
+  <?php else: ?>
+    <div class="booking">
+      
+      <div>
+        <h3>No recent bookings yet</h3>
+        <p>Your recent bookings will appear here once you make your first booking.</p>
+      </div>
     </div>
-  <?php endforeach; ?>
+  <?php endif; ?>
 </section>
 
 
