@@ -17,6 +17,14 @@ include_once APPROOT . "/views/templates/hr/hr_sidebar.php";
 <body>
 <main class="main-content">
 
+  <!-- Success Message Alert -->
+  <?php if (!empty($_SESSION['success'])): ?>
+    <div class="alert alert-success" style="padding: 12px 16px; background: #d4edda; border: 1px solid #c3e6cb; color: #155724; margin-bottom: 20px; border-radius: 4px;">
+      <strong>Success:</strong> <?= htmlspecialchars($_SESSION['success']) ?>
+    </div>
+    <?php unset($_SESSION['success']); ?>
+  <?php endif; ?>
+
   <!-- Header -->
   <section class="caretaker-header">
     <h1>Caregiver Management</h1>
@@ -100,13 +108,7 @@ $filters = $data['filters'] ?? [];
 <?php if (($data['totalPages'] ?? 1) > 1): ?>
   <div class="pagination">
     <?php for ($p=1; $p <= $data['totalPages']; $p++): ?>
-      <a class="<?= ($p == ($data['page'] ?? 1)) ? 'active' : '' ?>"
-         href="<?= URLROOT ?>/HRCaretakerCRUD/list?
-            page=<?= $p ?>
-            &service_type=<?= urlencode($filters['service_type'] ?? '') ?>
-            &status=<?= urlencode($filters['status'] ?? '') ?>
-            &location=<?= urlencode($filters['location'] ?? '') ?>
-            &q=<?= urlencode($filters['q'] ?? '') ?>">
+      <a class="<?= ($p == ($data['page'] ?? 1)) ? 'active' : '' ?>" href="<?= URLROOT ?>/HRCaretakerCRUD/list?page=<?= $p ?>&service_type=<?= urlencode($filters['service_type'] ?? '') ?>&status=<?= urlencode($filters['status'] ?? '') ?>&location=<?= urlencode($filters['location'] ?? '') ?>&q=<?= urlencode($filters['q'] ?? '') ?>">
         <?= $p ?>
       </a>
     <?php endfor; ?>
@@ -119,17 +121,5 @@ $filters = $data['filters'] ?? [];
 
 
 </main>
-
-<!-- Optional JS for search filter -->
-<script>
-const searchInput = document.getElementById('searchInput');
-searchInput.addEventListener('keyup', function() {
-  const filter = this.value.toLowerCase();
-  document.querySelectorAll('tbody tr').forEach(row => {
-    row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
-  });
-});
-</script>
-
 </body>
 </html>

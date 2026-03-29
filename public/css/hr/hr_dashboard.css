@@ -7,12 +7,12 @@
 }
 
 :root {
-  --bg: #f6f8fb;
+  --bg: #f4f7fb;
   --card: #ffffff;
-  --text: #1b2a41;
-  --muted: #667085;
-  --border: #e9edf5;
-  --primary: #1e88e5;
+  --text: #1e88e5;
+  --muted: #10244a;
+  --border: #e4ebf8;
+  --primary: #165f9e;
   --shadow: 0 10px 24px rgba(16, 24, 40, 0.08);
   --shadowHover: 0 14px 34px rgba(16, 24, 40, 0.12);
   --radius: 16px;
@@ -35,7 +35,7 @@ body {
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .page-title {
@@ -45,15 +45,16 @@ body {
 }
 
 .page-title h1 {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 750;
   letter-spacing: 0.2px;
   color: var(--text);
 }
 
 .page-title p {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--muted);
+  font-weight: 500;
 }
 
 .header-chip {
@@ -66,8 +67,8 @@ body {
   border: 1px solid var(--border);
   box-shadow: 0 6px 16px rgba(16, 24, 40, 0.06);
   color: var(--muted);
-  font-weight: 600;
-  font-size: 13px;
+  font-weight: 700;
+  font-size: 15px;
 }
 
 .header-chip i {
@@ -123,7 +124,7 @@ body {
 }
 
 .kpi-title {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 650;
   color: var(--muted);
 }
@@ -159,7 +160,7 @@ body {
 }
 
 .view-link {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--primary);
   text-decoration: none;
@@ -168,7 +169,7 @@ body {
 .view-link:hover { text-decoration: underline; }
 
 .kpi-note {
-  font-size: 12.5px;
+  font-size: 13.5px;
   color: var(--muted);
 }
 
@@ -207,13 +208,14 @@ body {
 }
 
 .card-header h3 {
-  font-size: 16px;
+  font-size: 24px;
   font-weight: 750;
+  margin-bottom: 16px;
   color: var(--text);
 }
 
 .card-header .subtitle {
-  font-size: 12.5px;
+  font-size: 14px;
   color: var(--muted);
 }
 
@@ -256,16 +258,16 @@ body {
 }
 
 .pending-card h3 {
-  font-size: 16px;
+  font-size: 24px;
   font-weight: 750;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .pending-list {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .pending-item {
@@ -287,12 +289,12 @@ body {
 
 .pending-item .title {
   font-weight: 750;
-  font-size: 13.5px;
-  color: var(--text);
+  font-size: 16px;
+  color: var(--muted);
 }
 
 .pending-item .desc {
-  font-size: 12.5px;
+  font-size: 14px;
   color: var(--muted);
 }
 
@@ -301,13 +303,13 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 8px 10px;
   border-radius: 12px;
   border: 1px solid rgba(30, 136, 229, 0.18);
   background: rgba(30, 136, 229, 0.08);
   color: var(--primary);
   font-weight: 750;
-  font-size: 12.5px;
+  font-size: 15px;
   text-decoration: none;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
@@ -320,6 +322,6 @@ body {
 /* Empty */
 .empty {
   color: var(--muted);
-  font-size: 13px;
-  padding: 12px 0;
+  font-size: 14px;
+  padding: 8px 0;
 }

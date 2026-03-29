@@ -5,7 +5,7 @@ body {
 .main-content {
   flex: 1;
   padding: 20px 40px;
-  margin-left: 270px;
+  margin-left: 255px;
   font-family: 'Poppins', Arial, sans-serif;
 }
 
@@ -39,28 +39,77 @@ body {
  
 }
 
-/* Search bar */
-.search-wrapper {
-  display: flex;
-  align-items: center;
-  background: white;
-  border-radius: 12px;
-  padding: 8px 12px;
-  margin-bottom: 20px;
+/* Form Inputs (Select & Input) */
+.filter-bar select, 
+.filter-bar input {
+  padding: 12px 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: 'Poppins', Arial, sans-serif;
+  transition: all 0.3s ease;
+  background-color: #ffffff;
+  color: #232323;
 }
 
-.search-wrapper i {
-  color: #545b66;
-  margin-right: 8px;
+.filter-bar select:hover, 
+.filter-bar input:hover {
+  border-color: #1e88e5;
+  background-color: #f5f5f5;
 }
 
-.search-wrapper input {
-  border: none;
+.filter-bar select:focus, 
+.filter-bar input:focus {
   outline: none;
-  background: transparent;
-  width: 100%;
-  font-size: 14px;
-  color: #545b66;
+  border-color: #1e88e5;
+  box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+  background-color: white;
+}
+
+/* Apply Button */
+.filter-bar button {
+  padding: 14px 28px;
+  border: none;
+  border-radius: 15px;
+  background: #1e88e5;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(30, 136, 229, 0.3);
+}
+
+.filter-bar button:hover {
+  background: #1565c0;
+  box-shadow: 0 4px 8px rgba(30, 136, 229, 0.4);
+}
+
+.filter-bar button:active {
+  transform: translateY(0);
+}
+
+/* Reset Button */
+.reset-btn {
+  padding: 14px 28px;
+  border: 2px solid #e0e0e0;
+  border-radius: 15px;
+  background: white;
+  text-decoration: none;
+  color: #4b4a4a;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.reset-btn:hover {
+  border-color: #999;
+  background: #f9f9f9;
+  color: #333;
+}
+
+.reset-btn:active {
+  background: #eee;
 }
 
 /* Table */
@@ -121,21 +170,23 @@ tbody tr:hover {
   cursor: pointer;
   transition: color 0.3s ease;
   font-size: 18px;
-}
-.actions i:hover {
-  color: #000;
-}
-
-.actions .bx-edit:hover {
-  color: #0056b3;
-}
-
-.actions .bx-show:hover {
   color: #1e88e5;
 }
 
+.actions i:hover {
+  color: #1565c0;
+}
+
+.actions .bx-edit:hover {
+  color: #1565c0;
+}
+
+.actions .bx-show:hover {
+  color: #1565c0;
+}
+
 .actions .bx-trash:hover {
-    color: #a71d2a;
+  color: #1565c0;
 }
 
 .filter-bar form{
