@@ -17,6 +17,14 @@ include_once APPROOT . "/views/templates/hr/hr_sidebar.php";
 <body>
 <main class="main-content">
 
+  <!-- Success Message Alert -->
+  <?php if (!empty($_SESSION['success'])): ?>
+    <div class="alert alert-success" style="padding: 12px 16px; background: #d4edda; border: 1px solid #c3e6cb; color: #155724; margin-bottom: 20px; border-radius: 4px;">
+      <strong>Success:</strong> <?= htmlspecialchars($_SESSION['success']) ?>
+    </div>
+    <?php unset($_SESSION['success']); ?>
+  <?php endif; ?>
+
   <!-- Header -->
   <section class="caretaker-header">
     <h1>Caregiver Management</h1>
