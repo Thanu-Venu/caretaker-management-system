@@ -108,13 +108,7 @@ $filters = $data['filters'] ?? [];
 <?php if (($data['totalPages'] ?? 1) > 1): ?>
   <div class="pagination">
     <?php for ($p=1; $p <= $data['totalPages']; $p++): ?>
-      <a class="<?= ($p == ($data['page'] ?? 1)) ? 'active' : '' ?>"
-         href="<?= URLROOT ?>/HRCaretakerCRUD/list?
-            page=<?= $p ?>
-            &service_type=<?= urlencode($filters['service_type'] ?? '') ?>
-            &status=<?= urlencode($filters['status'] ?? '') ?>
-            &location=<?= urlencode($filters['location'] ?? '') ?>
-            &q=<?= urlencode($filters['q'] ?? '') ?>">
+      <a class="<?= ($p == ($data['page'] ?? 1)) ? 'active' : '' ?>" href="<?= URLROOT ?>/HRCaretakerCRUD/list?page=<?= $p ?>&service_type=<?= urlencode($filters['service_type'] ?? '') ?>&status=<?= urlencode($filters['status'] ?? '') ?>&location=<?= urlencode($filters['location'] ?? '') ?>&q=<?= urlencode($filters['q'] ?? '') ?>">
         <?= $p ?>
       </a>
     <?php endfor; ?>
@@ -127,17 +121,5 @@ $filters = $data['filters'] ?? [];
 
 
 </main>
-
-<!-- Optional JS for search filter -->
-<script>
-const searchInput = document.getElementById('searchInput');
-searchInput.addEventListener('keyup', function() {
-  const filter = this.value.toLowerCase();
-  document.querySelectorAll('tbody tr').forEach(row => {
-    row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
-  });
-});
-</script>
-
 </body>
 </html>
