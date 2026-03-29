@@ -134,7 +134,7 @@ class HRCaretakerCRUDController extends Controller
                 'section' => "Caretakers"
             ]);
 
-            header("Location: " . URLROOT . "/hr/hr_addct");
+            header("Location: " . URLROOT . "/HRCaretakerCRUD/list");
             exit;
         }
 
@@ -154,7 +154,7 @@ class HRCaretakerCRUDController extends Controller
                 'section' => "Caretakers"
             ]);
 
-            header("Location: " . URLROOT . "/hr/hr_addct");
+            header("Location: " . URLROOT . "/HRCaretakerCRUD/list");
             exit;
         } else {
             $caretaker = $this->caretakerModel->getCaretakerById($id);
@@ -186,7 +186,7 @@ class HRCaretakerCRUDController extends Controller
             'section' => "Caretakers"
         ]);
 
-        header("Location: " . URLROOT . "/hr/hr_addct");
+        header("Location: " . URLROOT . "/HRCaretakerCRUD/list");
         exit;
     }
 
