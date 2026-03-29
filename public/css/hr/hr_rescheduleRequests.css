@@ -1,0 +1,362 @@
+/* hr_rescheduleRequests.css - Compiled with consistent styling */
+
+/* Page layout */
+.content {
+  margin-left: 260px;
+  padding: 24px;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f6f7fb;
+  min-height: 100vh;
+}
+
+/* Title */
+.content h1 {
+  margin: 0 0 18px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1e88e5;
+}
+
+/* Messages */
+.success-msg {
+  background: #e7f8ee;
+  border: 1px solid #bce9cc;
+  color: #166534;
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin: 12px 0 18px;
+  font-weight: 600;
+}
+
+.content p {
+  color: #374151;
+}
+
+/* Tabs Navigation */
+.tabs-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.tab-button {
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  color: #1e88e5;
+  border-bottom-color: #1e88e5;
+}
+
+.tab-button:hover {
+  color: #1e88e5;
+}
+
+/* Tab Content */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Table wrapper */
+.table-wrapper {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+}
+
+/* Table */
+.requests-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.requests-table thead th {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  padding: 14px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+}
+
+.requests-table tbody td {
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+  color: #374151;
+}
+
+.requests-table tbody tr:nth-child(odd) {
+  background: #fafbfc;
+}
+
+.requests-table tbody tr:hover {
+  background: #f0f7ff;
+}
+
+/* Buttons */
+.approve-btn {
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
+
+.approve-btn:hover {
+  background: #16a34a;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.reject-btn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
+
+.reject-btn:hover {
+  background: #dc2626;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-approved {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* History Cards */
+.history-row {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 12px;
+}
+
+.history-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.history-row-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.history-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-field-label {
+  color: #999;
+  font-size: 11px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.history-field-value {
+  color: #333;
+  font-weight: 500;
+}
+
+/* Reason Section */
+.reason-title {
+  font-size: 13px;
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 600;
+}
+
+.reason-text {
+  margin: 8px 0;
+  color: #555;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* HR Note Box */
+.hr-note-box {
+  margin-top: 10px;
+  padding: 10px;
+  background: white;
+  border-left: 3px solid #1e88e5;
+  border-radius: 2px;
+}
+
+.hr-note-label {
+  font-size: 11px;
+  color: #999;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.hr-note-text {
+  font-size: 13px;
+  color: #333;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+/* Badge Counter in Tabs */
+.tab-button span {
+  margin-left: 8px;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tab-button.active span {
+  background: #1e88e5;
+}
+
+.tab-button:not(.active) span {
+  background: #95a5a6;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .history-row-content {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+  }
+  .history-row-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+.requests-table tbody td {
+  padding: 14px 14px;
+  border-bottom: 1px solid #eef2f7;
+  color: #111827;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.requests-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* Make "Reason" nicer for long text */
+.requests-table td:nth-child(7) {
+  max-width: 360px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Buttons */
+.approve-btn,
+.reject-btn {
+  border: none;
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.06s ease, opacity 0.2s ease;
+}
+
+.approve-btn {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.reject-btn {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.approve-btn:hover,
+.reject-btn:hover {
+  opacity: 0.92;
+}
+
+.approve-btn:active,
+.reject-btn:active {
+  transform: translateY(1px);
+}
+
+/* Buttons alignment inside cell */
+.requests-table td:last-child {
+  white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .content {
+    margin-left: 0; /* if sidebar collapses on smaller screens */
+    padding: 16px;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  .requests-table {
+    min-width: 820px; /* enables horizontal scroll when needed */
+  }
+}
