@@ -5,16 +5,17 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SmartCare</title>
 
   <!-- Icons + Font -->
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/landing.css">
-  
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/landing.css">
+
 </head>
 
 <body>
@@ -263,63 +264,63 @@
     </div>
   </section>
 
- <section class="pricing" id="pricing">
-  <div class="container">
-    <h2 class="section-title">Pricing Options</h2>
-    <p class="section-sub">Choose a service to view packages.</p>
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <h2 class="section-title">Pricing Options</h2>
+      <p class="section-sub">Choose a service to view packages.</p>
 
-    <?php
+      <?php
       // Load rates (use one of these)
       // Option A: from config file
       // $servicePriceRates = require APPROOT . '/config/pricing.php';
 
       // Option B: directly (if you want here)
       $servicePriceRates = [
-        "Elder Care" => ["Monthly" => 45000, "Yearly" => 500000],
-        "Babysitter" => ["Daily" => 3200, "Monthly" => 42000, "Yearly" => 480000],
-        "Maid" => ["Hourly" => 500, "Daily" => 3000, "Monthly" => 38000, "Yearly" => 450000]
+        "Elder Care" => ["Monthly" => 50000, "Yearly" => 550000],
+        "Babysitter" => ["Daily" => 2200, "Monthly" => 45000, "Yearly" => 500000],
+        "Maid" => ["Hourly" => 500, "Daily" => 2000, "Monthly" => 38000, "Yearly" => 420000]
       ];
 
       $services = array_keys($servicePriceRates);
-    ?>
+      ?>
 
-    <!-- Tabs -->
-    <div class="tabs" role="tablist">
-      <?php foreach($services as $i => $service): ?>
-        <button class="tab <?= $i === 0 ? 'active' : '' ?>" type="button" data-tab="<?= htmlspecialchars($service) ?>">
-          <?= htmlspecialchars($service) ?>
-        </button>
-      <?php endforeach; ?>
-    </div>
-
-    <!-- Panels -->
-    <?php foreach($servicePriceRates as $serviceName => $packages): ?>
-      <div class="pricing-grid <?= $serviceName === $services[0] ? '' : 'hide' ?>" id="tab-<?= htmlspecialchars($serviceName) ?>">
-        <?php foreach($packages as $plan => $price): ?>
-          <div class="price-card">
-            <h4><?= htmlspecialchars($plan) ?></h4>
-
-            <div class="price">
-              LKR <?= number_format($price) ?>
-              <span>
-                / <?= strtolower($plan === "Hourly" ? "hour" : ($plan === "Daily" ? "day" : ($plan === "Monthly" ? "month" : "year"))) ?>
-              </span>
-            </div>
-
-            <ul>
-              <li><i class='bx bxs-check-circle'></i> Verified staff</li>
-              <li><i class='bx bxs-check-circle'></i> Flexible scheduling</li>
-              <li><i class='bx bxs-check-circle'></i> Support available</li>
-            </ul>
-
-            <button class="go-login" type="button">Select</button>
-          </div>
+      <!-- Tabs -->
+      <div class="tabs" role="tablist">
+        <?php foreach ($services as $i => $service): ?>
+          <button class="tab <?= $i === 0 ? 'active' : '' ?>" type="button" data-tab="<?= htmlspecialchars($service) ?>">
+            <?= htmlspecialchars($service) ?>
+          </button>
         <?php endforeach; ?>
       </div>
-    <?php endforeach; ?>
 
-  </div>
-</section>
+      <!-- Panels -->
+      <?php foreach ($servicePriceRates as $serviceName => $packages): ?>
+        <div class="pricing-grid <?= $serviceName === $services[0] ? '' : 'hide' ?>" id="tab-<?= htmlspecialchars($serviceName) ?>">
+          <?php foreach ($packages as $plan => $price): ?>
+            <div class="price-card">
+              <h4><?= htmlspecialchars($plan) ?></h4>
+
+              <div class="price">
+                LKR <?= number_format($price) ?>
+                <span>
+                  / <?= strtolower($plan === "Hourly" ? "hour" : ($plan === "Daily" ? "day" : ($plan === "Monthly" ? "month" : "year"))) ?>
+                </span>
+              </div>
+
+              <ul>
+                <li><i class='bx bxs-check-circle'></i> Verified staff</li>
+                <li><i class='bx bxs-check-circle'></i> Flexible scheduling</li>
+                <li><i class='bx bxs-check-circle'></i> Support available</li>
+              </ul>
+
+              <button class="go-login" type="button">Select</button>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      <?php endforeach; ?>
+
+    </div>
+  </section>
 
 
   <!-- TESTIMONIALS -->
@@ -515,7 +516,7 @@
 
       const dots = Array.from(document.querySelectorAll(".dot"));
 
-      function setActive(index){
+      function setActive(index) {
         slides[current].classList.remove("active");
         dots[current].classList.remove("active");
 
@@ -525,30 +526,36 @@
         dots[current].classList.add("active");
       }
 
-      function next(){
+      function next() {
         setActive((current + 1) % slides.length);
       }
 
-      function prev(){
+      function prev() {
         setActive((current - 1 + slides.length) % slides.length);
       }
 
-      function start(){
+      function start() {
         stop();
         timer = setInterval(next, 5000);
       }
 
-      function stop(){
-        if(timer) clearInterval(timer);
+      function stop() {
+        if (timer) clearInterval(timer);
       }
 
-      function goTo(index, restart=false){
+      function goTo(index, restart = false) {
         setActive(index);
-        if(restart) start();
+        if (restart) start();
       }
 
-      nextBtn.addEventListener("click", () => { next(); start(); });
-      prevBtn.addEventListener("click", () => { prev(); start(); });
+      nextBtn.addEventListener("click", () => {
+        next();
+        start();
+      });
+      prevBtn.addEventListener("click", () => {
+        prev();
+        start();
+      });
 
       // pause on hover
       const hero = document.querySelector(".hero");
@@ -559,31 +566,31 @@
     });
 
     // ===== Pricing Tabs =====
-document.addEventListener("DOMContentLoaded", () => {
-  const tabs = document.querySelectorAll(".tab");
+    document.addEventListener("DOMContentLoaded", () => {
+      const tabs = document.querySelectorAll(".tab");
 
-  function normalizeId(name){
-    return "tab-" + name; // we used id="tab-Elder Care" exactly (spaces allowed)
-  }
+      function normalizeId(name) {
+        return "tab-" + name; // we used id="tab-Elder Care" exactly (spaces allowed)
+      }
 
-  tabs.forEach(t => {
-    t.addEventListener("click", () => {
-      tabs.forEach(x => x.classList.remove("active"));
-      t.classList.add("active");
+      tabs.forEach(t => {
+        t.addEventListener("click", () => {
+          tabs.forEach(x => x.classList.remove("active"));
+          t.classList.add("active");
 
-      document.querySelectorAll(".pricing-grid").forEach(p => p.classList.add("hide"));
+          document.querySelectorAll(".pricing-grid").forEach(p => p.classList.add("hide"));
 
-      const panel = document.getElementById(normalizeId(t.dataset.tab));
-      if(panel) panel.classList.remove("hide");
+          const panel = document.getElementById(normalizeId(t.dataset.tab));
+          if (panel) panel.classList.remove("hide");
+        });
+      });
+
+      // Select -> login redirect
+      const loginUrl = "/CMA/public/?url=auth/login";
+      document.querySelectorAll(".go-login").forEach(btn => {
+        btn.addEventListener("click", () => window.location.href = loginUrl);
+      });
     });
-  });
-
-  // Select -> login redirect
-  const loginUrl = "/CMA/public/?url=auth/login";
-  document.querySelectorAll(".go-login").forEach(btn => {
-    btn.addEventListener("click", () => window.location.href = loginUrl);
-  });
-});
 
 
 
@@ -599,4 +606,5 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 
 </body>
+
 </html>

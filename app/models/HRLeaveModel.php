@@ -9,7 +9,6 @@ class HRLeaveModel {
         $this->conn = $db->conn;
     }
 
-    // Get all leaves submitted by caretakers
    // Get all leaves submitted by caretakers
 public function getAllLeaves() {
     $sql = "SELECT l.*, c.name AS caretaker_name
@@ -29,7 +28,10 @@ public function getAllLeaves() {
         return $stmt->execute();
     }
 
-      public function isCaretakerOnLeave($caretakerId, $date) {
+    /**
+     * Return true if the given caretaker has an approved leave on the specified date.
+     */
+    public function isCaretakerOnLeave($caretakerId, $date) {
         $stmt = $this->conn->prepare(
             "SELECT COUNT(*) AS cnt FROM leaves 
              WHERE user_id = ? AND status = 'Approved' 

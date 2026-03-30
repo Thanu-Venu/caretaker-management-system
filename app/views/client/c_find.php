@@ -30,7 +30,19 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
         <option value="Elder Care">Elder Care</option>
         <option value="Babysitter">Babysitter</option>
         <option value="Maid">Maid</option>
-        <option value="Disability Support">Disability Support</option>
+      </select>
+      <script>
+        window.serviceLocations = <?= json_encode($data['serviceLocations'] ?? []) ?>;
+      </script>
+
+      <label>Location</label>
+      <select name="location" id="popupLocationFilter" required>
+        <option value="">Select Location</option>
+        <?php
+        $locations = $data['locations'] ?? [];
+        foreach ($locations as $loc): ?>
+          <option value="<?= htmlspecialchars($loc) ?>" <?= ($_POST['location'] ?? '') === $loc ? 'selected' : '' ?>><?= htmlspecialchars($loc) ?></option>
+        <?php endforeach; ?>
       </select>
 
       <label>Duration Basis</label>
@@ -44,15 +56,17 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
       <label>Start Date</label>
       <input type="date" name="start_date" id="startDate" required>
 
-      <label>Preferred Time</label>
-      <select name="preferred_time" id="preferredTimeSelect" required>
-        <option value="">Select Time</option>
-      </select>
+      <label id="preferredTimeLabel">Preferred Time</label>
+      <div id="timeContainer">
+        <select name="preferred_time" id="preferredTimeSelect" required>
+          <option value="">Select Time</option>
+        </select>
+      </div>
 
       <div class="popup-actions">
-      <button type="button" id="cancelPopupBtn" class="cancel-btn">Cancel</button>
-      <button type="submit" class="book-btn">Search</button>
-    </div>
+        <button type="button" id="cancelPopupBtn" class="cancel-btn">Cancel</button>
+        <button type="submit" class="book-btn">Search</button>
+      </div>
 
     </form>
   </div>
@@ -67,11 +81,11 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
 
     <div class="page-header">
       <div>
-        <h1>Find the Perfect Caretaker</h1>
+        <h1>Find the Perfect Caregiver</h1>
         <?php if ($showResults): ?>
-          <p>Filtered caretakers based on your booking details</p>
+          <p>Filtered caregivers based on your booking details</p>
         <?php else: ?>
-          <p>Search for available caretakers based on your booking details</p>
+          <p>Search for available caregivers based on your booking details</p>
         <?php endif; ?>
       </div>
     </div>
@@ -82,20 +96,6 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
         <div class="filter-box">
 
           <div class="filter-row">
-
-           
-
-
-            <div class="filter-group">
-              <label>Location</label>
-              <select id="locationFilter">
-                <option value="">All Locations</option>
-                <option value="Jaffna">Jaffna</option>
-                <option value="Colombo">Colombo</option>
-                <option value="Kandy">Kandy</option>
-                <option value="Matara">Matara</option>
-              </select>
-            </div>
 
             <div class="filter-group">
               <label>Minimum Rating</label>
@@ -117,7 +117,7 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
       </section>
 
       <section>
-        <h2 class="two">Available Caretakers</h2>
+        <h2 class="two">Available Caregivers</h2>
 
         <div id="caretakersList" class="caretakers">
 
@@ -153,18 +153,22 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
 &duration=<?= urlencode($_POST['duration'] ?? '') ?>
 &date=<?= urlencode($_POST['start_date'] ?? '') ?>
 &time=<?= urlencode($_POST['preferred_time'] ?? '') ?>"
-class="book-btn">Book Now</a>
+                    class="book-btn">Book Now</a>
                 </div>
 
               </div>
 
             <?php endforeach; ?>
           <?php else: ?>
+<<<<<<< HEAD
             <?php if ($showResults): ?>
               <p>No caretakers available for your selected booking details.</p>
             <?php else: ?>
               <p>Use the Book Caretaker button to search for availability.</p>
             <?php endif; ?>
+=======
+            <p>Use the Book Caregiver button to search for availability.</p>
+>>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
           <?php endif; ?>
 
         </div>

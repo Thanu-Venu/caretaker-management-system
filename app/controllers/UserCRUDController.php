@@ -22,7 +22,7 @@ class UserCRUDController extends Controller {
 
             $this->userModel->addUser($_POST);
             $this->historyModel->log([
-                'user_id' => $_SESSION['user']['id'],
+                'user_id' => AuthSession::profileId(),
                 'username' => $_SESSION['user']['username'],
                 'role' => 'admin',
                 'action' => "Added user: " . ($_POST['username'] ?? 'Unknown'),
@@ -40,7 +40,7 @@ class UserCRUDController extends Controller {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $this->userModel->updateUser($id, $_POST);
         $this->historyModel->log([
-            'user_id' => $_SESSION['user']['id'],
+            'user_id' => AuthSession::profileId(),
             'username' => $_SESSION['user']['username'],
             'role' => 'admin',
             'action' => "Updated user (ID: $id)",
@@ -59,7 +59,7 @@ class UserCRUDController extends Controller {
     public function delete($id) {
         $this->userModel->deleteUser($id);
         $this->historyModel->log([
-            'user_id' => $_SESSION['user']['id'],
+            'user_id' => AuthSession::profileId(),
             'username' => $_SESSION['user']['username'],
             'role' => 'admin',
             'action' => "Deleted user (ID: $id)",

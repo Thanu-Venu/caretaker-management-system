@@ -9,7 +9,7 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caretaker Finder</title>
+  <title>Caregiver Finder</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_find.css">
 </head>
 
@@ -21,7 +21,7 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
   <div id="searchPopup" class="popup">
     <form id="popupForm" method="POST" action="<?= URLROOT ?>/client/c_find">
 
-      <h3>Search Caretakers</h3>
+      <h3>Search Caregivers</h3>
 
       <label>Service Type</label>
       <select name="service_type" id="popupServiceFilter" required>
@@ -29,9 +29,19 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
         <option value="Elder Care">Elder Care</option>
         <option value="Babysitter">Babysitter</option>
         <option value="Maid">Maid</option>
-        <option value="Disability Support">Disability Support</option>
       </select>
-
+      <script>
+        window.serviceLocations = <?= json_encode($data['serviceLocations'] ?? []) ?>;
+      </script>
+      <label>Location</label>
+      <select name="location" id="popupLocationFilter" required>
+        <option value="">Select Location</option>
+        <?php
+        $locations = $data['locations'] ?? [];
+        foreach ($locations as $loc): ?>
+            <option value="<?= htmlspecialchars($loc) ?>"><?= htmlspecialchars($loc) ?></option>
+        <?php endforeach; ?>
+      </select>
       <label>Duration Basis</label>
       <select name="basis" id="basisFilter" required>
         <option value="">Select Basis</option>
@@ -43,14 +53,16 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
       <label>Start Date</label>
       <input type="date" name="start_date" id="startDate" required>
 
-      <label>Preferred Time</label>
-      <select name="preferred_time" id="preferredTimeSelect" required>
-        <option value="">Select Time</option>
-      </select>
+      <label id="preferredTimeLabel">Preferred Time</label>
+      <div id="timeContainer">
+        <select name="preferred_time" id="preferredTimeSelect" required>
+          <option value="">Select Time</option>
+        </select>
+      </div>
 
       <div class="popup-actions">
-        <button type="submit" class="book-btn">Search</button>
       <button type="button" id="cancelPopupBtn" class="cancel-btn">Cancel</button>
+      <button type="submit" class="book-btn">Search</button>
     </div>
 
     </form>
@@ -64,10 +76,10 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
 
     <div class="page-header header-left-cta">
       <div>
-        <h1>Find the Perfect Caretaker</h1>
-        <p>Browse all active caretakers and filter by service, location, and rating</p>
+        <h1>Find the Perfect Caregiver</h1>
+        <p>Browse all active caregivers and filter by service, location, and rating</p>
       </div>
-      <button id="openPopupBtn" class="book-btn" type="button">Book Caretaker</button>
+      <button id="openPopupBtn" class="book-btn" type="button">Book Caregiver</button>
     </div>
 
     <div id="resultsSection">
@@ -90,10 +102,9 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
               <label>Location</label>
               <select id="locationFilter">
                 <option value="">All Locations</option>
-                <option value="Jaffna">Jaffna</option>
-                <option value="Colombo">Colombo</option>
-                <option value="Kandy">Kandy</option>
-                <option value="Matara">Matara</option>
+                <?php foreach ($locations as $loc): ?>
+                  <option value="<?= htmlspecialchars($loc) ?>"><?= htmlspecialchars($loc) ?></option>
+                <?php endforeach; ?>
               </select>
             </div>
 
@@ -117,7 +128,7 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
       </section>
 
       <section>
-        <h2 class="two">All Caretakers</h2>
+        <h2 class="two">All Caregivers</h2>
 
         <div id="caretakersList" class="caretakers">
 
@@ -147,7 +158,7 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
 
             <?php endforeach; ?>
           <?php else: ?>
-            <p>No caretakers found.</p>
+            <p>No caregivers found.</p>
           <?php endif; ?>
 
         </div>

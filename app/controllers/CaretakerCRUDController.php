@@ -17,6 +17,51 @@ class CaretakerCRUDController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $data = $_POST;
+            
+            // ✅ SERVER-SIDE VALIDATION
+            $errors = [];
+
+            // Check required fields
+            $requiredFields = ['name', 'email', 'password', 'phone', 'experience', 'location', 'qualifications', 'service_type'];
+            foreach ($requiredFields as $field) {
+                if (empty(trim($data[$field] ?? ''))) {
+                    $errors[] = "Field '$field' is required.";
+                }
+            }
+
+            // Email validation
+            if (!empty($data['email'])) {
+                if (!filter_var(trim($data['email']), FILTER_VALIDATE_EMAIL)) {
+                    $errors[] = "Invalid email format. Use format like abc@gmail.com";
+                } elseif (!strpos(trim($data['email']), '@gmail.com')) {
+                    $errors[] = "Email must end with @gmail.com (e.g., abc@gmail.com)";
+                }
+            }
+
+            // Phone validation
+            if (!empty($data['phone'])) {
+                $phone = trim($data['phone']);
+                // Remove all non-digit characters and check if exactly 10 digits remain
+                $phoneDigits = preg_replace('/\D/', '', $phone);
+                if (strlen($phoneDigits) !== 10) {
+                    $errors[] = "Phone number must be exactly 10 digits (e.g., 0771234567)";
+                }
+            }
+
+            // Password validation
+            if (!empty($data['password'])) {
+                if (strlen(trim($data['password'])) < 6) {
+                    $errors[] = "Password must be at least 6 characters long.";
+                }
+            }
+
+            // If there are validation errors, store and redirect
+            if (!empty($errors)) {
+                $_SESSION['error'] = implode("; ", $errors);
+                header("Location: " . URLROOT . "/CaretakerCRUD/add");
+                exit;
+            }
+
             $data['profile_image'] = 'default.png';
 
             // ✅ upload folder
@@ -84,7 +129,7 @@ class CaretakerCRUDController extends Controller
 
             // ✅ History log (only after successful insert)
             $this->historyModel->log([
-                'user_id' => $_SESSION['user']['id'] ?? null,
+                'user_id' => AuthSession::profileId() ?: null,
                 'username' => $_SESSION['user']['username'] ?? 'unknown',
                 'role' => 'admin',
                 'action' => "Added caretaker: " . ($data['name'] ?? 'Unknown'),
@@ -102,9 +147,48 @@ class CaretakerCRUDController extends Controller
     public function edit($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->caretakerModel->updateCaretaker($id, $_POST);
+            $data = $_POST;
+            
+            // ✅ SERVER-SIDE VALIDATION
+            $errors = [];
+
+            // Check required fields
+            $requiredFields = ['name', 'email', 'phone', 'experience', 'location', 'qualifications', 'service_type', 'status'];
+            foreach ($requiredFields as $field) {
+                if (empty(trim($data[$field] ?? ''))) {
+                    $errors[] = "Field '$field' is required.";
+                }
+            }
+
+            // Email validation
+            if (!empty($data['email'])) {
+                if (!filter_var(trim($data['email']), FILTER_VALIDATE_EMAIL)) {
+                    $errors[] = "Invalid email format. Use format like abc@gmail.com";
+                } elseif (!strpos(trim($data['email']), '@gmail.com')) {
+                    $errors[] = "Email must end with @gmail.com (e.g., abc@gmail.com)";
+                }
+            }
+
+            // Phone validation
+            if (!empty($data['phone'])) {
+                $phone = trim($data['phone']);
+                // Remove all non-digit characters and check if exactly 10 digits remain
+                $phoneDigits = preg_replace('/\D/', '', $phone);
+                if (strlen($phoneDigits) !== 10) {
+                    $errors[] = "Phone number must be exactly 10 digits (e.g., 0771234567)";
+                }
+            }
+
+            // If there are validation errors, store and redirect
+            if (!empty($errors)) {
+                $_SESSION['error'] = implode("; ", $errors);
+                header("Location: " . URLROOT . "/CaretakerCRUD/edit/" . $id);
+                exit;
+            }
+
+            $this->caretakerModel->updateCaretaker($id, $data);
             $this->historyModel->log([
-                'user_id' => $_SESSION['user']['id'],
+                'user_id' => AuthSession::profileId(),
                 'username' => $_SESSION['user']['username'],
                 'role' => 'admin',
                 'action' => "Updated caretaker (ID: $id)",
@@ -124,7 +208,7 @@ class CaretakerCRUDController extends Controller
     {
         $this->caretakerModel->deleteCaretaker($id);
         $this->historyModel->log([
-            'user_id' => $_SESSION['user']['id'],
+            'user_id' => AuthSession::profileId(),
             'username' => $_SESSION['user']['username'],
             'role' => 'admin',
             'action' => "Deleted caretaker (ID: $id)",

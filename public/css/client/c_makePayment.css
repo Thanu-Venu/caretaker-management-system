@@ -220,6 +220,7 @@ body {
 .btn-success {
     background-color: #4caf50;
     color: white;
+    width: 100%;
     margin-right: 0;
 }
 
@@ -230,12 +231,13 @@ body {
 }
 
 .btn-secondary {
-    background-color: red;
+    background-color: #999;
     color: white;
+    width: calc(50% - 5px);
 }
 
 .btn-secondary:hover {
-    background-color: red;
+    background-color: #777;
     box-shadow: 0 4px 8px rgba(153, 153, 153, 0.3);
     transform: translateY(-2px);
 }
@@ -261,21 +263,19 @@ body {
 /* Button Container */
 .button-container {
     display: flex;
-    justify-content: space-between;
     gap: 10px;
     margin-top: 30px;
 }
 
 .button-container .btn-success {
-    padding: 14px 28px;
+    flex: 1;
     margin: 0;
-    width: 200px;
 }
 
 .button-container .btn-secondary {
-    padding: 14px 28px;
+    flex: 1;
+    width: auto;
     margin: 0;
-    width: 200px;
 }
 
 /* Responsive Design */

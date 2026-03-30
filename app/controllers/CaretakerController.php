@@ -367,8 +367,13 @@ class CaretakerController extends Controller
 
     public function ct_settings()
     {
+<<<<<<< HEAD
         if (!AuthSession::hasRole('caretaker')) {
             header("Location: " . URLROOT . "/auth/login");
+=======
+        if (!AuthSession::isLoggedIn()) {
+            header("Location: index.php?url=auth/login");
+>>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
             exit;
         }
 
@@ -467,7 +472,11 @@ class CaretakerController extends Controller
 
     public function ct_reviews()
     {
+<<<<<<< HEAD
         if (!AuthSession::hasRole('caretaker')) {
+=======
+        if (!AuthSession::isLoggedIn()) {
+>>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
             header("Location: " . URLROOT . "/auth/login");
             exit;
         }
@@ -518,4 +527,8 @@ class CaretakerController extends Controller
 
         $this->view("caretaker/ct_announcement", $announcements);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14

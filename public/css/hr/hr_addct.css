@@ -5,7 +5,7 @@ body {
 .main-content {
   flex: 1;
   padding: 20px 40px;
-  margin-left: 270px;
+  margin-left: 255px;
   font-family: 'Poppins', Arial, sans-serif;
 }
 
@@ -15,11 +15,11 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  color: #1E88E5;
+  color: #1e88e5;
 }
 
-h1 {
-  color: #1E88E5;
+.caretaker-header h1 {
+  color: #1e88e5;
   font-size: 28px;
 }
 
@@ -36,30 +36,80 @@ h1 {
 
 .add-btn:hover {
   background: #1565c0;
+ 
 }
 
-/* Search bar */
-.search-wrapper {
-  display: flex;
-  align-items: center;
-  background: white;
-  border-radius: 12px;
-  padding: 8px 12px;
-  margin-bottom: 20px;
+/* Form Inputs (Select & Input) */
+.filter-bar select, 
+.filter-bar input {
+  padding: 12px 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: 'Poppins', Arial, sans-serif;
+  transition: all 0.3s ease;
+  background-color: #ffffff;
+  color: #232323;
 }
 
-.search-wrapper i {
-  color: #545b66;
-  margin-right: 8px;
+.filter-bar select:hover, 
+.filter-bar input:hover {
+  border-color: #1e88e5;
+  background-color: #f5f5f5;
 }
 
-.search-wrapper input {
-  border: none;
+.filter-bar select:focus, 
+.filter-bar input:focus {
   outline: none;
-  background: transparent;
-  width: 100%;
-  font-size: 14px;
-  color: #545b66;
+  border-color: #1e88e5;
+  box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+  background-color: white;
+}
+
+/* Apply Button */
+.filter-bar button {
+  padding: 14px 28px;
+  border: none;
+  border-radius: 15px;
+  background: #1e88e5;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(30, 136, 229, 0.3);
+}
+
+.filter-bar button:hover {
+  background: #1565c0;
+  box-shadow: 0 4px 8px rgba(30, 136, 229, 0.4);
+}
+
+.filter-bar button:active {
+  transform: translateY(0);
+}
+
+/* Reset Button */
+.reset-btn {
+  padding: 14px 28px;
+  border: 2px solid #e0e0e0;
+  border-radius: 15px;
+  background: white;
+  text-decoration: none;
+  color: #4b4a4a;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.reset-btn:hover {
+  border-color: #999;
+  background: #f9f9f9;
+  color: #333;
+}
+
+.reset-btn:active {
+  background: #eee;
 }
 
 /* Table */
@@ -93,6 +143,11 @@ th, td {
   border-bottom: 1px solid #eee;
 }
 
+
+tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
 .status {
   border-radius: 12px;
   font-size: 16px;
@@ -110,26 +165,223 @@ th, td {
   padding: 4px 12px;
 }
 
+.actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 .actions i {
-  margin-right: 12px;
   cursor: pointer;
   transition: color 0.3s ease;
   font-size: 18px;
+  color: #1e88e5;
 }
 
-.actions .bx-edit {
-  color: #007bff;
-}
-
-.actions .bx-trash {
-    color: red;
+.actions a:hover i {
+  color: #1565c0;
 }
 
 .actions .bx-edit:hover {
-  color: #0056b3;
+  color: #1565c0;
+}
+
+.actions .bx-show:hover {
+  color: #1565c0;
 }
 
 .actions .bx-trash:hover {
-    color: #a71d2a;
+  color: #1565c0;
 }
 
+.filter-bar form{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin: 15px 0;
+}
+
+.filter-bar select, .filter-bar input{
+  padding:8px 10px;
+  border:1px solid #ddd;
+  border-radius:8px;
+}
+
+.filter-bar button{
+  padding:8px 14px;
+  border:none;
+  border-radius:8px;
+  background:#1e88e5;
+  color:#fff;
+  cursor:pointer;
+}
+
+.reset-btn{
+  padding:8px 14px;
+  border-radius:8px;
+  background:#eee;
+  text-decoration:none;
+  color:#333;
+}
+
+.pagination{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  margin-top:15px;
+}
+
+.pagination a{
+  padding:7px 12px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  text-decoration:none;
+  color:#333;
+}
+
+.pagination a.active{
+  background:#1e88e5;
+  color:#fff;
+  border-color:#1e88e5;
+}
+
+/* Delete Confirmation Modal */
+.confirm-delete-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+}
+
+.confirm-delete-overlay.show {
+  display: flex;
+}
+
+.confirm-delete-modal {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(255, 193, 193, 0.2);
+  animation: slideInConfirm 0.3s ease-out;
+}
+
+@keyframes slideInConfirm {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.confirm-delete-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.confirm-delete-header h2 {
+  color: #8f2121;
+  margin: 0;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.confirm-delete-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.confirm-delete-close:hover {
+  color: #d32f2f;
+}
+
+.confirm-delete-content {
+  margin-bottom: 25px;
+  color: #131313;
+}
+
+.confirm-delete-content p {
+  margin: 10px 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.confirm-delete-content strong {
+  color: #c82c2c;
+  font-weight: 600;
+}
+
+.confirm-delete-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn-cancel-delete,
+.btn-confirm-delete {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel-delete {
+  background-color: #f0f0f0;
+  color: #1a1a1a;
+  border: 1px solid #ddd;
+}
+
+.btn-cancel-delete:hover {
+  background-color: #e0e0e0;
+  border-color: #999;
+}
+
+.btn-confirm-delete {
+  background-color: #d01717;
+  color: white;
+}
+
+.btn-confirm-delete:hover {
+  background-color: #941616;
+  box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
+}
+
+.btn-confirm-delete:active {
+  transform: translateY(1px);
+}

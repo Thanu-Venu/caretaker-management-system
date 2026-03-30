@@ -1585,6 +1585,7 @@ class ClientController extends Controller
                 );
             }
 
+<<<<<<< HEAD
             // ✅ Notify CLIENT that payment was recorded successfully
             $caretakerName = $booking['caretaker_name'] ?? 'Your Caretaker';
             $clientNotificationMessage = $paymentType === 'advance'
@@ -1601,6 +1602,8 @@ class ClientController extends Controller
                 URLROOT . "/client/paymentDetails?booking_id=" . $bookingId
             );
 
+=======
+>>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
             $_SESSION['success'] = "Payment submitted successfully! Waiting for HR approval.";
             header("Location: " . URLROOT . "/client/c_paymentSuccess?payment_id=" . $paymentId);
             exit;
@@ -1608,15 +1611,34 @@ class ClientController extends Controller
             $_SESSION['error'] = "Payment processing failed";
             header("Location: " . URLROOT . "/client/c_makePayment?booking_id=" . $bookingId);
             exit;
+<<<<<<< HEAD
         }
     }
     public function c_settings()
+=======
+        }
+    }
+    public function c_settings()
+    {
+        if (!AuthSession::isLoggedIn()) {
+            header("Location: index.php?url=auth/login");
+            exit;
+        }
+
+        $user = $_SESSION['user']; // <--- assign it here
+
+        $this->view("client/c_settings", ['user' => $user]);
+    }
+
+    public function editClientDetails()
+>>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
     {
         if (!AuthSession::hasRole('client')) {
             header("Location: " . URLROOT . "/auth/login");
             exit;
         }
 
+<<<<<<< HEAD
         $user = $_SESSION['user'] ?? [];
 
         $this->view("client/c_settings", ['user' => $user]);
@@ -1631,6 +1653,10 @@ class ClientController extends Controller
 
         $user = $_SESSION['user'];
 
+=======
+        $user = $_SESSION['user'];
+
+>>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $profileImage = $user['profile_image'] ?? 'default.png';
@@ -1761,4 +1787,8 @@ class ClientController extends Controller
 
         $this->view("client/c_announcement", $announcements);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14

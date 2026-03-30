@@ -1,60 +1,326 @@
-/* Target main content area */
+/* =========================
+   BASE / RESET
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: #f5f7fb;
+  color: #0f172a;
+}
+
+/* =========================
+   MAIN CONTENT WRAPPER
+   (works with your sidebar)
+========================= */
 .main-content {
-    padding: 20px;
-    background-color: #f9f9f9;
-    min-height: 100vh;
-    margin-left: 250px; /* adjust if sidebar width differs */
+  padding: 28px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* Page heading */
+/* Page title + button row */
+.main-content > div:first-child {
+  background: #ffffff;
+  padding: 18px 18px;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+}
+
 .main-content h1 {
-    color: #1e88e5;
-    margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e88e5;
 }
 
-/* Table styling */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+/* =========================
+   REGISTER BUTTON
+========================= */
+.register-btn {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
+  letter-spacing: 0.2px;
 }
 
-th, td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+.register-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.28);
 }
 
-th {
-    background-color: #1e88e5;
-    color: white;
-    font-weight: 600;
+.register-btn:active {
+  transform: scale(0.98);
+  opacity: 0.95;
 }
 
-tr:hover {
-    background-color: #f1f1f1;
+/* =========================
+   TABLE WRAPPER
+========================= */
+.table-wrapper {
+  margin-top: 16px;
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+  border: 1px solid #e8eef8;
 }
 
-/* Actions links */
-a {
-    text-decoration: none;
-    color: #2196F3;
-    font-weight: 500;
+.table-wrapper {
+  overflow-x: auto;
 }
 
-a:hover {
-    text-decoration: underline;
+/* remove default table border styles */
+.complaints-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 900px; /* helps keep layout neat on desktop */
 }
 
-em {
-    color: #999;
-    font-style: italic;
+/* header */
+.complaints-table thead th {
+  background: #1e88e5;
+  color: #ffffff;
+  padding: 14px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border: none;
 }
 
-p {
-    color: #555;
-    font-size: 16px;
+/* body cells */
+.complaints-table tbody td {
+  padding: 14px 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #eef2ff;
+  color: #0f172a;
+  vertical-align: top;
+}
+
+/* zebra stripes */
+.complaints-table tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+/* hover row */
+.complaints-table tbody tr:hover {
+  background: #eef2ff;
+  transition: background 0.2s ease;
+}
+
+/* make details column readable */
+.complaints-table td:nth-child(4) {
+  max-width: 380px;
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.4;
+  color: #334155;
+}
+
+/* =========================
+   ACTION LINKS (Edit/Delete)
+========================= */
+.complaints-table a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.complaints-table a:hover {
+  text-decoration: underline;
+  opacity: 0.9;
+}
+
+.complaints-table em {
+  color: #64748b;
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+.main-content p {
+  margin-top: 12px;
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+  color: #334155;
+}
+
+/* =========================
+   MODAL STYLING
+========================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.58);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 18px;
+}
+
+/* modal card */
+.modal-content {
+  background: #ffffff;
+  width: 100%;
+  max-width: 650px;
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+  box-shadow: 0 20px 55px rgba(15, 23, 42, 0.22);
+  animation: modalIn 0.22s ease-out;
+  border: 1px solid #e8eef8;
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* close button */
+.close {
+  position: absolute;
+  right: 16px;
+  top: 12px;
+  font-size: 26px;
+  color: #64748b;
+  cursor: pointer;
+  transition: 0.2s ease;
+  line-height: 1;
+}
+
+.close:hover {
+  color: #ef4444;
+  transform: rotate(3deg);
+}
+
+/* modal title */
+.modal-content h2 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 16px;
+}
+
+/* =========================
+   FORM INSIDE MODAL
+========================= */
+.modal-content label {
+  display: block;
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+  width: 100%;
+  margin-top: 6px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+  font-size: 14px;
+  color: #0f172a;
+  background: #ffffff;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modal-content textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.5;
+}
+
+.modal-content input[readonly] {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #475569;
+}
+
+.modal-content input:focus,
+.modal-content select:focus,
+.modal-content textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+/* submit button */
+.modal-content button[type="submit"] {
+  width: 100%;
+  margin-top: 18px;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 10px 22px rgba(22, 163, 74, 0.22);
+}
+
+.modal-content button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 26px rgba(22, 163, 74, 0.28);
+}
+
+.modal-content button[type="submit"]:active {
+  transform: scale(0.98);
+  opacity: 0.95;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 16px;
+  }
+
+  .main-content h1 {
+    font-size: 18px;
+  }
+
+  .register-btn {
+    padding: 9px 14px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+
+  .modal-content {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .complaints-table {
+    min-width: 800px; /* still scrollable */
+  }
 }

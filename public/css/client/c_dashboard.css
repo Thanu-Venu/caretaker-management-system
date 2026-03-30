@@ -131,72 +131,15 @@ body, html {
   margin: 0;
 }
 
+/* Price grid for all services */
 .price-overview .price-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
 }
 
-
-.price-overview .price-card {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-
-
-/* Right-aligned horizontal row of small booking buttons under price grid */
-.price-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  align-items: center;
-  margin: 6px 0 0;
-}
-
-.ghost-btn.small {
-  display: inline-flex;
-  padding: 8px 12px;
-  font-size: 13px;
-  border-radius: 12px;
-  width: auto;
-}
-
-/* Align per-card ghost buttons bottom-right so they line up horizontally */
-.price-card .ghost-btn {
-  margin-top: auto;        /* pushes button to bottom */
-  align-self: center;      /* centers horizontally */
-  width: 90%;              /* optional – looks cleaner */
-}
-
-@media (max-width: 900px) {
-  .price-actions { justify-content: flex-start; flex-wrap: wrap; }
-}
-
-/* Ensure the meta section stacks vertically (Time Modifiers above Advance Rules) */
-.price-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin-top: 10px;
-}
-
-@media (min-width: 900px) {
-  /* keep it stacked even on wide screens per user's request */
-  .price-meta { flex-direction: column; }
-}
-
-/* no .price-panel - reverted to original layout */
-
-
+/* Individual price card */
 .price-card {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 320px;
   background: #fff;
   padding: 18px 16px;
   border-radius: 18px;
@@ -301,11 +244,6 @@ body, html {
   margin-top: 10px;
 }
 
-/* Add extra vertical gap between Time Modifiers and Advance Payment Rules */
-.modifier-card + .advance-card {
-  margin-top: 26px;
-}
-
 .advance-card {
   background: #fff;
   padding: 18px 16px;
@@ -359,13 +297,6 @@ body, html {
   font-weight: 800;
   margin: 0;
   color: #111;
-}
-
-/* Small description under the modifier heading */
-.modifier-desc {
-  margin: 6px 0 12px;
-  font-size: 13px;
-  color: #6c757d;
 }
 
 .modifier-grid {
@@ -550,20 +481,22 @@ body, html {
   color: #856404;
 }
 
-/* New status badges */
-.status.requested {
-  background: rgba(30,136,229,0.10);
-  color: #0d47a1;
+.status.approved {
+  background: #00bfa5;
+  color: white;
+  padding: 7px 16px;
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: bold;
 }
 
-.status.cancelled {
-  background: rgba(244,67,54,0.10);
-  color: #c62828;
-}
-
-.status.completed {
-  background: #d4edda;
-  color: #155724;
+.status.rejected {
+  background: #f44336;
+  color: white;
+  padding: 7px 16px;
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: bold;
 }
 
 /* ===================== Notifications ===================== */
@@ -638,6 +571,52 @@ body, html {
   border: 1px solid rgba(46, 125, 50, 0.2);
 }
 
+/* ===================== Leave Management ===================== */
+.leave-management {
+  margin: 40px 0 20px;
+  background: #fff;
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+.leave-management h2 {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.leave-management table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.leave-management table thead {
+  background: #f5f7fa;
+  border-bottom: 2px solid #e3e9f0;
+}
+
+.leave-management table th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.leave-management table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e3e9f0;
+  font-size: 14px;
+  color: #555;
+}
+
+.leave-management table tbody tr:hover {
+  background: #f9fcff;
+}
+
 /* ===================== Responsive ===================== */
 @media (max-width: 1100px) {
   .client-dashboard {
@@ -655,7 +634,10 @@ body, html {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
- 
+  .price-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .modifier-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -706,246 +688,177 @@ body, html {
     margin-left: 0;
   }
 }
-
-/* ===================== Emergency Support Modal ===================== */
-.emergency-modal {
-  display: none;
+/* ===== Advance Payment Modal (Beautiful) ===== */
+.modal{
   position: fixed;
-  z-index: 9999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  inset: 0;
+  z-index: 99999;
+  display: none;                 /* JS/PHP sets to flex when showing */
   align-items: center;
   justify-content: center;
+  padding: 28px;
+
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(10px);
 }
 
-.emergency-modal-content {
+.modal-content{
+  width: min(640px, 96vw);
+  max-height: 86vh;
+  overflow: auto;
+
   background: #ffffff;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 600px;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(229,231,235,.85);
+  border-radius: 22px;
+  padding: 22px 22px 18px;
   position: relative;
+
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.25),
+    0 10px 25px rgba(15,23,42,.18);
+
+  animation: modalIn .22s ease;
 }
 
-.emergency-close {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 28px;
-  font-weight: bold;
-  color: #666;
-  cursor: pointer;
-  z-index: 10;
+/* header */
+.modal-content h2{
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: .2px;
 }
 
-.emergency-close:hover {
-  color: #dc3545;
-}
-
-.emergency-header {
-  background: #dc3545;
-  padding: 25px 20px;
-  border-radius: 12px 12px 0 0;
-  text-align: center;
-  color: white;
-}
-
-.emergency-header i {
-  font-size: 40px;
-  margin-bottom: 10px;
-}
-
-.emergency-header h2 {
-  margin: 8px 0;
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.emergency-header p {
-  margin: 5px 0 0;
+.modal-content p{
+  margin: 8px 0 0;
   font-size: 14px;
+  color: #475569;
+  line-height: 1.5;
 }
 
-.emergency-contacts {
-  padding: 20px;
+/* close button */
+.close{
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+
+  font-size: 22px;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+
+  transition: transform .12s ease, background .12s ease, color .12s ease, box-shadow .12s ease;
 }
 
-.contact-card {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  background: #f5f5f5;
-  padding: 18px;
-  border-radius: 10px;
-  margin-bottom: 15px;
-  border: 2px solid #ddd;
+.close:hover{
+  background: #eef2ff;
+  color: #1d4ed8;
+  box-shadow: 0 10px 18px rgba(2,6,23,.12);
+  transform: translateY(-1px);
 }
 
-.contact-card.hotline {
-  border-color: #dc3545;
-  background: #fff5f5;
+.close:active{
+  transform: translateY(0);
+  box-shadow: none;
 }
 
-.contact-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
+/* Booking detail card */
+.advance-details{
+  margin-top: 16px;
+  border-radius: 18px;
+  border: 1px solid #eef2f7;
+  background:
+    linear-gradient(0deg, #ffffff, #ffffff),
+    radial-gradient(1200px 200px at 10% 0%, rgba(37,99,235,.10), transparent 60%);
+
+  padding: 14px;
 }
 
-.contact-card.hotline .contact-icon {
-  background: #dc3545;
-  color: white;
+.advance-details .row{
+  display:flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 10px;
+  border-radius: 12px;
 }
 
-.contact-card.caretaker .contact-icon {
-  background: #1e88e5;
-  color: white;
+.advance-details .row:not(:last-child){
+  border-bottom: 1px dashed #e5e7eb;
 }
 
-.contact-icon i {
-  font-size: 24px;
+.advance-details .label{
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
 }
 
-.contact-info {
-  flex: 1;
-}
-
-.contact-info h3 {
-  margin: 0 0 5px;
-  font-size: 16px;
-  font-weight: 700;
-  color: #222;
-}
-
-.contact-number {
-  font-size: 18px;
-  font-weight: 700;
-  color: #dc3545;
-  margin: 5px 0;
-}
-
-.contact-desc {
+.advance-details .value{
   font-size: 13px;
-  color: #666;
-  margin: 5px 0 0;
+  color: #0f172a;
+  font-weight: 800;
+  text-align: right;
 }
 
-.call-btn {
+/* primary CTA button */
+.modal-submit-btn{
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 14px;
+  margin-top: 16px;
+
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 10px 16px;
-  background: #28a745;
-  color: white;
+  justify-content: center;
+  gap: 10px;
+
   text-decoration: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.call-btn:hover {
-  background: #218838;
-}
-
-.emergency-services {
-  margin-top: 20px;
-  padding: 18px;
-  background: #fffbf0;
-  border-radius: 10px;
-  border: 2px solid #ffc107;
-}
-
-.emergency-services h3 {
-  margin: 0 0 15px;
-  font-size: 16px;
-  font-weight: 700;
-  color: #222;
-}
-
-.service-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-
-.service-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-}
-
-.service-item i {
-  font-size: 24px;
-  color: #dc3545;
-}
-
-.service-item strong {
-  display: block;
-  font-size: 13px;
-  color: #333;
-  margin-bottom: 2px;
-}
-
-.service-number {
-  display: block;
   font-size: 15px;
-  font-weight: 700;
-  color: #1e88e5;
-  text-decoration: none;
+  font-weight: 800;
+  letter-spacing: .2px;
+  color: #fff;
+
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  box-shadow: 0 16px 35px rgba(37,99,235,.30);
+
+  transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
 }
 
-.service-number:hover {
-  text-decoration: underline;
+.modal-submit-btn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 22px 45px rgba(37,99,235,.38);
+  filter: brightness(1.02);
 }
 
-.emergency-footer {
-  padding: 15px 20px;
-  background: #fff3cd;
-  border-radius: 0 0 12px 12px;
+.modal-submit-btn:active{
+  transform: translateY(0);
+  box-shadow: 0 12px 25px rgba(37,99,235,.28);
+}
+
+/* optional secondary link / hint */
+.modal-hint{
+  margin-top: 10px;
+  font-size: 12px;
+  color: #64748b;
   text-align: center;
 }
 
-.emergency-footer p {
-  margin: 0;
-  font-size: 13px;
-  color: #856404;
-  font-weight: 600;
+/* smooth entry */
+@keyframes modalIn{
+  from { transform: translateY(10px) scale(.98); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
 }
 
-.emergency-footer i {
-  font-size: 16px;
-  margin-right: 5px;
-}
-
-@media (max-width: 600px) {
-  .emergency-modal-content {
-    width: 95%;
-  }
-
-  .contact-card {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .call-btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .service-grid {
-    grid-template-columns: 1fr;
-  }
+/* small screens */
+@media (max-width: 480px){
+  .modal-content{ padding: 18px; border-radius: 18px; }
+  .advance-details{ border-radius: 16px; }
+  .close{ border-radius: 10px; }
 }

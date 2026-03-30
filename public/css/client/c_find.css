@@ -1,19 +1,17 @@
 * {
-  font-family:Arial, Helvetica, sans-serif;
-  
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.content{
-   flex:1;
-   padding: 20px;
-   margin-left: 270px;
+.content {
+  flex: 1;
+  padding: 20px;
+  margin-left: 270px;
 }
 
 h1 {
   margin-bottom: 10px;
   font-size: 28px;
   color: #1e88e5;
-  
 }
 
 .content p {
@@ -41,7 +39,6 @@ h1 {
   margin-bottom: 10px;
 }
 
-
 .filters {
   background: white;
   padding: 15px;
@@ -66,11 +63,9 @@ h1 {
   
 }
 
-
 .filter-group {
   display: flex;
   flex-direction: column;
-  
 }
 
 .filter-group label {
@@ -84,7 +79,6 @@ h1 {
   padding: 6px 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
-
 }
 
 .filter-box select:disabled {
@@ -100,10 +94,8 @@ h1 {
   cursor: pointer;
 }
 
-
 .filter-box button:hover {
   background: #1b7ed3;
-  
 }
 
 h2 {
@@ -118,7 +110,7 @@ p.hint {
   margin-left: 50px;
   margin-bottom: 20px;
 }
-.two{
+.two {
   margin-bottom: 40px;
   font-size: 22px;
   font-weight: 600;
@@ -139,27 +131,25 @@ p.hint {
 .card {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   padding: 15px;
   border: 1px solid #CCC;
   
   width: 100%; 
   display: flex;
   flex-direction: column;
-  min-height: 550px;
 }
 
 /* Card Image — NO FACE CUT, CLEAN FIT */
 .card img {
   width: 100%;
-  height: 220px;              /* taller image area */
-  object-fit: cover;          /* crop slightly but fits naturally */
-  object-position: top;       /* SHOW FACE PROPERLY */
+  height: 220px; /* taller image area */
+  object-fit: cover; /* crop slightly but fits naturally */
+  object-position: top; /* SHOW FACE PROPERLY */
   border-radius: 10px;
   display: block;
   margin-bottom: 10px;
 }
-
 
 /* Card Title */
 .card h3 {
@@ -181,15 +171,15 @@ p.hint {
 
 .exp-loc {
   margin-top: 6px;
-  margin-bottom: 10px;   /* GAP BELOW Experience + Location */
+  margin-bottom: 10px; /* GAP BELOW Experience + Location */
 }
 
 .rating {
-  margin-bottom: 10px;    /* GAP below rating */
+  margin-bottom: 10px; /* GAP below rating */
 }
 
 .card p {
-  margin-bottom: 10px;    /* Qualifications spacing */
+  margin-bottom: 10px; /* Qualifications spacing */
 }
 
 /* Experience + Location */
@@ -208,7 +198,8 @@ p.hint {
   justify-content: space-between;
 }
 
-.view-btn, .book-btn {
+.view-btn,
+.book-btn {
   padding: 8px 14px;
   border-radius: 10px;
   font-size: 14px;
@@ -232,32 +223,33 @@ p.hint {
 }
 /* --------- Overlay (background blur) --------- */
 .overlay {
-    display: none; 
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%; 
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(3px);
-    z-index: 900;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px); /* blur background */
+  z-index: 900;
 }
 
 /* --------- Popup Form Container --------- */
 .popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 500px;
-    background: #ffffff;
-    padding: 35px 40px;
-    border-radius: 16px;
-    z-index: 1000;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    overflow: visible;
+  display: none; /* Hidden initially */
+  position: fixed;
+  top: 50%; /* vertically center */
+  left: 470px; /* start after sidebar width */
+  width: calc(100% - 270px); /* full width minus sidebar */
+  max-width: 1000px; /* optional max width */
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  max-height: calc(100vh - 120px);
+  overflow-y: auto; /* scroll if content too long */
+  transform: translateY(-50%); /* vertically center */
 }
 
   .popup form {
@@ -268,90 +260,91 @@ p.hint {
 
 /* Popup Form Title */
 .popup h3 {
-    text-align: center;
-    margin: 0 0 25px;
-    color: #1e88e5;
-    font-size: 24px;
-    font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #1e88e5;
+  font-size: 22px;
+  font-weight: 700;
 }
 
 /* Form Labels */
 .popup label {
-    font-weight: 600;
-    margin-bottom: 8px;
-    display: block;
-    color: #333;
-    font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+  color: #333;
 }
 
 /* Input Fields & Selects */
 .popup input[type="number"],
 .popup input[type="date"],
 .popup select {
-    width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    border: 2px solid #e0e0e0;
-    font-size: 15px;
-    background-color: #fafafa;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-.popup input[type="number"]:focus,
-.popup input[type="date"]:focus,
-.popup select:focus {
-    border-color: #1e88e5;
-    background-color: #fff;
-    outline: none;
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background-color: #fff;
 }
 
 /* Scrollable preferred time dropdown */
 #preferredTimeSelect {
-    max-height: 120px;
-    overflow-y: auto;
+  max-height: 120px; /* max height for scroll */
+  overflow-y: auto;
 }
 
-/* Popup Actions Container */
+/* when time input replaces select, give it similar styling */
+#timeContainer input[type="time"] {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background-color: #fff;
+}
+
+/* optional smaller font for beginning/ending times */
+#timeContainer input[type="time"]::-webkit-datetime-edit-text,
+#timeContainer input[type="time"]::-webkit-datetime-edit-hour-field,
+#timeContainer input[type="time"]::-webkit-datetime-edit-minute-field {
+  font-size: 16px;
+}
+
+/* Popup Button */
+.popup button[type="submit"] {
+  width: auto;
+  padding: 12px 84px;
+  border: none;
+  background-color: #1e88e5;
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 17px;
+  transition: 0.3s;
+}
+
+.popup button[type="submit"]:hover {
+  background-color: #1565c0;
+}
+
 .popup-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-/* Search Button */
-.popup button[type="submit"],
-.popup-actions .book-btn {
-    flex: 1;
-    padding: 14px 20px;
-    border: none;
-    background-color: #1e88e5;
-    color: white;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.popup button[type="submit"]:hover,
-.popup-actions .book-btn:hover {
-    background-color: #1565c0;
-}
-
-/* Cancel Button */
 .popup-actions .cancel-btn {
-    flex: 1;
-    background-color: #dc3545;
-    color: #fff;
-    border: none;
-    padding: 14px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 12px 84px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 17px;
 }
 
 .popup-actions .cancel-btn:hover {
@@ -437,33 +430,14 @@ p.hint {
     }
 }
 
+/* Optional: Small screens */
 @media (max-width: 480px) {
-    .popup {
-        width: 95%;
-        padding: 20px 15px;
-    }
-}
-
-.hidden {
-    display: none !important;
-}
-
-.no-results-message {
-  margin: 16px 50px 0;
-  width: calc(100% - 100px);
-  box-sizing: border-box;
-  padding: 12px 14px;
-  border-radius: 10px;
-  background: #f8f9fa;
-  border: 1px solid #d8dee4;
-  color: #333;
-  font-weight: 600;
-}
-
-@media (max-width: 900px) {
-  .no-results-message {
-    margin: 14px 0 0;
-    width: 100%;
+  .popup {
+    width: 95%;
+    padding: 20px 15px;
   }
 }
 
+.hidden {
+  display: none !important;
+}

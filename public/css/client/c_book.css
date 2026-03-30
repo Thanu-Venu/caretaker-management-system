@@ -1,128 +1,161 @@
-/* c_book.css */
+/* c_book.css - enhanced (same theme/colors) */
 
-/* Main Content */
+/* ---------- Base / Layout ---------- */
+* {
+  box-sizing: border-box;
+}
+
 .content {
-    margin-left: 270px;
-    padding: 40px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f7fa;
-    min-height: 100vh;
-    margin-right: 30px;
+  margin-left: 270px; /* space for sidebar */
+  margin-right: 30px;
+  padding: 30px;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f9fafc;
+  min-height: 100vh;
 }
 
 /* Heading */
 .content h1 {
-    font-size: 32px;
-    margin-bottom: 10px;
-    color: #1e88e5;
-    font-weight: 700;
+  font-size: 28px;
+  margin: 0 0 18px;
+  color: #1e88e5;
+  letter-spacing: 0.2px;
 }
 
-/* Caretaker Summary */
+/* Nice consistent section spacing */
+.caretaker-summary,
+.booking-form,
+#otherCaretakers {
+  margin-bottom: 22px;
+}
+
+/* ---------- Cards ---------- */
 .caretaker-summary {
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    padding: 25px;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    margin-bottom: 30px;
-    border: 1px solid #e3e8ef;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.04);
 }
 
 .caretaker-summary h2 {
-    margin-bottom: 12px;
-    font-size: 24px;
-    color: #2c3e50;
-    font-weight: 700;
+  margin: 0 0 10px;
+  font-size: 22px;
+  color: #333;
 }
 
 .caretaker-summary p {
-    margin: 5px 0;
-    font-size: 15px;
-    color: #555;
-    line-height: 1.4;
+  margin: 6px 0;
+  font-size: 15px;
+  color: #555;
+  line-height: 1.4;
 }
 
+/* Make summary labels feel more “dashboard-like” */
 .caretaker-summary p strong {
-    color: #333;
-    font-weight: 600;
+  display: inline-block;
+  min-width: 80px;
+  color: #333;
 }
 
-/* Form Section */
-.booking-form {
-    background: #ffffff;
-    padding: 40px;
-    border-radius: 16px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
-    border: 1px solid #e3e8ef;
-}
-
+/* ---------- Base Price line ---------- */
 .form-group {
-    margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
+.form-group .hint {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.35;
+}
+
+#basePrice {
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #f1f7ff;
+  border: 1px solid #d3e3ff;
+  color: #1d3557;
+  font-weight: 700;
+}
+
+/* ---------- Booking Form Container ---------- */
+.booking-form {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Better form rhythm */
 .form-group label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 600;
-    color: #2c3e50;
-    font-size: 15px;
-    letter-spacing: 0.3px;
+  display: block;
+  margin-bottom: 7px;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #333;
+  letter-spacing: 0.2px;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-    width: 100%;
-    padding: 12px 14px;
-    border: 2px solid #e0e6ed;
-    border-radius: 10px;
-    font-size: 15px;
-    background: #fafbfc;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-    display: block;
-    margin-bottom: 6px;
-    font-family: inherit;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 15px;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.05s;
+  display: block;
 }
 
+/* Make textarea feel nicer */
+.form-group textarea {
+  min-height: 90px;
+  resize: vertical;
+  line-height: 1.4;
+}
+
+/* Keep readonly + disabled readable */
 .form-group input[readonly],
 .form-group select:disabled {
-    color: #1d2a36;
-    background: #ffffff;
-    opacity: 5;
-    cursor: default;
-    border-color: #ced4da;
+  color: #252424;
+  opacity: 1;
 }
 
+/* Focus polish (same blue theme) */
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    border-color: #1e88e5;
-    background: #ffffff;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74,144,226,0.18);
+  outline: none;
 }
 
-.form-group small {
-    display: block;
-    margin-top: 6px;
-    color: #6c757d;
-    font-size: 13px;
-    font-style: italic;
+/* Subtle “press” feel for better UX */
+.form-group input:active,
+.form-group select:active,
+.form-group textarea:active {
+  transform: translateY(0.5px);
 }
 
+/* Remove arrow styling for disabled selects (kept from you) */
 #basis,
 #preferredTime {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: none;
-    padding-right: 12px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+  padding-right: 12px;
 }
 
+/* Disabled / readonly style */
 .form-group select:disabled,
 .form-group input:readonly {
+<<<<<<< HEAD
     color: #2c3e50;
     background: #ffffff;
     opacity: 1;
@@ -133,168 +166,187 @@
     display: flex;
     gap: 15px;
     margin-top: 30px;
+=======
+  color: #333;
+  background: #f9f9f9;
+  opacity: 1;
 }
 
-/* Booking Button */
+/* Make helper text readable */
+.form-group small {
+  display: block;
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: #666;
+  line-height: 1.35;
+>>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
+}
+
+/* ---------- Price Box ---------- */
+.price-box {
+  background: #f1f7ff;
+  border: 1px solid #d3e3ff;
+  padding: 16px;
+  border-radius: 12px;
+  margin: 6px 0 18px;
+  color: #1d3557;
+  font-weight: bold;
+}
+
+/* Align price rows nicely */
+.price-box p {
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+
+/* Keep numbers aligned visually */
+.price-box span {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Availability */
+#availabilityMsg {
+  display: inline-block;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff5f5;
+  border: 1px solid rgba(230,57,70,0.25);
+  font-size: 14px;
+  font-weight: 600;
+  color: #e63946;
+  min-height: 18px;
+}
+
+/* ---------- Button ---------- */
 #bookBtn {
-    flex: 1;
-    padding: 16px;
-    border: none;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: 700;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
+  width: 100%;
+  padding: 13px 14px;
+  border: none;
+  border-radius: 12px;
+  background: #4a90e2;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.25s, transform 0.06s, box-shadow 0.2s;
+  box-shadow: 0 10px 18px rgba(74,144,226,0.25);
 }
 
 #bookBtn:hover:enabled {
-    background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(30, 136, 229, 0.4);
+  background: #357abd;
+  box-shadow: 0 12px 22px rgba(74,144,226,0.28);
+}
+
+#bookBtn:active:enabled {
+  transform: translateY(1px);
 }
 
 #bookBtn:disabled {
-    background: #b0c7e6;
-    cursor: not-allowed;
-    box-shadow: none;
-    opacity: 0.6;
+  background: #b0c7e6;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
-/* Cancel Button */
-.cancel-btn {
-    flex: 1;
-    padding: 16px;
-    border: none;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: 700;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
-}
-
-.cancel-btn:hover {
-    background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(220, 53, 69, 0.4);
-}
-
-/* Other Caretakers */
+/* ---------- Other Caretakers ---------- */
 #otherCaretakers {
-    background: #ffffff;
-    padding: 35px;
-    border-radius: 16px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e3e8ef;
-    display: none;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Keep hidden by default (your logic) */
+#otherCaretakers {
+  display: none;
 }
 
 #otherCaretakers h3 {
-    margin-bottom: 25px;
-    font-size: 22px;
-    color: #2c3e50;
-    font-weight: 700;
+  margin: 0 0 14px;
+  font-size: 20px;
+  color: #333;
 }
 
+/* Grid */
 .caretaker-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
-    margin-top: 25px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 18px;
+  margin-top: 12px;
 }
 
+/* Cards */
 .caretaker-card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    border: 2px solid #e0e6ed;
-    text-align: center;
-    transition: all 0.3s ease;
-    height: auto;
-    width: auto;
-}
-
-.caretaker-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 20px rgba(30, 136, 229, 0.15);
-    border-color: #1e88e5;
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.04);
+  text-align: center;
+  width: 100%;
+  height: auto; /* allow flexible height for content */
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .caretaker-card h4 {
-    margin-bottom: 15px;
-    font-size: 19px;
-    color: #2c3e50;
-    font-weight: 700;
+  margin: 0 0 8px;
+  font-size: 18px;
+  color: #333;
 }
 
 .caretaker-card p {
-    margin: 10px 0;
-    font-size: 14px;
-    color: #6c757d;
-    line-height: 1.5;
+  margin: 4px 0;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.35;
 }
 
+/* Button inside card */
 .caretaker-card button {
-    margin-top: 18px;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
-    color: #fff;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 10px rgba(30, 136, 229, 0.3);
+  margin-top: 12px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #4a90e2;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.25s, transform 0.06s;
 }
 
 .caretaker-card button:hover {
-    background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 14px rgba(30, 136, 229, 0.4);
+  background: #357abd;
 }
 
-/* Responsive */
+.caretaker-card button:active {
+  transform: translateY(1px);
+}
+
+/* ---------- Responsive ---------- */
 @media (max-width: 768px) {
-    .content {
-        margin-left: 0;
-        padding: 20px;
-        margin-right: 0;
-    }
+  .content {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 18px;
+  }
 
-    .content h1 {
-        font-size: 26px;
-    }
+  .booking-form {
+    padding: 18px;
+  }
 
-    .caretaker-summary {
-        padding: 20px;
-    }
+  #bookBtn {
+    font-size: 14px;
+  }
 
-    .booking-form {
-        padding: 25px;
-    }
-
-    .form-actions {
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    #bookBtn, .cancel-btn {
-        font-size: 15px;
-        padding: 14px;
-    }
-
-    .caretaker-grid {
-        grid-template-columns: 1fr;
-    }
-
-    #otherCaretakers {
-        padding: 25px;
-    }
+  .price-box p {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

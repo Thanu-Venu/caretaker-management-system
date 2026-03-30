@@ -8,7 +8,7 @@ if (!isset($_SESSION['user'])) {
 
 $notifModel = new NotificationModel();
 
-$user_id = $_SESSION['user']['id'];
+$user_id = AuthSession::profileId();
 $user_role = $_SESSION['user']['role'];   // ✅ FIXED
 
 $notifications = $notifModel->getNotifications($user_id, $user_role);
@@ -32,7 +32,36 @@ $profilePic = $_SESSION['user']['profile_pic'] ?? 'default.png';
     <!-- FONT AWESOME (REQUIRED) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <!-- HEADER CSS -->
+    <!-- DESIGN SYSTEM - System Foundation -->
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/variables.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/reset.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/global.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/typography.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/utilities.css">
+
+    <!-- DESIGN SYSTEM - Layout -->
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/layout/container.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/layout/grid.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/layout/sidebar.css">
+
+    <!-- DESIGN SYSTEM - Components -->
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/components/buttons.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/components/forms.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/components/tables.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/components/cards.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/components/badges.css">
+
+    <!-- DESIGN SYSTEM - Responsive -->
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/responsive/breakpoints.css">
+
+    <!-- DESIGN SYSTEM - Page Standardization -->
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/page-fixes.css">
+
+    <!-- DESIGN SYSTEM - Legacy Overrides (MUST BE LAST) -->
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/legacy-overrides.css">
+
+    <!-- Legacy/Page-specific CSS (loaded but overridden by legacy-overrides.css) -->
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
     <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/ad_header.css">
 </head>
 
@@ -52,9 +81,7 @@ $profilePic = $_SESSION['user']['profile_pic'] ?? 'default.png';
             <div class="notification-wrapper">
                 <button id="notifBtn" class="notif-btn">
                     <i class="fa-solid fa-bell"></i>
-                    <?php if ($unreadCount > 0): ?>
-                        <span class="notif-count"><?= $unreadCount ?></span>
-                    <?php endif; ?>
+                    <span class="notif-count"><?= $unreadCount ?></span>
                 </button>
 
                 <div id="notifDropdown" class="notif-dropdown">
@@ -74,6 +101,13 @@ $profilePic = $_SESSION['user']['profile_pic'] ?? 'default.png';
                         <a href="<?= URLROOT ?>/notification/index">See all notifications</a>
                     </div>
                 </div>
+            </div>
+
+            <div class="header-logout">
+                <a href="<?= URLROOT ?>/index.php?url=auth/logout" class="logout-btn" title="Logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
             </div>
 
             <!-- Profile -->

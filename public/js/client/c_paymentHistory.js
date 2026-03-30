@@ -30,12 +30,6 @@ function filterTable() {
   });
 
   noResults.style.display = visibleCount === 0 ? "block" : "none";
-    // Update results counter
-  const totalPayments = rows.length;
-  const resultsCounter = document.getElementById("resultsCounter");
-  if (resultsCounter) {
-    resultsCounter.textContent = `Showing 1 to ${visibleCount} of ${totalPayments} results`;
-  }
 }
 
 statusFilter.addEventListener("change", filterTable);

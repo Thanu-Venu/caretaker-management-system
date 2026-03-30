@@ -33,6 +33,7 @@ class HrController extends Controller
         }
         $this->userModel = $this->model('UserModel');
         $this->hrModel   = $this->model('HrModel');
+<<<<<<< HEAD
 
 
         // Revalidate caretaker from DB
@@ -49,6 +50,51 @@ class HrController extends Controller
     {
         $dash = new HRDashboardModel();
 
+=======
+
+
+        // Revalidate caretaker from DB
+        $user = $this->userModel->getUserById(AuthSession::profileId()); // lowercase usage
+        if (!$user) {
+            session_destroy();
+            header("Location: index.php?url=auth/login");
+            exit;
+        }
+
+        $_SESSION['user'] = $user;
+    }
+    public function hr_dashboard()
+    {
+        $dash = new HRDashboardModel();
+
+        // Get chart data
+        $attendanceData = $dash->getAttendanceData(10);
+        $performanceData = $dash->getPerformanceRatings();
+        $ratingStats = $dash->getRatingStats();
+
+        // Prepare labels and data for attendance chart
+        // Use IDs for labels, keep names for tooltip
+        $attendanceLabels = [];
+        $attendanceDays = [];
+        $attendanceNames = [];
+        foreach ($attendanceData as $row) {
+            $attendanceLabels[] = 'ID-' . $row['id'];
+            $attendanceDays[] = (int)$row['days_present'];
+            $attendanceNames[] = $row['name'];
+        }
+
+        // Prepare labels and data for performance chart
+        $performanceLabels = [];
+        $performanceCounts = [];
+        $performanceColors = ['#1E88E5', '#00BFA5', '#FFC107', '#F44336', '#9E9E9E'];
+        $colorMap = ['Excellent' => '#1E88E5', 'Good' => '#00BFA5', 'Average' => '#FFC107', 'Poor' => '#F44336', 'Not Rated' => '#9E9E9E'];
+        
+        foreach ($performanceData as $row) {
+            $performanceLabels[] = $row['rating_category'];
+            $performanceCounts[] = (int)$row['count'];
+        }
+
+>>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
         $data = [
             'totalCaretakers' => $dash->totalCaretakers(),
             'activeServices'  => $dash->activeServicesToday(),
@@ -56,7 +102,21 @@ class HrController extends Controller
             'pendingRequests' => $dash->pendingClientRequests(),
             'recentLeaves'    => $dash->recentLeaveRequests(5),
             'recentComplaints' => $dash->recentComplaints(5),
+<<<<<<< HEAD
             'recentBookings'  => $dash->recentClientRequests(5)
+=======
+            'recentBookings'  => $dash->recentClientRequests(5),
+            // Chart data
+            'attendanceLabels' => json_encode($attendanceLabels),
+            'attendanceDays' => json_encode($attendanceDays),
+            'attendanceNames' => json_encode($attendanceNames),
+            'performanceLabels' => json_encode($performanceLabels),
+            'performanceCounts' => json_encode($performanceCounts),
+            'performanceColors' => json_encode(array_slice($performanceColors, 0, count($performanceLabels))),
+            'attendanceData' => $attendanceData,
+            'performanceData' => $performanceData,
+            'ratingStats' => $ratingStats
+>>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
         ];
 
         $this->view('hr/hr_dashboard', $data);
@@ -1184,4 +1244,8 @@ class HrController extends Controller
     }
 
     /* ================= END REFUND MANAGEMENT ================= */
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
