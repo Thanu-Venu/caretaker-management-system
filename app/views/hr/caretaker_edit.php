@@ -15,10 +15,30 @@ $caretaker = $data['caretaker'];
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/caretaker_edit.css">
 </head>
+
 <body>
+<script src="<?php echo URLROOT; ?>/public/js/hr/caretaker_form.js"></script>
 <main class="main-content">
   <section class="form-section">
     <h1>Edit Caregiver</h1>
+    
+    <!-- Error Messages Container -->
+    <div id="errorContainer"></div>
+
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="error-message">
+            <strong>Error:</strong> <?= htmlspecialchars($_SESSION['error']); ?>
+        </div>
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['success'])): ?>
+        <div class="success-message">
+            <strong>Success:</strong> <?= htmlspecialchars($_SESSION['success']); ?>
+        </div>
+        <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+    
     <form action="<?php echo URLROOT; ?>/HRCaretakerCRUD/edit/<?php echo $caretaker['id']; ?>" 
       method="POST" enctype="multipart/form-data" class="caretaker-form">
 
