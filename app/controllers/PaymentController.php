@@ -79,8 +79,4 @@ class PaymentController extends Controller
         $recurringService = new RecurringPaymentService();
         return $recurringService->createRecurringPayments($bookingId, $bookingData, $schedule);
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14

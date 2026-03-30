@@ -80,28 +80,9 @@ class AuthController extends Controller
             $email = trim((string)($_POST['email'] ?? ''));
             $password = (string)($_POST['password'] ?? '');
 
-<<<<<<< HEAD
-
-        // 1️⃣ Check in users table (admin & HR)
-        $user = $this->userModel->login($email, $password);
-        if ($user) {
-            $_SESSION['user']       = $user;
-            $_SESSION['role']       = $user['role']; // 'admin' or 'hr'
-            $_SESSION['profile_id'] = (int)($user['id'] ?? 0);
-            $_SESSION['account_id'] = (int)($user['account_id'] ?? ($user['id'] ?? 0));
-            $_SESSION['name']       = $user['name'] ?? ($user['username'] ?? '');
-            $_SESSION['email']      = $user['email'] ?? $email;
-            $_SESSION['logged_in']  = true;
-
-            if ($user['role'] === 'admin') {
-                header("Location: index.php?url=admin/ad_dashboard"); exit;
-            } else {
-                header("Location: index.php?url=hr/hr_dashboard"); exit;
-=======
             if ($email === '' || $password === '') {
                 $this->view('auth/login', ['error' => 'Please provide both email and password']);
                 return;
->>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
             }
 
             if ($this->accountModel->isAccountsReady()) {
@@ -175,38 +156,6 @@ class AuthController extends Controller
             return;
         }
 
-<<<<<<< HEAD
-        // 2️⃣ Check in caretakers table
-        $caretaker = $this->caretakerModel->login($email, $password);
-        if ($caretaker) {
-            $_SESSION['user']       = $caretaker;
-            $_SESSION['role']       = 'caretaker';
-            $_SESSION['profile_id'] = (int)($caretaker['id'] ?? 0);
-            $_SESSION['account_id'] = (int)($caretaker['account_id'] ?? ($caretaker['id'] ?? 0));
-            $_SESSION['name']       = $caretaker['name'] ?? '';
-            $_SESSION['email']      = $caretaker['email'] ?? $email;
-            $_SESSION['logged_in']  = true;
-            header("Location: index.php?url=caretaker/ct_dashboard"); exit;
-        }
-
-        // 3️⃣ Check in clients table
-        $client = $this->clientModel->login($email, $password);
-        if ($client) {
-            $_SESSION['user']       = $client;
-            $_SESSION['role']       = 'client';
-            $_SESSION['profile_id'] = (int)($client['id'] ?? 0);
-            $_SESSION['account_id'] = (int)($client['account_id'] ?? ($client['id'] ?? 0));
-            $_SESSION['name']       = $client['name'] ?? '';
-            $_SESSION['email']      = $client['email'] ?? $email;
-            $_SESSION['logged_in']  = true;
-            header("Location: index.php?url=client/c_dashboard"); exit;
-        }
-
-        // If none matched
-        $this->view('auth/login', ['error' => 'Invalid credentials']);
-    } else {
-=======
->>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
         $this->view('auth/login');
     }
 

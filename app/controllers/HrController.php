@@ -33,24 +33,6 @@ class HrController extends Controller
         }
         $this->userModel = $this->model('UserModel');
         $this->hrModel   = $this->model('HrModel');
-<<<<<<< HEAD
-
-
-        // Revalidate caretaker from DB
-        $user = $this->userModel->getUserById(AuthSession::profileId()); // lowercase usage
-        if (!$user) {
-            session_destroy();
-            header("Location: index.php?url=auth/login");
-            exit;
-        }
-
-        $_SESSION['user'] = $user;
-    }
-    public function hr_dashboard()
-    {
-        $dash = new HRDashboardModel();
-
-=======
 
 
         // Revalidate caretaker from DB
@@ -94,7 +76,6 @@ class HrController extends Controller
             $performanceCounts[] = (int)$row['count'];
         }
 
->>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
         $data = [
             'totalCaretakers' => $dash->totalCaretakers(),
             'activeServices'  => $dash->activeServicesToday(),
@@ -102,9 +83,6 @@ class HrController extends Controller
             'pendingRequests' => $dash->pendingClientRequests(),
             'recentLeaves'    => $dash->recentLeaveRequests(5),
             'recentComplaints' => $dash->recentComplaints(5),
-<<<<<<< HEAD
-            'recentBookings'  => $dash->recentClientRequests(5)
-=======
             'recentBookings'  => $dash->recentClientRequests(5),
             // Chart data
             'attendanceLabels' => json_encode($attendanceLabels),
@@ -116,7 +94,6 @@ class HrController extends Controller
             'attendanceData' => $attendanceData,
             'performanceData' => $performanceData,
             'ratingStats' => $ratingStats
->>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
         ];
 
         $this->view('hr/hr_dashboard', $data);
@@ -1244,8 +1221,4 @@ class HrController extends Controller
     }
 
     /* ================= END REFUND MANAGEMENT ================= */
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
