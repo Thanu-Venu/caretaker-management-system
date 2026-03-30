@@ -12,20 +12,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const customizationHoursInput = document.getElementById("customization_hours");
   const customizationApplySelect = document.getElementById("customization_apply");
 
-<<<<<<< HEAD
-    function calculatePrice() {
-        const basis = basisSelect.value;
-        const duration = parseInt(durationInput.value) || 0;
-        const preferredTime = preferredTimeSelect.value;
-        let customizationHours = parseInt(customizationHoursInput?.value || "0", 10) || 0;
-        customizationHours = Math.min(5, Math.max(0, customizationHours));
-        if (customizationHoursInput && parseInt(customizationHoursInput.value || "0", 10) !== customizationHours) {
-            customizationHoursInput.value = String(customizationHours);
-        }
-=======
   const priceSpan = document.getElementById("price");
   const totalPaymentInput = document.getElementById("total_payment");
->>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
+
+  const dateInput = document.getElementById("date");
+  const lockPrefilledFields = true;
 
   const preferredTimeLabel = document.getElementById("preferredTimeLabel");
 
@@ -149,6 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const prefillTime = preferredHidden?.value || "09:00";
       const timeInput = document.getElementById("preferredTime");
       if (timeInput) {
+        if (lockPrefilledFields) timeInput.disabled = true;
         timeInput.value = prefillTime;
         timeInput.addEventListener("input", () => {
           if (preferredHidden) preferredHidden.value = timeInput.value;
@@ -170,6 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       const selectElem = document.getElementById("preferredTime");
       if (selectElem) {
+        if (lockPrefilledFields) selectElem.disabled = true;
         selectElem.addEventListener("change", () => {
           if (preferredHidden) preferredHidden.value = selectElem.value;
           calculatePrice();
@@ -201,6 +194,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (customizationHoursInput) customizationHoursInput.addEventListener("input", calculatePrice);
   if (customizationApplySelect) customizationApplySelect.addEventListener("change", calculatePrice);
+
+  if (lockPrefilledFields) {
+    if (basisSelect) basisSelect.disabled = true;
+    if (durationInput) durationInput.readOnly = true;
+    if (dateInput) dateInput.readOnly = true;
+  }
 
   // initial compute
   updateTimeLabelForHourly();

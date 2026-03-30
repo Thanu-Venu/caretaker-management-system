@@ -31,23 +31,6 @@ $timeOptions = [
     <main class="content">
         <h1>Book Your Caretaker</h1>
 
-<<<<<<< HEAD
-    <section class="caretaker-summary">
-        <h2 id="ctName"><?= htmlspecialchars($ct['name'] ?? 'N/A') ?></h2>
-        <p><strong>Service:</strong> <span id="ctService"><?= htmlspecialchars($ct['service_type'] ?? 'N/A') ?></span></p>
-        <p><strong>Location:</strong> <span id="ctLocation"><?= htmlspecialchars($ct['location'] ?? 'N/A') ?></span></p>
-        <p><strong>Rating:</strong> ⭐ <span id="ctRating"><?= htmlspecialchars($ct['rating'] ?? 'N/A') ?></span></p>
-    </section>
-
-    <div class="form-group">
-        <label>Base Price:</label>
-        <span id="basePrice">Select a basis to see price</span>
-        <p class="hint">Final price depends on duration and preferred time.</p>
-    </div>
-
-    <section class="booking-form">
-            <form id="bookingForm" method="POST" action="<?= URLROOT ?>/public/?url=client/bookCaretaker">
-=======
         <?php if (!empty($_SESSION['error'])): ?>
             <div class="alert alert-error" style="background-color: #f8d7da; color: #721c24; padding: 12px; margin: 15px 0; border: 1px solid #f5c6cb; border-radius: 4px;">
                 <strong>Error:</strong> <?php echo htmlspecialchars($_SESSION['error']);
@@ -78,7 +61,6 @@ $timeOptions = [
 
         <section class="booking-form">
             <form id="bookingForm" method="POST" action="<?= URLROOT; ?>/client/bookCaretaker">
->>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
 
                 <!-- Hidden caretaker ID (JS updates this if alternative selected) -->
                 <input type="hidden" name="caretaker_id" id="caretaker_id" value="<?= (int)($ct['id'] ?? 0) ?>">
@@ -94,7 +76,7 @@ $timeOptions = [
                     <label for="basis">Select Basis</label>
 
                     <!-- Editable select for UI -->
-                    <select id="basis" required>
+                    <select id="basis" required disabled>
                         <option value="">-- Select --</option>
                         <?php if (!empty($bases)): ?>
                             <?php foreach ($bases as $basis): ?>
@@ -116,6 +98,7 @@ $timeOptions = [
                 <div class="form-group">
                     <label for="duration">Duration</label>
                     <input type="number" id="duration" name="duration" min="1" required
+                        readonly
                         value="<?= htmlspecialchars((string)($prefill['duration'] ?? 1), ENT_QUOTES) ?>">
                     <small id="durationHint">Number of booking units</small>
                 </div>
@@ -124,6 +107,7 @@ $timeOptions = [
                 <div class="form-group">
                     <label for="date">Preferred Date</label>
                     <input type="date" id="date" name="booking_date" required
+                        readonly
                         value="<?= htmlspecialchars($prefill['date'] ?? '', ENT_QUOTES) ?>">
                 </div>
 
@@ -132,7 +116,7 @@ $timeOptions = [
                     <label for="preferredTime" id="preferredTimeLabel">Preferred Time</label>
 
                     <div id="timeContainer">
-                        <select id="preferredTime" required>
+                        <select id="preferredTime" required disabled>
                             <option value="">Select Time</option>
                             <?php
                             $times = $timeOptions[$serviceType] ?? [];
@@ -171,11 +155,6 @@ $timeOptions = [
                 <!-- ===== CUSTOMIZATION ===== -->
                 <div class="form-group">
                     <label for="customization_hours">Customization (Extra Hours)</label>
-<<<<<<< HEAD
-                    <small>Extra hours are charged at LKR 300 per hour </small>
-                    <input type="number" id="customization_hours" name="customization_hours" min="0" max="5" value="0">
-                    
-=======
                     <label for="customization_apply">Extra hours apply</label>
                     <select id="customization_apply" name="customization_apply">
                         <option value="once" <?= (($prefill['customization_apply'] ?? 'once') === 'once') ? 'selected' : '' ?>>
@@ -189,7 +168,6 @@ $timeOptions = [
                     <input type="number" id="customization_hours" name="customization_hours" min="0" max="8"
                         value="<?= htmlspecialchars((string)($prefill['customization_hours'] ?? 0), ENT_QUOTES) ?>">
                     <small>Extra hours are charged at LKR 300 per hour</small>
->>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
 
                     <label for="customization">Customization Notes</label>
                     <textarea id="customization" name="customization"

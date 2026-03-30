@@ -61,8 +61,9 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
       </div>
 
       <div class="popup-actions">
+        <button type="submit" class="book-btn">Search</button>
       <button type="button" id="cancelPopupBtn" class="cancel-btn">Cancel</button>
-      <button type="submit" class="book-btn">Search</button>
+      
     </div>
 
     </form>
