@@ -137,17 +137,6 @@ function esc($value)
         </section>
 
         <section class="panel-grid two-col">
-            <article class="panel chart-panel">
-                <h3>Caretaker Workload</h3>
-                <canvas id="workloadChart"></canvas>
-            </article>
-            <article class="panel chart-panel">
-                <h3>Assignment Distribution</h3>
-                <canvas id="assignmentDistributionChart"></canvas>
-            </article>
-        </section>
-
-        <section class="panel-grid two-col">
             <article class="panel compact">
                 <h3>Completion Rate</h3>
                 <div class="stat-list">
