@@ -1,6 +1,8 @@
+body { 
+    background: #f4f7fb;
+}
 main.content {
     padding: 30px;
-    background: #f5f7fa;
     min-height: 100vh;
 }
 
@@ -141,31 +143,27 @@ main.content {
 }
 
 .status-badge {
-    padding: 6px 14px;
+    display: inline-block;
+    padding: 6px 12px;
     border-radius: 20px;
     font-size: 12px;
     font-weight: 600;
-    display: inline-block;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+    text-align: center;
 }
 
 .status-pending {
-    background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+    background: #fff3cd;
     color: #856404;
-    box-shadow: 0 2px 8px rgba(253, 203, 110, 0.3);
 }
 
 .status-approved {
-    background: linear-gradient(135deg, #a8e6ff 0%, #74b9ff 100%);
-    color: #0c5460;
-    box-shadow: 0 2px 8px rgba(116, 185, 255, 0.3);
+    background: #d4edda;
+    color: #155724;
 }
 
 .status-declined {
-    background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
-    color: white;
-    box-shadow: 0 2px 8px rgba(214, 48, 49, 0.3);
+    background: #f8d7da;
+    color: #721c24;
 }
 
 .status-processed,
@@ -273,7 +271,7 @@ main.content {
 }
 
 .btn-complete {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #1e88e5;
     color: white;
 }
 
