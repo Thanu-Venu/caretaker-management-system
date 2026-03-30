@@ -1,6 +1,11 @@
+body {
+    background: #f4f7fb;
+}
+
 .main-content {
   padding: 30px;
-  background-color: #f5f5f5;
+  margin-left: 250px;
+  font-family: 'Poppins', Arial, sans-serif;
 }
 
 .view-container {
@@ -23,8 +28,9 @@
 
 .view-header h1 {
   margin: 0;
-  color: #333;
+  color: #1e88e5;
   font-size: 28px;
+  text-transform: uppercase;
 }
 
 .profile-section {
@@ -87,8 +93,8 @@
 
 .info-label {
   font-weight: 600;
-  color: #555;
-  font-size: 14px;
+  color: #0a2a46;
+  font-size: 17px;
   text-transform: uppercase;
   margin-bottom: 5px;
   letter-spacing: 0.5px;
@@ -102,20 +108,21 @@
 
 .status-badge {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 4px 16px;
   border-radius: 20px;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 18px;
 }
 
 .status-badge.active {
-  background-color: #d4edda;
-  color: #155724;
+  color: white;
+  background: #00bfa5;
 }
 
 .status-badge.inactive {
-  background-color: #f8d7da;
-  color: #721c24;
+  background: #ea0b34;
+  color: white;
+  padding: 4px 12px;
 }
 
 .details-section {
@@ -125,9 +132,9 @@
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: #005499;
   margin-bottom: 20px;
 }
 
@@ -159,7 +166,7 @@
 }
 
 .btn-edit {
-  background-color: #007bff;
+  background-color: #1e88e5;
   color: white;
 }
 

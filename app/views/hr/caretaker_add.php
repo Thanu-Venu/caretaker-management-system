@@ -11,20 +11,25 @@ include_once APPROOT . "/views/templates/hr/hr_sidebar.php";
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/caretaker_add.css">
 </head>
+
 <body>
+<script src="<?php echo URLROOT; ?>/public/js/hr/caretaker_form.js"></script>
 <main class="main-content">
     <section class="form-section">
         <h1>Add Caregiver</h1>
         
+        <!-- Error Messages Container -->
+        <div id="errorContainer"></div>
+
         <?php if (isset($_SESSION['error'])): ?>
-            <div class="error-message" style="background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 12px; border-radius: 4px; margin-bottom: 20px;">
+            <div class="error-message">
                 <strong>Error:</strong> <?= htmlspecialchars($_SESSION['error']); ?>
             </div>
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
 
         <?php if (isset($_SESSION['success'])): ?>
-            <div class="success-message" style="background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 12px; border-radius: 4px; margin-bottom: 20px;">
+            <div class="success-message">
                 <strong>Success:</strong> <?= htmlspecialchars($_SESSION['success']); ?>
             </div>
             <?php unset($_SESSION['success']); ?>
@@ -41,7 +46,7 @@ include_once APPROOT . "/views/templates/hr/hr_sidebar.php";
 
     <div class="field">
       <label>Email <span style="color: red;">*</span></label>
-      <input type="email" name="email" required placeholder="Enter email (e.g., abc@gmail.com)">
+      <input type="email" name="email" required placeholder="Enter email (e.g. abc@gmail.com)">
     </div>
 
     <div class="field">
@@ -51,7 +56,7 @@ include_once APPROOT . "/views/templates/hr/hr_sidebar.php";
 
     <div class="field">
       <label>Phone <span style="color: red;">*</span></label>
-      <input type="text" name="phone" required placeholder="Enter phone number (e.g., +94771234567 or 0771234567)">
+      <input type="text" name="phone" required placeholder="Enter phone number (e.g. +94771234567 or 0771234567)">
     </div>
 
     <div class="field">
@@ -104,49 +109,10 @@ include_once APPROOT . "/views/templates/hr/hr_sidebar.php";
     </section>
 </main>
 
-<script>
-  // Form Validation
-  document.querySelector('.caretaker-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Get form elements
-    const name = document.querySelector('[name="name"]').value.trim();
-    const email = document.querySelector('[name="email"]').value.trim();
-    const password = document.querySelector('[name="password"]').value.trim();
-    const phone = document.querySelector('[name="phone"]').value.trim();
-    const experience = document.querySelector('[name="experience"]').value.trim();
-    const location = document.querySelector('[name="location"]').value.trim();
-    const qualifications = document.querySelector('[name="qualifications"]').value.trim();
-    const serviceType = document.querySelector('[name="service_type"]').value.trim();
+</form>
 
-    // Check if all required fields are filled
-    if (!name || !email || !password || !phone || !experience || !location || !qualifications || !serviceType) {
-      alert('Error: All fields are required. Please fill in all fields.');
-      return false;
-    }
+    </section>
+</main>
+</body>
 
-    // Email validation regex
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(email)) {
-      alert('Error: Invalid email format. Please use format like abc@gmail.com');
-      return false;
-    }
-
-    // Phone number validation - accepts Sri Lankan numbers
-    // Accepts: +94771234567, 0771234567, +94-771-234-567, etc.
-    const phoneRegex = /^(\+94|0)[0-9\s\-\.]{8,10}$/;
-    if (!phoneRegex.test(phone)) {
-      alert('Error: Invalid phone number format. Please use a Sri Lankan number (e.g., +94771234567, 0771234567, or +94-77-123-4567)');
-      return false;
-    }
-
-    // Password length validation
-    if (password.length < 6) {
-      alert('Error: Password must be at least 6 characters long.');
-      return false;
-    }
-
-    // If all validations pass, submit the form
-    this.submit();
-  });
-</script>
+</html>

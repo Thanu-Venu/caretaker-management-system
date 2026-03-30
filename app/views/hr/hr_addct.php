@@ -13,6 +13,7 @@ include_once APPROOT . "/views/templates/hr/hr_sidebar.php";
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_addct.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <script src="<?php echo URLROOT; ?>/public/js/hr/hr_delete_confirm.js"></script>
 </head>
 <body>
 <main class="main-content">
@@ -92,9 +93,9 @@ $filters = $data['filters'] ?? [];
                 </span>
               </td>
               <td class="actions">
-                      <a href="<?php echo URLROOT; ?>/HRCaretakerCRUD/viewCaretaker/<?php echo $caretaker['id']; ?>" title="View"><i class="bx bx-show"></i></a>
-                      <a href="<?php echo URLROOT; ?>/HRCaretakerCRUD/edit/<?php echo $caretaker['id']; ?>" title="Edit"><i class="bx bx-edit"></i></a>              
-                      <a href="<?php echo URLROOT; ?>/HRCaretakerCRUD/delete/<?php echo $caretaker['id']; ?>" onclick="return confirm('Are you sure you want to delete this caretaker?');" title="Delete"><i class="bx bx-trash"></i></a>
+                <a href="<?php echo URLROOT; ?>/HRCaretakerCRUD/viewCaretaker/<?php echo $caretaker['id']; ?>"><i class="bx bx-show"></i></a>
+                <a href="<?php echo URLROOT; ?>/HRCaretakerCRUD/edit/<?php echo $caretaker['id']; ?>"><i class="bx bx-edit"></i></a>
+                <a href="#" onclick="showDeleteConfirmation('<?php echo URLROOT; ?>/HRCaretakerCRUD/delete/<?php echo $caretaker['id']; ?>', '<?php echo htmlspecialchars($caretaker['name']); ?>'); return false;"><i class="bx bx-trash"></i></a>
               </td>
             </tr>
           <?php endforeach; ?>
