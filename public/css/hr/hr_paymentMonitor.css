@@ -1,18 +1,23 @@
+body {
+    background: #f4f7fb;
+}
+
 .payment-monitor-container {
-    margin-left: 250px;
-    padding: 24px;
-    background: #f5f7fb;
-    min-height: 100vh;
+  flex: 1;
+  padding: 20px 40px;
+  margin-left: 255px;
+  font-family: 'Poppins', Arial, sans-serif;
 }
 
 .payment-monitor-container h1 {
-    margin: 0;
-    color: #1f2a44;
+  color: #1e88e5;
+  font-size: 28px;
 }
 
 .subtitle {
     margin-top: 6px;
     color: #596780;
+    font-size: 16px;
 }
 
 .filter-form {
@@ -95,8 +100,8 @@
 
 .stat-card h3 {
     margin: 0;
-    font-size: 14px;
-    color: #4e5d78;
+    font-size: 18px;
+    color: #384357;
 }
 
 .stat-card .value {
@@ -130,7 +135,7 @@
 
 .table-section h2 {
     margin: 0 0 10px;
-    color: #1f2a44;
+    color: #031f60;
     font-size: 18px;
 }
 
@@ -142,20 +147,21 @@ table {
     width: 100%;
     border-collapse: collapse;
     min-width: 980px;
+    background: white;
 }
 
 th,
 td {
-    border-bottom: 1px solid #edf1f7;
-    padding: 10px;
-    text-align: left;
-    font-size: 13px;
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
 }
 
 th {
-    background: #f2f5fb;
-    color: #3e4a62;
-    font-weight: 600;
+    background: #1e88e5;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
 }
 
 .badge {

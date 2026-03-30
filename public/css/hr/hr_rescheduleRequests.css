@@ -1,9 +1,12 @@
 /* hr_rescheduleRequests.css - Compiled with consistent styling */
+body {
+    background: #f4f7fb;
+}
 
 /* Page layout */
 .content {
   margin-left: 260px;
-  padding: 24px;
+  padding: 28px;
   font-family: Arial, Helvetica, sans-serif;
   background: #f6f7fb;
   min-height: 100vh;
@@ -287,6 +290,8 @@
     grid-template-columns: 1fr;
   }
 }
+
+.requests-table thead th {
   text-align: left;
   padding: 14px 14px;
   background: #1e88e5;
