@@ -17,6 +17,7 @@
         <h1>Payment Management</h1>
 
         <?php if (!empty($data['payments'])): ?>
+            <div class="table-container">
             <table class="payments-table">
                 <thead>
                     <tr>
@@ -80,6 +81,7 @@
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            </div>
         <?php else: ?>
             <p class="no-data">No payments at this time.</p>
         <?php endif; ?>
