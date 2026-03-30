@@ -101,7 +101,7 @@
                                 <td><?= date('Y-m-d H:i', strtotime($refund['created_at'])) ?></td>
                                 <td class="action-buttons">
                                     <a href="<?= URLROOT ?>/hr/refundDetails?refund_id=<?= $refund['id'] ?>" class="btn-view">
-                                        View Details
+                                        View 
                                     </a>
                                 </td>
                             </tr>
