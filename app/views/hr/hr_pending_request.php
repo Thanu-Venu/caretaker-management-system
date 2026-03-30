@@ -15,7 +15,7 @@
 <body>
     <div class="main-content">
         <h1>Pending Service Requests</h1>
-        <div class="table-container">
+        <div class="container">
             <form method="get" action="<?= URLROOT ?>/hr/hr_pending_request" class="filter-bar">
                 <label for="status">Filter by Status:</label>
                 <select name="status" id="status" onchange="this.form.submit()">
@@ -30,20 +30,18 @@
                     <?php endforeach; ?>
                 </select>
             </form>
-
+            
+            <div class="table-container">
             <table class="requests-table">
                 <thead>
                     <tr>
                         <th>Client ID</th>
-                        <th>Client</th>
                         <th>Caretaker ID</th>
                         <th>Service</th>
-                        <th>Duration & Basis</th>
+                        <th>Duration</th>
                         <th>Date & Time</th>
-                        <th>Customization</th>
                         <th>Total Amount</th>
-                        <th>Availability Check</th>
-                        <th>Status</th>
+                        <th>View</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -52,28 +50,26 @@
                         <?php foreach ($data['bookings'] as $b): ?>
                             <tr class="<?= (!empty($b['caretaker_overlap'])) ? 'booking-overlap-alert' : '' ?>">
                                 <?php
-
                                 $rawStatus = $b['status'] ?? '';
                                 $status = !empty($rawStatus) ? $rawStatus : 'Requested';
                                 ?>
                                 <td><?= $b['booking_id'] ?></td>
-                                <td><?= htmlspecialchars($b['client_name']) ?></td>
                                 <td>
-                                    <span class="caretaker-id-badge">
-                                        <?= $b['caretaker_id'] ?? '—' ?>
-                                    </span>
+                                    <?= $b['caretaker_id'] ?? '—' ?>
                                     <?php if (!empty($b['caretaker_overlap'])): ?>
                                         <span class="overlap-warning" title="This caretaker has overlapping bookings">
-                                            <i class="fas fa-exclamation-triangle"></i> Overlap
+                                            <i class="fas fa-exclamation-triangle"></i>
                                         </span>
                                     <?php endif; ?>
                                 </td>
                                 <td><span class="service-badge"><?= htmlspecialchars($b['service_type']) ?></span></td>
                                 <td>
-                                    <div class="duration-info">
-                                        <strong><?= $b['duration'] ?? '—' ?></strong>
-                                        <span class="basis-tag"><?= $b['basis'] ?? '—' ?></span>
-                                    </div>
+                                    <?php 
+                                        $basis = $b['basis'] ?? '—';
+                                        $basisMap = ['Daily' => 'Day', 'Monthly' => 'Month', 'Hourly' => 'Hour', 'Weekly' => 'Week', 'Yearly' => 'Year'];
+                                        $displayBasis = $basisMap[$basis] ?? ucfirst($basis);
+                                        echo htmlspecialchars($b['duration'] ?? '—') . ' ' . htmlspecialchars($displayBasis);
+                                    ?>
                                 </td>
                                 <td>
                                     <div class="datetime-info">
@@ -82,45 +78,15 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <?php
-                                    $customText = trim($b['customization'] ?? '');
-                                    $customHours = (int) ($b['customization_hours'] ?? 0);
-                                    $customPrice = (float) ($b['customization_price'] ?? 0);
-                                    ?>
-                                    <div class="customization-info">
-                                        <?php if ($customText !== ''): ?>
-                                            <div class="custom-text"><?= htmlspecialchars($customText) ?></div>
-                                        <?php else: ?>
-                                            <span class="no-custom">None</span>
-                                        <?php endif; ?>
-                                        <?php if ($customHours > 0): ?>
-                                            <div class="custom-details">
-                                                <i class="fas fa-clock"></i> <?= $customHours ?> hrs
-                                                <i class="fas fa-money-bill-wave"></i> Rs <?= number_format($customPrice, 2) ?>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                </td>
-                                <td>
                                     <div class="amount-box">
                                         <span class="currency">Rs</span>
                                         <span class="amount-value"><?= number_format($b['total_payment'] ?? 0, 2) ?></span>
                                     </div>
                                 </td>
-                                <td>
-                                    <?php if (!empty($b['availability_ok'])): ?>
-                                        <span class="availability-badge availability-ok">Available</span>
-                                    <?php else: ?>
-                                        <?php $conflict = $b['availability_conflict'] ?? null; ?>
-                                        <span
-                                            class="availability-badge availability-conflict"
-                                            title="<?= !empty($conflict) ? htmlspecialchars('Conflicts with Booking #' . ($conflict['conflict_booking_id'] ?? 'N/A') . ' (' . ($conflict['start_date'] ?? 'N/A') . ' to ' . ($conflict['end_date'] ?? 'N/A') . ', status: ' . ($conflict['status'] ?? 'N/A') . ')') : 'Caregiver conflict detected' ?>">
-                                            Conflict
-                                        </span>
-                                    <?php endif; ?>
-                                </td>
-                                <td>
-                                    <span class="status-<?= strtolower($status) ?>"><?= $status ?></span>
+                                <td class="view-cell">
+                                    <button type="button" class="view-btn" onclick="openDetailModal(<?= htmlspecialchars(json_encode($b)) ?>)" title="View full details">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </td>
                                 <td>
                                     <?php if (empty($rawStatus)): ?>
@@ -134,27 +100,24 @@
                                                 Request Advance Payment
                                             </button>
                                         </form>
-
                                     <?php elseif ($status === 'Payment_Requested'): ?>
                                         <span class="badge badge-warning">Waiting for payment</span>
                                     <?php else: ?>
                                         <span class="status-<?= strtolower($status) ?>"><?= $status ?></span>
                                     <?php endif; ?>
-
                                 </td>
-
-
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="10" class="empty-state">No bookings found</td>
+                            <td colspan="8" class="empty-state">No bookings found</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
 
 
             </table>
+            </div>
             <?php if ($data['totalPages'] > 1): ?>
                 <div class="pagination">
                     <?php
@@ -184,7 +147,7 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Confirmation Modal -->
     <div id="confirmModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -195,6 +158,132 @@
             </div>
         </div>
     </div>
+
+    <!-- Detail View Modal -->
+    <div id="detailModal" class="modal detail-modal">
+        <div class="detail-modal-content">
+            <span class="close-detail" onclick="closeDetailModal()">&times;</span>
+            <h2>Booking Details</h2>
+            
+            <div class="detail-grid">
+                <!-- Row 1 -->
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <label>Client ID</label>
+                        <div class="detail-value" id="detailClientId">—</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Client Name</label>
+                        <div class="detail-value" id="detailClientName">—</div>
+                    </div>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <label>Caretaker ID</label>
+                        <div class="detail-value" id="detailCaretakerId">—</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Service Type</label>
+                        <div class="detail-value" id="detailService">—</div>
+                    </div>
+                </div>
+
+                <!-- Row 3 -->
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <label>Duration</label>
+                        <div class="detail-value" id="detailDuration">—</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Basis</label>
+                        <div class="detail-value" id="detailBasis">—</div>
+                    </div>
+                </div>
+
+                <!-- Row 4 -->
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <label>Date & Time</label>
+                        <div class="detail-value" id="detailDateTime">—</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Availability</label>
+                        <div class="detail-value" id="detailAvailability">—</div>
+                    </div>
+                </div>
+
+                <!-- Row 5 -->
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <label>Customization</label>
+                        <div class="detail-value" id="detailCustomization">—</div>
+                    </div>
+                </div>
+
+                <!-- Row 6 -->
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <label>Total Amount</label>
+                        <div class="detail-value amount-highlight" id="detailAmount">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-modal-footer">
+                <button class="btn-close-detail" onclick="closeDetailModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openDetailModal(bookingData) {
+            // Populate modal with booking data
+            document.getElementById('detailClientId').textContent = bookingData.booking_id || '—';
+            document.getElementById('detailClientName').textContent = bookingData.client_name || '—';
+            document.getElementById('detailCaretakerId').textContent = bookingData.caretaker_id || '—';
+            document.getElementById('detailService').textContent = bookingData.service_type || '—';
+            document.getElementById('detailDuration').textContent = bookingData.duration || '—';
+            document.getElementById('detailBasis').textContent = bookingData.basis || '—';
+            
+            const dateTime = (bookingData.booking_date || '—') + ' ' + (bookingData.preferred_time || '');
+            document.getElementById('detailDateTime').textContent = dateTime.trim();
+            
+            // Availability
+            const availabilityText = bookingData.availability_ok ? 'Available' : 'Conflict';
+            const availabilityClass = bookingData.availability_ok ? 'availability-ok' : 'availability-conflict';
+            document.getElementById('detailAvailability').innerHTML = `<span class="availability-badge ${availabilityClass}">${availabilityText}</span>`;
+            
+            // Customization
+            const customText = (bookingData.customization || '').trim();
+            const customHours = parseInt(bookingData.customization_hours) || 0;
+            const customPrice = parseFloat(bookingData.customization_price) || 0;
+            let customHTML = customText ? `<div class="custom-text">${customText}</div>` : '<span class="no-custom">None</span>';
+            if (customHours > 0) {
+                customHTML += `<div class="custom-details"><i class="fas fa-clock"></i> ${customHours} hrs <i class="fas fa-money-bill-wave"></i> Rs ${customPrice.toFixed(2)}</div>`;
+            }
+            document.getElementById('detailCustomization').innerHTML = customHTML;
+            
+            // Amount
+            const amount = parseFloat(bookingData.total_payment) || 0;
+            document.getElementById('detailAmount').textContent = 'Rs ' + amount.toFixed(2);
+            
+            // Show modal
+            document.getElementById('detailModal').style.display = 'flex';
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        // Close detail modal when clicking outside
+        document.getElementById('detailModal')?.addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeDetailModal();
+            }
+        });
+    </script>
 
     <script src="<?php echo URLROOT; ?>/public/js/hr/hr_pending_request.js"></script>
 </body>
