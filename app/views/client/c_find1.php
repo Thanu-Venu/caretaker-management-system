@@ -164,6 +164,10 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
           <?php endif; ?>
 
         </div>
+
+        <div id="noCaretakerMessage" class="no-results-message hidden">
+          No caregivers match the selected filters.
+        </div>
       </section>
 
     </div>

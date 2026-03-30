@@ -230,6 +230,7 @@ function applyFilters() {
 
     if (serviceMatch && locationMatch && ratingMatch) {
       card.style.display = "block";
+      visibleCount++;
     } else {
       card.style.display = "none";
     }
@@ -255,6 +256,7 @@ function clearFilters() {
   applyFilters();
 }
 
+const serviceFilter = document.getElementById("serviceFilter");
 const locationFilter = document.getElementById("locationFilter");
 const ratingFilter = document.getElementById("ratingFilter");
 
