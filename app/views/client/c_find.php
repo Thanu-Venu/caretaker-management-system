@@ -160,15 +160,7 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
 
             <?php endforeach; ?>
           <?php else: ?>
-<<<<<<< HEAD
-            <?php if ($showResults): ?>
-              <p>No caretakers available for your selected booking details.</p>
-            <?php else: ?>
-              <p>Use the Book Caretaker button to search for availability.</p>
-            <?php endif; ?>
-=======
             <p>Use the Book Caregiver button to search for availability.</p>
->>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
           <?php endif; ?>
 
         </div>

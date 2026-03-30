@@ -110,9 +110,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const total = baseCost + customizationFee;
 
     // UI updates
-    if (basePriceLabel) {
-      basePriceLabel.textContent = rate > 0 ? `LKR ${formatLKR(rate)} / ${basis}` : "Select a basis to see price";
-    }
+   if (basePriceLabel) {
+  basePriceLabel.textContent = rate > 0 ? `LKR ${formatLKR(rate)} / ${basis}` : "Select a basis to see price";
+}
     if (basePriceAmount) basePriceAmount.textContent = formatLKR(baseCost);
     if (customizationPriceSpan) customizationPriceSpan.textContent = formatLKR(customizationFee);
     if (priceSpan) priceSpan.textContent = formatLKR(total);
