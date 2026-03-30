@@ -1,28 +1,27 @@
-* {
-  margin: 0;
-  padding: 0;
-  font-family: 'Poppins', Arial, sans-serif;
+body {
+    background: #f4f7fb;
 }
 
 /* =====================
    Container
 ===================== */
 .announcement-container {
-    margin-left: 270px;
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 15px;
+  flex: 1;
+  padding: 20px 40px;
+  margin-left: 255px;
+  font-family: 'Poppins', Arial, sans-serif;
 }
 
 /* =====================
    Page Title
 ===================== */
 .page-title {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 26px;
-    font-weight: 600;
-    color: #1565c0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #1e88e5;
+  font-size: 28px;
 }
 
 /* =====================
@@ -58,6 +57,11 @@
 /* =====================
    Header
 ===================== */
+h2{
+      color: #1e88e5;
+  font-size: 28px;
+}
+
 .announcement-header {
     display: flex;
     justify-content: space-between;

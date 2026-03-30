@@ -13,7 +13,7 @@
 <body>
     <div class="announcement-container">
 
-    <h2 class="page-title">📢 Announcements</h2>
+    <h2 class="page-title">Announcements</h2>
 
     <?php if (empty($data)): ?>
         <div class="no-announcement">
