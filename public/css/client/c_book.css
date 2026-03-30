@@ -155,18 +155,6 @@
 /* Disabled / readonly style */
 .form-group select:disabled,
 .form-group input:readonly {
-<<<<<<< HEAD
-    color: #2c3e50;
-    background: #ffffff;
-    opacity: 1;
-}
-
-/* Form Actions Container */
-.form-actions {
-    display: flex;
-    gap: 15px;
-    margin-top: 30px;
-=======
   color: #333;
   background: #f9f9f9;
   opacity: 1;
@@ -179,7 +167,6 @@
   font-size: 12.5px;
   color: #666;
   line-height: 1.35;
->>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
 }
 
 /* ---------- Price Box ---------- */
