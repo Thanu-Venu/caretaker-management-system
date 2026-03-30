@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const duration = Math.max(1, parseInt(durationInput?.value || "1", 10));
     const preferredTime = getPreferredTimeValue();
     const hours = Math.max(0, parseInt(customizationHoursInput?.value || "0", 10));
-    const applyMode = (customizationApplySelect?.value || "once").trim();
+    const applyMode = (customizationApplySelect?.value || "per_unit").trim();
 
     // keep hidden fields synced (important because selects are disabled)
     if (basisHidden) basisHidden.value = basis;
