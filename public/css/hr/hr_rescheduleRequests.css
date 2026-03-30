@@ -290,6 +290,8 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+.requests-table thead th {
   text-align: left;
   padding: 14px 14px;
   background: #1e88e5;
