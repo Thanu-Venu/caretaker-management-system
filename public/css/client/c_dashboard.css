@@ -146,6 +146,8 @@ body, html {
   box-shadow: 0 12px 30px rgba(0,0,0,0.08);
   border: 1px solid rgba(0,0,0,0.05);
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .price-card:hover {
@@ -192,6 +194,7 @@ body, html {
   flex-direction: column;
   gap: 10px;
   margin-bottom: 12px;
+  flex: 1;
 }
 
 .price-card .price-lines .line {
@@ -219,6 +222,7 @@ body, html {
   justify-content: center;
   align-items: center;
   width: 100%;
+  margin-top: auto;
   border-radius: 14px;
   padding: 10px 12px;
   text-decoration: none;
@@ -620,17 +624,11 @@ body, html {
 /* ===================== Responsive ===================== */
 @media (max-width: 1100px) {
   .client-dashboard {
-    margin-left: 0;
     margin-right: 0;
     padding: 18px 16px;
   }
 
-  .alert.success {
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  .stats-cards .cards-grid {
+  .stats-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -647,8 +645,19 @@ body, html {
   }
 }
 
+@media (max-width: 900px) {
+  .client-dashboard {
+    margin-left: 0;
+  }
+
+  .alert.success {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
 @media (max-width: 650px) {
-  .stats-cards .cards-grid,
+  .stats-cards,
   .price-grid,
   .quick-actions .actions {
     grid-template-columns: 1fr;

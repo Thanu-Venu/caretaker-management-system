@@ -36,11 +36,11 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
       <label>Location</label>
       <select name="location" id="popupLocationFilter" required>
         <option value="">Select Location</option>
-        <?php
-        $locations = $data['locations'] ?? [];
-        foreach ($locations as $loc): ?>
-            <option value="<?= htmlspecialchars($loc) ?>"><?= htmlspecialchars($loc) ?></option>
-        <?php endforeach; ?>
+        <option value="Colombo">Colombo</option>
+        <option value="Kandy">Kandy</option>
+        <option value="Matara">Matara</option>
+        <option value="Vavuniya">Vavuniya</option>
+        <option value="Jaffna">Jaffna</option>
       </select>
       <label>Duration Basis</label>
       <select name="basis" id="basisFilter" required>
@@ -102,9 +102,11 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
               <label>Location</label>
               <select id="locationFilter">
                 <option value="">All Locations</option>
-                <?php foreach ($locations as $loc): ?>
-                  <option value="<?= htmlspecialchars($loc) ?>"><?= htmlspecialchars($loc) ?></option>
-                <?php endforeach; ?>
+                <option value="Colombo">Colombo</option>
+                <option value="Kandy">Kandy</option>
+                <option value="Vavuniya">Vavuniya</option>
+                <option value="Jaffna">Jaffna</option>
+                <option value="Matara">Matara</option>
               </select>
             </div>
 

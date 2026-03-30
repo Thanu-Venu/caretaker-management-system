@@ -50,7 +50,6 @@ function moneyLKR($amount)
 
 <body>
 
-  <body>
 
     <?php if (!empty($data['pendingAdvance'])): ?>
       <div id="advanceModal" class="modal" style="display:flex;">
