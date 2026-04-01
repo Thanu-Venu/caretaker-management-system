@@ -480,6 +480,12 @@ body, html {
   color: #2e7d32;
 }
 
+.status.requested {
+  background: #e0f7e9;
+  color: #3c463c;
+}
+
+
 .status.pending {
   background: #fff3cd;
   color: #856404;
