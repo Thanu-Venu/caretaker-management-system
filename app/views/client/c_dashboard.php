@@ -3,7 +3,8 @@
 
 <?php if (!empty($_SESSION['flash_message'])): ?>
   <div class="alert success"><?php echo $_SESSION['flash_message'];
-                              unset($_SESSION['flash_message']); ?></div>
+    unset($_SESSION['flash_message']); ?>
+   </div>
 <?php endif; ?>
 <?php
 $servicePriceRates = [
@@ -193,17 +194,19 @@ function moneyLKR($amount)
 
           </div>
 
-          <!-- Time modifier mini card -->
+         
+
+           <!-- Time modifier mini card -->
           <div class="card modifier-card">
             <div class="modifier-head">
               <i class='bx bx-time-five'></i>
               <h3>Time Modifiers</h3>
             </div>
             <div class="modifier-grid">
-              <div><span>Morning</span><strong><?= $timePriceModifier["Morning (8am - 12pm)"] ?>x</strong></div>
-              <div><span>Evening</span><strong><?= $timePriceModifier["Evening (1pm - 5pm)"] ?>x</strong></div>
-              <div><span>Full Time</span><strong><?= $timePriceModifier["Full Time (8am - 5pm)"] ?>x</strong></div>
-              <div><span>Night</span><strong><?= $timePriceModifier["Night (6pm - 10pm)"] ?>x</strong></div>
+              <div><span>Morning</span><strong><?= $timePriceModifier["Morning (8am - 12pm)"] ?> %</strong></div>
+              <div><span>Evening</span><strong><?= $timePriceModifier["Evening (1pm - 5pm)"] ?> %</strong></div>
+              <div><span>Full Time</span><strong><?= $timePriceModifier["Full Time (8am - 5pm)"] ?> %</strong></div>
+              <div><span>Night</span><strong><?= $timePriceModifier["Night (6pm - 10pm)"] ?> %</strong></div>
             </div>
           </div>
 
