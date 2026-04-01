@@ -856,3 +856,108 @@ body, html {
   .advance-details{ border-radius: 16px; }
   .close{ border-radius: 10px; }
 }
+
+/* ===== Emergency Support Modal ===== */
+#emergencyModal .modal-content{
+  width: min(560px, 96vw);
+  border-radius: 24px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+}
+
+#emergencyModal .modal-content h2{
+  color: #b42318;
+}
+
+#emergencyModal .modal-content p{
+  margin-bottom: 18px;
+}
+
+#emergencyModal .form-group{
+  margin-bottom: 14px;
+}
+
+#emergencyModal .form-group label{
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+#emergencyModal .form-group select,
+#emergencyModal .form-group textarea,
+#emergencyModal .form-group input{
+  width: 100%;
+  border: 1px solid #dbe4f0;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font: inherit;
+  background: #fff;
+  color: #0f172a;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+#emergencyModal .form-group textarea{
+  resize: vertical;
+  min-height: 110px;
+}
+
+#emergencyModal .form-group select:focus,
+#emergencyModal .form-group textarea:focus,
+#emergencyModal .form-group input:focus{
+  border-color: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, .12);
+}
+
+#emergencyModal .submit-btn{
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 13px 16px;
+  margin-top: 6px;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: #fff;
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 16px 30px rgba(185, 28, 28, .22);
+  transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
+}
+
+#emergencyModal .submit-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 20px 38px rgba(185, 28, 28, .28);
+  filter: brightness(1.02);
+}
+
+#emergencyModal .quick-call{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+#emergencyModal .quick-call a{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: 700;
+  color: #0f172a;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+}
+
+#emergencyModal .quick-call a:hover{
+  background: #dbeafe;
+}
+
+@media (max-width: 480px){
+  #emergencyModal .quick-call{
+    grid-template-columns: 1fr;
+  }
+}

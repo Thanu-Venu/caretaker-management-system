@@ -51,6 +51,48 @@ function moneyLKR($amount)
 
 <body>
 
+    <div id="emergencyModal" class="modal">
+      <div class="modal-content">
+
+        <span class="close" onclick="closeEmergencyModal()">&times;</span>
+
+        <h2>🚨 Emergency Support</h2>
+        <p>Submit your emergency request</p>
+
+        <form method="POST" action="">
+          
+          <div class="form-group">
+            <label>Emergency Type</label>
+            <select name="type" required>
+              <option value="">Select type</option>
+              <option>Medical Emergency</option>
+              <option>Caretaker Not Responding</option>
+              <option>Accident / Injury</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" rows="3" placeholder="Describe the emergency..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Contact Number</label>
+            <input type="text" name="phone" required>
+          </div>
+
+          <button type="submit" class="submit-btn">Send Alert 🚨</button>
+        </form>
+
+        <div class="quick-call">
+          <a href="tel:1990">🚑 Ambulance</a>
+          <a href="tel:119">🚓 Police</a>
+        </div>
+
+      </div>
+    </div>
+
 
     <?php if (!empty($data['pendingAdvance'])): ?>
       <div id="advanceModal" class="modal" style="display:flex;">
@@ -259,7 +301,7 @@ function moneyLKR($amount)
             <div class="action">
               <i class='bx bx-support'></i>
               <h3>
-                <button id="bookBtn" class="main-btn">Emergency Support</button>
+                <button id="bookBtn" type="button" onclick="openEmergencyModal()" class="main-btn">Emergency Support</button>
               </h3>
               <p>24/7 Emergency assistance</p>
             </div>
@@ -298,8 +340,10 @@ function moneyLKR($amount)
 
 
       </div>
-      <!-- your existing contzent -->
+     
     </div>
+
+    <script src="<?php echo URLROOT; ?>/public/js/client/c_dashboard.js"></script>
 
 
   </body>
