@@ -101,15 +101,17 @@
                         <?php if (isset($calc['approved_payments']) || isset($calc['pending_payments'])): ?>
                             <!-- Payment Breakdown -->
                             <?php if (isset($calc['approved_payments'])): ?>
-                                <div class="detail-label">└ Approved Payments:</div>
-                                <div class="detail-value" style="color: #28a745;">LKR <?= number_format((float)$calc['approved_payments'], 2) ?></div>
+                                <div class="detail-label">Approved Payments:</div>
+                                <div class="detail-value" style="color: #00cf30; font-weight: 600;">
+                                    LKR <?= number_format((float)$calc['approved_payments'], 2) ?>
+                                </div>
                             <?php endif; ?>
 
                             <?php if (isset($calc['pending_payments']) && $calc['pending_payments'] > 0): ?>
-                                <div class="detail-label">└ Pending Payments:</div>
-                                <div class="detail-value" style="color: #ffa500; font-weight: 600;">
+                                <div class="detail-label">Pending Payments:</div>
+                                <div class="detail-value" style="color: #f09c00; font-weight: 600;">
                                     LKR <?= number_format((float)$calc['pending_payments'], 2) ?>
-                                    <span style="font-size: 11px; background: #fff3cd; padding: 2px 8px; border-radius: 4px; color: #856404;">UNAPPROVED</span>
+                                    <span style="font-size: 13px; background: #fff3cd; padding: 4px 10px; border-radius: 4px; color: #856404;">UNAPPROVED</span>
                                 </div>
                             <?php endif; ?>
                         <?php endif; ?>

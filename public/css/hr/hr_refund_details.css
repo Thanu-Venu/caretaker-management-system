@@ -2,8 +2,10 @@ body {
     background: #f4f7fb;
 }
 main.content {
-    padding: 30px;
-    min-height: 100vh;
+  flex: 1;
+  padding: 20px 40px;
+  margin-left: 255px;
+  font-family: 'Poppins', Arial, sans-serif;
 }
 
 .refund-details-container {
@@ -12,9 +14,8 @@ main.content {
 }
 
 .refund-details-container h1 {
-    color: #2c3e50;
+    color: #1e88e5;
     font-size: 28px;
-    font-weight: 600;
 }
 
 .success-msg,
@@ -64,21 +65,13 @@ main.content {
 }
 
 .detail-section h2 {
-    font-size: 20px;
+    font-size: 24px;
     margin-bottom: 20px;
-    color: #2c3e50;
+    color: #055eac;
     font-weight: 600;
     display: flex;
     align-items: center;
     gap: 10px;
-}
-
-.detail-section h2::before {
-    content: '';
-    width: 4px;
-    height: 24px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 2px;
 }
 
 .detail-grid {
@@ -89,14 +82,15 @@ main.content {
 }
 
 .detail-label {
-    font-weight: 600;
-    color: #64748b;
-    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #2a313a;
+    font-size: 16px;
 }
 
 .detail-value {
-    color: #334155;
-    font-size: 14px;
+    color: #2d3c51;
+    font-size: 16px;
     line-height: 1.6;
 }
 
@@ -111,12 +105,12 @@ main.content {
 
 .calculation-box p {
     margin: 10px 0;
-    font-size: 14px;
-    color: #475569;
+    font-size: 16px;
+    color: #2d3c51;
 }
 
 .calculation-box p strong {
-    color: #334155;
+    color: #2a313a;
 }
 
 .calculation-box .formula {
@@ -126,8 +120,8 @@ main.content {
     font-family: 'Courier New', monospace;
     margin: 12px 0;
     border: 1px solid #dee2e6;
-    color: #495057;
-    font-size: 13px;
+    color: #313b45;
+    font-size: 15px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
@@ -146,7 +140,7 @@ main.content {
     display: inline-block;
     padding: 6px 12px;
     border-radius: 20px;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     text-align: center;
 }
@@ -168,7 +162,7 @@ main.content {
 
 .status-processed,
 .status-completed {
-    background: linear-gradient(135deg, #55efc4 0%, #00b894 100%);
+    background: linear-gradient(135deg, #43bd9a 0%, #009376 100%);
     color: white;
     box-shadow: 0 2px 8px rgba(0, 184, 148, 0.3);
 }
@@ -181,9 +175,9 @@ main.content {
 }
 
 .action-section h2 {
-    font-size: 20px;
+    font-size: 24px;
     margin-bottom: 20px;
-    color: #2c3e50;
+    color: #055eac;
     font-weight: 600;
 }
 
@@ -198,9 +192,10 @@ main.content {
 .form-group label {
     display: block;
     margin-bottom: 8px;
-    font-weight: 600;
-    color: #334155;
-    font-size: 14px;
+    font-weight: 700;
+    color: #2a313a;
+    font-size: 16px;
+    text-transform: uppercase;
 }
 
 .form-group input,
@@ -240,7 +235,7 @@ main.content {
     padding: 12px 24px;
     border: none;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -253,7 +248,7 @@ main.content {
 }
 
 .btn-approve {
-    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    background: #00ab94;
     color: white;
 }
 
@@ -262,7 +257,7 @@ main.content {
 }
 
 .btn-decline {
-    background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
+    background: #ea0b34;
     color: white;
 }
 
@@ -280,8 +275,8 @@ main.content {
 }
 
 .btn-back {
-    background: linear-gradient(135deg, #636e72 0%, #2d3436 100%);
-    color: white;
+  background-color: #6c757d;
+  color: white;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -295,17 +290,17 @@ main.content {
 }
 
 .btn-back:hover {
+    background-color: #545b62;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .message-box {
     background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-    padding: 16px 20px;
+    padding: 14px 20px;
     border-radius: 8px;
-    border-left: 4px solid #2196f3;
     margin: 15px 0;
-    color: #1565c0;
+    color: #0e4c92;
     font-size: 14px;
     box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
 }
