@@ -46,7 +46,7 @@
                     <table class="requests-table">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>Request ID</th>
                                 <th>Booking ID</th>
                                 <th>Client</th>
                                 <th>Service</th>
@@ -67,25 +67,13 @@
                                     <td><?= date('Y-m-d', strtotime($req['new_date'])) ?></td>
                                     <td><?= htmlspecialchars($req['reason']) ?></td>
                                     <td>
-                                        <form method="POST" action="<?= URLROOT ?>/hr/approveReschedule" style="margin-bottom:6px;">
-                                            <input type="hidden" name="request_id" value="<?= $req['request_id'] ?>">
-                                            <textarea name="hr_note"
-                                                placeholder="Optional HR note (visible to client)"
-                                                style="width:180px; height:50px; font-size:12px; margin-bottom:4px;"></textarea>
-                                            <div>
-                                                <button type="submit" class="approve-btn">Approve</button>
-                                            </div>
-                                        </form>
-                                        <form method="POST" action="<?= URLROOT ?>/hr/rejectReschedule">
-                                            <input type="hidden" name="request_id" value="<?= $req['request_id'] ?>">
-                                            <textarea name="hr_note"
-                                                placeholder="Reason for rejection (recommended)"
-                                                required
-                                                style="width:180px; height:50px; font-size:12px; margin-bottom:4px;"></textarea>
-                                            <div>
-                                                <button type="submit" class="reject-btn">Reject</button>
-                                            </div>
-                                        </form>
+                                        <button class="approve-btn" onclick="openModal('approve', <?= $req['request_id'] ?>)">
+                                            Approve
+                                        </button>
+
+                                        <button class="reject-btn" onclick="openModal('reject', <?= $req['request_id'] ?>)">
+                                            Reject
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -163,25 +151,39 @@
         </div>
     </main>
 
-    <script>
-        function switchTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(el => {
-                el.classList.remove('active');
-            });
+    <div id="modalOverlay" class="modal-overlay">
+    <div class="modern-modal">
 
-            // Remove active class from all buttons
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
+        <div class="modal-header">
+            <h2 id="modalTitle"></h2>
+            <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
 
-            // Show selected tab
-            document.getElementById(tabName).classList.add('active');
+        <div class="modal-body">
+            <p id="modalMessage"></p>
 
-            // Add active class to clicked button
-            event.target.closest('.tab-button').classList.add('active');
-        }
-    </script>
+            <textarea id="modalTextarea" name="hr_note"
+                placeholder=""
+                class="modal-textarea"></textarea>
+        </div>
+
+        <form id="modalForm" method="POST">
+            <input type="hidden" name="request_id" id="modalRequestId">
+
+            <div class="modal-actions">
+                <button type="button" class="cancel-btn" onclick="closeModal()">
+                    Cancel
+                </button>
+
+                <button type="submit" id="confirmBtn" class="confirm-btn">
+                    Confirm
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+<script src="<?= URLROOT; ?>/public/js/hr/hr_rescheduleRequests.js"></script>
 </body>
 
 </html>

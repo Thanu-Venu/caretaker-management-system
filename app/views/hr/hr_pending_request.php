@@ -39,7 +39,7 @@
                         <th>Caretaker ID</th>
                         <th>Service</th>
                         <th>Duration</th>
-                        <th>Date & Time</th>
+                        <th>Start Date</th>
                         <th>Total Amount</th>
                         <th>View</th>
                         <th>Action</th>
@@ -74,7 +74,6 @@
                                 <td>
                                     <div class="datetime-info">
                                         <div class="date-val"><?= $b['booking_date'] ?></div>
-                                        <div class="time-val"><?= $b['preferred_time'] ?></div>
                                     </div>
                                 </td>
                                 <td>
@@ -85,7 +84,7 @@
                                 </td>
                                 <td class="view-cell">
                                     <button type="button" class="view-btn" onclick="openDetailModal(<?= htmlspecialchars(json_encode($b)) ?>)" title="View full details">
-                                        <i class="fas fa-eye"></i>
+                                        <i class="bx bx-show"></i>
                                     </button>
                                 </td>
                                 <td>
