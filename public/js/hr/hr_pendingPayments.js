@@ -1,81 +1,89 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    // APPROVE FLOW (existing modal)
-    const forms = document.querySelectorAll('.confirm-action-form');
-    const confirmModal = document.getElementById('actionConfirmModal');
-    const confirmText = document.getElementById('confirmModalText');
-    const confirmBtn = document.getElementById('confirmModalProceed');
-    const cancelBtn = document.getElementById('confirmModalCancel');
+    const modal = document.getElementById('modalOverlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalText = document.getElementById('modalText');
+    const modalReason = document.getElementById('modalReason');
+    const modalConfirm = document.getElementById('modalConfirm');
+    const modalCancel = document.getElementById('modalCancel');
 
-    let targetForm = null;
-
-    forms.forEach(form => {
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            targetForm = form;
-
-            confirmText.textContent = "Approve this payment?";
-            confirmModal.classList.add('show');
-        });
-    });
-
-    confirmBtn.addEventListener('click', function () {
-        if (targetForm) targetForm.submit();
-    });
-
-    cancelBtn.addEventListener('click', () => {
-        confirmModal.classList.remove('show');
-    });
-
-
-    // =========================
-    // 🚨 REJECT FLOW (NEW)
-    // =========================
-    const rejectModal = document.getElementById('rejectModal');
-    const rejectButtons = document.querySelectorAll('.open-reject-modal');
-    const rejectConfirm = document.getElementById('rejectConfirm');
-    const rejectCancel = document.getElementById('rejectCancel');
-    const reasonInput = document.getElementById('rejectReason');
-
+    let actionType = "";
     let selectedPaymentId = null;
 
-    rejectButtons.forEach(btn => {
+    // ================= APPROVE =================
+    document.querySelectorAll('.open-approve-modal').forEach(btn => {
         btn.addEventListener('click', function () {
+            actionType = "approve";
             selectedPaymentId = this.dataset.paymentId;
-            reasonInput.value = '';
-            rejectModal.classList.add('show');
+
+            modalTitle.innerText = "Approve Payment";
+            modalText.innerText = "Are you sure you want to approve this payment?";
+            
+            modalReason.style.display = "none";
+            modalReason.value = "";
+
+            modalConfirm.innerText = "Yes, Approve";
+            modalConfirm.className = "btn btn-success";
+
+            modal.style.display = "flex";
         });
     });
 
-    rejectConfirm.addEventListener('click', function () {
-        const reason = reasonInput.value.trim();
+    // ================= REJECT =================
+    document.querySelectorAll('.open-reject-modal').forEach(btn => {
+        btn.addEventListener('click', function () {
+            actionType = "reject";
+            selectedPaymentId = this.dataset.paymentId;
 
-        if (!reason) {
+            modalTitle.innerText = "Reject Payment";
+            modalText.innerText = "Are you sure you want to reject this payment?";
+            
+            modalReason.style.display = "block";
+            modalReason.placeholder = "Enter rejection reason (required)";
+            modalReason.value = "";
+
+            modalConfirm.innerText = "Yes, Reject";
+            modalConfirm.className = "btn btn-danger";
+
+            modal.style.display = "flex";
+        });
+    });
+
+    // ================= CONFIRM =================
+    modalConfirm.addEventListener('click', function () {
+
+        if (actionType === "reject" && modalReason.value.trim() === "") {
             alert("Please enter a reason");
             return;
         }
 
-        // Create form dynamically
         const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '<?= URLROOT ?>/hr/rejectPayment';
+        form.method = "POST";
+
+        if (actionType === "approve") {
+            form.action = "<?= URLROOT ?>/hr/approvePayment";
+        } else {
+            form.action = "<?= URLROOT ?>/hr/rejectPayment";
+        }
 
         form.innerHTML = `
             <input type="hidden" name="payment_id" value="${selectedPaymentId}">
-            <input type="hidden" name="reason" value="${reason}">
+            ${actionType === "reject" ? `<input type="hidden" name="reason" value="${modalReason.value}">` : ""}
         `;
 
         document.body.appendChild(form);
         form.submit();
     });
 
-    rejectCancel.addEventListener('click', () => {
-        rejectModal.classList.remove('show');
+    // ================= CANCEL =================
+    modalCancel.addEventListener('click', () => {
+        modal.style.display = "none";
     });
 
-    rejectModal.addEventListener('click', (e) => {
-        if (e.target === rejectModal) {
-            rejectModal.classList.remove('show');
+    // ================= OUTSIDE CLICK =================
+    window.addEventListener('click', function (e) {
+        if (e.target === modal) {
+            modal.style.display = "none";
         }
     });
 
