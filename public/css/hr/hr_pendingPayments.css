@@ -5,7 +5,7 @@ body {
 .container {
     flex: 1;
     padding: 20px 40px;
-    margin-left: 220px;
+    margin-left: 250px;
     font-family: 'Poppins', Arial, sans-serif;
 }
 
@@ -141,7 +141,7 @@ h1 {
 
 .btn {
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 8px 12px;
     font-size: 14px;
     cursor: pointer;
@@ -152,7 +152,7 @@ h1 {
 }
 
 .btn-success {
-    background: #00bfa5;
+    background: #00ab94;
     color: white;
 }
 
@@ -215,8 +215,7 @@ h1 {
 
 .confirm-modal-content p {
     margin: 0;
-    color: #4b5563;
-    line-height: 1.5;
+    color: #323942;
 }
 
 .confirm-modal-actions {
