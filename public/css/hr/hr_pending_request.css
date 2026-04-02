@@ -60,6 +60,18 @@ h1 {
     border-bottom: none;
 }
 
+/* Align Action column properly */
+.requests-table th:last-child,
+.requests-table td:last-child {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Ensure consistent column width */
+.requests-table th:last-child {
+    width: 190px;
+}
+
 /* Cell Styling */
 .service-badge {
     display: inline;
@@ -174,7 +186,7 @@ h1 {
 }
 
 button.approve {
-    background: #00bfa5;
+    background: #1e88e5;
     color: white;
     border: none;
     border-radius: 8px;
@@ -200,7 +212,7 @@ button.reject {
 
 button.approve:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 191, 165, 0.3);
+    box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
 }
 
 button.reject:hover {
@@ -215,7 +227,7 @@ button.reject:hover {
 .advance-payment-form .btn {
     border: none;
     border-radius: 6px;
-    padding: 8px 12px;
+    padding: 8px 16px;
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
@@ -280,8 +292,8 @@ button.reject:hover {
 }
 
 .status-cancelled {
-    background: #e2e3e5;
-    color: #383d41;
+    background: #f8d7da;
+    color: #721c24;
     padding: 6px 12px;
     border-radius: 15px;
     font-size: 16px;
@@ -454,31 +466,21 @@ button.reject:hover {
     transform: translateY(-1px);
 }
 
-.filter-bar {
-    margin-bottom: 15px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    background: #f8fbff;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border-left: 4px solid #1e88e5;
-}
-
 .filter-bar label {
     font-weight: 600;
     color: #333;
-    font-size: 13px;
+    font-size: 18px;
 }
 
 .filter-bar select {
     padding: 8px 10px;
     border: 1px solid #ddd;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 14px;
     background: white;
     cursor: pointer;
     transition: all 0.2s ease;
+    margin-bottom: 10px;
 }
 
 .filter-bar select:hover {
@@ -539,7 +541,7 @@ button.reject:hover {
     border: none;
     color: #1e88e5;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 22px;
     padding: 6px 8px;
     transition: all 0.3s ease;
     border-radius: 4px;
@@ -749,4 +751,42 @@ button.reject:hover {
         font-size: 20px;
         margin-bottom: 20px;
     }
+}
+
+/* ===== UNIFORM ACTION COLUMN ===== */
+.requests-table td:last-child {
+    min-width: 180px;
+}
+
+/* Standard button size */
+.action-btn,
+.advance-payment-form .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;        /* SAME WIDTH */
+    height: 40px;        /* SAME HEIGHT */
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 18px;
+    text-align: center;
+    padding: 0 12px;
+    box-sizing: border-box;
+}
+
+/* Fix badge size also */
+.requests-table td:last-child .badge,
+.requests-table td:last-child span[class^="status-"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 170px;
+    height: 40px;
+    font-size: 14px;
+    border-radius: 18px;
+    text-align: center;
+}
+
+.requests-table td:last-child {
+    text-align: center;
 }
