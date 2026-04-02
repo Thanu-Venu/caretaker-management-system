@@ -34,7 +34,7 @@ class HRDashboardModel {
         $sql = "SELECT COUNT(*) AS total 
                 FROM bookings 
                 WHERE booking_date >= CURDATE()
-                AND status IN ('Reschedule Requested', 'Accepted', 'Advance Paid', 'Cancelled')";
+                AND status IN ('Reschedule_Requested', 'Accepted', 'Advance_Paid', 'Cancelled')";
         $result = $this->db->query($sql);
         $row = $result->fetch_assoc();
         return $row['total'];
@@ -191,7 +191,7 @@ class HRDashboardModel {
                     COUNT(*) as count
                 FROM bookings
                 GROUP BY status
-                ORDER BY FIELD(status, 'Reschedule Requested', 'Requested', 'Accepted', 'Advance Paid', 'Completed', 'Cancelled', 'Declined')";
+                ORDER BY FIELD(status, 'Reschedule_Requested', 'Requested', 'Accepted', 'Advance_Paid', 'Completed', 'Cancelled', 'Declined')";
 
         $result = $this->db->query($sql);
         if (!$result) {
