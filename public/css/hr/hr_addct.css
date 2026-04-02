@@ -151,17 +151,18 @@ tbody tr:hover {
 .status {
   border-radius: 12px;
   font-size: 16px;
+  font-weight: 550;
 }
 
 .status.active {
-  color: white;
-  background: #00bfa5;
+  color: #0f5132;
+  background: #d1e7dd;
   padding: 4px 16px;
 }
 
 .status.inactive {
-  background: #ea0b34;
-  color: white;
+  background: #f8d7da;
+  color: #721c24;
   padding: 4px 12px;
 }
 
