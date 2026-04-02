@@ -57,11 +57,21 @@
         </div>
 
         <div class="filter-tabs">
-            <a href="<?= URLROOT ?>/hr/refunds?status=all" class="<?= $data['status_filter'] === 'all' ? 'active' : '' ?>">All</a>
-            <a href="<?= URLROOT ?>/hr/refunds?status=pending" class="<?= $data['status_filter'] === 'pending' ? 'active' : '' ?>">Pending</a>
-            <a href="<?= URLROOT ?>/hr/refunds?status=approved" class="<?= $data['status_filter'] === 'approved' ? 'active' : '' ?>">Approved</a>
-            <a href="<?= URLROOT ?>/hr/refunds?status=completed" class="<?= $data['status_filter'] === 'completed' ? 'active' : '' ?>">Completed</a>
-            <a href="<?= URLROOT ?>/hr/refunds?status=declined" class="<?= $data['status_filter'] === 'declined' ? 'active' : '' ?>">Declined</a>
+            <button class="tab-button <?= $data['status_filter'] === 'all' ? 'active' : '' ?>" onclick="window.location.href='<?= URLROOT ?>/hr/refunds?status=all'">
+                All
+            </button>
+            <button class="tab-button <?= $data['status_filter'] === 'pending' ? 'active' : '' ?>" onclick="window.location.href='<?= URLROOT ?>/hr/refunds?status=pending'">
+                Pending   
+            </button>
+            <button class="tab-button <?= $data['status_filter'] === 'approved' ? 'active' : '' ?>" onclick="window.location.href='<?= URLROOT ?>/hr/refunds?status=approved'">
+                Approved  
+            </button>
+            <button class="tab-button <?= $data['status_filter'] === 'completed' ? 'active' : '' ?>" onclick="window.location.href='<?= URLROOT ?>/hr/refunds?status=completed'">
+                Completed
+            </button>
+            <button class="tab-button <?= $data['status_filter'] === 'declined' ? 'active' : '' ?>" onclick="window.location.href='<?= URLROOT ?>/hr/refunds?status=declined'">
+                Declined
+            </button>
         </div>
 
         <?php if (empty($data['refunds'])): ?>

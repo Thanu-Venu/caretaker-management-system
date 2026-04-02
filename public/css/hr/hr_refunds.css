@@ -82,8 +82,9 @@ body {
 }
 
 .stat-card h3 {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 650;
+  text-align: center;
   color: #10244a;
 }
 
@@ -91,39 +92,45 @@ body {
     font-size: 30px;
     font-weight: 800;
     color: #1e88e5;
+    text-align: center;
     margin-top: 10px;
     text-shadow: none;
 }
 
 .filter-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 24px;
-    background: white;
-    padding: 8px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
 }
 
-.filter-tabs a {
-    padding: 12px 24px;
-    text-decoration: none;
-    color: #64748b;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    font-size: 14px;
+.tab-button {
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  color: #565656;
+  transition: all 0.3s ease;
 }
 
-.filter-tabs a:hover {
-    background: #f1f5f9;
-    color: #334155;
+.tab-button.active {
+  color: #1e88e5;
+  border-bottom-color: #1e88e5;
 }
 
-.filter-tabs a.active {
-    background: #1e88e5;
-    color: white;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+.tab-button:hover {
+  color: #1e88e5;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
 }
 
 .table-wrapper {
@@ -210,15 +217,15 @@ body {
 }
 
 .btn-view {
-    padding: 8px 16px;
-    background: rgb(172, 172, 172);
+    padding: 4px 14px;
+    background: #c7d8fb;
+    border-color: #000000;
     color: black;
-    border: none;
     border-radius: 6px;
     cursor: pointer;
     text-decoration: none;
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 600;
     transition: all 0.3s ease;
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
@@ -233,7 +240,7 @@ body {
     padding: 60px 20px;
     background: white;
     border-radius: 12px;
-    color: #94a3b8;
-    font-size: 16px;
+    color: #758295;
+    font-size: 18px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
