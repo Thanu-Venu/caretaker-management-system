@@ -56,10 +56,12 @@
                                 <?php if ($payment['status'] === 'pending'): ?>
         
                                 <!-- APPROVE -->
-                                <form method="post" action="<?= URLROOT ?>/hr/approvePayment" class="confirm-action-form" data-action-label="approve">
-                                    <input type="hidden" name="payment_id" value="<?= $payment['id'] ?>">
-                                    <button type="submit" class="btn btn-success">Approve</button>
-                                </form>
+                                <button 
+                                    type="button"
+                                    class="btn btn-success open-approve-modal"
+                                    data-payment-id="<?= $payment['id'] ?>">
+                                    Approve
+                                </button>
 
                                 <!-- REJECT -->
                                 <button 
@@ -82,30 +84,29 @@
             <p class="no-data">No payments at this time.</p>
         <?php endif; ?>
     </div>
-
-    <div id="actionConfirmModal" class="confirm-modal" aria-hidden="true">
-        <div class="confirm-modal-content" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
-            <h3 id="confirmModalTitle">Confirm Action</h3>
-            <p id="confirmModalText">Are you sure you want to approve?</p>
-            <div class="confirm-modal-actions">
-                <button type="button" id="confirmModalCancel" class="btn btn-secondary">Cancel</button>
-                <button type="button" id="confirmModalProceed" class="btn btn-danger">Yes, Approve</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Reject Modal -->
-<div id="rejectModal" class="confirm-modal">
+    
+    <div id="modalOverlay" class="confirm-modal">
     <div class="confirm-modal-content">
-        <h3>Reject Payment</h3>
-        <p>Please enter the reason for rejection:</p>
 
-        <input type="text" id="rejectReason" placeholder="Enter reason..." style="width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ddd; border-radius: 6px;">
+        <h3 id="modalTitle">Confirm Action</h3>
+        <p id="modalText"></p>
+
+        <!-- Reason input (only for reject) -->
+        <textarea id="modalReason"
+            placeholder=""
+            style="width:100%; padding:10px; margin-top:10px; border:1px solid #ddd; border-radius:6px; display:none;">
+        </textarea>
 
         <div class="confirm-modal-actions">
-            <button type="button" id="rejectCancel" class="btn btn-secondary">Cancel</button>
-            <button type="button" id="rejectConfirm" class="btn btn-danger">Reject Payment</button>
+            <button type="button" id="modalCancel" class="btn btn-secondary">
+                Cancel
+            </button>
+
+            <button type="button" id="modalConfirm" class="btn">
+                Confirm
+            </button>
         </div>
+
     </div>
 </div>
 
