@@ -58,10 +58,10 @@ class HrController extends Controller
         $bookingStatusLabels = [];
         $bookingStatusCounts = [];
         $statusColorMap = [
-            'Reschedule Requested' => '#FFC107',
+            'Reschedule_Requested' => '#FFC107',
             'Requested' => '#FF9800',
             'Accepted' => '#00BFA5',
-            'Advance Paid' => '#1E88E5',
+            'Advance_Paid' => '#1E88E5',
             'Completed' => '#4CAF50',
             'Cancelled' => '#F44336',
             'Declined' => '#9E9E9E'
