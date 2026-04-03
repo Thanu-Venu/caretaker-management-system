@@ -26,7 +26,7 @@ $warning = $data['warning'] ?? '';
     <main class="content">
         <div class="booking">
             <div class="card">
-                <h2 >Leave Requests</h2><br>
+                <h2 >Leave Requests</h2>
 
                 <div class="leave-summary-strip">
                     <div class="summary-item">
