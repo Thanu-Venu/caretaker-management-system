@@ -73,7 +73,7 @@ if (isset($_SESSION['flash_message'])) {
 </div>
 
 
-<!-- ================= REGISTER COMPLAINT MODAL ================= -->
+
 <div id="complaintModal" class="modal" style="display:none;">
     <div class="modal-content" style="max-width:650px;">
         <span class="close" onclick="closeComplaintModal()">&times;</span>
@@ -116,18 +116,7 @@ if (isset($_SESSION['flash_message'])) {
 </div>
 
 
-<script>
-function openComplaintModal() {
-    document.getElementById('complaintModal').style.display = 'flex';
-}
-function closeComplaintModal() {
-    document.getElementById('complaintModal').style.display = 'none';
-}
-window.addEventListener('click', function(e) {
-    const modal = document.getElementById('complaintModal');
-    if (e.target === modal) modal.style.display = 'none';
-});
-</script>
+
 
 </body>
 </html>
