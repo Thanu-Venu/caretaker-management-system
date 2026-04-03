@@ -337,16 +337,17 @@ class CaretakerController extends Controller
     {
         $this->view("caretaker/ct_leaveHistory");
     }
+public function ct_complaints()
+{
+    $caretakerId = AuthSession::profileId();
 
-    public function ct_complaints()
-    {
-        $caretakerId = AuthSession::profileId();
-        $complaints = $this->complaintModel->getComplaintsByCaretaker($caretakerId);
+    $data = [
+        'clients' => $this->caretakerModel->getClients($caretakerId),
+        'resolvedComplaints' => $this->caretakerModel->getResolvedComplaintsByCaretaker($caretakerId)
+    ];
 
-        $this->view('caretaker/ct_complaints', [
-            'complaints' => $complaints
-        ]);
-    }
+    $this->view('caretaker/ct_complaints', $data);
+}
 
     public function getClientInfo()
     {
