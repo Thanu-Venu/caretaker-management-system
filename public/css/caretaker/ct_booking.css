@@ -21,10 +21,7 @@
   margin-left: 270px;
   padding: 24px;
   min-height: 100vh;
-  background:
-    radial-gradient(1200px 500px at 15% -10%, #d8f3ef 0%, transparent 60%),
-    radial-gradient(800px 450px at 90% 0%, #e1ecff 0%, transparent 55%),
-    #f6f8fc;
+ 
 }
 
 .booking {

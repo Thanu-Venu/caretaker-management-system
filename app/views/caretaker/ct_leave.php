@@ -24,8 +24,10 @@ $warning = $data['warning'] ?? '';
 
 <body>
     <main class="content">
-        <section>
+        <div class="booking">
             <div class="card">
+                <h2 >Leave Requests</h2><br>
+
                 <div class="leave-summary-strip">
                     <div class="summary-item">
                         <span>Monthly Leave Limit</span>
@@ -55,12 +57,10 @@ $warning = $data['warning'] ?? '';
                     <div class="alert alert-warning"><?= htmlspecialchars($warning) ?></div>
                 <?php endif; ?>
 
-                <div class="card-header">
-                    <h2 style="color:#1e88e5;">Leave Requests</h2><br>
-
+                <div class="top">
                     <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">Request Leave</button>
                 </div>
-                <br><br>
+
                 <div class="table-container">
                     <table>
                         <thead>
@@ -105,9 +105,8 @@ $warning = $data['warning'] ?? '';
                     </table>
                 </div>
             </div>
-            </div>
-
-            <!-- Optional: Search Filter -->
+        </div>
+    </main>
             <script>
                 const searchInput = document.getElementById('searchInput');
                 if (searchInput) {
