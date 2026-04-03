@@ -1,74 +1,100 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  const statusSelect = document.querySelector(".filter-select");
-  const applyBtn = document.querySelector(".apply-filters-btn");
-  const cancelBtn = document.querySelector(".cancel-filters-btn");
-  const tableRows = document.querySelectorAll(".leave-table tbody tr");
+  console.log("JS Loaded ✅");
 
-  // ✅ Apply Filters
-  applyBtn.addEventListener("click", () => {
-    const status = statusSelect.value;
+  // ✅ Get base URL from PHP
+  const app = document.getElementById("leaveApp");
+  const rejectBaseUrl = app.dataset.rejectUrl;
 
-    tableRows.forEach(row => {
-      const leaveStatus = row.querySelector(".status").textContent.trim();
-      if (status === "Select Status" || status === leaveStatus) {
-        row.style.display = ""; // show
-      } else {
-        row.style.display = "none"; // hide
-      }
-    });
-  });
+  // =========================
+  // ✅ FILTER FUNCTION (SAFE)
+  // =========================
+  const typeSelect = document.getElementById("type");
+  const statusSelect = document.getElementById("status");
+  const tableRows = document.querySelectorAll("#leaveTable tbody tr");
 
-  // ✅ Cancel Filters
-  cancelBtn.addEventListener("click", () => {
-    statusSelect.selectedIndex = 0; // reset to "Select Status"
-    tableRows.forEach(row => (row.style.display = ""));
-  });
+  if (typeSelect && statusSelect) {
+    window.filterTable = function () {
+      const typeFilter = typeSelect.value.toLowerCase();
+      const statusFilter = statusSelect.value.toLowerCase();
 
+      tableRows.forEach(row => {
+        const type = row.cells[1].innerText.toLowerCase();
+        const status = row.cells[8].innerText.toLowerCase();
 
+        const typeMatch = typeFilter === "all" || type === typeFilter;
+        const statusMatch = statusFilter === "all" || status === statusFilter;
 
+        row.style.display = (typeMatch && statusMatch) ? "" : "none";
+      });
+    };
+  }
 
-  // ✅ Approve / Reject / View Actions
-  document.querySelectorAll(".approve-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const row = btn.closest("tr");
-      const statusCell = row.querySelector(".status");
-      statusCell.textContent = "Approved";
-      statusCell.className = "status approved";
-      row.querySelectorAll(".action-btn").forEach(b => b.remove()); // remove old buttons
-      row.cells[5].innerHTML = `<button class="action-btn view-btn">View</button>`;
-      attachViewHandler(row.cells[5].querySelector(".view-btn"));
-    });
-  });
-
-  document.querySelectorAll(".reject-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const row = btn.closest("tr");
-      const statusCell = row.querySelector(".status");
-      statusCell.textContent = "Rejected";
-      statusCell.className = "status rejected";
-      row.querySelectorAll(".action-btn").forEach(b => b.remove()); // remove old buttons
-      row.cells[5].innerHTML = `<button class="action-btn view-btn">View</button>`;
-      attachViewHandler(row.cells[5].querySelector(".view-btn"));
-    });
-  });
-
-  document.querySelectorAll(".view-btn").forEach(btn => {
-    attachViewHandler(btn);
-  });
-
+  // =========================
+  // ✅ VIEW BUTTON HANDLER
+  // =========================
   function attachViewHandler(btn) {
     btn.addEventListener("click", () => {
       const row = btn.closest("tr");
+
       const caregiver = row.cells[0].textContent;
       const type = row.cells[1].textContent;
       const start = row.cells[2].textContent;
       const end = row.cells[3].textContent;
-      const status = row.cells[4].textContent;
+      const status = row.cells[8].textContent;
 
       alert(
         `Leave Request Details:\n\nCaregiver: ${caregiver}\nType: ${type}\nStart: ${start}\nEnd: ${end}\nStatus: ${status}`
       );
     });
   }
+
+  document.querySelectorAll(".view-btn").forEach(btn => {
+    attachViewHandler(btn);
+  });
+
+  // =========================
+  // ✅ REJECT MODAL LOGIC
+  // =========================
+  const modal = document.getElementById("rejectModal");
+  const confirmBtn = document.getElementById("confirmReject");
+  const cancelBtn = document.getElementById("cancelReject");
+  const reasonInput = document.getElementById("rejectReason");
+
+  let selectedLeaveId = null;
+
+  // 👉 Open modal
+  document.querySelectorAll(".reject-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      selectedLeaveId = btn.dataset.id;
+      modal.classList.add("open");
+      reasonInput.value = ""; // clear previous input
+    });
+  });
+
+  // 👉 Cancel modal
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", () => {
+      modal.classList.remove("open");
+    });
+  }
+
+  // 👉 Confirm reject
+  if (confirmBtn) {
+    confirmBtn.addEventListener("click", () => {
+      const reason = reasonInput.value.trim();
+
+      if (!reason) {
+        alert("Please enter a reason!");
+        return;
+      }
+
+      if (selectedLeaveId) {
+        // Redirect with reason
+        window.location.href =
+          rejectBaseUrl + selectedLeaveId + "&reason=" + encodeURIComponent(reason);
+      }
+    });
+  }
+
 });
