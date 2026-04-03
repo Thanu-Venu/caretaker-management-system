@@ -12,38 +12,38 @@ body {
 .schedule-topbar {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  align-items: flex-start;
-  margin-bottom: 16px;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #1e88e5;
 }
 
 .schedule-topbar h1 {
-  margin: 0;
-  color: #1565c0;
-  font-size: 1.7rem;
+  color: #1e88e5;
+  font-size: 28px;
 }
 
 #selectedDateText {
   margin: 6px 0 0;
-  color: #506177;
-  font-size: 0.95rem;
+  color: #313b48;
+  font-size: 16px;
 }
 
 .rule-chip {
   background: #e8f1ff;
-  color: #0f4ea6;
+  color: #083c83;
   border: 1px solid #c7dbff;
   border-radius: 999px;
   padding: 8px 12px;
-  font-size: 0.82rem;
+  font-size: 14px;
   white-space: nowrap;
 }
 
 .summary-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 18px;
+    margin-top: 18px;
+    margin-bottom: 18px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
 }
 
 .summary-card {
@@ -72,22 +72,24 @@ body {
 }
 
 .summary-label {
-  display: block;
-  color: #5f6f86;
-  font-size: 18px;
-  text-align: center;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 650;
+    color: #10244a;
+    text-align: center;
 }
 
 .summary-count {
   display: block;
   margin-top: 5px;
-  color: #12345b;
-  font-size: 1.7rem;
+  color: #1e88e5;
+  font-size: 30px;
   font-weight: 700;
+  text-align: center;
 }
 
 .calendar-shell {
-  background: #fff;
+  background: #ffffff;
   border-radius: 14px;
   padding: 16px;
   box-shadow: 0 6px 22px rgba(23, 63, 114, 0.08);
@@ -103,7 +105,7 @@ body {
 }
 
 .fc .fc-button {
-  background: #1e88e5;
+  background: #8db6d9;
   border: none;
   border-radius: 10px;
   font-weight: 600;
@@ -136,7 +138,7 @@ body {
 }
 
 .day-badge {
-  font-size: 0.66rem;
+  font-size: 12px;
   font-weight: 600;
   border-radius: 999px;
   padding: 2px 6px;
@@ -166,7 +168,7 @@ body {
   width: 500px;
   max-width: 95vw;
   height: 100vh;
-  background: #fff;
+  background: rgb(236, 250, 255);
   border-left: 1px solid #d8e4f3;
   box-shadow: -8px 0 30px rgba(14, 60, 121, 0.14);
   z-index: 1200;
@@ -189,16 +191,18 @@ body {
 
 .panel-header h3 {
   margin: 0;
-  color: #0e4da0;
-  font-size: 1.05rem;
+  color: #186eb9;
+  font-size: 22px;
+  font-weight: 700;
 }
 
 .panel-close {
   border: none;
   background: transparent;
-  font-size: 1.7rem;
+  font-size: 26px;
   cursor: pointer;
   color: #4f6480;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -208,13 +212,14 @@ body {
 }
 
 .panel-section {
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .panel-section h4 {
   margin: 0 0 8px;
-  color: #1a3f6b;
-  font-size: 0.92rem;
+  color: #0f599b;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .list-wrap {
@@ -225,7 +230,7 @@ body {
 .list-card {
   border: 1px solid #deebf8;
   border-radius: 10px;
-  background: #fcfeff;
+  background: #ffffff;
   padding: 10px;
 }
 
@@ -234,7 +239,7 @@ body {
   justify-content: space-between;
   gap: 8px;
   margin-bottom: 5px;
-  font-size: 0.83rem;
+  font-size: 14px;
 }
 
 .list-item:last-child {
@@ -242,18 +247,20 @@ body {
 }
 
 .list-key {
-  color: #5b708c;
+  color: #2a313a;
+  font-weight: 700;
+  font-size: 15px;
 }
 
 .list-value {
-  color: #223850;
-  text-align: right;
+    color: #2d3c51;
+    font-size: 15px;
   font-weight: 500;
 }
 
 .list-empty {
   color: #6b7f99;
-  font-size: 0.85rem;
+  font-size: 14px;
   border: 1px dashed #cfdff3;
   border-radius: 10px;
   padding: 10px;
