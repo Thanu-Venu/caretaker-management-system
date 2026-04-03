@@ -637,7 +637,16 @@ AND NOT EXISTS (
                 c.name AS client_name
             FROM bookings b
             JOIN clients c ON c.id = b.client_id
-            WHERE b.caretaker_id = ? AND b.status = 'Completed' AND b.booking_date < CURDATE()
+            WHERE b.caretaker_id = ?
+              AND b.status = 'Completed'
+              AND (
+                    CASE
+                        WHEN LOWER(b.basis) = 'hourly' THEN b.booking_date
+                        WHEN LOWER(b.basis) = 'monthly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL b.duration MONTH), INTERVAL 1 DAY)
+                        WHEN LOWER(b.basis) = 'yearly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL b.duration YEAR), INTERVAL 1 DAY)
+                        ELSE DATE_SUB(DATE_ADD(b.booking_date, INTERVAL b.duration DAY), INTERVAL 1 DAY)
+                    END
+                  ) < CURDATE()
             ORDER BY b.booking_date DESC";
 
         $stmt = $this->conn->prepare($sql);
