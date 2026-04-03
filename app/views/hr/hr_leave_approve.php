@@ -41,21 +41,64 @@ $usage = $data['monthlyUsage'] ?? ['used_before' => 0, 'request_days' => 0, 'use
 
       <!-- ✅ Leave Info -->
       <div class="leave-info">
-        <p><b>Leave ID:</b> <?= (int)$data['leave']->id ?></p>
-        <p><b>Caregiver Name:</b> <?= htmlspecialchars($leaveDetails['caretaker_name'] ?? 'Unknown') ?></p>
-        <p><b>Caregiver ID:</b> <?= (int)$data['leave']->user_id ?></p>
-        <p><b>Leave Type:</b> <?= htmlspecialchars($data['leave']->leave_type) ?></p>
-        <p><b>Date Range:</b> <?= htmlspecialchars($data['leave']->start_date) ?> → <?= htmlspecialchars($data['leave']->end_date) ?></p>
-        <p><b>Total Leave Days:</b> <?= (int)$usage['request_days'] ?> day(s)</p>
-        <p><b>Monthly Usage:</b> <?= (int)$usage['used_before'] ?> + <?= (int)$usage['request_days'] ?> = <?= (int)$usage['used_after'] ?> / <?= (int)$usage['limit'] ?></p>
-        <p><b>Time:</b>
-          <?= htmlspecialchars($data['leave']->start_time ?? '') ?>
-          <?= ($data['leave']->start_time && $data['leave']->end_time) ? '→' : '' ?>
-          <?= htmlspecialchars($data['leave']->end_time ?? '') ?>
-        </p>
-        <p><b>Reason:</b><br><?= nl2br(htmlspecialchars($data['leave']->reason)) ?></p>
-        <p><b>Status:</b> <?= htmlspecialchars($data['leave']->status) ?></p>
-      </div>
+  <div class="info-row">
+    <span class="label">Leave ID</span>
+    <span class="value"><?= (int)$data['leave']->id ?></span>
+  </div>
+
+  <div class="info-row">
+    <span class="label">Caregiver Name</span>
+    <span class="value"><?= htmlspecialchars($leaveDetails['caretaker_name'] ?? 'Unknown') ?></span>
+  </div>
+
+  <div class="info-row">
+    <span class="label">Caregiver ID</span>
+    <span class="value"><?= (int)$data['leave']->user_id ?></span>
+  </div>
+
+  <div class="info-row">
+    <span class="label">Leave Type</span>
+    <span class="value"><?= htmlspecialchars($data['leave']->leave_type) ?></span>
+  </div>
+
+  <div class="info-row">
+    <span class="label">Date Range</span>
+    <span class="value">
+      <?= htmlspecialchars($data['leave']->start_date) ?> → <?= htmlspecialchars($data['leave']->end_date) ?>
+    </span>
+  </div>
+
+  <div class="info-row">
+    <span class="label">Total Days</span>
+    <span class="value"><?= (int)$usage['request_days'] ?> day(s)</span>
+  </div>
+
+  <div class="info-row">
+    <span class="label">Monthly Usage</span>
+    <span class="value">
+      <?= (int)$usage['used_before'] ?> + <?= (int)$usage['request_days'] ?> = <?= (int)$usage['used_after'] ?> / <?= (int)$usage['limit'] ?>
+    </span>
+  </div>
+
+  <div class="info-row">
+    <span class="label">Time</span>
+    <span class="value">
+      <?= htmlspecialchars($data['leave']->start_time ?? '') ?>
+      <?= ($data['leave']->start_time && $data['leave']->end_time) ? '→' : '' ?>
+      <?= htmlspecialchars($data['leave']->end_time ?? '') ?>
+    </span>
+  </div>
+
+  <div class="info-row">
+    <span class="label">Reason</span>
+    <span class="value"><?= nl2br(htmlspecialchars($data['leave']->reason)) ?></span>
+  </div>
+
+  <div class="info-row">
+    <span class="label">Status</span>
+    <span class="value"><?= htmlspecialchars($data['leave']->status) ?></span>
+  </div>
+</div>
 
       <hr class="hr-divider" />
 
@@ -67,7 +110,7 @@ $usage = $data['monthlyUsage'] ?? ['used_before' => 0, 'request_days' => 0, 'use
           ✅ No active bookings during this leave period. You can approve directly.
         </p>
       <?php else: ?>
-        <div style="overflow-x:auto;">
+        <div class="table-container" style="overflow-x:auto;">
           <table class="booking-table">
             <thead>
               <tr>
@@ -105,7 +148,7 @@ $usage = $data['monthlyUsage'] ?? ['used_before' => 0, 'request_days' => 0, 'use
 
         <?php $hasAffected = !empty($data['affected']); ?>
 
-        <label><b>Select Replacement Caregiver</b></label>
+        <label>Select Replacement Caregiver</label>
         <select name="replacement_caretaker_id" <?= $hasAffected ? 'required' : '' ?>>
           <option value="">-- <?= $hasAffected ? 'required' : 'not required' ?> --</option>
           <?php foreach ($data['caretakers'] as $ct): ?>
@@ -122,13 +165,13 @@ $usage = $data['monthlyUsage'] ?? ['used_before' => 0, 'request_days' => 0, 'use
         <?php endif; ?>
 
 
-        <label for="hr_note"><b>HR Note (Optional)</b></label>
+        <label for="hr_note">HR Note (Optional)</label>
         <textarea id="hr_note" name="hr_note" rows="3" placeholder="Add a note (optional)..."></textarea>
 
         <div class="action-buttons">
           <button type="submit" class="approve-btn" <?= !empty($data['error']) ? 'disabled' : '' ?>
             onclick="return confirm('Approve this leave and reassign all affected bookings to the selected caregiver?')">
-            <i class='bx bx-check-circle'></i> Approve + Reassign
+            <i class='bx bx-check-circle'></i> Approve 
           </button>
 
           <a href="<?= URLROOT ?>/HrLeave/index" class="back-btn">
