@@ -23,7 +23,7 @@ $complaintsList = $data['complaints'] ?? ($complaints ?? []);
 <main class="content">
     <div class="header-row">
         <h1>Registered Complaints</h1>
-        <a class="register-btn" href="<?= URLROOT ?>/index.php?url=Complaint/complaintReg">+ Register Complaint</a>
+        <a class="register-btn" href="<?= URLROOT ?>/public/index.php?url=Complaint/complaintReg">+ Register Complaint</a>
     </div>
 
     <?php if (!empty($complaintsList)): ?>
