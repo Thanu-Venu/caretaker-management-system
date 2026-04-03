@@ -695,10 +695,16 @@ AND NOT EXISTS (
         }
         return false;
     }
- public function getClients($caretaker_id)
+public function getClients($caretaker_id)
 {
     $stmt = $this->conn->prepare(
-        "SELECT clients.id AS client_id, clients.name AS client_name
+        "SELECT 
+            clients.id AS client_id, 
+            clients.name AS client_name,
+            bookings.id AS booking_id,
+            bookings.booking_date,
+            bookings.preferred_time,
+            bookings.service_type
          FROM bookings
          JOIN clients ON bookings.client_id = clients.id
          WHERE bookings.caretaker_id = ?"
