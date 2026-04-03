@@ -46,7 +46,15 @@ $complaintsList = $data['complaints'] ?? ($complaints ?? []);
                         <td><?= htmlspecialchars($complaint['caretaker_name']) ?></td>
                         <td><?= htmlspecialchars($complaint['category']) ?></td>
                         <td><?= htmlspecialchars($complaint['details']) ?></td>
-                        <td><?= htmlspecialchars($complaint['complaint_date']) ?></td>
+                        <td>
+                            <?php $registeredAt = strtotime((string)($complaint['complaint_date'] ?? '')); ?>
+                            <?php if ($registeredAt !== false): ?>
+                                <span class="complaint-date"><?= date('Y-m-d', $registeredAt) ?></span>
+                                <span class="complaint-time"><?= date('h:i A', $registeredAt) ?></span>
+                            <?php else: ?>
+                                <?= htmlspecialchars((string)($complaint['complaint_date'] ?? '')) ?>
+                            <?php endif; ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
