@@ -5,14 +5,18 @@ body {
 .main-content {
   flex: 1;
   padding: 20px 40px;
-  margin-left: 270px;
+  margin-left: 260px;
   font-family: 'Poppins', Arial, sans-serif;
 }
 
 h1 {
-    color: #1E88E5;
-    margin-bottom: 30px;
-    font-size: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #1e88e5;
+  margin-top: 0;
+  font-size: 28px;
 }
 
 .table-container {
