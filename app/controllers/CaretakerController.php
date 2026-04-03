@@ -251,6 +251,7 @@ class CaretakerController extends Controller
 
             if ($basis === 'hourly') {
                 // Hourly work is only on the booking date.
+                $inclusiveEndDate = clone $startDate;
             } elseif ($basis === 'monthly') {
                 $inclusiveEndDate->modify('+' . $duration . ' month')->modify('-1 day');
             } elseif ($basis === 'yearly') {
@@ -258,32 +259,6 @@ class CaretakerController extends Controller
             } else {
                 // Daily and fallback handling.
                 $inclusiveEndDate->modify('+' . ($duration - 1) . ' day');
-            }
-
-            // FullCalendar end date is exclusive for all-day ranges.
-            $exclusiveEndDate = clone $inclusiveEndDate;
-            $exclusiveEndDate->modify('+1 day');
-            $dateRange = $startDate->format('Y-m-d');
-            if ($startDate->format('Y-m-d') !== $inclusiveEndDate->format('Y-m-d')) {
-                $dateRange .= ' to ' . $inclusiveEndDate->format('Y-m-d');
-            }
-
-            // Add a compact duration tag for easier month-view scanning.
-            $titleSuffix = '';
-            if ($duration > 0) {
-                if ($basis === 'hourly') {
-                    $unit = $duration === 1 ? 'hour' : 'hours';
-                    $titleSuffix = ' for ' . $duration . ' ' . $unit;
-                } elseif ($basis === 'monthly') {
-                    $unit = $duration === 1 ? 'month' : 'months';
-                    $titleSuffix = ' for ' . $duration . ' ' . $unit;
-                } elseif ($basis === 'yearly') {
-                    $unit = $duration === 1 ? 'year' : 'years';
-                    $titleSuffix = ' for ' . $duration . ' ' . $unit;
-                } else {
-                    $unit = $duration === 1 ? 'day' : 'days';
-                    $titleSuffix = ' for ' . $duration . ' ' . $unit;
-                }
             }
 
             // Set color based on status
@@ -301,24 +276,57 @@ class CaretakerController extends Controller
                 $borderColor = '#138496';
             }
 
-            $events[] = [
-                'id' => $booking['booking_id'],
-                'title' => $booking['client_name'] . ' - ' . $booking['service_type'] . $titleSuffix,
-                'start' => $startDate->format('Y-m-d'),
-                'end' => $exclusiveEndDate->format('Y-m-d'),
-                'allDay' => true,
-                'backgroundColor' => $backgroundColor,
-                'borderColor' => $borderColor,
-                'extendedProps' => [
-                    'client' => $booking['client_name'],
-                    'service' => $booking['service_type'],
-                    'time' => $booking['preferred_time'],
-                    'duration' => $durationText,
-                    'dateRange' => $dateRange,
-                    'location' => $booking['service_location'],
-                    'status' => $booking['status']
-                ]
-            ];
+            // Create individual events for each day in the booking period
+            $currentDate = clone $startDate;
+            $eventId = 0;
+
+            while ($currentDate <= $inclusiveEndDate) {
+                $dateRange = $startDate->format('Y-m-d');
+                if ($startDate->format('Y-m-d') !== $inclusiveEndDate->format('Y-m-d')) {
+                    $dateRange .= ' to ' . $inclusiveEndDate->format('Y-m-d');
+                }
+
+                // Add a compact duration tag for easier month-view scanning.
+                $titleSuffix = '';
+                if ($duration > 0) {
+                    if ($basis === 'hourly') {
+                        $unit = $duration === 1 ? 'hour' : 'hours';
+                        $titleSuffix = ' for ' . $duration . ' ' . $unit;
+                    } elseif ($basis === 'monthly') {
+                        $unit = $duration === 1 ? 'month' : 'months';
+                        $titleSuffix = ' for ' . $duration . ' ' . $unit;
+                    } elseif ($basis === 'yearly') {
+                        $unit = $duration === 1 ? 'year' : 'years';
+                        $titleSuffix = ' for ' . $duration . ' ' . $unit;
+                    } else {
+                        $unit = $duration === 1 ? 'day' : 'days';
+                        $titleSuffix = ' for ' . $duration . ' ' . $unit;
+                    }
+                }
+
+                $events[] = [
+                    'id' => $booking['booking_id'] . '_' . $eventId,
+                    'title' => $booking['client_name'] . ' - ' . $booking['service_type'],
+                    'start' => $currentDate->format('Y-m-d'),
+                    'end' => $currentDate->format('Y-m-d'), // Single day event
+                    'allDay' => true,
+                    'backgroundColor' => $backgroundColor,
+                    'borderColor' => $borderColor,
+                    'extendedProps' => [
+                        'client' => $booking['client_name'],
+                        'service' => $booking['service_type'],
+                        'time' => $booking['preferred_time'],
+                        'duration' => $durationText,
+                        'dateRange' => $dateRange,
+                        'location' => $booking['service_location'],
+                        'status' => $booking['status'],
+                        'bookingId' => $booking['booking_id']
+                    ]
+                ];
+
+                $currentDate->modify('+1 day');
+                $eventId++;
+            }
         }
 
         echo json_encode($events);
