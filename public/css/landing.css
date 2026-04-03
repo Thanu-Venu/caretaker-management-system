@@ -193,7 +193,7 @@ header .container {
 
 /* ====== Hero ====== */
 .hero-wrap {
-  padding: 30px 0 0px;
+  padding: 20px 0 0px;
   width: 100%;
   max-width: 1800px;
   margin-inline: auto;
@@ -431,7 +431,7 @@ header .container {
   display: grid;
   grid-template-columns: 1.2fr .8fr;
   gap: 24px;
-  align-items: start;
+  align-items: stretch;
 }
 
 @media (max-width: 900px) {
