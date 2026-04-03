@@ -14,6 +14,7 @@
 </head>
 
 <body>
+  <div id="leaveApp" data-reject-url="<?= URLROOT; ?>/public/?url=HrLeave/reject/">
   <main class="content">
     <section>
       <h1>Leave Management</h1>
@@ -84,13 +85,12 @@
                   <td>
                     <?php if ($leave['status'] == 'Pending'): ?>
                       <a href="<?= URLROOT; ?>/public/?url=HrLeave/approve_form/<?= $leave['id'] ?>" class="approve-btn">
-                        <i class='bx bx-check-circle' style="color:green;"></i>
+                        Approve
                       </a>
 
-                      <a href="<?= URLROOT; ?>/public/?url=HrLeave/reject/<?= $leave['id'] ?>"
-                        onclick="return confirm('Reject this leave?')" class="reject-btn">
-                        <i class='bx bx-x-circle' style="color:red;"></i>
-                      </a>
+                      <button class="reject-btn" data-id="<?= $leave['id'] ?>">
+                        Reject
+                      </button>
 
 
                     <?php endif; ?>
@@ -157,6 +157,22 @@
     </section>
   </main>
 
+<!-- Reject Modal -->
+<div id="rejectModal" class="modal">
+  <div class="modal-content">
+    <h3>Reject Leave</h3>
+
+    <p>Are you sure you want to reject this? Please enter a reason:</p>
+
+    <textarea id="rejectReason" placeholder="Enter reason..." rows="4" style="width:100%;"></textarea>
+
+    <div class="modal-actions">
+      <button id="cancelReject" class="btn-secondary">Cancel</button>
+      <button id="confirmReject" class="btn-danger">Yes, Reject</button>
+    </div>
+  </div>
+</div>
+
   <script>
     function filterTable() {
       const typeFilter = document.getElementById('type').value.toLowerCase();
@@ -173,6 +189,9 @@
       });
     }
   </script>
+  </div>
+
+  <script src="<?php echo URLROOT; ?>/public/js/hr/hr_leave.js"></script>
 </body>
 
 </html>
