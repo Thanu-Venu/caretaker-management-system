@@ -72,20 +72,25 @@ $profilePic = $_SESSION['user']['profile_image'] ?? 'default.png';
             </div>
 
 
-            <div class="header-logout">
-                <a href="<?= URLROOT ?>/index.php?url=auth/logout" class="logout-btn" title="Logout">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Logout</span>
-                </a>
-            </div>
-
             <!-- Profile -->
             <div class="profile-wrapper">
-                <a href="http://localhost/CMA/public?url=client/c_settings" class="profile-link">
+                <button id="profileMenuBtn" class="profile-link profile-toggle" type="button" aria-expanded="false" aria-controls="profileDropdown" title="Open profile menu">
                     <img src="<?= URLROOT ?>/public/uploads/<?= htmlspecialchars($profilePic) ?>" class="profile-img"
                         alt="Profile">
                     <span><?= htmlspecialchars($user_display) ?></span>
-                </a>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+
+                <div id="profileDropdown" class="profile-dropdown">
+                    <a href="<?= URLROOT ?>/public/?url=client/c_settings" class="profile-menu-item">
+                        <i class="fa-solid fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="<?= URLROOT ?>/index.php?url=auth/logout" class="profile-menu-item">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
             </div>
 
         </div>

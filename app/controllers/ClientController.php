@@ -1223,7 +1223,7 @@ class ClientController extends Controller
             'date'     => $_GET['date'] ?? '',
             'time'     => $_GET['time'] ?? '',
             'customization_hours' => intval($_GET['customization_hours'] ?? 0),
-            'customization_apply' => $_GET['customization_apply'] ?? 'once',
+            'customization_apply' => $_GET['customization_apply'] ?? 'per_unit',
             'service_type' => $serviceType,
         ];
         $total_payment = $this->calcTotalPayment(
@@ -1347,7 +1347,7 @@ class ClientController extends Controller
             exit;
         }
 
-        $customizationApply = $_POST['customization_apply'] ?? 'once';
+        $customizationApply = $_POST['customization_apply'] ?? 'per_unit';
         $total_payment = $this->calcTotalPayment(
             $service_type,
             $basis,

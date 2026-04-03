@@ -63,7 +63,8 @@ class AccountModel
             return false;
         }
 
-        if (!password_verify($password, $account['password'])) {
+        $accountId = (int)($account['id'] ?? 0);
+        if (!$this->verifyAndUpgradePassword($password, (string)($account['password'] ?? ''), $accountId)) {
             return false;
         }
 
@@ -74,6 +75,44 @@ class AccountModel
 
         $account['role'] = self::normalizeRole($account['role'] ?? '');
         return $account;
+    }
+
+    private function verifyAndUpgradePassword(string $plainPassword, string $storedPassword, int $accountId): bool
+    {
+        // Standard path for bcrypt/argon hashes created by password_hash.
+        if (password_verify($plainPassword, $storedPassword)) {
+            if ($accountId > 0 && password_needs_rehash($storedPassword, PASSWORD_DEFAULT)) {
+                $this->updatePasswordHash($accountId, password_hash($plainPassword, PASSWORD_DEFAULT));
+            }
+            return true;
+        }
+
+        // Compatibility path for old datasets imported with non-password_hash formats.
+        $isLegacyMatch = ($storedPassword === $plainPassword)
+            || (strlen($storedPassword) === 32 && hash_equals(strtolower($storedPassword), md5($plainPassword)))
+            || (strlen($storedPassword) === 40 && hash_equals(strtolower($storedPassword), sha1($plainPassword)));
+
+        if (!$isLegacyMatch) {
+            return false;
+        }
+
+        if ($accountId > 0) {
+            $this->updatePasswordHash($accountId, password_hash($plainPassword, PASSWORD_DEFAULT));
+        }
+
+        return true;
+    }
+
+    private function updatePasswordHash(int $accountId, string $passwordHash): void
+    {
+        $stmt = $this->conn->prepare("UPDATE accounts SET password = ? WHERE id = ? LIMIT 1");
+        if (!$stmt) {
+            return;
+        }
+
+        $stmt->bind_param("si", $passwordHash, $accountId);
+        $stmt->execute();
+        $stmt->close();
     }
 
     public function getProfileByAccount(int $accountId, string $role)

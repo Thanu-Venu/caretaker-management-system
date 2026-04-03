@@ -1,4 +1,22 @@
-// When button clicked → go to the booking page
-document.getElementById("bookBtn").addEventListener("click", function () {
-    window.location.href = "http://localhost/CMA/public/?url=client/c_find1";
+function openEmergencyModal() {
+  document.getElementById('emergencyModal').style.display = 'flex';
+}
+
+function closeEmergencyModal() {
+  document.getElementById('emergencyModal').style.display = 'none';
+}
+
+window.addEventListener('click', function (event) {
+  const emergencyModal = document.getElementById('emergencyModal');
+
+  if (event.target === emergencyModal) {
+    emergencyModal.style.display = 'none';
+  }
 });
+
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'Escape') {
+    closeEmergencyModal();
+  }
+});
+   

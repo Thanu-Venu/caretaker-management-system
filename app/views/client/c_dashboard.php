@@ -3,7 +3,8 @@
 
 <?php if (!empty($_SESSION['flash_message'])): ?>
   <div class="alert success"><?php echo $_SESSION['flash_message'];
-                              unset($_SESSION['flash_message']); ?></div>
+    unset($_SESSION['flash_message']); ?>
+   </div>
 <?php endif; ?>
 <?php
 $servicePriceRates = [
@@ -50,7 +51,48 @@ function moneyLKR($amount)
 
 <body>
 
-  <body>
+    <div id="emergencyModal" class="modal">
+      <div class="modal-content">
+
+        <span class="close" onclick="closeEmergencyModal()">&times;</span>
+
+        <h2>🚨 Emergency Support</h2>
+        <p>Submit your emergency request</p>
+
+        <form method="POST" action="">
+          
+          <div class="form-group">
+            <label>Emergency Type</label>
+            <select name="type" required>
+              <option value="">Select type</option>
+              <option>Medical Emergency</option>
+              <option>Caretaker Not Responding</option>
+              <option>Accident / Injury</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" rows="3" placeholder="Describe the emergency..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Contact Number</label>
+            <input type="text" name="phone" required>
+          </div>
+
+          <button type="submit" class="submit-btn">Send Alert 🚨</button>
+        </form>
+
+        <div class="quick-call">
+          <a href="tel:1990">🚑 Ambulance</a>
+          <a href="tel:119">🚓 Police</a>
+        </div>
+
+      </div>
+    </div>
+
 
     <?php if (!empty($data['pendingAdvance'])): ?>
       <div id="advanceModal" class="modal" style="display:flex;">
@@ -194,17 +236,19 @@ function moneyLKR($amount)
 
           </div>
 
-          <!-- Time modifier mini card -->
+         
+
+           <!-- Time modifier mini card -->
           <div class="card modifier-card">
             <div class="modifier-head">
               <i class='bx bx-time-five'></i>
               <h3>Time Modifiers</h3>
             </div>
             <div class="modifier-grid">
-              <div><span>Morning</span><strong><?= $timePriceModifier["Morning (8am - 12pm)"] ?>x</strong></div>
-              <div><span>Evening</span><strong><?= $timePriceModifier["Evening (1pm - 5pm)"] ?>x</strong></div>
-              <div><span>Full Time</span><strong><?= $timePriceModifier["Full Time (8am - 5pm)"] ?>x</strong></div>
-              <div><span>Night</span><strong><?= $timePriceModifier["Night (6pm - 10pm)"] ?>x</strong></div>
+              <div><span>Morning</span><strong><?= $timePriceModifier["Morning (8am - 12pm)"] ?> %</strong></div>
+              <div><span>Evening</span><strong><?= $timePriceModifier["Evening (1pm - 5pm)"] ?> %</strong></div>
+              <div><span>Full Time</span><strong><?= $timePriceModifier["Full Time (8am - 5pm)"] ?> %</strong></div>
+              <div><span>Night</span><strong><?= $timePriceModifier["Night (6pm - 10pm)"] ?> %</strong></div>
             </div>
           </div>
 
@@ -257,7 +301,7 @@ function moneyLKR($amount)
             <div class="action">
               <i class='bx bx-support'></i>
               <h3>
-                <button id="bookBtn" class="main-btn">Emergency Support</button>
+                <button id="bookBtn" type="button" onclick="openEmergencyModal()" class="main-btn">Emergency Support</button>
               </h3>
               <p>24/7 Emergency assistance</p>
             </div>
@@ -267,43 +311,39 @@ function moneyLKR($amount)
         <section class="recent-bookings">
           <h2>Recent Bookings</h2>
 
-          <?php foreach ($data['recentBookings'] as $booking): ?>
+          <?php if (!empty($data['recentBookings'])): ?>
+            <?php foreach ($data['recentBookings'] as $booking): ?>
+              <div class="booking">
+                <img src="../public/images/find.png" alt="">
+                <div>
+                  <h3><?= $booking['service_type']; ?> with <?= $booking['caretaker_name']; ?></h3>
+                  <p>
+                    <?= date('m/d/Y', strtotime($booking['booking_date'])); ?>
+                    at <?= $booking['preferred_time']; ?>
+                    • <?= $booking['duration']; ?> hours
+                  </p>
+                </div>
+                <span class="status <?= strtolower($booking['status']); ?>">
+                  <?= $booking['status']; ?>
+                </span>
+              </div>
+            <?php endforeach; ?>
+          <?php else: ?>
             <div class="booking">
-              <img src="../public/images/find.png" alt="">
               <div>
-                <h3><?= $booking['service_type']; ?> with <?= $booking['caretaker_name']; ?></h3>
-                <p>
-                  <?= date('m/d/Y', strtotime($booking['booking_date'])); ?>
-                  at <?= $booking['preferred_time']; ?>
-                  • <?= $booking['duration']; ?> hours
-                </p>
+                <h3>No recent bookings</h3>
+                <p>You do not have any recent bookings yet.</p>
               </div>
-              <span class="status <?= strtolower($booking['status']); ?>">
-                <?= $booking['status']; ?>
-              </span>
             </div>
-          <?php endforeach; ?>
+          <?php endif; ?>
         </section>
 
-
-
-        <section class="recent-notifications">
-          <h2>Recent Notifications</h2>
-
-          <?php foreach ($data['notifications'] as $note): ?>
-            <div class="notification">
-              <i class='bx bx-bell'></i>
-              <div>
-                <p><?= $note['message']; ?></p>
-              </div>
-              <span><?= date("h:i A", strtotime($note['created_at'])); ?></span>
-            </div>
-          <?php endforeach; ?>
-        </section>
 
       </div>
-      <!-- your existing contzent -->
+     
     </div>
+
+    <script src="<?php echo URLROOT; ?>/public/js/client/c_dashboard.js"></script>
 
 
   </body>

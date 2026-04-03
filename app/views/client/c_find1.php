@@ -15,10 +15,9 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
 
 <body>
 
-  <!-- ================= POPUP OVERLAY ================= -->
   <div id="popupOverlay" class="overlay"></div>
 
-  <!-- ================= POPUP FORM ================= -->
+  <!-- popupform -->
   <div id="searchPopup" class="popup">
     <form id="popupForm" method="POST" action="<?= URLROOT ?>/client/c_find">
 
@@ -37,11 +36,11 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
       <label>Location</label>
       <select name="location" id="popupLocationFilter" required>
         <option value="">Select Location</option>
-        <?php
-        $locations = $data['locations'] ?? [];
-        foreach ($locations as $loc): ?>
-            <option value="<?= htmlspecialchars($loc) ?>"><?= htmlspecialchars($loc) ?></option>
-        <?php endforeach; ?>
+        <option value="Colombo">Colombo</option>
+        <option value="Kandy">Kandy</option>
+        <option value="Matara">Matara</option>
+        <option value="Vavuniya">Vavuniya</option>
+        <option value="Jaffna">Jaffna</option>
       </select>
       <label>Duration Basis</label>
       <select name="basis" id="basisFilter" required>
@@ -62,8 +61,9 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
       </div>
 
       <div class="popup-actions">
+        <button type="submit" class="book-btn">Search</button>
       <button type="button" id="cancelPopupBtn" class="cancel-btn">Cancel</button>
-      <button type="submit" class="book-btn">Search</button>
+      
     </div>
 
     </form>
@@ -103,9 +103,11 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
               <label>Location</label>
               <select id="locationFilter">
                 <option value="">All Locations</option>
-                <?php foreach ($locations as $loc): ?>
-                  <option value="<?= htmlspecialchars($loc) ?>"><?= htmlspecialchars($loc) ?></option>
-                <?php endforeach; ?>
+                <option value="Colombo">Colombo</option>
+                <option value="Kandy">Kandy</option>
+                <option value="Vavuniya">Vavuniya</option>
+                <option value="Jaffna">Jaffna</option>
+                <option value="Matara">Matara</option>
               </select>
             </div>
 
@@ -162,6 +164,10 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
             <p>No caregivers found.</p>
           <?php endif; ?>
 
+        </div>
+
+        <div id="noCaretakerMessage" class="no-results-message hidden">
+          No caregivers match the selected filters.
         </div>
       </section>
 

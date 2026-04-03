@@ -87,22 +87,16 @@ class AuthController extends Controller
 
             if ($this->accountModel->isAccountsReady()) {
                 $account = $this->accountModel->authenticate($email, $password);
-                if (!$account) {
-                    $this->view('auth/login', ['error' => 'Invalid credentials']);
-                    return;
+                if ($account) {
+                    $role = AccountModel::normalizeRole($account['role'] ?? '');
+                    $profile = $this->accountModel->getProfileByAccount((int)$account['id'], $role);
+                    if ($profile) {
+                        session_regenerate_id(true);
+                        AuthSession::setAuthenticated($account, $profile);
+                        $this->redirectByRole($role);
+                        return;
+                    }
                 }
-
-                $role = AccountModel::normalizeRole($account['role'] ?? '');
-                $profile = $this->accountModel->getProfileByAccount((int)$account['id'], $role);
-                if (!$profile) {
-                    $this->view('auth/login', ['error' => 'Profile not found for this account']);
-                    return;
-                }
-
-                session_regenerate_id(true);
-                AuthSession::setAuthenticated($account, $profile);
-                $this->redirectByRole($role);
-                return;
             }
 
             // Legacy fallback: old three-table authentication
