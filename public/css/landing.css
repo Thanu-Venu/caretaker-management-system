@@ -115,8 +115,6 @@ header .container {
   display: flex;
   align-items: center;
   gap: 18px;
-  margin-left: auto;
-  margin-right: 15vw;
 }
 
 .nav-links a {
@@ -195,7 +193,10 @@ header .container {
 
 /* ====== Hero ====== */
 .hero-wrap {
-  padding: 22px 0 10px;
+  padding: 30px 0 0px;
+  width: 100%;
+  max-width: 1800px;
+  margin-inline: auto;
 }
 
 .hero {
@@ -203,7 +204,7 @@ header .container {
   overflow: hidden;
   box-shadow: var(--shadow);
   position: relative;
-  min-height: 92vh;
+  min-height: 80vh;
   background: #000;
 }
 
@@ -239,10 +240,11 @@ header .container {
 .hero-content {
   position: relative;
   z-index: 2;
-  height: 92vh;
+  height: 80vh;
   display: grid;
-  align-items: end;
+  align-items: center;
   padding: 36px;
+  padding-bottom: 80px;
 }
 
 .hero-box {
