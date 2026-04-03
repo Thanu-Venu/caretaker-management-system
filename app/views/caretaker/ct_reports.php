@@ -36,30 +36,32 @@
     <br><br>
     <!-- Service Details Table -->
     <section class="report-table-section">
-      <h2>Service Details</h2><br>
-      <table class="report-table">
-        <thead>
-          <tr>
-            <th>Client</th>
-            <th>Service</th>
-            <th>Date</th>
-            <th>Duration</th>
-          </tr>
-        </thead>
-        <tbody id="serviceTableBody">
-          <?php foreach ($data["services"] as $service): ?>
-            <tr>
-              <td><?= htmlspecialchars($service['client_name']) ?></td>
-              <td><?= htmlspecialchars($service['service_type']) ?></td>
-              <td><?= htmlspecialchars($service['booking_date']) ?></td>
-              <td><?= htmlspecialchars($service['duration']) ?> hrs</td>
-            </tr>
-          <?php endforeach; ?>
-        </tbody>
-
-      </table>
-      <br>
-      <button id="downloadReport" class="btn-download">Download Report</button>
+      <div class="card-wrapper">
+        <h2>Service Details</h2>
+        <div class="report-table-container">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Service</th>
+                <th>Date</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody id="serviceTableBody">
+              <?php foreach ($data["services"] as $service): ?>
+                <tr>
+                  <td><?= htmlspecialchars($service['client_name']) ?></td>
+                  <td><?= htmlspecialchars($service['service_type']) ?></td>
+                  <td><?= htmlspecialchars($service['booking_date']) ?></td>
+                  <td><?= htmlspecialchars($service['duration']) ?> hrs</td>
+                </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
+        </div>
+        <button id="downloadReport" class="btn-download">Download Report</button>
+      </div>
     </section>
   </div>
   <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_reports.js"></script>
