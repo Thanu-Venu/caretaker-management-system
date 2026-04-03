@@ -157,31 +157,3 @@ td[colspan] {
     min-width: 700px;
   }
 }
-
-/* Status Badge Styles */
-.status-badge {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.status-badge.status-pending {
-  background-color: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffeaa7;
-}
-
-.status-badge.status-approved {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #b1dfbb;
-}
-
-.status-badge.status-active {
-  background-color: #cfe2ff;
-  color: #084298;
-  border: 1px solid #b6d4fe;
-}
