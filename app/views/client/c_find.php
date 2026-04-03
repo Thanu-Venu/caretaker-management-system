@@ -164,6 +164,7 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
           <?php endif; ?>
 
         </div>
+        <p id="noCaretakerMessage" class="no-results-message hidden">No caretakers available for this filter.</p>
       </section>
 
     </div>

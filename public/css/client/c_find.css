@@ -28,11 +28,11 @@ h1 {
 
 .page-header.header-left-cta {
   justify-content: flex-start;
-  gap: 500px;
+  gap: 16px;
 }
 
 .page-header.header-left-cta .book-btn {
-  margin-left: 10px;
+  margin-left: auto;
 }
 
 .page-header h1 {
@@ -44,8 +44,7 @@ h1 {
   padding: 15px;
   padding-bottom: 40px;
   border-radius: 12px;
-  max-width: 1000px;
-  margin-left: 50px;
+  margin: 0 50px 20px;
 }
 
 .filter-box {
@@ -60,6 +59,8 @@ h1 {
   display: flex;
   flex-direction: row;
   gap: 50px;
+  flex-wrap: wrap;
+  
 }
 
 .filter-group {
@@ -119,8 +120,7 @@ p.hint {
 /* ----------- EXISTING GLOBAL & FILTER CSS UNCHANGED ----------- */
 
 .caretakers {
-  margin-left: 50px;
-  margin-right: 300px;
+  margin: 0 50px;
 
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* EXACT 3 CARDS PER ROW */
@@ -133,9 +133,9 @@ p.hint {
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   padding: 15px;
-  border: 1px solid #ccc;
-
-  width: 85%;
+  border: 1px solid #CCC;
+  
+  width: 100%; 
   display: flex;
   flex-direction: column;
 }
@@ -252,6 +252,12 @@ p.hint {
   transform: translateY(-50%); /* vertically center */
 }
 
+  .popup form {
+    max-height: calc(90vh - 20px);
+    overflow-y: auto;
+    padding-right: 6px;
+  }
+
 /* Popup Form Title */
 .popup h3 {
   text-align: center;
@@ -342,7 +348,86 @@ p.hint {
 }
 
 .popup-actions .cancel-btn:hover {
-  background-color: #c0392b;
+    background-color: #c82333;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .caretakers {
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+    gap: 24px;
+  }
+
+  .filter-row {
+    gap: 20px;
+  }
+
+  .filter-group {
+    flex: 1 1 220px;
+  }
+}
+
+@media (max-width: 900px) {
+  .content {
+    margin-left: 0;
+    padding: 16px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .page-header.header-left-cta .book-btn {
+    margin-left: 0;
+    width: 100%;
+    max-width: 220px;
+  }
+
+  .filters,
+  .caretakers {
+    margin: 0;
+  }
+
+  .caretakers {
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+    .popup {
+        width: 95%;
+        padding: 25px 20px;
+        max-width: 450px;
+    }
+
+  .filter-group {
+    flex: 1 1 100%;
+  }
+
+  .caretakers {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .card {
+    min-height: auto;
+  }
+
+    .popup h3 {
+        font-size: 20px;
+    }
+
+    .popup-actions {
+        flex-direction: column;
+    }
+
+    .popup button[type="submit"],
+    .popup-actions .book-btn,
+    .popup-actions .cancel-btn {
+        width: 100%;
+    }
 }
 
 /* Optional: Small screens */
@@ -355,4 +440,23 @@ p.hint {
 
 .hidden {
   display: none !important;
+}
+
+.no-results-message {
+  margin: 16px 50px 0;
+  width: calc(100% - 100px);
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f8f9fa;
+  border: 1px solid #d8dee4;
+  color: #333;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .no-results-message {
+    margin: 14px 0 0;
+    width: 100%;
+  }
 }

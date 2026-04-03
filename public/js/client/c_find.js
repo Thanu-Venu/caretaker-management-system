@@ -215,7 +215,9 @@ function applyFilters() {
   const location = locationEl ? locationEl.value.trim().toLowerCase() : "";
   const minRating = ratingEl ? parseFloat(ratingEl.value) : NaN;
 
-  const cards = document.querySelectorAll(".card");
+    const cards = document.querySelectorAll(".card");
+    const noCaretakerMessage = document.getElementById("noCaretakerMessage");
+    let visibleCount = 0;
 
   cards.forEach((card) => {
     const cardService = (card.dataset.service || "").trim().toLowerCase();
@@ -228,10 +230,19 @@ function applyFilters() {
 
     if (serviceMatch && locationMatch && ratingMatch) {
       card.style.display = "block";
+      visibleCount++;
     } else {
       card.style.display = "none";
     }
   });
+
+    if (noCaretakerMessage) {
+        if (cards.length > 0 && visibleCount === 0) {
+            noCaretakerMessage.classList.remove("hidden");
+        } else {
+            noCaretakerMessage.classList.add("hidden");
+        }
+    }
 }
 
 function clearFilters() {
@@ -245,6 +256,7 @@ function clearFilters() {
   applyFilters();
 }
 
+const serviceFilter = document.getElementById("serviceFilter");
 const locationFilter = document.getElementById("locationFilter");
 const ratingFilter = document.getElementById("ratingFilter");
 

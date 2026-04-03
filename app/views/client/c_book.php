@@ -76,7 +76,7 @@ $timeOptions = [
                     <label for="basis">Select Basis</label>
 
                     <!-- Editable select for UI -->
-                    <select id="basis" required>
+                    <select id="basis" required disabled>
                         <option value="">-- Select --</option>
                         <?php if (!empty($bases)): ?>
                             <?php foreach ($bases as $basis): ?>
@@ -98,6 +98,7 @@ $timeOptions = [
                 <div class="form-group">
                     <label for="duration">Duration</label>
                     <input type="number" id="duration" name="duration" min="1" required
+                        readonly
                         value="<?= htmlspecialchars((string)($prefill['duration'] ?? 1), ENT_QUOTES) ?>">
                     <small id="durationHint">Number of booking units</small>
                 </div>
@@ -106,6 +107,7 @@ $timeOptions = [
                 <div class="form-group">
                     <label for="date">Preferred Date</label>
                     <input type="date" id="date" name="booking_date" required
+                        readonly
                         value="<?= htmlspecialchars($prefill['date'] ?? '', ENT_QUOTES) ?>">
                 </div>
 
@@ -114,7 +116,7 @@ $timeOptions = [
                     <label for="preferredTime" id="preferredTimeLabel">Preferred Time</label>
 
                     <div id="timeContainer">
-                        <select id="preferredTime" required>
+                        <select id="preferredTime" required disabled>
                             <option value="">Select Time</option>
                             <?php
                             $times = $timeOptions[$serviceType] ?? [];
@@ -153,16 +155,10 @@ $timeOptions = [
                 <!-- ===== CUSTOMIZATION ===== -->
                 <div class="form-group">
                     <label for="customization_hours">Customization (Extra Hours)</label>
-                    <label for="customization_apply">Extra hours apply</label>
-                    <select id="customization_apply" name="customization_apply">
-                        <option value="once" <?= (($prefill['customization_apply'] ?? 'once') === 'once') ? 'selected' : '' ?>>
-                            One-time (only one day)
-                        </option>
-                        <option value="per_unit" <?= (($prefill['customization_apply'] ?? 'once') === 'per_unit') ? 'selected' : '' ?>>
-                            For every booking unit (duration)
-                        </option>
-                    </select>
-                    <small>If duration is 3 (Daily), extra hours will be charged 3 times when you choose “For every booking unit”.</small>
+                    <label>Extra hours apply</label>
+                    <input type="text" value="For every booking unit (duration)" readonly>
+                    <input type="hidden" id="customization_apply" name="customization_apply" value="per_unit">
+                    <small>Extra hours are always charged for the full duration.</small>
                     <input type="number" id="customization_hours" name="customization_hours" min="0" max="8"
                         value="<?= htmlspecialchars((string)($prefill['customization_hours'] ?? 0), ENT_QUOTES) ?>">
                     <small>Extra hours are charged at LKR 300 per hour</small>

@@ -1,6 +1,7 @@
+/* ── Page layout ─────────────────────────────────── */
 .confirmation-container {
-  font-family: Arial, sans-serif;
-  background: #f4f6f9;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f0f4f8;
   margin-left: 270px;
   min-height: 100vh;
   padding: 40px;
@@ -56,28 +57,47 @@
 
 .actions {
   display: flex;
-  gap: 50px;
+  align-items: center;
   justify-content: center;
 }
 
-button {
-  padding: 10px 16px;
-  font-size: 14px;
-  border-radius: 6px;
+/* ── Card ─────────────────────────────────────────── */
+.card {
+  background: #ffffff;
+  padding: 44px 48px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.10);
+  width: 100%;
+  max-width: 640px;
+
 }
 
 button:hover {
-  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+  transform: translateY(0);
 }
 
 button.viewbtn {
-  background: #00bfa5;
-  color: #fff;
+  background: #1e88e5;
+  color: #ffffff;
+}
+
+button.viewbtn:hover {
+  background: #1976d2;
 }
 
 button.secondary {
-  background: #1e88e5;
-  color: #fff;
+  background: #f0f4f8;
+  color: #2c3e50;
+  border: 1px solid #ced4da;
+}
+
+button.secondary:hover {
+  background: #e2e8f0;
 }
 
 /* ---- enhanced details layout ---- */

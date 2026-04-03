@@ -4,11 +4,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const notifWrapper = document.querySelector(".notification-wrapper");
     const notifDropdown = document.getElementById("notifDropdown");
     const notifCount = document.querySelector(".notif-count");
+    const profileMenuBtn = document.getElementById("profileMenuBtn");
+    const profileWrapper = document.querySelector(".profile-wrapper");
 
     if (notifBtn && notifWrapper) {
         notifBtn.addEventListener("click", function (e) {
             e.stopPropagation();
             notifWrapper.classList.toggle("active");
+            if (profileWrapper) {
+                profileWrapper.classList.remove("active");
+            }
             
             // Mark notifications as read when dropdown is opened
             if (notifWrapper.classList.contains("active")) {
@@ -17,9 +22,31 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    if (profileMenuBtn && profileWrapper) {
+        profileMenuBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            profileWrapper.classList.toggle("active");
+            profileMenuBtn.setAttribute(
+                "aria-expanded",
+                profileWrapper.classList.contains("active") ? "true" : "false"
+            );
+            if (notifWrapper) {
+                notifWrapper.classList.remove("active");
+            }
+        });
+    }
+
     // Close when clicking outside
     document.addEventListener("click", function () {
-        notifWrapper.classList.remove("active");
+        if (notifWrapper) {
+            notifWrapper.classList.remove("active");
+        }
+        if (profileWrapper) {
+            profileWrapper.classList.remove("active");
+        }
+        if (profileMenuBtn) {
+            profileMenuBtn.setAttribute("aria-expanded", "false");
+        }
     });
 
     // Function to mark all notifications as read
