@@ -47,9 +47,11 @@
                   </button>
                 </h4>
 
-                <button onclick="<?= $isProfileRequestPending ? 'return false;' : 'window.location.href=\"' . URLROOT . '/caretaker/ct_settings\"' ?>" class="btn" <?= $isProfileRequestPending ? 'disabled title="Profile update request is pending admin review"' : '' ?>>
-                  <?= $isProfileRequestPending ? 'Edit Locked' : 'Edit profile' ?>
-                </button>
+                <?php if ($isProfileRequestPending): ?>
+                  <button class="btn" disabled title="Profile update request is pending admin review">Edit Locked</button>
+                <?php else: ?>
+                  <a href="<?= URLROOT ?>/caretaker/ct_settings" class="btn" style="text-decoration: none; display: inline-block;">Edit profile</a>
+                <?php endif; ?>
               </div>
 
               <?php if (!empty($data['latestProfileChangeRequest'])): ?>
