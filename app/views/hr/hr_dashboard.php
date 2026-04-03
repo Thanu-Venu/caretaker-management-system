@@ -38,7 +38,7 @@ $performanceColors = $data['performanceColors'] ?? json_encode(['#1E88E5', '#00B
   <!-- Page Header -->
   <div class="page-header">
     <div class="page-title">
-      <h1>HR Dashboard</h1>
+      <h1>Welcome Back, <?= htmlspecialchars($_SESSION['user']['username'] ?? 'Manager') ?></h1>
       <p>Overview of caregivers, services, leaves, requests, and complaints</p>
     </div>
     <div class="header-chip">
