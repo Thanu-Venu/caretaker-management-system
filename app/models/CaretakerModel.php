@@ -504,6 +504,7 @@ AND NOT EXISTS (
                 b.basis,
                 b.duration,
                 b.service_type,
+                b.status,
                 CONCAT(
                     b.district, ', ',
                     b.street, ', ',
@@ -514,7 +515,9 @@ AND NOT EXISTS (
                 c.name AS client_name
             FROM bookings b
             JOIN clients c ON c.id = b.client_id
-            WHERE b.caretaker_id = ? AND b.status = 'Accepted' AND b.booking_date > CURDATE()
+            WHERE b.caretaker_id = ? 
+              AND b.status IN ('Accepted', 'Payment_Requested', 'Advance_Paid')
+              AND b.booking_date > CURDATE()
             ORDER BY b.booking_date ASC";
 
         $stmt = $this->conn->prepare($sql);
@@ -585,7 +588,7 @@ AND NOT EXISTS (
         $updateStmt->execute();
         $updateStmt->close();
 
-        // Get only Accepted and Completed bookings (caregiver should not see other statuses)
+        // Get only bookings that caretaker should see in schedule (from assignment until completion)
         $sql = "SELECT
                 b.id AS booking_id,
                 b.booking_date,
@@ -605,7 +608,7 @@ AND NOT EXISTS (
             FROM bookings b
             JOIN clients c ON c.id = b.client_id
             WHERE b.caretaker_id = ?
-            AND b.status IN ('Accepted', 'Completed')
+            AND b.status IN ('Payment_Requested', 'Advance_Paid', 'Accepted', 'Completed')
             ORDER BY b.booking_date ASC";
 
         $stmt = $this->conn->prepare($sql);
@@ -692,25 +695,26 @@ AND NOT EXISTS (
         }
         return false;
     }
-    public function getClientsByCaretaker($caretakerId)
-    {
-        $sql = "SELECT
-                b.id AS booking_id,
-                b.client_id,
-                c.name AS client_name,
-                b.service_type,
-                b.booking_date,
-                b.preferred_time
-            FROM bookings b
-            JOIN clients c ON b.client_id = c.id
-            WHERE b.caretaker_id = ?
-            ORDER BY b.booking_date DESC";
+public function getClients($caretaker_id)
+{
+    $stmt = $this->conn->prepare(
+        "SELECT 
+            clients.id AS client_id, 
+            clients.name AS client_name,
+            bookings.id AS booking_id,
+            bookings.booking_date,
+            bookings.preferred_time,
+            bookings.service_type
+         FROM bookings
+         JOIN clients ON bookings.client_id = clients.id
+         WHERE bookings.caretaker_id = ?"
+    );
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param('i', $caretakerId);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    }
+    $stmt->bind_param("i", $caretaker_id);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
 
     public function addComplaint($data)
     {
@@ -730,22 +734,22 @@ AND NOT EXISTS (
 
         return $stmt->execute();
     }
+public function getResolvedComplaintsByCaretaker($caretaker_id)
+{
+    $stmt = $this->conn->prepare(
+        "SELECT ct_complaints.*, clients.name AS client_name
+         FROM ct_complaints
+         JOIN clients ON ct_complaints.client_id = clients.id
+         WHERE ct_complaints.caretaker_id = ? 
+         AND ct_complaints.status = 'Resolved'
+         ORDER BY ct_complaints.service_date DESC"
+    );
 
-    public function getResolvedComplaintsByCaretaker($caretaker_id)
-    {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM ct_complaints
-         WHERE caretaker_id = ? AND status = 'Resolved'
-         ORDER BY service_date DESC"
-        );
+    $stmt->bind_param("i", $caretaker_id);
+    $stmt->execute();
 
-        $stmt->bind_param("i", $caretaker_id);
-        $stmt->execute();
-
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    }
-
-
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
 
     public function getCaretakerFeedbacks($caretakerId)
     {

@@ -47,9 +47,11 @@
                   </button>
                 </h4>
 
-                <button onclick="<?= $isProfileRequestPending ? 'return false;' : 'openProfile()' ?>" class="btn" <?= $isProfileRequestPending ? 'disabled title="Profile update request is pending admin review"' : '' ?>>
-                  <?= $isProfileRequestPending ? 'Edit Locked' : 'Edit profile' ?>
-                </button>
+                <?php if ($isProfileRequestPending): ?>
+                  <button class="btn" disabled title="Profile update request is pending admin review">Edit Locked</button>
+                <?php else: ?>
+                  <a href="<?= URLROOT ?>/caretaker/ct_settings" class="btn" style="text-decoration: none; display: inline-block;">Edit profile</a>
+                <?php endif; ?>
               </div>
 
               <?php if (!empty($data['latestProfileChangeRequest'])): ?>
@@ -202,27 +204,7 @@
   </div>
 
   <!-- Profile Modal -->
-  <div id="profileModal" class="modal">
-    <div class="modal-content">
-      <h2 class="Edit">Request Profile Update</h2>
-      <p class="subtext">Your request will be sent to admin for approval before changes appear publicly.</p>
-      <form id="profileForm" method="POST" action="<?= URLROOT ?>/caretaker/editCaretakerDetails">
-        <input type="text" id="name" name="name" value="<?= htmlspecialchars($data['caretaker']['name'] ?? '') ?>" placeholder="Name" required <?= $isProfileRequestPending ? 'readonly' : '' ?>>
-        <input type="email" name="email" value="<?= htmlspecialchars($data['caretaker']['email'] ?? '') ?>" placeholder="Email" required <?= $isProfileRequestPending ? 'readonly' : '' ?>>
-        <input type="text" name="phone" value="<?= htmlspecialchars($data['caretaker']['phone'] ?? '') ?>" placeholder="Phone" required <?= $isProfileRequestPending ? 'readonly' : '' ?>>
-        <input type="text" id="experience" name="experience" value="<?= htmlspecialchars($data['caretaker']['experience'] ?? '') ?>" placeholder="Experience" required <?= $isProfileRequestPending ? 'readonly' : '' ?>>
-        <input type="text" name="profile_image" value="<?= htmlspecialchars($data['caretaker']['profile_image'] ?? 'default.png') ?>" hidden>
-        <input type="text" name="location" value="<?= htmlspecialchars($data['caretaker']['location'] ?? '') ?>" placeholder="Location" required <?= $isProfileRequestPending ? 'readonly' : '' ?>>
-        <textarea id="qualifications" name="qualifications" placeholder="Qualifications" required <?= $isProfileRequestPending ? 'readonly' : '' ?>><?= htmlspecialchars($data['caretaker']['qualifications'] ?? '') ?></textarea>
-        <div class="button-container">
-          <button type="submit" class="save-btn" <?= $isProfileRequestPending ? 'disabled' : '' ?>>
-            <?= $isProfileRequestPending ? 'Request Pending' : 'Send Request' ?>
-          </button>
-          <button type="button" class="close-btn" onclick="closeProfile()">Close</button>
-        </div>
-      </form>
-    </div>
-  </div>
+
 
 
   <!-- Modal -->

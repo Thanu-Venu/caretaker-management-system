@@ -1,13 +1,24 @@
 /* Main Layout */
 .content {
     padding: 24px;
-    margin-left: 250px;
+    margin-left: 270px;
     font-family: Poppins, Arial, sans-serif;
     min-height: 100vh;
-    background:
-        radial-gradient(1200px 500px at 15% -10%, #d8f3ef 0%, transparent 60%),
-        radial-gradient(800px 450px at 90% 0%, #e1ecff 0%, transparent 55%),
-        #f6f8fc;
+}
+
+.booking {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+h2 {
+    font-size: 30px;
+    color: #1e88e5;
+    letter-spacing: 0.2px;
+    margin: 0 0 20px 0;
 }
 
 /* Card */
@@ -17,13 +28,20 @@
     border-radius: 16px;
     border: 1px solid #e9edf4;
     box-shadow: 0 10px 28px rgba(26, 42, 71, 0.12);
+    width: 100%;
 }
+.cart1 {
+  font-size: 30px;
+  color: #1e88e5;
+ 
+}
+
 
 .leave-summary-strip {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 10px;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 .summary-item {
@@ -91,21 +109,16 @@
     border: 1px solid #f1d89e;
 }
 
-/* Header */
-.card-header {
+/* Top section with button */
+.top {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.card-header h2 {
-    margin: 0;
-    color: #173b72;
+    justify-content: flex-start;
+    margin-bottom: 20px;
 }
 
 /* Button */
 .add-btn {
-    background: linear-gradient(90deg, #1f7ae0, #1458b5);
+    background: linear-gradient(90deg, #1f7ae0, #3a82e1);
     color: #fff;
     border: none;
     border-radius: 10px;
@@ -181,9 +194,8 @@ tbody tr:hover {
         margin-left: 0;
     }
 
-    .card-header {
-        flex-direction: column;
-        align-items: flex-start;
+    .top {
+        justify-content: center;
     }
 
     .add-btn {
