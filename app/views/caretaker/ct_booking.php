@@ -16,53 +16,11 @@
     <div class="booking">
       <h2>Bookings</h2>
 
-<<<<<<< HEAD
-    <?php $selectedBookingId = isset($_GET['booking_id']) ? (int)$_GET['booking_id'] : null; ?>
-    <div class="top">
-      <button class="up-book active" data-tab="upcoming" onclick="showTab('upcoming', event)">Upcoming Bookings</button>
-      <button class="past-book" data-tab="past" onclick="showTab('past', event)">Past Bookings</button>
-    </div>
-
-    <!-- Upcoming -->
-    <section class="card">
-      <div id="upcoming" class="tab-content active">
-        <table>
-          <thead>
-            <tr>
-              <th>Client</th>
-              <th>Service</th>
-              <th>Location</th>
-              <th>Date / Time</th>
-              <th>Payment</th>
-            </tr>
-          </thead>
-          <tbody>
-<?php if (!empty($data['upcoming'])) : ?>
-  <?php foreach ($data['upcoming'] as $b) : ?>
-    <?php $isSelected = ($selectedBookingId && (int)$b['booking_id'] === $selectedBookingId); ?>
-    <tr class="booking-row<?= $isSelected ? ' highlight' : '' ?>" data-booking-id="<?= (int)$b['booking_id'] ?>">
-            <td><?= htmlspecialchars($b['client_name']) ?></td>
-            <td><?= htmlspecialchars($b['service_type']) ?></td>
-            <td><?= htmlspecialchars($b['service_location']) ?></td>
-            <td>
-              <?= $b['booking_date'] ?> - <?= $b['preferred_time'] ?>
-             </td>
-            <td>LKR <?= number_format($b['total_payment'] ?? 0, 2) ?></td>
-        </tr>
-    <?php endforeach; ?>
-<?php else : ?>
-    <tr><td colspan="5">No upcoming bookings</td></tr>
-<?php endif; ?>
-</tbody>
-
-        </table>
-=======
       <?php $selectedBookingId = isset($_GET['booking_id']) ? (int)$_GET['booking_id'] : null; ?>
       <div class="top">
         <button class="ongoing-book active" data-tab="ongoing" onclick="showTab('ongoing', event)">Ongoing Bookings</button>
         <button class="up-book" data-tab="upcoming" onclick="showTab('upcoming', event)">Upcoming Bookings</button>
         <button class="past-book" data-tab="past" onclick="showTab('past', event)">Past Bookings</button>
->>>>>>> ed6b121a36694e713c70d196d3713eb4c3ea2e14
       </div>
 
       <section class="card">

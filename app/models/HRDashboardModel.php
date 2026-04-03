@@ -34,7 +34,7 @@ class HRDashboardModel {
         $sql = "SELECT COUNT(*) AS total 
                 FROM bookings 
                 WHERE booking_date >= CURDATE()
-                AND status IN ('Advance_Paid','Accepted','Change_Requested','Reschedule_Requested')";
+                AND status IN ('Reschedule_Requested', 'Accepted', 'Advance_Paid', 'Cancelled')";
         $result = $this->db->query($sql);
         $row = $result->fetch_assoc();
         return $row['total'];
@@ -172,6 +172,30 @@ class HRDashboardModel {
         $result = $this->db->query($sql);
         if (!$result) {
             error_log("Performance ratings query error: " . $this->db->error);
+            return [];
+        }
+
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /* ===============================
+       BOOKING SUMMARY DATA FOR CHARTS
+    =============================== */
+    public function getBookingSummary() {
+        $sql = "SELECT 
+                    COALESCE(status, 'Pending') as status,
+                    COUNT(*) as count
+                FROM bookings
+                GROUP BY status
+                ORDER BY FIELD(status, 'Reschedule_Requested', 'Requested', 'Accepted', 'Advance_Paid', 'Completed', 'Cancelled', 'Declined')";
+
+        $result = $this->db->query($sql);
+        if (!$result) {
+            error_log("Booking summary query error: " . $this->db->error);
             return [];
         }
 
