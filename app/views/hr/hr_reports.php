@@ -64,6 +64,7 @@ function esc($value)
 </head>
 
 <body>
+    <div id="reportContent">
     <div class="reports-container">
         <div class="reports-header">
             <div>
@@ -542,123 +543,20 @@ function esc($value)
             </article>
         </section>
     </div>
+    </div>
 
     <script>
-        const caretakerStatusRows = <?= json_encode($caretakerStatus) ?>;
-        const caretakersByServiceRows = <?= json_encode($caretakersByService) ?>;
-        const caretakerWorkloadRows = <?= json_encode($caretakerWorkload) ?>;
-        const assignmentDistributionRows = <?= json_encode($assignmentDistribution) ?>;
-        const leaveRequestsRows = <?= json_encode($leaveRequests) ?>;
-        const rescheduleRequestRows = <?= json_encode($rescheduleRequests) ?>;
-        const hrUrl = `${<?= json_encode(URLROOT) ?>}/hr/hr_reports`;
+  const URLROOT = "<?= URLROOT ?>";
 
-        function applyFilters() {
-            const from = document.getElementById('fromDate').value;
-            const to = document.getElementById('toDate').value;
-            const params = new URLSearchParams();
-            if (from) params.set('from', from);
-            if (to) params.set('to', to);
-            window.location.href = `${hrUrl}?${params.toString()}`;
-        }
+  const caretakerStatusRows = <?= json_encode($caretakerStatus) ?>;
+  const caretakersByServiceRows = <?= json_encode($caretakersByService) ?>;
+  const caretakerWorkloadRows = <?= json_encode($caretakerWorkload) ?>;
+  const assignmentDistributionRows = <?= json_encode($assignmentDistribution) ?>;
+  const leaveRequestsRows = <?= json_encode($leaveRequests) ?>;
+  const rescheduleRequestRows = <?= json_encode($rescheduleRequests) ?>;
+</script>
 
-        function exportReport(format) {
-            const from = document.getElementById('fromDate').value;
-            const to = document.getElementById('toDate').value;
-            const params = new URLSearchParams();
-            params.set('export', '1');
-            params.set('format', format);
-            if (from) params.set('from', from);
-            if (to) params.set('to', to);
-            window.location.href = `${hrUrl}?${params.toString()}`;
-        }
-
-        function makeChart(id, type, labels, values, colors, label) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            new Chart(el, {
-                type,
-                data: {
-                    labels,
-                    datasets: [{
-                        label,
-                        data: values,
-                        backgroundColor: colors,
-                        borderColor: '#1f2937',
-                        borderWidth: type === 'line' ? 2 : 0,
-                        fill: type === 'line'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    },
-                    scales: type === 'line' || type === 'bar' ? {
-                        y: {
-                            beginAtZero: true
-                        }
-                    } : {}
-                }
-            });
-        }
-
-        makeChart(
-            'caretakerStatusChart',
-            'doughnut',
-            caretakerStatusRows.map(r => r.status),
-            caretakerStatusRows.map(r => Number(r.count || 0)),
-            ['#10b981', '#ef4444', '#3b82f6', '#a855f7'],
-            'Caretakers'
-        );
-
-        makeChart(
-            'serviceMixChart',
-            'bar',
-            caretakersByServiceRows.map(r => r.service_type),
-            caretakersByServiceRows.map(r => Number(r.count || 0)),
-            ['#0ea5e9', '#14b8a6', '#f97316', '#84cc16', '#8b5cf6'],
-            'Caretakers'
-        );
-
-        makeChart(
-            'leaveStatusChart',
-            'pie',
-            leaveRequestsRows.map(r => r.status),
-            leaveRequestsRows.map(r => Number(r.count || 0)),
-            ['#f59e0b', '#22c55e', '#ef4444', '#3b82f6'],
-            'Leaves'
-        );
-
-        makeChart(
-            'rescheduleStatusChart',
-            'pie',
-            rescheduleRequestRows.map(r => r.status),
-            rescheduleRequestRows.map(r => Number(r.count || 0)),
-            ['#06b6d4', '#22c55e', '#ef4444', '#a855f7'],
-            'Reschedules'
-        );
-
-        makeChart(
-            'workloadChart',
-            'bar',
-            caretakerWorkloadRows.slice(0, 10).map(r => r.name),
-            caretakerWorkloadRows.slice(0, 10).map(r => Number(r.active_bookings || 0)),
-            ['#0284c7', '#0d9488', '#65a30d', '#f59e0b', '#db2777', '#4f46e5'],
-            'Active Bookings'
-        );
-
-        makeChart(
-            'assignmentDistributionChart',
-            'bar',
-            assignmentDistributionRows.slice(0, 10).map(r => r.caretaker_name),
-            assignmentDistributionRows.slice(0, 10).map(r => Number(r.assigned_bookings || 0)),
-            ['#0369a1', '#16a34a', '#d97706', '#9333ea', '#e11d48', '#0891b2'],
-            'Assigned Bookings'
-        );
-    </script>
+<script src="<?= URLROOT ?>/public/js/hr/hr_reports.js"></script>
 </body>
 
 </html>
