@@ -303,6 +303,7 @@ class LeaveCRUDController extends Controller
             }
 
             if (!empty($validation['errors'])) {
+                // Update local leaf object with new input for preview (to keep state in form)
                 $leave->leave_type = $input['leave_type'];
                 $leave->start_date = $input['start_date'];
                 $leave->end_date = $input['end_date'];
@@ -310,16 +311,13 @@ class LeaveCRUDController extends Controller
                 $leave->end_time = $input['end_time'];
                 $leave->reason = $input['reason'];
 
-                $this->view('caretaker/leave_edit', [
+                $viewData = $this->baseAddViewData([
                     'leave' => $leave,
                     'errors' => array_values(array_unique($validation['errors'])),
                     'warnings' => $validation['warnings'] ?? [],
-                    'policy' => [
-                        'advanceNoticeDays' => LeaveModel::ADVANCE_NOTICE_DAYS,
-                        'maxPerRequest' => LeaveModel::MAX_DAYS_PER_REQUEST,
-                        'monthlyLimit' => LeaveModel::MONTHLY_LEAVE_LIMIT
-                    ]
+                    'impact' => $validation['impact'] ?? []
                 ]);
+                $this->view('caretaker/leave_edit', $viewData);
                 return;
             }
 
@@ -337,16 +335,7 @@ class LeaveCRUDController extends Controller
             header("Location: " . URLROOT . "/LeaveCRUD/index");
             exit;
         } else {
-            $this->view('caretaker/leave_edit', [
-                'leave' => $leave,
-                'errors' => [],
-                'warnings' => [],
-                'policy' => [
-                    'advanceNoticeDays' => LeaveModel::ADVANCE_NOTICE_DAYS,
-                    'maxPerRequest' => LeaveModel::MAX_DAYS_PER_REQUEST,
-                    'monthlyLimit' => LeaveModel::MONTHLY_LEAVE_LIMIT
-                ]
-            ]);
+            $this->view('caretaker/leave_edit', $this->baseAddViewData(['leave' => $leave]));
         }
     }
 
