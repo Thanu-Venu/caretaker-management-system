@@ -74,6 +74,7 @@ class LeaveCRUDController extends Controller
         $errors = [];
         $warnings = [];
 
+        $leaveType = $input['leave_type'] ?? '';
         $startDate = $input['start_date'] ?? '';
         $endDate = $input['end_date'] ?? '';
 
@@ -83,23 +84,28 @@ class LeaveCRUDController extends Controller
         }
 
         $today = date('Y-m-d');
-        $minimumStart = date('Y-m-d', strtotime('+' . LeaveModel::ADVANCE_NOTICE_DAYS . ' days'));
 
         if ($startDate < $today || $endDate < $today) {
             $errors[] = 'Leave cannot be requested for past dates.';
         }
 
-        if ($startDate < $minimumStart) {
-            $errors[] = 'Leave must be requested at least 3 days in advance.';
-        }
+        if ($leaveType === 'Sick Leave') {
+            // Sick leave allows immediate start (no advance notice needed)
+            $duration = $this->leaveModel->calculateInclusiveDays($startDate, $endDate);
+            if ($duration > 5) {
+                $errors[] = 'Sick leave cannot exceed 5 days.';
+            }
+        } else {
+            // Other leaves require advance notice
+            $minimumStart = date('Y-m-d', strtotime('+' . LeaveModel::ADVANCE_NOTICE_DAYS . ' days'));
+            if ($startDate < $minimumStart) {
+                $errors[] = 'Leave must be requested at least 3 days in advance.';
+            }
 
-        if ($endDate < $startDate) {
-            $errors[] = 'End date must be the same as or later than the start date.';
-        }
-
-        $duration = $this->leaveModel->calculateInclusiveDays($startDate, $endDate);
-        if ($duration > LeaveModel::MAX_DAYS_PER_REQUEST) {
-            $errors[] = 'A single leave request cannot exceed 7 days.';
+            $duration = $this->leaveModel->calculateInclusiveDays($startDate, $endDate);
+            if ($duration > 5) {
+                $errors[] = 'A single leave request cannot exceed 5 days.';
+            }
         }
 
         if ($this->leaveModel->hasOverlappingLeave($userId, $startDate, $endDate, ['Approved', 'Pending'], $excludeLeaveId)) {

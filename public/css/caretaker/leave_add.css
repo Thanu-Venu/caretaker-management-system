@@ -1,14 +1,17 @@
 /* FILE: leave_add.css - Stacked Layout: Full Width Details + Larger Form Below */
 
 /* Reset & Base Styles */
+
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-
-body {
   font-family: 'Poppins', Arial, sans-serif;
+}
+body {
+   font-family: 'Poppins', Arial, sans-serif;
+   font: size 20px;
   background: #f6f8fc;
   min-height: 100vh;
 }
@@ -297,7 +300,8 @@ body {
 
 .cancel-btn {
   text-decoration: none;
-  color: #5a6d8d;
+  color: #e53e3e;
+  border: 1.5px solid #feb2b2;
   font-weight: 600;
   padding: 12px 24px;
   border-radius: 40px;
@@ -305,8 +309,9 @@ body {
 }
 
 .cancel-btn:hover {
-  background: #f1f5f9;
-  color: #1e293b;
+  background: #fff5f5;
+  border-color: #e53e3e;
+  color: #c53030;
 }
 
 /* Small helper text */

@@ -52,9 +52,9 @@ $impact = $data['impact'] ?? [];
         </div>
 
         <ul class="policy-list">
-          <li>Request at least <?= (int)$policy['advanceNoticeDays'] ?> days in advance</li>
-          <li>Maximum <?= (int)$policy['maxPerRequest'] ?> days per request</li>
-          <li>Maximum <?= (int)$policy['monthlyLimit'] ?> days per month (Approved + Pending)</li>
+          <li><strong>Sick Leave:</strong> Can start today; maximum 5 days duration.</li>
+          <li><strong>Other Leaves:</strong> Request at least 3 days in advance.</li>
+          <li><strong>Limits:</strong> Maximum 5 days per request and 5 days total per month.</li>
         </ul>
       </div>
 
