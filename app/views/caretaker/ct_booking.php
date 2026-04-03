@@ -14,11 +14,9 @@
 <body>
   <main class="content">
     <div class="booking">
-      <div class="card">
-        <div class="card-header">
-          <h2>Bookings</h2>
-        </div>
+      <h2>Bookings</h2>
 
+      <div class="card">
         <?php $selectedBookingId = isset($_GET['booking_id']) ? (int)$_GET['booking_id'] : null; ?>
         <div class="top">
           <button class="ongoing-book active" data-tab="ongoing" onclick="showTab('ongoing', event)">Ongoing Bookings</button>
