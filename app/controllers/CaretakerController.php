@@ -355,24 +355,23 @@ class CaretakerController extends Controller
             echo json_encode($client);
         }
     }
+public function addComplaint()
+{
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    public function addComplaint()
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $data = [
+            'caretaker_id' => AuthSession::profileId(),
+            'client_id' => $_POST['client_id'], // ✅ CHANGE THIS
+            'service_type' => $_POST['service_type'],
+            'service_date' => $_POST['service_date'], // ✅ CHANGE THIS
+            'description' => $_POST['description']
+        ];
 
-            $data = [
-                'caretaker_id' => AuthSession::profileId(),
-                'client_name' => $_POST['client_name'],
-                'service_type' => $_POST['service_type'],
-                'date_of_service' => $_POST['date_of_service'],
-                'description' => $_POST['description']
-            ];
+        $this->caretakerModel->addComplaint($data);
 
-            $this->caretakerModel->addComplaint($data);
-
-            echo "success";
-        }
+        echo "success";
     }
+}
 
     public function ct_reports()
     {
