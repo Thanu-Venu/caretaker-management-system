@@ -25,7 +25,7 @@ h1 {
   background: #fff;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .card h3 {
@@ -93,10 +93,10 @@ input[type="file"] {
   margin-bottom: 12px;
   font-size: 16px;
   color: #1b1b1b;
-  font-weight: 500;  
+  font-weight: 500;
 }
 
-.pro-section input{
-    width: 75%;
-    box-sizing: border-box;
+.pro-section input {
+  width: 75%;
+  box-sizing: border-box;
 }
