@@ -1,17 +1,3 @@
-function openProfile() {
-  const profileModal = document.getElementById("profileModal");
-  const dashboard = document.getElementById("dashboard");
-  if (profileModal) profileModal.style.display = "flex";
-  if (dashboard) dashboard.classList.add("blur");
-}
-
-function closeProfile() {
-  const profileModal = document.getElementById("profileModal");
-  const dashboard = document.getElementById("dashboard");
-  if (profileModal) profileModal.style.display = "none";
-  if (dashboard) dashboard.classList.remove("blur");
-}
-
 function renderCalendar() {
   const calendarDates = document.getElementById("calendarDates");
   const monthLabel = document.getElementById("calendarMonthLabel");
