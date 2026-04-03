@@ -695,25 +695,20 @@ AND NOT EXISTS (
         }
         return false;
     }
-    public function getClientsByCaretaker($caretakerId)
-    {
-        $sql = "SELECT
-                b.id AS booking_id,
-                b.client_id,
-                c.name AS client_name,
-                b.service_type,
-                b.booking_date,
-                b.preferred_time
-            FROM bookings b
-            JOIN clients c ON b.client_id = c.id
-            WHERE b.caretaker_id = ?
-            ORDER BY b.booking_date DESC";
+ public function getClients($caretaker_id)
+{
+    $stmt = $this->conn->prepare(
+        "SELECT clients.id AS client_id, clients.name AS client_name
+         FROM bookings
+         JOIN clients ON bookings.client_id = clients.id
+         WHERE bookings.caretaker_id = ?"
+    );
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param('i', $caretakerId);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    }
+    $stmt->bind_param("i", $caretaker_id);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
 
     public function addComplaint($data)
     {
@@ -733,11 +728,10 @@ AND NOT EXISTS (
 
         return $stmt->execute();
     }
-
-   public function getResolvedComplaintsByCaretaker($caretaker_id)
+public function getResolvedComplaintsByCaretaker($caretaker_id)
 {
     $stmt = $this->conn->prepare(
-        "SELECT ct_complaints.*, clients.client_name 
+        "SELECT ct_complaints.*, clients.name AS client_name
          FROM ct_complaints
          JOIN clients ON ct_complaints.client_id = clients.id
          WHERE ct_complaints.caretaker_id = ? 
@@ -750,7 +744,6 @@ AND NOT EXISTS (
 
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
-
 
     public function getCaretakerFeedbacks($caretakerId)
     {
