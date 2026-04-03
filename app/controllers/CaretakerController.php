@@ -286,13 +286,19 @@ class CaretakerController extends Controller
                 }
             }
 
-            // Set color based on status (only Accepted or Completed)
+            // Set color based on status
             $backgroundColor = '#4CAF50'; // green for accepted
             $borderColor = '#45a049';
 
             if ($booking['status'] === 'Completed') {
                 $backgroundColor = '#6c757d'; // gray for completed
                 $borderColor = '#5a6268';
+            } elseif ($booking['status'] === 'Payment_Requested') {
+                $backgroundColor = '#ffc107'; // yellow for payment requested
+                $borderColor = '#e0a800';
+            } elseif ($booking['status'] === 'Advance_Paid') {
+                $backgroundColor = '#17a2b8'; // blue for advance paid
+                $borderColor = '#138496';
             }
 
             $events[] = [

@@ -588,7 +588,7 @@ AND NOT EXISTS (
         $updateStmt->execute();
         $updateStmt->close();
 
-        // Get only Accepted and Completed bookings (caregiver should not see other statuses)
+        // Get only bookings that caretaker should see in schedule (from assignment until completion)
         $sql = "SELECT
                 b.id AS booking_id,
                 b.booking_date,
@@ -608,7 +608,7 @@ AND NOT EXISTS (
             FROM bookings b
             JOIN clients c ON c.id = b.client_id
             WHERE b.caretaker_id = ?
-            AND b.status IN ('Accepted', 'Completed')
+            AND b.status IN ('Payment_Requested', 'Advance_Paid', 'Accepted', 'Completed')
             ORDER BY b.booking_date ASC";
 
         $stmt = $this->conn->prepare($sql);
