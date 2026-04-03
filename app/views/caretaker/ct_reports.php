@@ -18,11 +18,16 @@
 <?php
 $totalServices = count($data["services"] ?? []);
 $totalHours = 0;
+$uniqueClients = [];
+
 foreach ($data["services"] ?? [] as $service) {
   $totalHours += (int)($service['duration'] ?? 0);
+  if (!empty($service['client_name'])) {
+      $uniqueClients[$service['client_name']] = true;
+  }
 }
-// Assuming earnings logic will be finalized later
-$totalEarnings = 0;
+
+$totalClients = count($uniqueClients);
 ?>
     <!-- Monthly Summary -->
     <section class="report-summary">
@@ -37,8 +42,8 @@ $totalEarnings = 0;
           <p id="totalHours"><?= $totalHours ?></p>
         </div>
         <div class="card">
-          <h3>Total Earnings(LKR)</h3>
-          <p id="totalEarnings"><?= $totalEarnings ?></p>
+          <h3>Total Clients</h3>
+          <p id="totalClients"><?= $totalClients ?></p>
         </div>
       </div>
     </section>
