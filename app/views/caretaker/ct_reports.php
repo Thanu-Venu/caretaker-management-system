@@ -15,21 +15,30 @@
   <div class="main-content">
     <h1>My Reports</h1>
 
+<?php
+$totalServices = count($data["services"] ?? []);
+$totalHours = 0;
+foreach ($data["services"] ?? [] as $service) {
+  $totalHours += (int)($service['duration'] ?? 0);
+}
+// Assuming earnings logic will be finalized later
+$totalEarnings = 0;
+?>
     <!-- Monthly Summary -->
     <section class="report-summary">
       <h2>Monthly Summary</h2>
       <div class="summary-cards">
         <div class="card">
           <h3>Total Services</h3>
-          <p id="totalServices">0</p>
+          <p id="totalServices"><?= $totalServices ?></p>
         </div>
         <div class="card">
           <h3>Total Hours</h3>
-          <p id="totalHours">0</p>
+          <p id="totalHours"><?= $totalHours ?></p>
         </div>
         <div class="card">
           <h3>Total Earnings(LKR)</h3>
-          <p id="totalEarnings">0</p>
+          <p id="totalEarnings"><?= $totalEarnings ?></p>
         </div>
       </div>
     </section>
@@ -49,7 +58,7 @@
               </tr>
             </thead>
             <tbody id="serviceTableBody">
-              <?php foreach ($data["services"] as $service): ?>
+              <?php foreach ($data["services"] ?? [] as $service): ?>
                 <tr>
                   <td><?= htmlspecialchars($service['client_name']) ?></td>
                   <td><?= htmlspecialchars($service['service_type']) ?></td>
@@ -64,5 +73,16 @@
       </div>
     </section>
   </div>
+  <script>
+    const services = <?= json_encode(array_map(function($service) {
+        return [
+            'client' => $service['client_name'],
+            'service' => $service['service_type'],
+            'date' => $service['booking_date'],
+            'hours' => $service['duration'],
+            'payment' => 'N/A'
+        ];
+    }, $data['services'] ?? [])); ?>;
+  </script>
   <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_reports.js"></script>
 </body>
