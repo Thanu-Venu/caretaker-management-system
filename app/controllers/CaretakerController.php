@@ -370,10 +370,26 @@ public function addComplaint()
 
         $this->caretakerModel->addComplaint($data);
 
+     
+    }
+}
+public function saveComplaint()
+{
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        $data = [
+            'caretaker_id' => AuthSession::profileId(),
+            'client_id' => $_POST['client_id'],
+            'service_type' => $_POST['service_type'],
+            'service_date' => $_POST['service_date'],
+            'description' => $_POST['description']
+        ];
+
+        $this->caretakerModel->addComplaint($data);
+
         echo "success";
     }
 }
-
     public function ct_reports()
     {
         $this->view("caretaker/ct_reports");
