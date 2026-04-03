@@ -19,8 +19,6 @@
           <thead>
             <tr>
               <th>Timestamp</th>
-              <th>User Name</th>
-              <th>Role</th>
               <th>Action Description</th>
               <th>Affected Section</th>
             </tr>
@@ -30,8 +28,6 @@
               <?php foreach ($data['logs'] as $log): ?>
                 <tr>
                   <td><?= htmlspecialchars($log['created_at']) ?></td>
-                  <td><?= htmlspecialchars($log['username']) ?></td>
-                  <td><?= htmlspecialchars($log['role']) ?></td>
                   <td><?= htmlspecialchars($log['action']) ?></td>
                   <td><?= htmlspecialchars($log['section']) ?></td>
                 </tr>

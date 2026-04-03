@@ -1,49 +1,79 @@
 /* basic table styling */
+body {
+    background: #f4f7fb;
+}
+
+.content {
+  flex: 1;
+  padding: 20px 40px;
+  margin-left: 255px;
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
 .content h1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
   color: #1e88e5;
-  margin:20px;
+  font-size: 28px;
 }
+
 .table-wrapper {
-  overflow-x: auto;
-  margin-top: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 15px;
 }
+
 .requests-table {
   width: 100%;
   border-collapse: collapse;
+  background: white;
+  overflow: hidden;
 }
+
 .requests-table th,
 .requests-table td {
-  padding: 10px 12px;
-  border: 1px solid #e5e7eb;
+  padding: 14px;
   text-align: left;
+  border-bottom: 1px solid #eee;
 }
+
 .requests-table th {
-  background: #f3f4f6;
+  background: #1e88e5;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
 }
+
+.requests-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
 .approve-btn {
-  background: #22c55e;
-  color: #fff;
+    background: #00ab94;
+    color: white;
   border: none;
   padding: 6px 10px;
   border-radius: 6px;
   cursor: pointer;
 }
 .reject-btn {
-  background: #ef4444;
-  color: #fff;
+    background: #ea0b34;
+    color: white;
   border: none;
   padding: 6px 10px;
   border-radius: 6px;
   cursor: pointer;
 }
+
 .approve-btn:hover {
   opacity: 0.9;
 }
+
 .reject-btn:hover {
   opacity: 0.9;
-}
-.content {
-  margin-left: 270px;
 }
 
 /* Tabs Navigation */
@@ -60,8 +90,8 @@
   border: none;
   border-bottom: 3px solid transparent;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 17px;
+  font-weight: 600;
   color: #666;
   transition: all 0.3s ease;
   position: relative;
@@ -88,9 +118,9 @@
 /* Status Badges */
 .status-badge {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 8px 14px;
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -107,9 +137,9 @@
 
 /* History Cards */
 .history-row {
-  background: #f9f9f9;
+  background: #ffffff;
   border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  border-radius: 12px;
   padding: 15px;
   margin-bottom: 12px;
 }
@@ -118,14 +148,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.history-row-header strong {
+      color: #1371c3;
+      font-size: 20px;
 }
 
 .history-row-content {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 15px;
-  font-size: 13px;
+  font-size: 14px;
   margin-bottom: 10px;
 }
 
@@ -135,29 +170,29 @@
 }
 
 .history-field-label {
-  color: #999;
-  font-size: 11px;
+  color: #2a313a;
+  font-size: 15px;
   text-transform: uppercase;
   margin-bottom: 4px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .history-field-value {
-  color: #333;
-  font-weight: 500;
+    color: #2d3c51;
+    font-size: 15px;
 }
 
 .hr-note-box {
   margin-top: 10px;
   padding: 10px;
-  background: white;
+  background: rgb(240, 240, 240);
   border-left: 3px solid #1e88e5;
   border-radius: 2px;
 }
 
 .hr-note-label {
-  font-size: 11px;
-  color: #999;
+  font-size: 14px;
+  color: #6f6f6f;
   text-transform: uppercase;
   font-weight: 600;
   margin-bottom: 4px;
@@ -184,8 +219,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 /* Color badge based on tab type */
@@ -214,11 +249,12 @@
 
 /* Reason Section */
 .reason-title {
-  font-size: 13px;
   display: block;
   margin-bottom: 8px;
-  color: #333;
   font-weight: 600;
+    color: rgb(69, 75, 82);
+    text-transform: uppercase;
+    font-size: 15px;
 }
 
 .reason-text {

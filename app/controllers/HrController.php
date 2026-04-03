@@ -50,19 +50,28 @@ class HrController extends Controller
         $dash = new HRDashboardModel();
 
         // Get chart data
-        $attendanceData = $dash->getAttendanceData(10);
+        $bookingData = $dash->getBookingSummary();
         $performanceData = $dash->getPerformanceRatings();
         $ratingStats = $dash->getRatingStats();
 
-        // Prepare labels and data for attendance chart
-        // Use IDs for labels, keep names for tooltip
-        $attendanceLabels = [];
-        $attendanceDays = [];
-        $attendanceNames = [];
-        foreach ($attendanceData as $row) {
-            $attendanceLabels[] = 'ID-' . $row['id'];
-            $attendanceDays[] = (int)$row['days_present'];
-            $attendanceNames[] = $row['name'];
+        // Prepare labels and data for booking chart
+        $bookingStatusLabels = [];
+        $bookingStatusCounts = [];
+        $statusColorMap = [
+            'Reschedule_Requested' => '#FFC107',
+            'Requested' => '#FF9800',
+            'Accepted' => '#00BFA5',
+            'Advance_Paid' => '#1E88E5',
+            'Completed' => '#4CAF50',
+            'Cancelled' => '#F44336',
+            'Declined' => '#9E9E9E'
+        ];
+        $bookingStatusColors = [];
+        
+        foreach ($bookingData as $row) {
+            $bookingStatusLabels[] = $row['status'];
+            $bookingStatusCounts[] = (int)$row['count'];
+            $bookingStatusColors[] = $statusColorMap[$row['status']] ?? '#9E9E9E';
         }
 
         // Prepare labels and data for performance chart
@@ -85,13 +94,13 @@ class HrController extends Controller
             'recentComplaints' => $dash->recentComplaints(5),
             'recentBookings'  => $dash->recentClientRequests(5),
             // Chart data
-            'attendanceLabels' => json_encode($attendanceLabels),
-            'attendanceDays' => json_encode($attendanceDays),
-            'attendanceNames' => json_encode($attendanceNames),
+            'bookingStatusLabels' => json_encode($bookingStatusLabels),
+            'bookingStatusCounts' => json_encode($bookingStatusCounts),
+            'bookingStatusColors' => json_encode($bookingStatusColors),
             'performanceLabels' => json_encode($performanceLabels),
             'performanceCounts' => json_encode($performanceCounts),
             'performanceColors' => json_encode(array_slice($performanceColors, 0, count($performanceLabels))),
-            'attendanceData' => $attendanceData,
+            'bookingData' => $bookingData,
             'performanceData' => $performanceData,
             'ratingStats' => $ratingStats
         ];
