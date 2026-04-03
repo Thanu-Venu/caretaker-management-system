@@ -1,72 +1,70 @@
-/* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', Arial, sans-serif;
-}
-
 body {
-  background: #f6f8fb;
+  background: #f4f7fb;
 }
 
 .main-content {
-  margin-left: 270px;
-  padding: 22px;
+  flex: 1;
+  padding: 8px 40px;
+  margin-left: 255px;
+  font-family: 'Poppins', Arial, sans-serif;
 }
 
 /* Title */
 h1 {
-  font-size: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
   color: #1e88e5;
-  margin-bottom: 16px;
-  font-weight: 700;
+  margin-top: 0;
+  font-size: 28px;
 }
 
 /* Tabs / Buttons */
 .top {
   display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
 }
 
-.top button {
-  border: 1px solid #e6ebf2;
-  padding: 10px 18px;
-  font-size: 15px;
+.top-button {
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
   cursor: pointer;
-  border-radius: 14px;
-  background: #fff;
-  color: #1b2a41;
-  transition: all 0.2s ease;
+  font-size: 17px;
   font-weight: 600;
+  color: #666;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-.top button:hover {
-  transform: translateY(-1px);
-  border-color: #cfe3ff;
-  box-shadow: 0 6px 14px rgba(30, 136, 229, 0.10);
+.top-button.active {
+  color: #1e88e5;
+  border-bottom-color: #1e88e5;
 }
 
-.top button.active {
-  background: #1e88e5;
-  color: #fff;
-  border-color: #1e88e5;
-  box-shadow: 0 10px 20px rgba(30, 136, 229, 0.22);
+.top-button:hover {
+  color: #1e88e5;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
 }
 
 /* Card */
 .card {
-  background: #fff;
-  border-radius: 16px;
-  padding: 18px;
-  box-shadow: 0 10px 24px rgba(16, 24, 40, 0.06);
-  border: 1px solid #eef2f7;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 15px;
 }
-
-/* Tabs */
-.tab-content { display: none; }
-.tab-content.active { display: block; }
 
 /* Table wrapper (optional but nice if table is wide) */
 .card {
@@ -77,28 +75,25 @@ h1 {
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14.5px;
-  min-width: 900px; /* helps keep layout clean */
+  background: white;
+  overflow: hidden;
 }
 
 th, td {
-  padding: 14px 14px;
-  border-bottom: 1px solid #eef2f7;
+  padding: 14px;
   text-align: left;
-  vertical-align: middle;
+  border-bottom: 1px solid #eee;
 }
 
 th {
-  background: #f5f7fa;
-  color: #344054;
-  font-weight: 700;
-  position: sticky;
-  top: 0;
-  z-index: 1;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+      background: #1e88e5;
 }
 
 tr:hover {
-  background: #f6fbff;
+  background: #f9f9f9;
 }
 
 /* Forms in table */
@@ -164,31 +159,27 @@ select:focus {
 
 /* Client complaints statuses (your DB uses: Open, In Progress, Resolved) */
 .status-badge.open {
-  background: #fff7ed;
-  color: #9a3412;
-  border-color: #fed7aa;
+  background: #f8d7da;
+  color: #721c24;
 }
 .status-badge.open::before { background: #fb923c; }
 
 .status-badge.in-progress {
   background: #eff6ff;
   color: #1d4ed8;
-  border-color: #bfdbfe;
 }
 .status-badge.in-progress::before { background: #3b82f6; }
 
 .status-badge.resolved {
-  background: #ecfdf5;
-  color: #065f46;
-  border-color: #a7f3d0;
+  background: #d4edda;
+  color: #155724;
 }
 .status-badge.resolved::before { background: #10b981; }
 
 /* Caretaker complaint statuses (Pending, In Progress, Resolved) */
 .status-badge.pending {
-  background: #fff7ed;
-  color: #9a3412;
-  border-color: #fed7aa;
+    background: #fff3cd;
+    color: #856404;
 }
 .status-badge.pending::before { background: #f59e0b; }
 

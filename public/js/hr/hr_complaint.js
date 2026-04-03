@@ -1,18 +1,17 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Ensure default tab is Client on page load
-  const clientBtn = document.querySelector(".top button.active");
-  const clientTab = document.getElementById("c_complaint");
+function switchTab(tabId, event) {
+  // Hide all tabs
+  document.querySelectorAll(".tab-content").forEach(tab => {
+    tab.classList.remove("active");
+  });
 
-  // Hide all tabs first
-  document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
-  // Show client tab
-  if (clientTab) clientTab.classList.add("active");
-});
+  // Remove active from buttons
+  document.querySelectorAll(".top-button").forEach(btn => {
+    btn.classList.remove("active");
+  });
 
-function showTab(tabId, event) {
-  document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
-  document.querySelectorAll(".top button").forEach(btn => btn.classList.remove("active"));
-
+  // Show selected tab
   document.getElementById(tabId).classList.add("active");
+
+  // Highlight clicked button
   event.currentTarget.classList.add("active");
 }

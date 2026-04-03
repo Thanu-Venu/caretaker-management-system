@@ -15,11 +15,11 @@
 <h1>Complaints Management</h1>
 <br>
 <div class="top">
-  <button class="active" onclick="showTab('c_complaint', event)">Client Complaints</button>
-<button onclick="showTab('ct_complaint', event)">Caretaker Complaints</button>
+  <button class="top-button active" onclick="switchTab('c_complaint', event)">Client Complaints</button>
+  <button class="top-button" onclick="switchTab('ct_complaint', event)">Caretaker Complaints</button>
 </div>
 <!-- CLIENT COMPLAINTS -->
-<section class="card tab-content" id="c_complaint">
+<section class="card tab-content active" id="c_complaint">
   <table>
     <thead>
       <tr>
@@ -73,7 +73,7 @@
   </table>
 </section>
 <!-- CARETAKER COMPLAINTS -->
-<section class="card tab-content active" id="ct_complaint">
+<section class="card tab-content" id="ct_complaint">
   <table>
     <thead>
       <tr>
