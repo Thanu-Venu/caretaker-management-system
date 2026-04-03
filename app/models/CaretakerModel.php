@@ -504,6 +504,7 @@ AND NOT EXISTS (
                 b.basis,
                 b.duration,
                 b.service_type,
+                b.status,
                 CONCAT(
                     b.district, ', ',
                     b.street, ', ',
@@ -514,7 +515,9 @@ AND NOT EXISTS (
                 c.name AS client_name
             FROM bookings b
             JOIN clients c ON c.id = b.client_id
-            WHERE b.caretaker_id = ? AND b.status = 'Accepted' AND b.booking_date > CURDATE()
+            WHERE b.caretaker_id = ? 
+              AND b.status IN ('Accepted', 'Payment_Requested', 'Advance_Paid')
+              AND b.booking_date > CURDATE()
             ORDER BY b.booking_date ASC";
 
         $stmt = $this->conn->prepare($sql);

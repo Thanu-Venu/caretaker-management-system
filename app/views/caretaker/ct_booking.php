@@ -66,6 +66,7 @@
                 <th>Service</th>
                 <th>Location</th>
                 <th>Date / Time</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -79,11 +80,30 @@
                     <td>
                       <?= $b['booking_date'] ?> - <?= $b['preferred_time'] ?>
                     </td>
+                    <td>
+                      <?php 
+                        $status = $b['status'] ?? 'Accepted';
+                        $badgeClass = '';
+                        $displayStatus = str_replace('_', ' ', $status);
+                        
+                        if ($status === 'Payment_Requested') {
+                          $badgeClass = 'status-pending';
+                          $displayStatus = '⏳ Payment Pending';
+                        } elseif ($status === 'Advance_Paid') {
+                          $badgeClass = 'status-approved';
+                          $displayStatus = '✓ Payment Approved';
+                        } elseif ($status === 'Accepted') {
+                          $badgeClass = 'status-active';
+                          $displayStatus = '✓ Accepted';
+                        }
+                      ?>
+                      <span class="status-badge <?= $badgeClass ?>"><?= htmlspecialchars($displayStatus) ?></span>
+                    </td>
                   </tr>
                 <?php endforeach; ?>
               <?php else : ?>
                 <tr>
-                  <td colspan="4">No upcoming bookings</td>
+                  <td colspan="5">No upcoming bookings</td>
                 </tr>
               <?php endif; ?>
             </tbody>
