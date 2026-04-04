@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const impactMessage = document.getElementById('impactMessage');
     const impactCount = document.getElementById('impactCount');
     const impactIds = document.getElementById('impactIds');
+    const leaveTypeInput = document.getElementById('leave_type');
     const impactIdsLine = document.getElementById('impactIdsLine');
 
     if (!form || !startInput || !endInput) {
@@ -53,20 +54,30 @@ document.addEventListener('DOMContentLoaded', () => {
     function getMinAdvanceDate() {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        today.setDate(today.getDate() + Number(policy.advanceNoticeDays));
+        
+        const leaveType = leaveTypeInput ? leaveTypeInput.value : '';
+        const notice = (leaveType === 'Sick Leave') ? 0 : Number(policy.advanceNoticeDays);
+        
+        today.setDate(today.getDate() + notice);
         return today;
     }
 
     function syncDateHints() {
         const minAdvance = getMinAdvanceDate();
         const minAdvanceIso = minAdvance.toISOString().slice(0, 10);
-        startHint.textContent = `Leave must be requested at least ${policy.advanceNoticeDays} days in advance. Earliest start: ${formatDate(minAdvanceIso)}.`;
+        
+        const leaveType = leaveTypeInput ? leaveTypeInput.value : '';
+        if (leaveType === 'Sick Leave') {
+            startHint.textContent = `Sick leave can be requested starting from today.`;
+        } else {
+            startHint.textContent = `Leave must be requested at least ${policy.advanceNoticeDays} days in advance. Earliest start: ${formatDate(minAdvanceIso)}.`;
+        }
 
         if (startInput.value) {
             endInput.min = startInput.value;
             endHint.textContent = `End date must be on or after ${formatDate(startInput.value)}.`;
         } else {
-            endInput.min = startInput.min;
+            endInput.min = minAdvanceIso;
             endHint.textContent = '';
         }
     }
@@ -75,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const errors = [];
         const todayIso = new Date().toISOString().slice(0, 10);
         const minAdvanceIso = getMinAdvanceDate().toISOString().slice(0, 10);
+        const leaveType = leaveTypeInput ? leaveTypeInput.value : '';
 
         if (startInput.value && startInput.value < todayIso) {
             errors.push('Leave cannot be requested for past dates.');
@@ -84,8 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
             errors.push('Leave cannot be requested for past dates.');
         }
 
-        if (startInput.value && startInput.value < minAdvanceIso) {
-            errors.push('Leave must be requested at least 3 days in advance.');
+        if (leaveType !== 'Sick Leave' && startInput.value && startInput.value < minAdvanceIso) {
+            errors.push(`Advance notice of ${policy.advanceNoticeDays} days is required for ${leaveType || 'this leave type'}.`);
         }
 
         if (startInput.value && endInput.value && endInput.value < startInput.value) {
@@ -93,8 +105,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const days = getInclusiveDays(startInput.value, endInput.value);
-        if (days > Number(policy.maxPerRequest)) {
-            errors.push('A single leave request cannot exceed 7 days.');
+        if (days > 0) {
+            if (leaveType === 'Sick Leave') {
+                if (days > 5) {
+                    errors.push('Sick leave cannot exceed 5 days.');
+                }
+            } else {
+                if (days > 5) {
+                    errors.push('Other leave types cannot exceed 5 days per request.');
+                }
+            }
         }
 
         return Array.from(new Set(errors));
@@ -228,6 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
         queueImpactPreview();
     }
 
+    leaveTypeInput.addEventListener('change', syncFormState);
     startInput.addEventListener('change', syncFormState);
     endInput.addEventListener('change', syncFormState);
     startInput.addEventListener('input', syncFormState);

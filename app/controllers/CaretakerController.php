@@ -392,7 +392,11 @@ public function saveComplaint()
 }
     public function ct_reports()
     {
-        $this->view("caretaker/ct_reports");
+        $caretakerId = AuthSession::profileId();
+        $services = $this->caretakerModel->getPastBookings($caretakerId);
+        $this->view("caretaker/ct_reports", [
+            'services' => $services
+        ]);
     }
 
     public function ct_settings()

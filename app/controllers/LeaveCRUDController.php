@@ -74,6 +74,7 @@ class LeaveCRUDController extends Controller
         $errors = [];
         $warnings = [];
 
+        $leaveType = $input['leave_type'] ?? '';
         $startDate = $input['start_date'] ?? '';
         $endDate = $input['end_date'] ?? '';
 
@@ -83,23 +84,28 @@ class LeaveCRUDController extends Controller
         }
 
         $today = date('Y-m-d');
-        $minimumStart = date('Y-m-d', strtotime('+' . LeaveModel::ADVANCE_NOTICE_DAYS . ' days'));
 
         if ($startDate < $today || $endDate < $today) {
             $errors[] = 'Leave cannot be requested for past dates.';
         }
 
-        if ($startDate < $minimumStart) {
-            $errors[] = 'Leave must be requested at least 3 days in advance.';
-        }
+        if ($leaveType === 'Sick Leave') {
+            // Sick leave allows immediate start (no advance notice needed)
+            $duration = $this->leaveModel->calculateInclusiveDays($startDate, $endDate);
+            if ($duration > 5) {
+                $errors[] = 'Sick leave cannot exceed 5 days.';
+            }
+        } else {
+            // Other leaves require advance notice
+            $minimumStart = date('Y-m-d', strtotime('+' . LeaveModel::ADVANCE_NOTICE_DAYS . ' days'));
+            if ($startDate < $minimumStart) {
+                $errors[] = 'Leave must be requested at least 3 days in advance.';
+            }
 
-        if ($endDate < $startDate) {
-            $errors[] = 'End date must be the same as or later than the start date.';
-        }
-
-        $duration = $this->leaveModel->calculateInclusiveDays($startDate, $endDate);
-        if ($duration > LeaveModel::MAX_DAYS_PER_REQUEST) {
-            $errors[] = 'A single leave request cannot exceed 7 days.';
+            $duration = $this->leaveModel->calculateInclusiveDays($startDate, $endDate);
+            if ($duration > 5) {
+                $errors[] = 'A single leave request cannot exceed 5 days.';
+            }
         }
 
         if ($this->leaveModel->hasOverlappingLeave($userId, $startDate, $endDate, ['Approved', 'Pending'], $excludeLeaveId)) {
@@ -297,6 +303,7 @@ class LeaveCRUDController extends Controller
             }
 
             if (!empty($validation['errors'])) {
+                // Update local leaf object with new input for preview (to keep state in form)
                 $leave->leave_type = $input['leave_type'];
                 $leave->start_date = $input['start_date'];
                 $leave->end_date = $input['end_date'];
@@ -304,16 +311,13 @@ class LeaveCRUDController extends Controller
                 $leave->end_time = $input['end_time'];
                 $leave->reason = $input['reason'];
 
-                $this->view('caretaker/leave_edit', [
+                $viewData = $this->baseAddViewData([
                     'leave' => $leave,
                     'errors' => array_values(array_unique($validation['errors'])),
                     'warnings' => $validation['warnings'] ?? [],
-                    'policy' => [
-                        'advanceNoticeDays' => LeaveModel::ADVANCE_NOTICE_DAYS,
-                        'maxPerRequest' => LeaveModel::MAX_DAYS_PER_REQUEST,
-                        'monthlyLimit' => LeaveModel::MONTHLY_LEAVE_LIMIT
-                    ]
+                    'impact' => $validation['impact'] ?? []
                 ]);
+                $this->view('caretaker/leave_edit', $viewData);
                 return;
             }
 
@@ -331,16 +335,7 @@ class LeaveCRUDController extends Controller
             header("Location: " . URLROOT . "/LeaveCRUD/index");
             exit;
         } else {
-            $this->view('caretaker/leave_edit', [
-                'leave' => $leave,
-                'errors' => [],
-                'warnings' => [],
-                'policy' => [
-                    'advanceNoticeDays' => LeaveModel::ADVANCE_NOTICE_DAYS,
-                    'maxPerRequest' => LeaveModel::MAX_DAYS_PER_REQUEST,
-                    'monthlyLimit' => LeaveModel::MONTHLY_LEAVE_LIMIT
-                ]
-            ]);
+            $this->view('caretaker/leave_edit', $this->baseAddViewData(['leave' => $leave]));
         }
     }
 

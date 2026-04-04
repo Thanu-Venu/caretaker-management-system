@@ -14,6 +14,3 @@ document.getElementById("downloadReport").addEventListener("click", function() {
   link.click();
   document.body.removeChild(link);
 });
-
-// Initial render
-renderServiceTable();
