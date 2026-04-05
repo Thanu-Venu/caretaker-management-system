@@ -10,6 +10,13 @@ $total_payment = $data['total_payment'] ?? 0;
 $serviceType = $ct['service_type'] ?? '';
 $bases = $serviceOptions[$serviceType] ?? [];
 
+$returnPath = trim((string)($_GET['return'] ?? 'client/c_find1'));
+$allowedReturnPaths = ['client/c_find', 'client/c_find1'];
+if (!in_array($returnPath, $allowedReturnPaths, true)) {
+    $returnPath = 'client/c_find1';
+}
+$backUrl = URLROOT . '/public/?url=' . $returnPath;
+
 $timeOptions = [
     "Elder Care" => ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)"],
     "Babysitter" => ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)"],
