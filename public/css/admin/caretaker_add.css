@@ -1,169 +1,81 @@
-/* Main Layout */
+/* Main section */
 body {
-    background-color: var(--bg-primary, #f4f7fb);
-    font-family: var(--font-primary, 'Poppins', Arial, sans-serif);
+    background: #f4f7fb;
 }
 
-.main-content {
-    margin-left: 270px;
-    padding: 40px;
-    min-height: 100vh;
+.main-content{
+  margin-left: 270px;
+  padding: 40px;
+  min-height: 100vh;
 }
 
-/* Form Wrapper (Main Card) */
-.form-wrapper {
-    max-width: 900px;
-    margin: 0 auto;
-    background: #ffffff;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+/* Make the card take full available width */
+.form-section{
+  width: 100%;
+  max-width: none;      /* remove the 600px limit */
+  margin: 0;            /* remove centering */
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 
-.form-wrapper h1 {
+
+.form-section h1 {
     text-align: center;
-    margin-bottom: 30px;
-    color: var(--primary-600, #1e88e5);
+    margin-bottom: 25px;
+    color: #1e88e5;
     font-size: 28px;
-    font-weight: 700;
 }
 
-/* Form Grid */
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-    margin-bottom: 30px;
-}
-
-.field {
-    display: flex;
-    flex-direction: column;
-}
-
-.field.full {
-    grid-column: 1 / -1;
-}
-
-/* Labels and Inputs */
-.field label {
-    font-size: 14px;
+/* Form fields */
+.caretaker-form label {
+    display: block;
+    margin-bottom: 5px;
     font-weight: 500;
-    color: var(--text-secondary, #64748b);
-    margin-bottom: 8px;
 }
 
-.field input,
-.field select {
-    padding: 12px 16px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 15px;
-    transition: all 0.3s ease;
+.caretaker-form input,
+.caretaker-form select {
     width: 100%;
-    outline: none;
-}
-
-.field input:focus,
-.field select:focus {
-    border-color: var(--primary-500, #1e88e5);
-    box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
-}
-
-/* Form Actions (Buttons) */
-.form-actions {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-/* Custom Short Button Styles */
-.submit-btn,
-.btn-cancel {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 24px;
+    padding: 10px 1px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
     font-size: 15px;
-    font-weight: 700; /* Matching user's "short button" request */
-    border-radius: 20px; /* Modern "short" pill shape */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    line-height: normal;
-    border: none;
-    min-width: 140px; /* Ensuring consistent width */
 }
 
-/* Add Caregiver (Submit) Button - Short Primary */
+.caretaker-form input:focus,
+.caretaker-form select:focus {
+    outline: none;
+    border-color: #1565c0;
+}
+
+/* Submit button */
 .submit-btn {
-    background-color: var(--primary-500, #1e88e5);
-    color: #ffffff;
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #1E88E5;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
 .submit-btn:hover {
-    background-color: var(--primary-700, #1565c0);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(30, 136, 229, 0.2);
+    background-color: #1565c0;
 }
 
-/* Cancel Button - Short Red */
-.btn-cancel {
-    background-color: #ef4444; /* Standard Red */
-    color: #ffffff;
-}
-
-.btn-cancel:hover {
-    background-color: #dc2626; /* Darker Red on hover */
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.2);
-}
-
-/* Responsive Fixes */
+/* Responsive */
 @media (max-width: 768px) {
-    .main-content {
-        margin-left: 0;
+    .form-section {
         padding: 20px;
     }
-
-    .form-wrapper {
-        padding: 25px;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-
-    .form-actions {
-        flex-direction: column;
-    }
-
-    .submit-btn,
-    .btn-cancel {
-        width: 100%;
-    }
 }
 
-/* Alert Messages */
-.error-message,
-.success-message {
-    padding: 12px 16px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.error-message {
-    background-color: #fef2f2;
-    border: 1px solid #fee2e2;
-    color: #b91c1c;
-}
-
-.success-message {
-    background-color: #f0fdf4;
-    border: 1px solid #dcfce7;
-    color: #15803d;
-}
+/* ========================
+   Form Buttons Row

@@ -14,12 +14,27 @@ $user = $data['user']; // object
 
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/user_edit.css">
+  <!-- Design System Override -->
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 </head>
-
 <body>
 <main class="main-content">
   <section class="form-section">
     <h1>Edit User</h1>
+    
+    <?php if (isset($_SESSION['error'])): ?>
+      <div class="error-message">
+        <?php echo htmlspecialchars($_SESSION['error']); ?>
+      </div>
+      <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+    
+    <?php if (isset($_SESSION['success'])): ?>
+      <div class="success-message">
+        <?php echo htmlspecialchars($_SESSION['success']); ?>
+      </div>
+      <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
 
     <form action="<?php echo URLROOT; ?>/UserCRUD/edit/<?php echo $user->id; ?>" method="POST" class="user-form">
 
@@ -45,7 +60,7 @@ $user = $data['user']; // object
 
         <div class="field">
           <label>Status</label>
-          <select name="status">
+          <select name="status" required>
             <option value="Active" <?php echo ($user->status == 'Active') ? 'selected' : ''; ?>>Active</option>
             <option value="Inactive" <?php echo ($user->status == 'Inactive') ? 'selected' : ''; ?>>Inactive</option>
           </select>
