@@ -130,7 +130,7 @@ a{
 .form-grid{
   display: grid;
   grid-template-columns: 1fr; /* mobile default */
-  gap: 18px;
+  
 }
 
 .field label{

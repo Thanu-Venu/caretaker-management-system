@@ -1,182 +1,75 @@
-/* ===== General Layout ===== */
-body {
-  background: #f4f7fb;
-}
+<?php
+include_once APPROOT . "/views/templates/admin/ad_header.php";
+include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
+?>
+<!DOCTYPE html>
+<html lang="en">
 
-.main-content {
-    margin-left: 270px;
-    padding: 40px;
-    font-family: 'Poppins', Arial, sans-serif;
-}
+<head>
+  <meta charset="UTF-8">
+  <title>Add User</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/user_add.css">
+  <!-- Design System Override -->
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
+</head>
 
-/* ===== Form Section ===== */
-.form-section {
-    max-width: 600px;
-    margin: 0 auto;
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-}
+<body>
+  <main class="main-content">
+    <div class="form-wrapper">
+      <h1>Add User</h1>
+      <form method="POST" class="user-form">
 
-/* ===== Heading ===== */
-.form-section h1 {
-    text-align: center;
-    margin-bottom: 25px;
-    color: #1e88e5;
-    font-size: 28px;
-}
+        <div class="form-grid">
 
-/* ===== Input Labels ===== */
-.form-section label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 500;
-}
+          <div class="field">
+            <label>Username</label>
+            <input type="text" name="username" required placeholder="Enter username">
+          </div>
 
-/* ===== Input Fields ===== */
-.form-section input,
-.form-section select {
-    width: 100%;
-    padding: 10px 1px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 15px;
-}
+          <div class="field">
+            <label>Email</label>
+            <input type="email" name="email" required placeholder="Enter email">
+          </div>
 
-.form-section input:focus,
-.form-section select:focus {
-    outline: none;
-    border-color: #1565c0;
-}
+          <div class="field">
+            <label>Password</label>
+            <input type="password" name="password" required placeholder="Enter password">
+          </div>
 
-/* ===== Button ===== */
-.submit-btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background-color: #1E88E5;
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.3s;
-}
+          <div class="field">
+            <label>Role</label>
+            <select name="role" required>
+              <option value="">Select Role</option>
+              <option value="Admin">Admin</option>
+              <option value="Manager">Manager</option>
+            </select>
+          </div>
 
-.submit-btn:hover {
-    background-color: #1565c0;
-}
+          <div class="field">
+            <label>Phone</label>
+            <input type="text" name="phone" required placeholder="Enter phone number">
+          </div>
 
-/* ===== Responsive ===== */
-@media (max-width: 600px) {
-  .form-section {
-    padding: 30px 25px;
-  }
-  .form-section h1 {
-    font-size: 22px;
-  }
-.form-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 10px;
-}
+          <div class="field">
+            <label>Status</label>
+            <select name="status">
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
 
-/* Make both buttons equal width */
-.form-actions .submit-btn,
-.form-actions .btn-cancel {
-    flex: 1;
-    text-align: center;
-}
+        </div>
 
-/* Cancel button style */
-.btn-cancel {
-    background: #e5e7eb;
-    color: #111;
-    font-weight: 600;
-    line-height: 42px; /* aligns text with button height */
-}
+        <div class="form-actions">
+          <button type="submit" class="submit-btn">Add User</button>
+          <a href="<?= URLROOT ?>/UserCRUD/list" class="btn-cancel">Cancel</a>
+        </div>
 
-/* Hover */
-.btn-cancel:hover {
-    background: #d1d5db;
-}
+      </form>
 
-/* ========================
-   Mobile: stack buttons
-@media (max-width: 500px) {
-    .form-actions {
-        flex-direction: column;
-    }
-}
+    </div>
+  </main>
+</body>
 
-a{
-    text-decoration: none;
-}
-/* =========================
-   Full-width form card
-
-.form-section{
-  width: 100%;
-  max-width: none;
-  margin: 0;
-}
-
-/* =========================
-   Two-column form grid
-
-.form-grid{
-  display: grid;
-  grid-template-columns: 1fr; /* mobile default */
-  gap: 18px;
-}
-
-.field label{
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 500;
-}
-
-.field input,
-.field select{
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 15px;
-}
-
-/* Desktop / large screens */
-@media (min-width: 900px){
-  .form-grid{
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-/* Buttons */
-.form-actions{
-  display: flex;
-  gap: 12px;
-  margin-top: 20px;
-}
-
-.form-actions .submit-btn,
-.form-actions .btn-cancel{
-  flex: 1;
-}
-
-.btn-cancel{
-  text-decoration: none; /* removes underline */
-  text-align: center;
-  background: #e5e7eb;
-  color: #111;
-  font-weight: 600;
-  line-height: 42px;
-}
-
-.btn-cancel:hover{
-  background: #d1d5db;
-}
-}
+</html>
