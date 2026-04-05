@@ -10,13 +10,6 @@ $total_payment = $data['total_payment'] ?? 0;
 $serviceType = $ct['service_type'] ?? '';
 $bases = $serviceOptions[$serviceType] ?? [];
 
-$returnPath = trim((string)($_GET['return'] ?? 'client/c_find1'));
-$allowedReturnPaths = ['client/c_find', 'client/c_find1'];
-if (!in_array($returnPath, $allowedReturnPaths, true)) {
-    $returnPath = 'client/c_find1';
-}
-$backUrl = URLROOT . '/public/?url=' . $returnPath;
-
 $timeOptions = [
     "Elder Care" => ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)"],
     "Babysitter" => ["Full Time (8am - 5pm)", "Morning (8am - 12pm)", "Evening (1pm - 5pm)"],
@@ -177,10 +170,17 @@ $timeOptions = [
 
                 <!-- ===== PRICE BOX ===== -->
                 <div class="price-box">
-                    <p><strong>Base Price:</strong> <span id="basePriceAmount">0</span> LKR</p>
-                    <p><strong>Customization Price:</strong> <span id="customizationPrice">0</span> LKR</p>
-                    <p><strong>Estimated Price:</strong>
-                        <span id="price"><?= number_format((float)$total_payment, 2) ?></span> LKR
+                    <p>
+                        <strong>Base Price:</strong>
+                        <span class="price-value"><span id="basePriceAmount">0</span> <small>LKR</small></span>
+                    </p>
+                    <p>
+                        <strong>Customization Price:</strong>
+                        <span class="price-value"><span id="customizationPrice">0</span> <small>LKR</small></span>
+                    </p>
+                    <p>
+                        <strong>Estimated Price:</strong>
+                        <span class="price-value"><span id="price"><?= number_format((float)$total_payment, 2) ?></span> <small>LKR</small></span>
                     </p>
                 </div>
 
