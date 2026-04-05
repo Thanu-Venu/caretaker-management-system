@@ -658,3 +658,27 @@
 #rescheduleModal .reschedule-btn:active {
   transform: translateY(0);
 }
+
+/* Cancel booking modal submit button */
+#cancelModal .cancel1-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: #dc2626;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+#cancelModal .cancel1-btn:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+#cancelModal .cancel1-btn:active {
+  transform: translateY(0);
+}
