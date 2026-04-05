@@ -165,6 +165,13 @@ class AdminController extends Controller
         exit;
     }
 
+    public function caretaker_add()
+    {
+        // Redirect to CaretakerCRUD controller
+        header("Location: " . URLROOT . "/CaretakerCRUD/add");
+        exit;
+    }
+
 
     public function ad_announcement()
     {

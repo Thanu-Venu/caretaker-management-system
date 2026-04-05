@@ -19,7 +19,22 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
   <main class="main-content">
     <div class="form-wrapper">
       <h1>Add Caregiver</h1>
-      <form method="POST" class="caretaker-form" enctype="multipart/form-data">
+      
+      <?php if (isset($_SESSION['error'])): ?>
+        <div class="error-message" style="color: red; margin-bottom: 15px; padding: 10px; border: 1px solid red; background-color: #ffe6e6;">
+          <?php echo htmlspecialchars($_SESSION['error']); ?>
+        </div>
+        <?php unset($_SESSION['error']); ?>
+      <?php endif; ?>
+      
+      <?php if (isset($_SESSION['success'])): ?>
+        <div class="success-message" style="color: green; margin-bottom: 15px; padding: 10px; border: 1px solid green; background-color: #e6ffe6;">
+          <?php echo htmlspecialchars($_SESSION['success']); ?>
+        </div>
+        <?php unset($_SESSION['success']); ?>
+      <?php endif; ?>
+      
+      <form method="POST" class="caretaker-form" enctype="multipart/form-data" action="<?php echo URLROOT; ?>/CaretakerCRUD/add">
 
         <div class="form-grid">
 
@@ -75,8 +90,8 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
 
           <div class="field">
             <label>Status</label>
-            <select name="status">
-              <option value="Active">Active</option>
+            <select name="status" required>
+              <option value="Active" selected>Active</option>
               <option value="Inactive">Inactive</option>
             </select>
           </div>
