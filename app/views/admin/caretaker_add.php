@@ -21,14 +21,14 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
       <h1>Add Caregiver</h1>
       
       <?php if (isset($_SESSION['error'])): ?>
-        <div class="error-message" style="color: red; margin-bottom: 15px; padding: 10px; border: 1px solid red; background-color: #ffe6e6;">
+        <div class="error-message">
           <?php echo htmlspecialchars($_SESSION['error']); ?>
         </div>
         <?php unset($_SESSION['error']); ?>
       <?php endif; ?>
       
       <?php if (isset($_SESSION['success'])): ?>
-        <div class="success-message" style="color: green; margin-bottom: 15px; padding: 10px; border: 1px solid green; background-color: #e6ffe6;">
+        <div class="success-message">
           <?php echo htmlspecialchars($_SESSION['success']); ?>
         </div>
         <?php unset($_SESSION['success']); ?>
