@@ -165,7 +165,18 @@ function moneyLKR($amount)
             <h3><?= $data['avgRating'] ?? '0.0'; ?></h3>
             <p>Avg Rating Given</p>
 
+        
+
+        <!-- Price Overview -->
+        <section class="price-overview">
+          <div class="section-head">
+            <h2>Service Price Overview</h2>
+            <p>Base rates + time modifiers (final price depends on duration and time slot)</p>
           </div>
+
+          <div class="price-grid">
+ 
+        </div>
           <div class="card">
             <div class="action1">
               <i class='bx bx-wallet-alt'></i>
@@ -176,16 +187,6 @@ function moneyLKR($amount)
             <p>Pending Advances</p>
           </div>
         </div>
-
-        <!-- Price Overview -->
-        <section class="price-overview">
-          <div class="section-head">
-            <h2>Service Price Overview</h2>
-            <p>Base rates + time modifiers (final price depends on duration and time slot)</p>
-          </div>
-
-          <div class="price-grid">
-
             <!-- Elder Care -->
             <div class="card price-card">
               <div class="price-head">
