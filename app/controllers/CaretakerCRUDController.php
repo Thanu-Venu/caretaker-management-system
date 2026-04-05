@@ -187,7 +187,27 @@ class CaretakerCRUDController extends Controller
                 exit;
             }
 
-            $this->caretakerModel->updateCaretaker($id, $data);
+            // ✅ Handle profile image upload during edit
+            $profileImage = null;
+            if (!empty($_FILES['profile_image']['name']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+                $uploadDir = APPROOT . '/../public/uploads/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+
+                $ext = strtolower(pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION));
+                $allowedExt = ['jpg', 'jpeg', 'png', 'webp'];
+                
+                if (in_array($ext, $allowedExt) && $_FILES['profile_image']['size'] <= 2 * 1024 * 1024) {
+                    $fileName = time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+                    $targetPath = $uploadDir . $fileName;
+                    if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetPath)) {
+                        $profileImage = $fileName; // Successfully saved
+                    }
+                }
+            }
+
+            $this->caretakerModel->updateCaretaker($id, $data, $profileImage);
             $this->historyModel->log([
                 'user_id' => AuthSession::profileId(),
                 'username' => $_SESSION['user']['username'],

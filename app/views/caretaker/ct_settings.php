@@ -46,7 +46,7 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
         <form id="edit-details-form" action="<?= URLROOT ?>/index.php?url=Caretaker/editCaretakerDetails" method="post" enctype="multipart/form-data">
           <div class="profile-body">
             <img
-              src="<?= URLROOT ?>/public /uploads/<?= $user['profile_image'] ?: 'default.png' ?>"
+              src="<?= URLROOT ?>/public/uploads/<?= $user['profile_image'] ?: 'default.png' ?>"
               alt="Profile"
               onerror="this.src='<?= URLROOT ?>/public/uploads/default.png';">
 
