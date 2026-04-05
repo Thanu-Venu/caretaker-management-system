@@ -166,6 +166,15 @@ function moneyLKR($amount)
             <p>Avg Rating Given</p>
 
           </div>
+          <div class="card">
+            <div class="action1">
+              <i class='bx bx-wallet-alt'></i>
+            </div>
+            <h3 style="color: <?= !empty($data['pendingAdvance']) ? '#e53935' : '#111' ?>;">
+              <?= count($data['pendingAdvance'] ?? []); ?>
+            </h3>
+            <p>Pending Advances</p>
+          </div>
         </div>
 
         <!-- Price Overview -->
