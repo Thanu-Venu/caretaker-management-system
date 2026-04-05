@@ -1,175 +1,204 @@
-:root {
-  --complaint-bg-1: #f8fbff;
-  --complaint-bg-2: #eef6ff;
-  --complaint-card: #ffffff;
-  --complaint-text: #17324d;
-  --complaint-muted: #5b7288;
-  --complaint-accent: #1e88e5;
-  --complaint-accent-strong: #166fc1;
-  --complaint-border: #d8e6f4;
-  --complaint-hover: #eef7ff;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', Arial, sans-serif;
+/* Main Layout */
+body {
+    background-color: var(--bg-primary, #f4f7fb);
+    font-family: var(--font-primary, 'Poppins', Arial, sans-serif);
 }
 
 .main-content {
-  margin-left: 270px;
-  padding: 24px;
-  min-height: 100vh;
+    margin-left: 270px;
+    padding: 30px;
+    min-height: 100vh;
 }
 
-h1, h2 {
-  font-size: 30px;
-  color: #1e88e5;
-  letter-spacing: 0.2px;
-  margin: 0 0 20px 0;
-}
-
+h1,
 h2 {
-  margin-top: 30px;
+    font-size: 28px;
+    color: var(--primary-600, #1e88e5);
+    font-weight: 700;
+    margin-bottom: 25px;
 }
 
-/* Card Style for Form */
+/* Form Card */
 form {
-  background: var(--complaint-card);
-  padding: 22px;
-  border-radius: 16px;
-  border: 1px solid #e9edf4;
-  box-shadow: 0 10px 28px rgba(26, 42, 71, 0.12);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-bottom: 30px;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 25px rgba(26, 42, 71, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 40px;
 }
 
 form label {
-  font-weight: 600;
-  color: var(--complaint-text);
-  font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    font-size: 14px;
+    margin-bottom: 8px;
 }
 
-form select, form input, form textarea {
-  padding: 12px 15px;
-  border: 1px solid var(--complaint-border);
-  border-radius: 10px;
-  font-size: 14px;
-  color: var(--complaint-text);
-  background: #fff;
-  transition: border-color 0.2s ease;
+form select,
+form input,
+form textarea {
+    padding: 12px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    width: 100%;
+    outline: none;
 }
 
-form select:focus, form input:focus, form textarea:focus {
-  outline: none;
-  border-color: var(--complaint-accent);
-  box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+form select:focus,
+form input:focus,
+form textarea:focus {
+    border-color: var(--primary-500, #1e88e5);
+    box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
 }
 
 form textarea {
-  resize: vertical;
-  min-height: 100px;
+    resize: vertical;
+    min-height: 120px;
 }
 
-/* Button mimicking .add-btn from booking */
+/* Submit Button - Standardized Primary */
 .btn-submit {
-  background: linear-gradient(90deg, #1f7ae0, #1458b5);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  padding: 12px 20px;
-  font-weight: 600;
-  align-self: flex-start;
-  transition: filter 0.2s;
+    background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    /* Modern pill shape */
+    cursor: pointer;
+    padding: 10px 28px;
+    font-weight: 700;
+    font-size: 15px;
+    align-self: flex-start;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(30, 136, 229, 0.2);
 }
 
 .btn-submit:hover {
-  filter: brightness(1.05);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(30, 136, 229, 0.3);
+    filter: brightness(1.05);
 }
 
+/* Table Card Wrap */
 .card {
-  background: var(--complaint-card);
-  padding: 22px;
-  border-radius: 16px;
-  border: 1px solid var(--complaint-border);
-  box-shadow: 0 10px 28px rgba(26, 42, 71, 0.12);
-  margin-bottom: 30px;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 25px rgba(26, 42, 71, 0.08);
+    margin-bottom: 30px;
 }
 
 .card h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 24px;
 }
 
-/* Complaint Table matching ct_booking.css */
+/* Complaint Table Standaridization */
 .complaint-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-  overflow: hidden;
-  border-radius: 12px;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .complaint-table thead {
-  background-color: #f6fafe;
-  color: #fff;
+    background-color: #f8fafc;
 }
 
-.complaint-table th, .complaint-table td {
-  padding: 12px 15px;
-  border-bottom: 1px solid #edf3f9;
-  text-align: left;
+.complaint-table th,
+.complaint-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: left;
 }
 
 .complaint-table th {
-  color: #173b72;
-  font-weight: 700;
+    color: #1e3a8a;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.3px;
 }
 
 .complaint-table td {
-  color: #2a3e5f;
+    color: #334155;
+    vertical-align: middle;
 }
 
 .complaint-table tbody tr:hover {
-  background-color: var(--complaint-hover);
+    background-color: #f8fbff;
 }
 
 /* Status Badges */
 .status {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  color: #fff;
-  font-weight: 600;
-  display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #ffffff;
+    font-weight: 700;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.status.pending, .status.Open { background: #f9a825; }
-.status.resolved, .status.Resolved, .status.Closed { background: #00bfa5; }
-.status.rejected, .status.Rejected { background: #e74c3c; }
-.status.InProgress, .status.In\ Progress { background: #1e88e5; }
+.status.pending,
+.status.Open {
+    background: #f59e0b;
+}
 
+.status.resolved,
+.status.Resolved,
+.status.Closed {
+    background: #10b981;
+}
+
+.status.rejected,
+.status.Rejected {
+    background: #ef4444;
+}
+
+.status.InProgress,
+.status.In\ Progress {
+    background: #3b82f6;
+}
+
+/* Responsive */
 @media (max-width: 1024px) {
-  .main-content {
-    margin-left: 0;
-    padding: 16px;
-  }
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
 }
 
-@media (max-width: 760px) {
-  h1, h2 {
-    font-size: 24px;
-  }
-  form {
-    padding: 15px;
-  }
-  .complaint-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
+@media (max-width: 768px) {
+
+    h1,
+    h2 {
+        font-size: 24px;
+    }
+
+    form {
+        padding: 20px;
+    }
+
+    .btn-submit {
+        width: 100%;
+        text-align: center;
+    }
+
+    .card {
+        padding: 15px;
+        overflow-x: auto;
+    }
+
+    .complaint-table {
+        min-width: 600px;
+    }
 }
