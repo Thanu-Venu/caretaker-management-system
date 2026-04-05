@@ -94,7 +94,7 @@ class ComplaintModel
 
     public function getComplaintsByClient($client_name)
     {
-        $query = "SELECT * FROM complaints WHERE client_name = ?";
+        $query = "SELECT * FROM complaints WHERE client_name = ? ORDER BY complaint_date DESC, Id DESC";
         $stmt = $this->db->prepare($query);
         $stmt->bind_param("s", $client_name); // ✅ FIXED
         $stmt->execute();
