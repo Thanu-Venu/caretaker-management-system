@@ -720,12 +720,23 @@ class ClientModel
             }
         }
 
-        $stmt = $this->conn->prepare(
-            "INSERT INTO payments
-            (booking_id, client_id, caretaker_id, total_booking_amount, customization_price, amount, remaining_balance,
-             payment_method, payment_type, status, due_date)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-        );
+        $hasPayHereCols = $this->hasPayHereColumns();
+
+        if ($hasPayHereCols) {
+            $stmt = $this->conn->prepare(
+                "INSERT INTO payments
+                (booking_id, client_id, caretaker_id, total_booking_amount, customization_price, amount, remaining_balance,
+                 payment_method, payment_type, status, due_date, payhere_order_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            );
+        } else {
+            $stmt = $this->conn->prepare(
+                "INSERT INTO payments
+                (booking_id, client_id, caretaker_id, total_booking_amount, customization_price, amount, remaining_balance,
+                 payment_method, payment_type, status, due_date)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            );
+        }
 
         $status = 'pending';
         $dueDate = $paymentData['due_date'] ?? null;
@@ -736,20 +747,39 @@ class ClientModel
 
         $remainingBalance = $totalBookingAmount - $amount;
 
-        $stmt->bind_param(
-            "iiidddsssss",
-            $paymentData['booking_id'],
-            $paymentData['client_id'],
-            $paymentData['caretaker_id'],
-            $totalBookingAmount,
-            $customizationPrice,
-            $amount,
-            $remainingBalance,
-            $paymentData['payment_method'],
-            $paymentType,
-            $status,
-            $dueDate
-        );
+        if ($hasPayHereCols) {
+            $orderId = $paymentData['payhere_order_id'] ?? null;
+            $stmt->bind_param(
+                "iiidddssssss",
+                $paymentData['booking_id'],
+                $paymentData['client_id'],
+                $paymentData['caretaker_id'],
+                $totalBookingAmount,
+                $customizationPrice,
+                $amount,
+                $remainingBalance,
+                $paymentData['payment_method'],
+                $paymentType,
+                $status,
+                $dueDate,
+                $orderId
+            );
+        } else {
+            $stmt->bind_param(
+                "iiidddsssss",
+                $paymentData['booking_id'],
+                $paymentData['client_id'],
+                $paymentData['caretaker_id'],
+                $totalBookingAmount,
+                $customizationPrice,
+                $amount,
+                $remainingBalance,
+                $paymentData['payment_method'],
+                $paymentType,
+                $status,
+                $dueDate
+            );
+        }
 
         if ($stmt->execute()) {
             return $this->conn->insert_id;
@@ -1232,6 +1262,92 @@ class ClientModel
         $stmt = $this->conn->prepare("UPDATE payments SET status = ?, approved_at = NOW() WHERE id = ?");
         $stmt->bind_param("si", $status, $paymentId);
         return $stmt->execute();
+    }
+
+    public function getPaymentByOrderId($orderId)
+    {
+        if (!$this->hasPayHereColumns()) {
+            return null;
+        }
+
+        $sql = "SELECT
+                    p.*,
+                    b.status AS booking_status
+                FROM payments p
+                JOIN bookings b ON p.booking_id = b.id
+                WHERE p.payhere_order_id = ?
+                LIMIT 1";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $orderId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        return $result ?: null;
+    }
+
+    public function setPayHereOrderId($paymentId, $orderId)
+    {
+        if (!$this->hasPayHereColumns()) {
+            return true;
+        }
+
+        $stmt = $this->conn->prepare("UPDATE payments SET payhere_order_id = ? WHERE id = ?");
+        $stmt->bind_param("si", $orderId, $paymentId);
+        $ok = $stmt->execute();
+        $stmt->close();
+        return $ok;
+    }
+
+    public function updatePaymentGatewayStatus($paymentId, $status, $statusCode, $statusMessage, $payherePaymentId, $md5sig)
+    {
+        if ($this->hasPayHereColumns()) {
+            $stmt = $this->conn->prepare(
+                "UPDATE payments
+                 SET status = ?,
+                     approved_at = CASE WHEN ? = 'approved' THEN NOW() ELSE approved_at END,
+                     paid_date = CASE WHEN ? = 'approved' THEN NOW() ELSE paid_date END,
+                     payhere_status_code = ?,
+                     payhere_status_message = ?,
+                     payhere_payment_id = ?,
+                     payhere_md5sig = ?
+                 WHERE id = ?"
+            );
+
+            $stmt->bind_param("sssisssi", $status, $status, $status, $statusCode, $statusMessage, $payherePaymentId, $md5sig, $paymentId);
+            $ok = $stmt->execute();
+            $stmt->close();
+            return $ok;
+        }
+
+        $stmt = $this->conn->prepare(
+            "UPDATE payments
+             SET status = ?,
+                 approved_at = CASE WHEN ? = 'approved' THEN NOW() ELSE approved_at END,
+                 paid_date = CASE WHEN ? = 'approved' THEN NOW() ELSE paid_date END
+             WHERE id = ?"
+        );
+        $stmt->bind_param("sssi", $status, $status, $status, $paymentId);
+        $ok = $stmt->execute();
+        $stmt->close();
+        return $ok;
+    }
+
+    private function hasPayHereColumns(): bool
+    {
+        static $checked = false;
+        static $hasColumns = false;
+
+        if ($checked) {
+            return $hasColumns;
+        }
+
+        $checked = true;
+        $result = $this->conn->query("SHOW COLUMNS FROM payments LIKE 'payhere_order_id'");
+        $hasColumns = (bool)($result && $result->num_rows > 0);
+
+        return $hasColumns;
     }
 
     public function updateBookingStatus($bookingId, $status)
