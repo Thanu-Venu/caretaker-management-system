@@ -58,17 +58,6 @@ $badgeCounts = getSidebarBadgeCounts();
       </li>
 
       <li>
-        <a href="http://localhost/CMA/public?url=notification/index">
-          <span class="menu-item-content">
-            <span class="menu-left">
-              <i class="bx bx-bell"></i> Notifications
-            </span>
-            <?php echo renderBadge('notifications', $badgeCounts); ?>
-          </span>
-        </a>
-      </li>
-
-      <li>
         <a href="http://localhost/CMA/public?url=client/c_complaintlist"><i class="fa-solid fa-file-circle-exclamation"></i> Complaints </i></a>
       </li>
       <li>
