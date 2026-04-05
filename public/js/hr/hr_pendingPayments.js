@@ -10,6 +10,15 @@ document.addEventListener('DOMContentLoaded', function () {
     let actionType = "";
     let selectedPaymentId = null;
 
+    const appRoot = (() => {
+        const parts = window.location.pathname.split('/').filter(Boolean);
+        return parts.length > 0 ? `/${parts[0]}` : '';
+    })();
+
+    function buildRouteUrl(route) {
+        return `${window.location.origin}${appRoot}/public/index.php?url=${route}`;
+    }
+
     // ================= APPROVE =================
     document.querySelectorAll('.open-approve-modal').forEach(btn => {
         btn.addEventListener('click', function () {
@@ -61,9 +70,9 @@ document.addEventListener('DOMContentLoaded', function () {
         form.method = "POST";
 
         if (actionType === "approve") {
-            form.action = "<?= URLROOT ?>/hr/approvePayment";
+            form.action = buildRouteUrl('hr/approvePayment');
         } else {
-            form.action = "<?= URLROOT ?>/hr/rejectPayment";
+            form.action = buildRouteUrl('hr/rejectPayment');
         }
 
         form.innerHTML = `

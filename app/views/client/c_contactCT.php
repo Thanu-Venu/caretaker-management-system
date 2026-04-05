@@ -89,23 +89,7 @@
           </div>
         </div>
 
-        <div class="action-section">
-          <h3><i class="fas fa-comments"></i> Quick Actions</h3>
-          <div class="action-buttons">
-            <a href="tel:<?= htmlspecialchars($caretaker['phone'] ?? '') ?>" class="action-btn btn-call">
-              <i class="fas fa-phone"></i>
-              <span>Call Now</span>
-            </a>
-            <a href="sms:<?= htmlspecialchars($caretaker['phone'] ?? '') ?>" class="action-btn btn-message">
-              <i class="fas fa-comment-dots"></i>
-              <span>Send SMS</span>
-            </a>
-            <a href="mailto:<?= htmlspecialchars($caretaker['email'] ?? '') ?>" class="action-btn btn-email">
-              <i class="fas fa-envelope"></i>
-              <span>Send Email</span>
-            </a>
-          </div>
-        </div>
+       
 
         <div class="navigation-section">
           <a href="<?= URLROOT ?>/client/c_dashboard" class="btn-back">
@@ -121,7 +105,7 @@
         <div class="empty-state">
           <i class="fas fa-user-slash"></i>
           <h3>No Caregiver Details Available</h3>
-          <p>Please make sure you have an active booking with advance payment completed.</p>
+          <p>After the HR manager approves the payment, you will be able to view the caretaker details..</p>
           <a href="<?= URLROOT ?>/client/c_upcomingBookings" class="btn-primary">
             <i class="fas fa-calendar-check"></i> View My Bookings
           </a>

@@ -1,5 +1,7 @@
 <?php
 
+require_once APPROOT . '/core/PayHereHelper.php';
+
 class ClientController extends Controller
 {
     private $clientModel;
@@ -1215,7 +1217,14 @@ class ClientController extends Controller
         ];
         $normalizedBasis = $basisMap[strtolower($rawBasis)] ?? $rawBasis;
 
-        $serviceType = trim((string)($_GET['service_type'] ?? ($caretaker['service_type'] ?? '')));
+        $serviceTypeRaw = trim((string)($_GET['service_type'] ?? ($caretaker['service_type'] ?? '')));
+        $serviceTypeMap = [
+            'elder care' => 'Elder Care',
+            'babysitter' => 'Babysitter',
+            'maid' => 'Maid',
+            'disability support' => 'Disability Support',
+        ];
+        $serviceType = $serviceTypeMap[strtolower($serviceTypeRaw)] ?? $serviceTypeRaw;
         // Pre-fill data from GET parameters (from search popup)
         $prefill = [
             'basis'    => $normalizedBasis,
@@ -1242,6 +1251,7 @@ class ClientController extends Controller
                 "Elder Care" => ["Monthly", "Yearly"],
                 "Babysitter" => ["Daily", "Monthly", "Yearly"],
                 "Maid"       => ["Hourly", "Daily", "Monthly", "Yearly"],
+                "Disability Support" => ["Hourly", "Daily", "Monthly", "Yearly"],
             ],
             'total_payment'  => $total_payment // <-- automatically calculated
         ];
@@ -1293,6 +1303,13 @@ class ClientController extends Controller
         $caretaker_id    = $_POST['caretaker_id'] ?? 0;
         $client_id       = AuthSession::profileId();
 
+        $returnToBookUrl = URLROOT . "/client/c_book?id=" . (int)$caretaker_id
+            . "&service_type=" . rawurlencode((string)$service_type)
+            . "&basis=" . rawurlencode((string)$basis)
+            . "&duration=" . rawurlencode((string)$duration)
+            . "&date=" . rawurlencode((string)$booking_date)
+            . "&time=" . rawurlencode((string)$preferred_time);
+
         // Detailed validation with specific error messages
         if ($caretaker_id <= 0) {
             $_SESSION['error'] = "Invalid caretaker selection. Please select a caretaker from the search results.";
@@ -1308,7 +1325,7 @@ class ClientController extends Controller
 
         if (empty($service_type) || empty($basis) || empty($booking_date) || empty($preferred_time)) {
             $_SESSION['error'] = "Please fill in all required booking fields (service, basis, date, and time).";
-            header("Location: " . URLROOT . "/client/c_book?id=" . $caretaker_id);
+            header("Location: " . $returnToBookUrl);
             exit;
         }
 
@@ -1324,6 +1341,7 @@ class ClientController extends Controller
             "Elder Care" => ["Monthly", "Yearly"],
             "Babysitter" => ["Daily", "Monthly", "Yearly"],
             "Maid"       => ["Hourly", "Daily", "Monthly", "Yearly"],
+            "Disability Support" => ["Hourly", "Daily", "Monthly", "Yearly"],
         ];
 
         if (!isset($allowed[$service_type]) || !in_array($basis, $allowed[$service_type], true)) {
@@ -1343,7 +1361,7 @@ class ClientController extends Controller
 
         if ($caretakerConflict) {
             $_SESSION['error'] = "Selected caregiver is no longer available for the chosen date/time. Please choose another slot or caregiver.";
-            header("Location: " . URLROOT . "/client/c_book?id=" . (int)$caretaker_id);
+            header("Location: " . $returnToBookUrl);
             exit;
         }
 
@@ -1556,38 +1574,61 @@ class ClientController extends Controller
         $paymentId = $this->clientModel->savePayment($paymentData);
 
         if ($paymentId) {
-            if ($paymentType === 'advance') {
-                // Update booking status to Advance_Paid
-                $this->clientModel->updateBookingStatus($bookingId, 'Advance_Paid');
+            if (!PayHereHelper::isConfigured()) {
+                $_SESSION['error'] = "PayHere sandbox configuration is missing";
+                header("Location: " . URLROOT . "/client/c_makePayment?booking_id=" . $bookingId);
+                exit;
             }
 
-            // Send notification to HR (Manager) - only to first/primary manager
-            require_once APPROOT . '/models/NotificationModel.php';
-            $notifModel = new NotificationModel();
-            $hr_users = $notifModel->getHRUsers();
+            $orderId = 'CMA-' . $paymentId . '-' . time();
+            $this->clientModel->setPayHereOrderId((int)$paymentId, $orderId);
 
-            if (!empty($hr_users)) {
-                $clientName = $_SESSION['user']['name'] ?? $_SESSION['user']['username'];
-                $message = $paymentType === 'advance'
-                    ? "Advance payment received from client {$clientName} (ID: {$clientId}) - Rs. " . number_format($amount, 2) . " for booking #{$bookingId}."
-                    : "Recurring payment submitted by client {$clientName} (ID: {$clientId}) - Rs. " . number_format($amount, 2) . " for booking #{$bookingId}.";
+            $amountFormatted = PayHereHelper::formatAmount($amount);
+            $currency = defined('PAYHERE_CURRENCY') ? PAYHERE_CURRENCY : 'LKR';
+            $merchantId = defined('PAYHERE_MERCHANT_ID') ? PAYHERE_MERCHANT_ID : '';
+            $merchantSecret = defined('PAYHERE_MERCHANT_SECRET') ? PAYHERE_MERCHANT_SECRET : '';
+            $returnUrl = defined('PAYHERE_RETURN_URL') ? PAYHERE_RETURN_URL : '';
+            $cancelUrl = defined('PAYHERE_CANCEL_URL') ? PAYHERE_CANCEL_URL : '';
+            $notifyUrl = defined('PAYHERE_NOTIFY_URL') ? PAYHERE_NOTIFY_URL : '';
+            $gatewayUrl = defined('PAYHERE_API_URL') ? PAYHERE_API_URL : '';
 
-                $title = $paymentType === 'advance' ? 'Advance Payment Received' : 'Recurring Payment Received';
-
-                // Send to only the first manager
-                $hr_user = $hr_users[0];
-                $notifModel->addNotification(
-                    $hr_user['id'],
-                    'Manager',
-                    $title,
-                    $message,
-                    URLROOT . "/hr/pendingPayments"
-                );
+            if ($merchantId === '' || $merchantSecret === '' || $returnUrl === '' || $cancelUrl === '' || $notifyUrl === '' || $gatewayUrl === '') {
+                $_SESSION['error'] = "PayHere configuration is incomplete";
+                header("Location: " . URLROOT . "/client/c_makePayment?booking_id=" . $bookingId);
+                exit;
             }
 
-            $_SESSION['success'] = "Payment submitted successfully! Waiting for HR approval.";
-            header("Location: " . URLROOT . "/client/c_paymentSuccess?payment_id=" . $paymentId);
-            exit;
+            $hash = PayHereHelper::buildCheckoutHash($merchantId, $orderId, $amountFormatted, $currency, $merchantSecret);
+
+            $fullName = trim((string)($_SESSION['user']['name'] ?? 'Client User'));
+            $nameParts = preg_split('/\s+/', $fullName);
+            $firstName = $nameParts[0] ?? 'Client';
+            $lastName = count($nameParts) > 1 ? implode(' ', array_slice($nameParts, 1)) : 'User';
+
+            $payhereData = [
+                'merchant_id' => $merchantId,
+                'return_url' => $returnUrl,
+                'cancel_url' => $cancelUrl,
+                'notify_url' => $notifyUrl,
+                'order_id' => $orderId,
+                'items' => 'Booking #' . $bookingId . ' - ' . ($paymentType === 'advance' ? 'Advance Payment' : 'Recurring Installment'),
+                'currency' => $currency,
+                'amount' => $amountFormatted,
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'email' => (string)($_SESSION['user']['email'] ?? 'client@example.com'),
+                'phone' => (string)($_SESSION['user']['phone'] ?? '0000000000'),
+                'address' => (string)($booking['address_line1'] ?? 'Not Provided'),
+                'city' => (string)($booking['district'] ?? 'Colombo'),
+                'country' => 'Sri Lanka',
+                'hash' => $hash,
+            ];
+
+            $this->view('client/c_payhereRedirect', [
+                'gateway_url' => $gatewayUrl,
+                'payhere' => $payhereData
+            ]);
+            return;
         } else {
             $_SESSION['error'] = "Payment processing failed";
             header("Location: " . URLROOT . "/client/c_makePayment?booking_id=" . $bookingId);

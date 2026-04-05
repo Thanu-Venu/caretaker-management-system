@@ -1,10 +1,7 @@
 <?php
 require_once APPROOT . "/models/NotificationModel.php";
 
-if (!isset($_SESSION['user'])) {
-    header("Location: " . URLROOT . "/auth/login");
-    exit;
-}
+AuthSession::requireLogin();
 
 $notifModel = new NotificationModel();
 $user_id = AuthSession::profileId();
