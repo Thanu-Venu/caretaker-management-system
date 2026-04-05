@@ -54,7 +54,8 @@ class PaymentGatewayController extends Controller
         }
 
         $payload = $_POST;
-        if (!PayHereHelper::verifyNotifySignature($payload, PAYHERE_MERCHANT_SECRET)) {
+        $merchantSecret = defined('PAYHERE_MERCHANT_SECRET') ? PAYHERE_MERCHANT_SECRET : '';
+        if ($merchantSecret === '' || !PayHereHelper::verifyNotifySignature($payload, $merchantSecret)) {
             http_response_code(400);
             echo 'Invalid signature';
             exit;
@@ -87,6 +88,24 @@ class PaymentGatewayController extends Controller
             );
 
             if ($isApproved) {
+                $notificationModel = $this->model('NotificationModel');
+                $amountPaid = (float)($payment['amount'] ?? 0);
+                $bookingId = (int)($payment['booking_id'] ?? 0);
+                $paymentType = strtolower(trim((string)($payment['payment_type'] ?? 'advance')));
+
+                $clientTitle = 'Payment Successful';
+                $clientMessage = "Your payment for booking #{$bookingId} was successful.\n" .
+                    "Amount: LKR " . number_format($amountPaid, 2) . "\n" .
+                    "You can check payment details in your payments dashboard.";
+
+                $notificationModel->addNotification(
+                    (int)$payment['client_id'],
+                    'client',
+                    $clientTitle,
+                    $clientMessage,
+                    URLROOT . '/client/payments?tab=paid_history'
+                );
+
                 $paymentType = strtolower(trim((string)($payment['payment_type'] ?? '')));
                 $bookingStatus = (string)($payment['booking_status'] ?? '');
                 $isAdvanceApproval = ($paymentType === 'advance')
@@ -100,7 +119,6 @@ class PaymentGatewayController extends Controller
                         PaymentController::createRecurringPayments((int)$payment['booking_id'], $bookingDetails);
                     }
 
-                    $notificationModel = $this->model('NotificationModel');
                     $notificationModel->addNotification(
                         (int)$payment['caretaker_id'],
                         'caretaker',
