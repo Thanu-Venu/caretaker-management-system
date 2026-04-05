@@ -22,27 +22,6 @@
   letter-spacing: 0.2px;
 }
 
-.top-actions {
-  margin-bottom: 10px;
-}
-
-.back-find-btn {
-  display: inline-block;
-  padding: 9px 14px;
-  border-radius: 10px;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 600;
-  color: #1e3a8a;
-  background: #e0ecff;
-  border: 1px solid #c7dcff;
-  transition: background-color 0.2s ease;
-}
-
-.back-find-btn:hover {
-  background: #cfe2ff;
-}
-
 /* Nice consistent section spacing */
 .caretaker-summary,
 .booking-form,
