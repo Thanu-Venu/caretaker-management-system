@@ -94,6 +94,13 @@
   word-break: break-word;
 }
 
+.bookings-table tbody td.empty-row {
+  text-align: center;
+  color: #6b7280;
+  font-weight: 500;
+  padding: 18px 14px;
+}
+
 .complaint-date {
   display: block;
   font-weight: 600;

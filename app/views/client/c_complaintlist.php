@@ -26,20 +26,20 @@ $complaintsList = $data['complaints'] ?? ($complaints ?? []);
         <a class="register-btn" href="<?= URLROOT ?>/public/index.php?url=Complaint/complaintReg">+ Register Complaint</a>
     </div>
 
-    <?php if (!empty($complaintsList)): ?>
-        <div class="table-wrapper">
-            <table class="bookings-table">
-                <thead>
-                    <tr>
-                        <th>Client Name</th>
-                        <th>Caretaker</th>
-                        <th>Complaint Category</th>
-                        <th>Complaint Description</th>
-                        <th>Complaint Registered Date</th>
-                    </tr>
-                </thead>
+    <div class="table-wrapper">
+        <table class="bookings-table">
+            <thead>
+                <tr>
+                    <th>Client Name</th>
+                    <th>Caretaker</th>
+                    <th>Complaint Category</th>
+                    <th>Complaint Description</th>
+                    <th>Complaint Registered Date</th>
+                </tr>
+            </thead>
 
-                <tbody>
+            <tbody>
+            <?php if (!empty($complaintsList)): ?>
                 <?php foreach ($complaintsList as $complaint): ?>
                     <tr>
                         <td><?= htmlspecialchars($complaint['client_name']) ?></td>
@@ -57,12 +57,14 @@ $complaintsList = $data['complaints'] ?? ($complaints ?? []);
                         </td>
                     </tr>
                 <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    <?php else: ?>
-        <p class="no-bookings">There is no complaint registered.</p>
-    <?php endif; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="5" class="empty-row">No complaint registered.</td>
+                </tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
 
 </main>
 
