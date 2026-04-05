@@ -89,10 +89,8 @@ class ComplaintController
             exit;
         }
 
-        $client_name = $_SESSION['user']['name'];
-
-        // Fetch complaints for this client
-        $complaints = $this->complaintModel->getComplaintsByClient($client_name);
+        $clientId = AuthSession::profileId();
+        $caretakers = $this->clientModel->getBookedCaretakersByClient($clientId);
 
         // Load the view with complaints
         include_once APPROOT . "/views/templates/client/c_header.php";
