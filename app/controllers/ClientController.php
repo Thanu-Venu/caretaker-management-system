@@ -1585,8 +1585,20 @@ class ClientController extends Controller
 
             $amountFormatted = PayHereHelper::formatAmount($amount);
             $currency = defined('PAYHERE_CURRENCY') ? PAYHERE_CURRENCY : 'LKR';
-            $merchantId = PAYHERE_MERCHANT_ID;
-            $hash = PayHereHelper::buildCheckoutHash($merchantId, $orderId, $amountFormatted, $currency, PAYHERE_MERCHANT_SECRET);
+            $merchantId = defined('PAYHERE_MERCHANT_ID') ? PAYHERE_MERCHANT_ID : '';
+            $merchantSecret = defined('PAYHERE_MERCHANT_SECRET') ? PAYHERE_MERCHANT_SECRET : '';
+            $returnUrl = defined('PAYHERE_RETURN_URL') ? PAYHERE_RETURN_URL : '';
+            $cancelUrl = defined('PAYHERE_CANCEL_URL') ? PAYHERE_CANCEL_URL : '';
+            $notifyUrl = defined('PAYHERE_NOTIFY_URL') ? PAYHERE_NOTIFY_URL : '';
+            $gatewayUrl = defined('PAYHERE_API_URL') ? PAYHERE_API_URL : '';
+
+            if ($merchantId === '' || $merchantSecret === '' || $returnUrl === '' || $cancelUrl === '' || $notifyUrl === '' || $gatewayUrl === '') {
+                $_SESSION['error'] = "PayHere configuration is incomplete";
+                header("Location: " . URLROOT . "/client/c_makePayment?booking_id=" . $bookingId);
+                exit;
+            }
+
+            $hash = PayHereHelper::buildCheckoutHash($merchantId, $orderId, $amountFormatted, $currency, $merchantSecret);
 
             $fullName = trim((string)($_SESSION['user']['name'] ?? 'Client User'));
             $nameParts = preg_split('/\s+/', $fullName);
@@ -1595,9 +1607,9 @@ class ClientController extends Controller
 
             $payhereData = [
                 'merchant_id' => $merchantId,
-                'return_url' => PAYHERE_RETURN_URL,
-                'cancel_url' => PAYHERE_CANCEL_URL,
-                'notify_url' => PAYHERE_NOTIFY_URL,
+                'return_url' => $returnUrl,
+                'cancel_url' => $cancelUrl,
+                'notify_url' => $notifyUrl,
                 'order_id' => $orderId,
                 'items' => 'Booking #' . $bookingId . ' - ' . ($paymentType === 'advance' ? 'Advance Payment' : 'Recurring Installment'),
                 'currency' => $currency,
@@ -1613,7 +1625,7 @@ class ClientController extends Controller
             ];
 
             $this->view('client/c_payhereRedirect', [
-                'gateway_url' => PAYHERE_API_URL,
+                'gateway_url' => $gatewayUrl,
                 'payhere' => $payhereData
             ]);
             return;
