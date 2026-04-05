@@ -1,10 +1,12 @@
 /* ── Page layout ─────────────────────────────────── */
 .confirmation-container {
   font-family: 'Segoe UI', Arial, sans-serif;
-  background: #f0f4f8;
   margin-left: 270px;
-  min-height: 100vh;
-  padding: 40px;
+  min-height: calc(10vh - 60px);
+  padding: 90px 24px 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .card {
@@ -12,9 +14,8 @@
   padding: 35px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 550px;
   width: 100%;
-  max-width: none; /* 🔥 important */
+  max-width: 640px;
 }
 
 .card h2 {
@@ -59,6 +60,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.actions button {
+  appearance: none;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 18px;
+  min-height: 42px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 /* ── Card ─────────────────────────────────────────── */
@@ -72,12 +90,12 @@
 
 }
 
-button:hover {
+.actions button:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-button:active {
+.actions button:active {
   transform: translateY(0);
 }
 
@@ -98,6 +116,11 @@ button.secondary {
 
 button.secondary:hover {
   background: #e2e8f0;
+}
+
+.actions button:focus-visible {
+  outline: 2px solid #1e88e5;
+  outline-offset: 2px;
 }
 
 /* ---- enhanced details layout ---- */
@@ -125,6 +148,17 @@ button.secondary:hover {
 }
 
 @media (max-width: 600px) {
+  .confirmation-container {
+    margin-left: 0;
+    padding: 80px 16px 16px;
+    min-height: auto;
+    align-items: flex-start;
+  }
+
+  .card {
+    padding: 28px 20px;
+  }
+
   .details {
     grid-template-columns: 1fr;
   }
@@ -132,5 +166,19 @@ button.secondary:hover {
     justify-self: start;
     display: block;
     margin-bottom: 4px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .confirmation-container {
+    margin-left: 0;
   }
 }
