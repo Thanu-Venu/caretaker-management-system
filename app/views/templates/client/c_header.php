@@ -1,10 +1,7 @@
 <?php
 require_once APPROOT . "/models/NotificationModel.php";
 
-if (!isset($_SESSION['user'])) {
-    header("Location: " . URLROOT . "/auth/login");
-    exit;
-}
+AuthSession::requireLogin();
 
 $notifModel = new NotificationModel();
 $user_id   = AuthSession::profileId();
@@ -66,7 +63,7 @@ $profilePic = $_SESSION['user']['profile_image'] ?? 'default.png';
                         <?php endif; ?>
                     </ul>
                     <div class="see-all">
-                        <a href="<?= URLROOT ?>/notification/index">See all notifications</a>
+                        <a href="<?= URLROOT ?>/index.php?url=notification/index">See all notifications</a>
                     </div>
                 </div>
             </div>
