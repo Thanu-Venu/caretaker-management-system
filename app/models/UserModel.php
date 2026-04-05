@@ -196,11 +196,11 @@ class UserModel
         }
         return false;
     }
-    // In UserModel
     public function updateUserProfile($id, $data)
     {
+        $profile_pic = $data['profile_pic'] ?? null;
         $stmt = $this->conn->prepare("UPDATE users SET username=?, phone=?, profile_pic=COALESCE(?, profile_pic) WHERE id=?");
-        $stmt->bind_param("sssi", $data['username'], $data['phone'], $data['profile_pic'], $id);
+        $stmt->bind_param("sssi", $data['username'], $data['phone'], $profile_pic, $id);
         $ok = $stmt->execute();
 
         if ($ok && $this->hasAccountLinking()) {

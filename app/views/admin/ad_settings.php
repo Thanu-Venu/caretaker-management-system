@@ -60,8 +60,7 @@ unset($_SESSION['flash_success'], $_SESSION['flash_error']);
                             </label><br>
 
                             <label>Profile Picture
-                                <input type="file" name="profileFile" accept="image/*">
-
+                                <input type="file" name="profileFile" id="profileFileInput" accept="image/*">
                             </label><br><br>
 
                             <div class="form-actions">
@@ -100,6 +99,61 @@ unset($_SESSION['flash_success'], $_SESSION['flash_error']);
 
         </div>
     </div>
+
+    <script>
+        // Real-time profile picture preview
+        const profileFileInput = document.getElementById('profileFileInput');
+        const profileImg = document.getElementById('profileImg');
+        const navbarProfileImg = document.querySelector('.profile-img');
+
+        if (profileFileInput) {
+            profileFileInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                
+                if (file) {
+                    // Validate file type
+                    if (!file.type.startsWith('image/')) {
+                        alert('Please select a valid image file');
+                        this.value = '';
+                        return;
+                    }
+
+                    // Validate file size (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File size must be less than 5MB');
+                        this.value = '';
+                        return;
+                    }
+
+                    // Create preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imageUrl = e.target.result;
+                        
+                        // Update settings page profile picture
+                        if (profileImg) {
+                            profileImg.src = imageUrl;
+                        }
+                        
+                        // Note: We intentionally do NOT update the navbar image here.
+                        // The navbar will cleanly update itself when the admin clicks
+                        // "Save Profile" and the page successfully reloads.
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Update navbar after form submission
+        const profileForm = document.querySelector('form[action*="update_profile"]');
+        if (profileForm) {
+            profileForm.addEventListener('submit', function(e) {
+                // Form will submit and page will reload
+                // Session will be updated by the server
+                // Navbar profile pic will automatically update on page reload
+            });
+        }
+    </script>
 </body>
 
 </html>
