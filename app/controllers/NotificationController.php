@@ -77,6 +77,7 @@ class NotificationController
     // Show notifications page
     public function index()
     {
+        $this->notifModel->markAllRead($this->user_id, $this->user_role);
         $notifications = $this->notifModel->getNotifications($this->user_id, $this->user_role, 50);
         $unreadCount = $this->notifModel->countUnread($this->user_id, $this->user_role);
 

@@ -104,7 +104,38 @@ class PendingCountModel
         // Pending Reschedule Requests
         $counts['reschedule_requests'] = $this->getClientPendingRescheduleCount($clientId);
 
+        // Unread notifications
+        $counts['notifications'] = $this->getUnreadNotificationsCount((int)$clientId, 'client');
+
         return $counts;
+    }
+
+    /**
+     * Count unread notifications for a specific user role.
+     *
+     * @param int $userId User profile ID
+     * @param string $role Notification role key
+     * @return int Count of unread notifications
+     */
+    public function getUnreadNotificationsCount($userId, $role)
+    {
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(*) as count
+             FROM notifications
+             WHERE user_id = ? AND user_role = ? AND is_read = 0"
+        );
+
+        if (!$stmt) {
+            return 0;
+        }
+
+        $stmt->bind_param('is', $userId, $role);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+
+        return (int) ($row['count'] ?? 0);
     }
 
     /**
