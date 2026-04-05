@@ -49,7 +49,7 @@ $ct = $data['caretaker'];
 
     <!-- Actions -->
     <div class="profile-actions">
-      <a href="<?= URLROOT ?>/public/?url=client/c_book&id=<?= $ct['id'] ?>&return=client/c_find" 
+      <a href="<?= URLROOT ?>/public/?url=client/c_book&id=<?= $ct['id'] ?>" 
          class="book-btn">
          Request Booking
       </a>
