@@ -23,7 +23,7 @@
                     <tr>
                         <th>Booking ID</th>
                         <th>Client Name</th>
-                        <th>Caretaker</th>
+                        <th>Caregiver</th>
                         <th>Service Type</th>
                         <th>Booking Date</th>
                         <th>Full Payment</th>

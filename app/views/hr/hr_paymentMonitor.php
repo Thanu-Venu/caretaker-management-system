@@ -112,7 +112,7 @@
                         <tr>
                             <th>Booking</th>
                             <th>Client</th>
-                            <th>Caretaker</th>
+                            <th>Caregiver</th>
                             <th>Service</th>
                             <th>Cycle</th>
                             <th>Due Date</th>
