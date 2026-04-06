@@ -1,102 +1,116 @@
-:root {
-  --review-bg-1: #f8fbff;
-  --review-bg-2: #eef6ff;
-  --review-card: #ffffff;
-  --review-text: #17324d;
-  --review-muted: #5b7288;
-  --review-accent: #1e88e5;
-  --review-accent-strong: #166fc1;
-  --review-border: #d8e6f4;
-  --review-hover: #eef7ff;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', Arial, sans-serif;
+/* Main Layout */
+body {
+    background-color: var(--bg-primary, #f4f7fb);
+    font-family: var(--font-primary, 'Poppins', Arial, sans-serif);
 }
 
 .main-content {
-  margin-left: 270px;
-  padding: 24px;
-  min-height: 100vh;
+    margin-left: 270px;
+    padding: 30px;
+    min-height: 100vh;
 }
 
+/* Card Table Wrapper */
 .card {
-  background: var(--review-card);
-  padding: 22px;
-  border-radius: 16px;
-  border: 1px solid var(--review-border);
-  box-shadow: 0 10px 28px rgba(26, 42, 71, 0.12);
-  margin-bottom: 30px;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 25px rgba(26, 42, 71, 0.08);
+    margin-bottom: 30px;
 }
 
 .card h2 {
-  font-size: 30px;
-  color: #1e88e5;
-  letter-spacing: 0.2px;
-  margin: 0 0 20px 0;
+    font-size: 28px;
+    color: var(--primary-600, #1e88e5);
+    font-weight: 700;
+    margin-bottom: 25px;
+    letter-spacing: 0.2px;
 }
 
+/* Reviews Table Standardization */
 .feedback-table-container {
-  overflow-x: auto;
+    overflow-x: auto;
 }
 
 table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-  overflow: hidden;
-  border-radius: 12px;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 thead {
-  background-color: #f6fafe;
-  color: #fff;
+    background-color: #f8fafc;
 }
 
-th, td {
-  padding: 12px 15px;
-  border-bottom: 1px solid #edf3f9;
-  text-align: left;
+th,
+td {
+    padding: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: left;
 }
 
 th {
-  color: #173b72;
-  font-weight: 700;
+    color: #1e3a8a;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.3px;
 }
 
 td {
-  color: #2a3e5f;
+    color: #334155;
+    vertical-align: middle;
 }
 
 tbody tr:hover {
-  background-color: var(--review-hover);
+    background-color: #f8fbff;
 }
 
+/* Review Text Cell */
 td:last-child {
-  max-width: 300px;
-  word-wrap: break-word;
+    max-width: 350px;
+    word-wrap: break-word;
+    line-height: 1.5;
+    color: #475569;
 }
 
+/* Rating Stars */
 td:nth-child(4) {
-  color: #ffb400; /* Rating stars color */
-  font-weight: 600;
+    color: #fbbf24;
+    /* Golden yellow for stars */
+    font-weight: 700;
+    font-size: 16px;
 }
 
+/* Empty state message matching ct_booking.css */
+td[colspan] {
+    text-align: center;
+    color: #5b7288;
+    font-weight: 500;
+    padding: 30px 12px;
+    font-size: 16px;
+}
+
+/* Responsive */
 @media (max-width: 1024px) {
-  .main-content {
-    margin-left: 0;
-    padding: 16px;
-  }
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
 }
 
-@media (max-width: 760px) {
-  .card h2 {
-    font-size: 24px;
-  }
-  .card {
-    padding: 15px;
-  }
+@media (max-width: 768px) {
+    .card h2 {
+        font-size: 24px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    table {
+        min-width: 600px;
+    }
 }

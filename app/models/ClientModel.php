@@ -1631,7 +1631,7 @@ class ClientModel
         $sql = "SELECT COALESCE(SUM(p.amount),0) AS total
                 FROM payments p
                 WHERE p.client_id = ?
-                  AND p.status = 'approved'";
+                  AND LOWER(p.status) IN ('approved', 'paid', 'success', 'completed')";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $clientId);

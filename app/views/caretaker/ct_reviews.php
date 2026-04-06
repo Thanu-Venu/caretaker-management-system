@@ -39,7 +39,7 @@
             <?php endforeach; ?>
         <?php else : ?>
             <tr>
-                <td colspan="5" style="text-align:center; color: var(--review-muted); padding: 24px;">No feedback yet</td>
+                <td colspan="5">No feedback yet</td>
             </tr>
         <?php endif; ?>
         </tbody>

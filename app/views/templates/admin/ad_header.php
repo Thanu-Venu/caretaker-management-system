@@ -113,7 +113,7 @@ $profilePic = $_SESSION['user']['profile_pic'] ?? 'default.png';
             <!-- Profile -->
             <div class="profile-wrapper">
                 <a href="http://localhost/CMA/public?url=admin/ad_settings" class="profile-link">
-                    <img src="<?= URLROOT ?>/images/profiles/<?= htmlspecialchars($profilePic) ?>" class="profile-img"
+                    <img src="<?= URLROOT ?>/public/images/profiles/<?= htmlspecialchars($profilePic) ?>" class="profile-img"
                         alt="Profile">
                     <span><?= htmlspecialchars($user_display) ?></span>
                 </a>

@@ -145,8 +145,8 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
                 <h3><?= htmlspecialchars($ct['name']) ?></h3>
                 <p><?= htmlspecialchars($ct['service_type']) ?> Specialist</p>
 
-                <img src="<?= URLROOT ?>/uploads/<?= htmlspecialchars($ct['profile_image']) ?>"
-                  onerror="this.src='<?= URLROOT ?>/uploads/default.png';">
+                <img src="<?= URLROOT ?>/public/uploads/<?= htmlspecialchars(trim($ct['profile_image'] ?? '')) ?>"
+                  onerror="this.src='<?= URLROOT ?>/public/uploads/default.png';">
 
                 <div class="exp-loc">
                   <p>Exp: <?= htmlspecialchars($ct['experience']) ?></p>
