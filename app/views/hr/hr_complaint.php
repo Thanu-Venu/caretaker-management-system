@@ -16,7 +16,7 @@
 <br>
 <div class="top">
   <button class="top-button active" onclick="switchTab('c_complaint', event)">Client Complaints</button>
-  <button class="top-button" onclick="switchTab('ct_complaint', event)">Caretaker Complaints</button>
+  <button class="top-button" onclick="switchTab('ct_complaint', event)">Caregiver Complaints</button>
 </div>
 <!-- CLIENT COMPLAINTS -->
 <section class="card tab-content active" id="c_complaint">
@@ -25,7 +25,7 @@
       <tr>
         <th>ID</th>
         <th>Client</th>
-        <th>Caretaker</th>
+        <th>Caregiver</th>
         <th>Category</th>
         <th>Details</th>
         <th>Date</th>
@@ -78,7 +78,7 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th>Caretaker</th>
+        <th>Caregiver</th>
         <th>Client</th>
         <th>Category</th>
         <th>Details</th>
@@ -114,7 +114,7 @@
     <?php endforeach; ?>
 <?php else: ?>
     <tr>
-        <td colspan="8">No caretaker complaints</td>
+        <td colspan="8">No caregiver complaints</td>
     </tr>
 <?php endif; ?>
    </tbody>
