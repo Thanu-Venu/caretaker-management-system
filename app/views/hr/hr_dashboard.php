@@ -121,7 +121,7 @@ $performanceColors = $data['performanceColors'] ?? json_encode(['#1E88E5', '#00B
       <div class="card-header">
         <div>
           <h3>Performance Ratings</h3>
-          <div class="subtitle">Active caretakers</div>
+          <div class="subtitle">Active caregivers</div>
         </div>
       </div>
       <div class="chart-wrap">
@@ -150,7 +150,7 @@ $performanceColors = $data['performanceColors'] ?? json_encode(['#1E88E5', '#00B
             ?>
             <li class="pending-item">
               <div class="info">
-                <div class="title">Caretaker #<?= htmlspecialchars((string)$caretakerId) ?></div>
+                <div class="title">Caregiver #<?= htmlspecialchars((string)$caretakerId) ?></div>
                 <div class="desc"><?= htmlspecialchars((string)$startDate) ?> → <?= htmlspecialchars((string)$endDate) ?></div>
               </div>
               <a class="action" href="<?= URLROOT ?>/hr/hr_leave">
@@ -313,7 +313,7 @@ $performanceColors = $data['performanceColors'] ?? json_encode(['#1E88E5', '#00B
             label: function(context) {
               const label = context.label || '';
               const count = context.parsed || 0;
-              return label + ': ' + count + ' caretaker(s)';
+              return label + ': ' + count + ' caregiver(s)';
             }
           }
         }

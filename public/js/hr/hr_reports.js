@@ -88,9 +88,9 @@ function initializeCharts() {
   }
 
   // -------- Other Charts --------
-  safeChart("caretakerStatusChart", "doughnut", caretakerStatusRows, "status", "count", ['#00ab94','#ea0b34','#3b82f6','#a855f7'], "Caretakers");
+  safeChart("caretakerStatusChart", "doughnut", caretakerStatusRows, "status", "count", ['#00ab94','#ea0b34','#3b82f6','#a855f7'], "Caregivers");
 
-  safeChart("serviceMixChart", "bar", caretakersByServiceRows, "service_type", "count", ['#2066a8','#3594cc','#8cc5e3','#0ea5e9','#9fd3eb'], "Caretakers");
+  safeChart("serviceMixChart", "bar", caretakersByServiceRows, "service_type", "count", ['#2066a8','#3594cc','#8cc5e3','#0ea5e9','#9fd3eb'], "Caregivers");
 
   safeChart("leaveStatusChart", "pie", leaveRequestsRows, "status", "count", ['#00ab94','#2064d0','#f59e0b','#ea0b34'], "Leaves");
 

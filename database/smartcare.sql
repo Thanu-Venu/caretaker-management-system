@@ -57,7 +57,7 @@ CREATE TABLE `announcements` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
   `message` text,
-  `target_role` enum('users','caretaker','client','All') DEFAULT NULL,
+  `target_role` enum('users','caregiver','client','All') DEFAULT NULL,
   `created_by` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -70,7 +70,7 @@ CREATE TABLE `announcements` (
 
 LOCK TABLES `announcements` WRITE;
 /*!40000 ALTER TABLE `announcements` DISABLE KEYS */;
-INSERT INTO `announcements` VALUES (1,'system maintenance','there will be a system maintenance from 12pm to 1pm','All',1,'2025-12-23 11:18:59'),(2,'caretaker job hunting','dgstrhdtyh','users',1,'2026-01-08 05:34:31'),(3,'bdnhgn','fbdnh','users',1,'2026-01-08 07:05:41'),(4,'gdgtrhd','vdstdrh','users',1,'2026-01-20 11:26:57'),(5,'htjyj','hthty','caretaker',1,'2026-02-02 08:50:50'),(6,'fbth','gsrhtrh','All',1,'2026-02-04 04:38:04'),(7,'fbth','gsrhtrh','All',1,'2026-02-04 04:38:26'),(8,'system maintenance','there will be a system maintenance from today 12pm to evening 5pm.Sorry for the inconvinience we have caused','caretaker',1,'2026-02-04 04:55:41'),(9,'system down','rgtrhthjyhreg','users',1,'2026-03-08 08:25:20');
+INSERT INTO `announcements` VALUES (1,'system maintenance','there will be a system maintenance from 12pm to 1pm','All',1,'2025-12-23 11:18:59'),(2,'caregiver job hunting','dgstrhdtyh','users',1,'2026-01-08 05:34:31'),(3,'bdnhgn','fbdnh','users',1,'2026-01-08 07:05:41'),(4,'gdgtrhd','vdstdrh','users',1,'2026-01-20 11:26:57'),(5,'htjyj','hthty','caregiver',1,'2026-02-02 08:50:50'),(6,'fbth','gsrhtrh','All',1,'2026-02-04 04:38:04'),(7,'fbth','gsrhtrh','All',1,'2026-02-04 04:38:26'),(8,'system maintenance','there will be a system maintenance from today 12pm to evening 5pm.Sorry for the inconvinience we have caused','caregiver',1,'2026-02-04 04:55:41'),(9,'system down','rgtrhthjyhreg','users',1,'2026-03-08 08:25:20');
 /*!40000 ALTER TABLE `announcements` ENABLE KEYS */;
 UNLOCK TABLES;
 

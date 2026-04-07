@@ -9,25 +9,25 @@ function setActiveTab(tabName) {
     btn.classList.remove("active");
   });
 
-  // Show the selected tab
+  // Show selected tab
   const tab = document.getElementById(tabName);
   if (tab) {
     tab.classList.add("active");
   }
 
-  // Highlight matching button
-  const btn = document.querySelector(`.top button[data-tab="${tabName}"]`);
-  if (btn) {
-    btn.classList.add("active");
-  }
+  // Highlight correct button (based on onclick attribute)
+  document.querySelectorAll(".top button").forEach(btn => {
+    if (btn.getAttribute("onclick")?.includes(tabName)) {
+      btn.classList.add("active");
+    }
+  });
 }
 
-// Switch tabs (click handler)
-function showTab(tabName, event) {
+// ✅ THIS is the function your HTML is calling
+function switchTab(tabName, event) {
   setActiveTab(tabName);
 
-  // Ensure clicked button is active if provided
-  if (event?.target) {
+  if (event && event.target) {
     event.target.classList.add("active");
   }
 }
@@ -37,8 +37,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const bookingId = params.get("booking_id");
   const tab = params.get("tab") || "ongoing";
 
+  setActiveTab(tab); // ensure default tab loads
+
   if (bookingId) {
-    setActiveTab(tab);
     const row = document.querySelector(`.booking-row[data-booking-id="${bookingId}"]`);
     if (row) {
       row.classList.add("highlight");

@@ -24,25 +24,32 @@ $warning = $data['warning'] ?? '';
 
 <body>
     <main class="content">
-        <div class="booking">
-            <div class="card">
-                <h2 >Leave Requests</h2>
+        <div class="header-row">
+        <h2>Leave Requests</h2>
 
+        <button class="add-btn"
+            onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">
+            Request Leave
+        </button>
+        </div>
+        <div class="booking">
+
+            <div class="card">
                 <div class="leave-summary-strip">
                     <div class="summary-item">
-                        <span>Monthly Leave Limit</span>
+                        <span>Monthly Leave Limit</span><br>
                         <strong><?= (int)$summary['limit'] ?> days</strong>
                     </div>
                     <div class="summary-item">
-                        <span>Used</span>
+                        <span>Used</span><br>
                         <strong><?= (int)$summary['used'] ?> days</strong>
                     </div>
                     <div class="summary-item">
-                        <span>Remaining</span>
+                        <span>Remaining</span><br>
                         <strong><?= (int)$summary['remaining'] ?> days</strong>
                     </div>
                     <div class="summary-progress">
-                        <span><?= htmlspecialchars($summary['label']) ?></span>
+                        <span><?= htmlspecialchars($summary['label']) ?></span><br>
                         <div class="track">
                             <div class="fill" style="width: <?= (int)$summary['percentage'] ?>%"></div>
                         </div>
@@ -56,10 +63,6 @@ $warning = $data['warning'] ?? '';
                 <?php if ($warning): ?>
                     <div class="alert alert-warning"><?= htmlspecialchars($warning) ?></div>
                 <?php endif; ?>
-
-                <div class="top">
-                    <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">Request Leave</button>
-                </div>
 
                 <div class="table-container">
                     <table>
