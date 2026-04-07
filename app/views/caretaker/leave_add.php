@@ -56,9 +56,7 @@ $impact = $data['impact'] ?? [];
           <li><strong>Other Leaves:</strong> Request at least 3 days in advance.</li>
           <li><strong>Limits:</strong> Maximum 5 days per request and 5 days total per month.</li>
         </ul>
-      </div>
 
-      <div class="form-section">
         <?php if (!empty($errors)): ?>
           <div class="alert alert-error">
             <?php foreach ($errors as $error): ?>
@@ -101,10 +99,10 @@ $impact = $data['impact'] ?? [];
             <option value="Personal Leave" <?= (($form['leave_type'] ?? '') === 'Personal Leave') ? 'selected' : '' ?>>Personal Leave</option>
             <option value="Maternity Leave" <?= (($form['leave_type'] ?? '') === 'Maternity Leave') ? 'selected' : '' ?>>Maternity Leave</option>
           </select>
-<br><br>
+<br>
           <div class="row">
             <label>
-              Start Date<br><br>
+              Start Date<br>
               <input
                 type="date"
                 name="start_date"
@@ -117,7 +115,7 @@ $impact = $data['impact'] ?? [];
             </label>
 
             <label>
-              End Date <br><br>
+              End Date <br>
               <input
                 type="date"
                 name="end_date"
