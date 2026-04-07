@@ -1,13 +1,13 @@
 /* General */
 body {
-  font-family: 'Poppins', Arial, sans-serif;
-  margin: 0;
-  padding: 0;
   background: #f4f7fb;
-  color: #333;
 }
 
 .welcome h1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
   color: #1e88e5;
   font-size: 28px;
 }
@@ -17,8 +17,10 @@ body {
 }
 
 .content {
-  margin-left: 270px;
-  padding: 20px;
+  flex: 1;
+  margin-left: 255px;
+  font-family: 'Poppins', Arial, sans-serif;
+  padding: 20px 40px;
 }
 
 .dashboard {
@@ -30,7 +32,7 @@ body {
 
 /* Card */
 .card {
-  background: #fff;
+  background: #ffffff;
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
@@ -44,9 +46,9 @@ body {
 
 .card h3 {
   margin-bottom: 20px;
-  font-size: 1.2rem;
-  color: #1565c0;
-  border-bottom: 2px solid #e3e9f0;
+  font-size: 22px;
+  color: #1e88e5;
+  border-bottom: 2px solid #c0c5cb;
   padding-bottom: 8px;
 }
 
@@ -71,19 +73,21 @@ body {
   justify-content: space-between;
   align-items: flex-start;
   gap: 10px;
+  font-size: 20px;
+  font-weight: 700;
 }
 
 .profile-desc {
   font-size: 15px;
   margin-top: 8px;
   line-height: 1.4;
-  color: #555;
+  color: #494949;
 }
 
 .profile-request-status {
   margin-top: 8px;
   font-size: 13px;
-  color: #455a64;
+  color: #49565b;
 }
 
 .tags .tag {
@@ -91,11 +95,11 @@ body {
   padding: 6px 12px;
   border: 1px solid #1e88e5;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 13px;
   margin: 8px 6px 0 0;
   background: #e3f2fd;
   color: #1565c0;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* Buttons */
@@ -127,6 +131,7 @@ body {
   border-radius: 6px;
   font-size: 12px;
   margin-left: 10px;
+  font-weight: 600;
   border: none;
 }
 
@@ -174,60 +179,71 @@ input:checked+.slider:before {
 }
 
 /* Tables */
+.table-container {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 15px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
-  border-radius: 8px;
+  background: white;
   overflow: hidden;
 }
 
 th {
-  background: #f1f6fb;
-  text-align: left;
-  padding: 12px;
-  color: #1565c0;
+  background: #1e88e5;
+      font-size: 18px;
+    font-weight: 700;
+    color: white;
+    padding: 12px;
 }
 
-td {
+th, td {
   padding: 12px;
+  text-align: left;
   border-bottom: 1px solid #eee;
 }
 
-tbody tr:nth-child(even) {
-  background: #fafafa;
+tbody tr:hover {
+  background-color: #f9f9f9;
 }
 
 .badge {
   background: #1e88e5;
-  color: #fff;
+  color: #ffffff;
   padding: 4px 10px;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 .status.approved {
-  background: #00bfa5;
-  color: white;
-  padding: 4px 10px;
-  border-radius: 10px;
-  font-size: 12px;
+    background: #d1f2dd;
+    color: #1f6f3f;
+  padding: 4px 14px;
 }
 
 .status.rejected {
-  background: #f44336;
-  color: white;
-  padding: 4px 10px;
-  border-radius: 10px;
-  font-size: 12px;
+    background: #fde2e2;
+    color: #8a2430;
+  padding: 4px 16px;
 }
 
 .status.pending {
-  background: #ff9800;
-  color: white;
-  padding: 4px 10px;
-  border-radius: 10px;
-  font-size: 12px;
+    background: #fff3cd;
+    color: #7a5a00;
+  padding: 4px 18px;
 }
 
 /* Calendar Widget */
@@ -237,6 +253,9 @@ tbody tr:nth-child(even) {
   border-radius: 12px;
   background: #f9fcff;
   border: 1px solid #e0e0e0;
+  font-weight: 700;
+  font-size: 20px;
+  color: #12386b;
 }
 
 .calendar .days,
@@ -249,6 +268,8 @@ tbody tr:nth-child(even) {
 .calendar span,
 .calendar div {
   padding: 6px;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .calendar .date {
@@ -574,4 +595,5 @@ tbody tr:hover {
   margin-top: 7px;
   color: #1b3a6f;
   font-weight: 600;
+  font-size: 14px;
 }
