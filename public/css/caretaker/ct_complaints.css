@@ -7,31 +7,28 @@
   --complaint-accent: #1e88e5;
   --complaint-accent-strong: #166fc1;
   --complaint-border: #d8e6f4;
-  --complaint-hover: #eef7ff;
+  --complaint-hover: #f9f9f9;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', Arial, sans-serif;
+body {
+  background: #f4f7fb;
 }
 
 .main-content {
-  margin-left: 270px;
-  padding: 24px;
-  min-height: 100vh;
+  flex: 1;
+  padding: 8px 40px;
+  margin-left: 255px;
+  font-family: 'Poppins', Arial, sans-serif;
 }
 
-h1, h2 {
-  font-size: 30px;
+h1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-top: 15px;
   color: #1e88e5;
-  letter-spacing: 0.2px;
-  margin: 0 0 20px 0;
-}
-
-h2 {
-  margin-top: 30px;
+  font-size: 28px;
 }
 
 /* Card Style for Form */
@@ -50,7 +47,7 @@ form {
 form label {
   font-weight: 600;
   color: var(--complaint-text);
-  font-size: 14px;
+  font-size: 18px;
 }
 
 form select, form input, form textarea {
@@ -76,13 +73,14 @@ form textarea {
 
 /* Button mimicking .add-btn from booking */
 .btn-submit {
-  background: linear-gradient(90deg, #1f7ae0, #1458b5);
-  color: #fff;
+  background: #1e88e5;
+  color: #ffffff;
   border: none;
   border-radius: 10px;
   cursor: pointer;
   padding: 12px 20px;
   font-weight: 600;
+  font-size: 16px;
   align-self: flex-start;
   transition: filter 0.2s;
 }
@@ -101,7 +99,9 @@ form textarea {
 }
 
 .card h2 {
-  margin-top: 0;
+  font-size: 24px;
+  color: #2451a4;
+  font-weight: 600;
   margin-bottom: 20px;
 }
 
@@ -109,29 +109,24 @@ form textarea {
 .complaint-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  background: white;
   overflow: hidden;
-  border-radius: 12px;
 }
 
 .complaint-table thead {
-  background-color: #f6fafe;
-  color: #fff;
+  background: #1e88e5;
 }
 
 .complaint-table th, .complaint-table td {
-  padding: 12px 15px;
-  border-bottom: 1px solid #edf3f9;
+  padding: 10px;
   text-align: left;
+  border-bottom: 1px solid #eee;
 }
 
 .complaint-table th {
-  color: #173b72;
-  font-weight: 700;
-}
-
-.complaint-table td {
-  color: #2a3e5f;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
 }
 
 .complaint-table tbody tr:hover {
@@ -142,16 +137,15 @@ form textarea {
 .status {
   padding: 6px 12px;
   border-radius: 20px;
-  font-size: 12px;
-  color: #fff;
+  font-size: 14px;
   font-weight: 600;
   display: inline-block;
 }
 
-.status.pending, .status.Open { background: #f9a825; }
-.status.resolved, .status.Resolved, .status.Closed { background: #00bfa5; }
-.status.rejected, .status.Rejected { background: #e74c3c; }
-.status.InProgress, .status.In\ Progress { background: #1e88e5; }
+.status.pending, .status.Open { background: #fff3cd; color: #856404;;}
+.status.resolved, .status.Resolved, .status.Closed { background: #d4edda; color: #155724; }
+.status.rejected, .status.Rejected { background: #f8d7da; color: #721c24;}
+.status.InProgress, .status.In\ Progress { background: #eff6ff; color: #1d4ed8;}
 
 @media (max-width: 1024px) {
   .main-content {
