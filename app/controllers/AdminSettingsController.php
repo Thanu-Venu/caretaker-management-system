@@ -97,7 +97,7 @@ class AdminSettingsController extends Controller
         $_SESSION['user'] = $user;
 
         // Redirect back to settings page
-        header("Location: " . URLROOT . "/admin/ad_settings");
+        header('Location: ' . URLROOT . '/adminsettings');
         exit;
     }
 

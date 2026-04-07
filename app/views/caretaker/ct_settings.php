@@ -22,10 +22,19 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
   <div class="main-content">
     <h1>Profile & Settings</h1>
 
-    <?php if (!empty($data['latestProfileChangeRequest'])): ?>
-      <p>
-        Latest profile update request status:
-        <strong><?= htmlspecialchars($data['latestProfileChangeRequest']['status']) ?></strong>
+    <?php if (!empty($data['latestProfileChangeRequest'])): 
+        $status = $data['latestProfileChangeRequest']['status'] ?? '';
+        $color = '#333'; // Default color
+        if ($status === 'Approved') {
+            $color = '#28a745'; // Green
+        } elseif ($status === 'Deleted' || $status === 'Rejected') {
+            $color = '#dc3545'; // Red
+        } elseif ($status === 'Pending') {
+            $color = '#f39c12'; // Orange/Yellow
+        }
+    ?>
+      <p style="font-size: 14px; margin-bottom: 20px; font-weight: bold; color: <?= $color ?>;">
+        Latest profile update request status: <?= htmlspecialchars($status) ?>
       </p>
     <?php endif; ?>
 
@@ -37,7 +46,7 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
         <form id="edit-details-form" action="<?= URLROOT ?>/index.php?url=Caretaker/editCaretakerDetails" method="post" enctype="multipart/form-data">
           <div class="profile-body">
             <img
-              src="<?= URLROOT ?>/public /uploads/<?= $user['profile_image'] ?: 'default.png' ?>"
+              src="<?= URLROOT ?>/public/uploads/<?= $user['profile_image'] ?: 'default.png' ?>"
               alt="Profile"
               onerror="this.src='<?= URLROOT ?>/public/uploads/default.png';">
 

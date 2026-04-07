@@ -164,7 +164,16 @@ function moneyLKR($amount)
             </div>
             <h3><?= $data['avgRating'] ?? '0.0'; ?></h3>
             <p>Avg Rating Given</p>
+          </div>
 
+          <div class="card" style="<?= !empty($data['pendingAdvance']) ? 'border-color: #e53935; box-shadow: 0 4px 12px rgba(229,57,53,0.1);' : '' ?>">
+            <div class="action1">
+              <i class='bx bx-wallet-alt' style="<?= !empty($data['pendingAdvance']) ? 'color: #e53935; background: rgba(229,57,53,0.1);' : '' ?>"></i>
+            </div>
+            <h3 style="color: <?= !empty($data['pendingAdvance']) ? '#e53935' : '#111' ?>;">
+              <?= count($data['pendingAdvance'] ?? []); ?>
+            </h3>
+            <p style="<?= !empty($data['pendingAdvance']) ? 'color: #e53935; font-weight: 500;' : '' ?>">Pending Advances</p>
           </div>
         </div>
 
@@ -176,7 +185,6 @@ function moneyLKR($amount)
           </div>
 
           <div class="price-grid">
-
             <!-- Elder Care -->
             <div class="card price-card">
               <div class="price-head">
