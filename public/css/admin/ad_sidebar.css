@@ -1,17 +1,19 @@
 /* Sidebar container */
 .sidebar {
   width: 240px;
-  height: 100vh;
+  height: calc(100vh - 60px);
   background: linear-gradient(180deg, #1E88E5, #00BFA5);
   color: white;
   position: fixed;
-  top: 0;
+  top: 60px;
   left: 0;
   padding: 20px;
   overflow-y: auto;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', Arial, sans-serif;
   overflow-x: hidden;
+  z-index: 1000;
 }
+
 .sidebar::-webkit-scrollbar {
   display: none;
 }
@@ -25,7 +27,7 @@
 
 .brand-name {
   color: #fff;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', Arial, sans-serif;
 }
 
 /* Sidebar menu */
@@ -53,7 +55,7 @@
 }
 
 .sidebar-menu a:hover,
-.sidebar-menu li.active > a {
+.sidebar-menu li.active>a {
   background: rgba(255, 255, 255, 0.3);
 }
 
@@ -88,5 +90,46 @@
   transform: rotate(180deg);
 }
 
+/* Shared admin content baseline when no global layout CSS is loaded */
+.main-content {
+  margin-left: 260px;
+  margin-top: 76px;
+  padding: 20px;
+}
 
+/* Keep all admin page wrapper variants aligned below fixed header */
+body>.content,
+body>main.content,
+body>.payments-page,
+body>.reports-container,
+body>.main-content,
+body>main.main-content {
+  margin-top: 76px;
+}
 
+@media (max-width: 900px) {
+  .main-content {
+    margin-left: 0;
+    margin-top: 76px;
+    padding: 14px;
+  }
+
+  .sidebar {
+    left: -260px;
+    width: 240px;
+    transition: left 0.25s ease;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  body>.content,
+  body>main.content,
+  body>.payments-page,
+  body>.reports-container,
+  body>.main-content,
+  body>main.main-content {
+    margin-top: 76px;
+  }
+}

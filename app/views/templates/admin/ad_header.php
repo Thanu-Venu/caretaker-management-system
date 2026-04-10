@@ -29,40 +29,18 @@ $profilePic = $_SESSION['user']['profile_pic'] ?? 'default.png';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartCare</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- FONT AWESOME (REQUIRED) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <!-- DESIGN SYSTEM - System Foundation -->
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/variables.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/reset.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/global.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/typography.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/utilities.css">
-
-    <!-- DESIGN SYSTEM - Layout -->
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/layout/container.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/layout/grid.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/layout/sidebar.css">
-
-    <!-- DESIGN SYSTEM - Components -->
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/components/buttons.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/components/forms.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/components/tables.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/components/cards.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/components/badges.css">
-
-    <!-- DESIGN SYSTEM - Responsive -->
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/responsive/breakpoints.css">
-
-    <!-- DESIGN SYSTEM - Page Standardization -->
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/page-fixes.css">
-
-    <!-- DESIGN SYSTEM - Legacy Overrides (MUST BE LAST) -->
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/legacy-overrides.css">
-
-    <!-- Legacy/Page-specific CSS (loaded but overridden by legacy-overrides.css) -->
+    <!-- Legacy/Page-specific CSS -->
     <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
     <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/ad_header.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/ad_sidebar.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
 </head>
 
 <body>

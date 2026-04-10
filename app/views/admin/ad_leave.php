@@ -17,7 +17,6 @@ $selectedStatus = $data['selectedStatus'] ?? 'All';
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_leave.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <!-- Design System Override (ensures consistency) -->
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 
 </head>
 

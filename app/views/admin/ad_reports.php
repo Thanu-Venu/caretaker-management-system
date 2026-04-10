@@ -41,7 +41,6 @@ function esc($value)
     <title>Admin Reports</title>
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_reports.css">
     <!-- Design System Override (ensures consistency) -->
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 

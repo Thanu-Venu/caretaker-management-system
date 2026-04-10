@@ -35,7 +35,6 @@ $bookingStatuses = $filterOptions['booking_statuses'] ?? [];
   <title>Admin Payment Summary</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_payments.css">
   <!-- Design System Override (ensures consistency) -->
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 </head>
 
 <body>
@@ -137,10 +136,6 @@ $bookingStatuses = $filterOptions['booking_statuses'] ?? [];
     </section>
 
     <section class="table-panel">
-      <div class="table-meta">
-        <h2>Payment Details</h2>
-        <span><?php echo esc($totalRecords); ?> records</span>
-      </div>
       <div class="table-wrap">
         <table class="payments-table">
           <thead>

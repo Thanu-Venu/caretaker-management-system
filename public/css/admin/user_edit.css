@@ -2,7 +2,7 @@
 .main-content {
   margin-left: 270px;
   padding: 40px;
-  font-family: 'Poppins', Arial, sans-serif;
+  font-family: 'Inter', Arial, sans-serif;
   min-height: 100vh;
   background: #f4f7fb;
 }
@@ -15,7 +15,7 @@
   background: white;
   padding: 30px;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .form-section h1 {
@@ -28,13 +28,15 @@
 /* Grid layout */
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr; /* mobile */
+  grid-template-columns: 1fr;
+  /* mobile */
   gap: 18px;
 }
 
 @media (min-width: 900px) {
   .form-grid {
-    grid-template-columns: 1fr 1fr; /* desktop */
+    grid-template-columns: 1fr 1fr;
+    /* desktop */
   }
 }
 
@@ -104,6 +106,7 @@
   .form-actions {
     flex-direction: column;
   }
+
   .btn-cancel {
     line-height: 46px;
   }

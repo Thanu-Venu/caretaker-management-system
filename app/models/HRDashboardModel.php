@@ -3,7 +3,7 @@ class HRDashboardModel {
      private $db;
 
     public function __construct() {
-        $this->db = new mysqli("localhost", "root", "", "smartcare");
+        $this->db = new mysqli("localhost", "root", "Thanuvenu", "smartcare");
         if($this->db->connect_errno){
             die("Failed to connect to MySQL: " . $this->db->connect_error);
         }
@@ -31,8 +31,8 @@ class HRDashboardModel {
     }
 
     public function activeServicesToday() {
-        $sql = "SELECT COUNT(*) AS total 
-                FROM bookings 
+        $sql = "SELECT COUNT(*) AS total
+                FROM bookings
                 WHERE booking_date >= CURDATE()
                 AND status IN ('Reschedule_Requested', 'Accepted', 'Advance_Paid', 'Cancelled')";
         $result = $this->db->query($sql);
@@ -101,14 +101,14 @@ class HRDashboardModel {
        ATTENDANCE DATA FOR CHARTS
     =============================== */
     public function getAttendanceData($limit = 10) {
-        $sql = "SELECT 
+        $sql = "SELECT
                     ct.id,
                     ct.name,
                     COUNT(CASE WHEN a.status = 'Present' THEN 1 END) AS days_present,
                     COUNT(CASE WHEN a.status IN ('Present','Late') THEN 1 END) AS days_worked,
                     COUNT(a.id) AS total_days_tracked
                 FROM caretakers ct
-                LEFT JOIN attendance a ON ct.id = a.caretaker_id 
+                LEFT JOIN attendance a ON ct.id = a.caretaker_id
                     AND a.attendance_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
                 WHERE ct.status = 'Active'
                 GROUP BY ct.id, ct.name
@@ -132,8 +132,8 @@ class HRDashboardModel {
        PERFORMANCE RATINGS DATA FOR CHARTS
     =============================== */
     public function getPerformanceRatings() {
-        $sql = "SELECT 
-                    CASE 
+        $sql = "SELECT
+                    CASE
                         WHEN AVG(f.rating) >= 4.5 THEN 'Excellent'
                         WHEN AVG(f.rating) >= 4.0 THEN 'Good'
                         WHEN AVG(f.rating) >= 3.0 THEN 'Average'
@@ -145,18 +145,18 @@ class HRDashboardModel {
                 WHERE ct.status = 'Active'
                 GROUP BY rating_category
                 UNION ALL
-                SELECT 
+                SELECT
                     'Excellent' as rating_category,
                     COUNT(DISTINCT id) as count
-                FROM caretakers 
+                FROM caretakers
                 WHERE status = 'Active' AND id NOT IN (
                     SELECT DISTINCT caretaker_id FROM feedbacks
                 )
                 AND 0 = 1";
 
         // Simplified version - get actual ratings
-        $sql = "SELECT 
-                    CASE 
+        $sql = "SELECT
+                    CASE
                         WHEN rating >= 4.5 THEN 'Excellent'
                         WHEN rating >= 4.0 THEN 'Good'
                         WHEN rating >= 3.0 THEN 'Average'
@@ -186,7 +186,7 @@ class HRDashboardModel {
        BOOKING SUMMARY DATA FOR CHARTS
     =============================== */
     public function getBookingSummary() {
-        $sql = "SELECT 
+        $sql = "SELECT
                     COALESCE(status, 'Pending') as status,
                     COUNT(*) as count
                 FROM bookings
@@ -210,7 +210,7 @@ class HRDashboardModel {
        GET RATING STATISTICS
     =============================== */
     public function getRatingStats() {
-        $sql = "SELECT 
+        $sql = "SELECT
                     COUNT(*) as total_caretakers,
                     COUNT(CASE WHEN rating IS NULL THEN 1 END) as not_rated,
                     COUNT(CASE WHEN rating >= 4.5 THEN 1 END) as excellent,

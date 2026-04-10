@@ -1,12 +1,13 @@
 body {
-    background: #f4f7fb;
+  background: #f4f7fb;
 }
 
 /* Central content area */
 .content {
-  margin-left: 270px; /* leave space for sidebar */
-  padding: 20px 40px;
-  font-family: 'Poppins', Arial, sans-serif;
+  margin-left: 270px;
+  /* leave space for sidebar */
+  padding: 16px 20px;
+  font-family: 'Inter', Arial, sans-serif;
 }
 
 /* Client header */
@@ -21,6 +22,7 @@ body {
 .client-header h1 {
   font-size: 28px;
   color: #1e88e5;
+  margin: 0;
 }
 
 /*.add-btn {
@@ -64,9 +66,10 @@ body {
 /* Table */
 .table-container {
   background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 0;
+  overflow: hidden;
 }
 
 .client-table {
@@ -78,14 +81,15 @@ body {
 .client-table thead {
   background: #1e88e5;
 }
+
 .client-table th {
-    font-weight: 600;
-    color: white;
-    font-size: 18px;
+  font-weight: 600;
+  color: white;
+  font-size: 14px;
 }
 
 .client-table td {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .client-table th,
@@ -133,6 +137,7 @@ body {
 .client-table td i.bx-edit:hover {
   color: #0056b3;
 }
+
 .client-table td i.bx-trash:hover {
   color: #a71d2a;
 }

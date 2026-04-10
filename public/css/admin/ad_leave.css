@@ -1,5 +1,5 @@
 * {
-  font-family: 'Poppins', Arial, sans-serif;
+  font-family: 'Inter', Arial, sans-serif;
   font-weight: 300;
 }
 
@@ -8,17 +8,17 @@ body {
 }
 
 /* Main Content */
-.content {   
+.content {
   flex: 1;
-  padding: 20px;
+  padding: 16px 20px;
   margin-left: 270px;
 }
 
-.content h1{
+.content h1 {
   font-size: 28px;
   font-weight: 700;
   color: #1e88e5;
-  margin-bottom: 40px;
+  margin-bottom: 12px;
 }
 
 /* ===== Filter Section ===== */
@@ -52,9 +52,9 @@ body {
 
 .table-container {
   background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 0;
   overflow-x: auto;
   width: 100%;
 }
@@ -71,10 +71,10 @@ thead {
   background: #1e88e5;
 }
 
-th{
-  font-weight:700;
-   font-size: 18px;
-   color :#fff;
+th {
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
   padding: 12px 20px;
   text-align: left;
   border-bottom: 1px solid #eee;
@@ -85,7 +85,7 @@ td {
   text-align: left;
   border-bottom: 1px solid #eee;
   color: black;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 tbody tr:hover {
@@ -98,6 +98,7 @@ tbody tr:hover {
   font-size: 16px;
   text-transform: capitalize;
 }
+
 .status.pending {
   background-color: #deb752;
   color: white;
@@ -109,45 +110,47 @@ tbody tr:hover {
   color: white;
   padding: 4px 14px;
 }
+
 .status.rejected {
   background-color: #ea0b34;
   color: white;
   padding: 4px 16px;
 }
 
-.approve-btn i, .reject-btn i {
-    font-size: 24px;
-    cursor: pointer;
-    transition: transform 0.2s;
+.approve-btn i,
+.reject-btn i {
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 0.2s;
 }
 
 .approve-btn i:hover {
-    transform: scale(1.2);
+  transform: scale(1.2);
 }
 
 .reject-btn i:hover {
-    transform: scale(1.2);
+  transform: scale(1.2);
 }
 
-.pagination{
+.pagination {
   margin-top: 18px;
-  display:flex;
-  justify-content:center;
-  gap:8px;
-  flex-wrap:wrap;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.pagination a{
-  padding:8px 12px;
-  border:1px solid #ccc;
-  border-radius:6px;
-  text-decoration:none;
-  color:#333;
-  background:#fff;
+.pagination a {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #333;
+  background: #fff;
 }
 
-.pagination a.active{
-  background:#2563eb;
-  color:#fff;
-  border-color:#2563eb;
+.pagination a.active {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
 }

@@ -1,0 +1,287 @@
+/* ===============================
+   Admin UI System
+   =============================== */
+
+:root {
+    --admin-primary: #1e88e5;
+    --admin-primary-hover: #166fc2;
+    --admin-secondary: #0ea5a3;
+    --admin-text: #0f172a;
+    --admin-muted: #64748b;
+    --admin-bg: #f4f7fb;
+    --admin-surface: #ffffff;
+    --admin-border: #d8e3f1;
+    --admin-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+    --admin-header-height: 60px;
+    --admin-sidebar-width: 240px;
+    --admin-gap: 20px;
+    --admin-radius: 10px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--admin-bg);
+    color: var(--admin-text);
+    font-family: "Inter", Arial, sans-serif;
+}
+
+/* ===============================
+   Layout
+   =============================== */
+
+body>.main-content,
+body>main.main-content,
+body>.content,
+body>main.content,
+body>.payments-page,
+body>.reports-container {
+    margin-left: calc(var(--admin-sidebar-width) + var(--admin-gap));
+    margin-top: calc(var(--admin-header-height) + 8px);
+    margin-right: var(--admin-gap);
+    margin-bottom: var(--admin-gap);
+    padding: 16px;
+    min-height: calc(100vh - var(--admin-header-height) - 32px);
+}
+
+.page-header,
+.client-header,
+.caretaker-header,
+.booking-header,
+.payments-header,
+.reports-header,
+.section-header,
+.toolbar-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+/* ===============================
+   Typography
+   =============================== */
+
+body>.main-content h1,
+body>main.main-content h1,
+body>.content h1,
+body>main.content h1,
+body>.payments-page h1,
+body>.reports-container h1,
+body>.main-content>h2,
+body>main.main-content>h2,
+body>.content>h2,
+body>main.content>h2,
+body>.payments-page>h2,
+body>.reports-container>h2,
+.page-title {
+    margin: 0;
+    font-size: 30px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #0b1e45;
+}
+
+/* ===============================
+   Buttons
+   =============================== */
+
+.btn,
+.btn-add,
+.add-btn,
+.submit-btn,
+button[type="submit"],
+a.btn-cancel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn,
+.btn-add,
+.add-btn,
+.submit-btn,
+.btn.primary,
+.btn-primary,
+button[type="submit"] {
+    background: var(--admin-primary);
+    color: #ffffff;
+}
+
+.btn:hover,
+.btn-add:hover,
+.add-btn:hover,
+.submit-btn:hover,
+.btn.primary:hover,
+.btn-primary:hover,
+button[type="submit"]:hover {
+    background: var(--admin-primary-hover);
+}
+
+.btn.secondary,
+.btn-secondary,
+.btn.ghost,
+.btn-cancel,
+a.btn-cancel,
+.reset-btn {
+    background: #ffffff;
+    color: var(--admin-primary);
+    border-color: var(--admin-border);
+}
+
+.btn.secondary:hover,
+.btn-secondary:hover,
+.btn.ghost:hover,
+.btn-cancel:hover,
+a.btn-cancel:hover,
+.reset-btn:hover {
+    background: #f0f6ff;
+}
+
+.action-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* ===============================
+   Tables
+   =============================== */
+
+.table-container,
+.table-wrap,
+.table-panel {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    box-shadow: var(--admin-shadow);
+    overflow-x: auto;
+}
+
+.main-content table,
+.content table,
+.payments-page table,
+.reports-container table,
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.main-content table th,
+.content table th,
+.payments-page table th,
+.reports-container table th,
+.table th {
+    background: var(--admin-primary);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    padding: 10px 12px;
+    text-align: left;
+}
+
+.main-content table td,
+.content table td,
+.payments-page table td,
+.reports-container table td,
+.table td {
+    padding: 9px 12px;
+    font-size: 14px;
+    border-bottom: 1px solid #edf2f7;
+    vertical-align: middle;
+}
+
+.main-content table tbody tr:hover,
+.content table tbody tr:hover,
+.payments-page table tbody tr:hover,
+.reports-container table tbody tr:hover,
+.table tbody tr:hover {
+    background: #f8fbff;
+}
+
+/* ===============================
+   Forms and Filters
+   =============================== */
+
+.filter-bar,
+.filter-section,
+.filters-panel {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    padding: 12px;
+    margin-bottom: 14px;
+}
+
+input,
+select,
+textarea,
+.form-input {
+    border: 1px solid #cfd9e6;
+    border-radius: 8px;
+    min-height: 38px;
+    padding: 8px 10px;
+    font-size: 14px;
+    background: #ffffff;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.form-input:focus {
+    outline: none;
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.16);
+}
+
+/* ===============================
+   Responsive
+   =============================== */
+
+@media (max-width: 900px) {
+
+    body>.main-content,
+    body>main.main-content,
+    body>.content,
+    body>main.content,
+    body>.payments-page,
+    body>.reports-container {
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: calc(var(--admin-header-height) + 12px);
+        padding: 14px;
+    }
+
+    body>.main-content h1,
+    body>main.main-content h1,
+    body>.content h1,
+    body>main.content h1,
+    body>.payments-page h1,
+    body>.reports-container h1,
+    body>.main-content>h2,
+    body>main.main-content>h2,
+    body>.content>h2,
+    body>main.content>h2,
+    body>.payments-page>h2,
+    body>.reports-container>h2,
+    .page-title {
+        font-size: 24px;
+    }
+}

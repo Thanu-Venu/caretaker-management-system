@@ -10,7 +10,6 @@
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_clients.css">
   <!-- Design System Override (ensures consistency) -->
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 </head>
 
 <body>
@@ -19,7 +18,7 @@
 
     <section class="client-header">
       <h1>Client Management</h1>
-
+      <a class="btn-add" href="<?= URLROOT ?>/admin/ad_bookings">View Bookings</a>
     </section>
 
     <div class="table-container">
@@ -46,7 +45,7 @@
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="4">No clients found</td>
+              <td colspan="5">No clients found</td>
             </tr>
           <?php endif; ?>
         </tbody>

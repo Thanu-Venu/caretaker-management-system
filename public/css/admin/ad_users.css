@@ -1,5 +1,5 @@
 * {
-  font-family: 'Poppins', Arial, sans-serif;
+  font-family: 'Inter', Arial, sans-serif;
   font-weight: 300;
 }
 
@@ -25,8 +25,8 @@ body {
   font-size: 28px;
   color: #1e88e5;
   font-weight: 700;
-  margin-bottom: 30px;
-  margin-top: 30px;
+  margin-bottom: 12px;
+  margin-top: 12px;
 }
 
 .add-btn {
@@ -42,23 +42,28 @@ body {
 
 .add-btn:hover {
   background: #1565c0;
- 
+
 }
 
 .table-container {
-  overflow-x: auto;
   background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 0;
+    overflow-x: auto;
+    width: 100%;
 }
 
 table {
   width: 100%;
-  border-collapse: collapse;
+    max-width: 1400px;
+    border-collapse: collapse;
+    background: white;
+    overflow: hidden;
 }
 
-table th, table td {
+table th,
+table td {
   padding: 14px;
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
@@ -67,7 +72,7 @@ table th, table td {
 table th {
   background: #1e88e5;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 14px;
   color: white;
 }
 
@@ -88,9 +93,11 @@ table th {
   display: none;
   position: fixed;
   z-index: 999;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
@@ -112,7 +119,8 @@ table th {
   font-weight: 500;
 }
 
-.modal-content input, .modal-content select {
+.modal-content input,
+.modal-content select {
   width: 100%;
   padding: 10px;
   margin-bottom: 16px;
@@ -126,7 +134,8 @@ table th {
   gap: 10px;
 }
 
-.cancel-btn, .save-btn {
+.cancel-btn,
+.save-btn {
   padding: 10px 16px;
   border: none;
   border-radius: 6px;

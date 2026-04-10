@@ -11,7 +11,6 @@
   <!-- Legacy CSS (keep for now during migration) -->
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_dashboard.css">
   <!-- Design System Override (ensures consistency) -->
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 </head>
 
 <body>

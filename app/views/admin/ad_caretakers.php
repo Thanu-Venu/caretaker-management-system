@@ -14,7 +14,6 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <!-- Design System Override (ensures consistency) -->
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 </head>
 
 <body>
@@ -89,7 +88,6 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
                 <td class="actions">
                   <a href="<?php echo URLROOT; ?>/CaretakerCRUD/edit/<?php echo $caretaker['id']; ?>"><i class="bx bx-edit"></i></a>
                   <a href="<?php echo URLROOT; ?>/CaretakerCRUD/delete/<?php echo $caretaker['id']; ?>" onclick="return confirm('Are you sure you want to delete this caretaker?');"><i class="bx bx-trash"></i></a>
-                  </a>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -122,17 +120,6 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
 
 
   </main>
-
-  <!-- Optional JS for search filter -->
-  <script>
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('keyup', function() {
-      const filter = this.value.toLowerCase();
-      document.querySelectorAll('tbody tr').forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
-      });
-    });
-  </script>
 
 </body>
 

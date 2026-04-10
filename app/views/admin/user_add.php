@@ -11,7 +11,6 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/user_add.css">
   <!-- Design System Override -->
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 </head>
 
 <body>

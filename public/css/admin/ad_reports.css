@@ -16,7 +16,7 @@
 
 body {
     margin: 0;
-    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-family: "Inter", Arial, sans-serif;
     color: var(--text);
     background: #ffffff;
 }
@@ -24,7 +24,7 @@ body {
 .reports-container {
     margin-left: 270px;
     margin-right: 18px;
-    padding: 18px 6px 24px;
+    padding: 16px 6px 20px;
 }
 
 .reports-header {
@@ -37,12 +37,12 @@ body {
 
 .reports-header h2 {
     margin: 0;
-    font-size: 31px;
+    font-size: 30px;
     line-height: 1.2;
 }
 
 .reports-header p {
-    margin: 8px 0 0;
+    margin: 4px 0 0;
     color: var(--muted);
 }
 
@@ -101,7 +101,7 @@ body {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 12px;
-    margin: 10px 0 16px;
+    margin: 8px 0 12px;
 }
 
 .card {
@@ -141,7 +141,7 @@ body {
     border: 1px solid var(--border);
     border-radius: 14px;
     box-shadow: var(--shadow);
-    padding: 14px;
+    padding: 12px;
 }
 
 .panel h3 {
@@ -172,7 +172,7 @@ td {
     text-align: left;
     border-bottom: 1px solid #e2e8f0;
     padding: 9px 8px;
-    font-size: 13px;
+    font-size: 14px;
     white-space: nowrap;
 }
 

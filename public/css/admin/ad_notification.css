@@ -1,16 +1,17 @@
 body {
-    font-family: 'Poppins', Arial, sans-serif;
+    font-family: 'Inter', Arial, sans-serif;
     background: #f4f7fb;
     margin: 0;
 }
 
 .notif-page {
     max-width: 800px;
-    margin: 90px auto 50px; /* leave space for sticky header */
+    margin: 90px auto 50px;
+    /* leave space for sticky header */
     padding: 20px;
     background: #fff;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .notif-page h2 {
@@ -44,7 +45,8 @@ body {
 }
 
 .notif-item.unread {
-    background: #e3f2fd; /* light blue for unread */
+    background: #e3f2fd;
+    /* light blue for unread */
     font-weight: bold;
 }
 

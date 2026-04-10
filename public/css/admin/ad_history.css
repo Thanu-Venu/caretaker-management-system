@@ -1,6 +1,5 @@
-
 * {
-  font-family: 'Poppins', Arial, sans-serif;
+  font-family: 'Inter', Arial, sans-serif;
   font-weight: 300;
 }
 
@@ -8,17 +7,17 @@ body {
   background: #f4f7fb;
 }
 
-.content{
-   flex:1;
-   padding: 20px;
-   margin-left: 280px;
+.content {
+  flex: 1;
+  padding: 20px;
+  margin-left: 280px;
 }
 
-h1{
-    margin-bottom: 35px;
-    font-size: 28px;
-    color: #1e88e5;
-    font-weight: 600;
+h1 {
+  margin-bottom: 12px;
+  font-size: 28px;
+  color: #1e88e5;
+  font-weight: 600;
 }
 
 .filters {
@@ -45,27 +44,29 @@ h1{
 }
 
 .container {
-  width: 100%;
-  max-width: 1400px;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 25px;
-  margin-right: 20px;
-  margin-top: 25px;
-  flex: 1;
+  background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 0;
+    overflow-x: auto;
+    width: 100%;
+    margin-top: 20px;
 }
 
 table {
   width: 100%;
-  border-collapse: collapse;
+    max-width: 1400px;
+    border-collapse: collapse;
+    background: white;
+    overflow: hidden;
 }
 
 thead {
   background: #1e88e5;
 }
 
-th, td {
+th,
+td {
   padding: 14px 16px;
   text-align: left;
   border-bottom: 1px solid #eee;
@@ -73,7 +74,7 @@ th, td {
 
 th {
   font-weight: 700;
-  font-size: 18px;
+  font-size: 14px;
   color: #fff;
 }
 
@@ -83,28 +84,28 @@ table tbody tr:hover {
 
 table td {
   color: black;
-  font-size: 16px;
+  font-size: 14px;
 }
 
-.pagination{
+.pagination {
   margin-top: 18px;
-  display:flex;
-  justify-content:center;
-  gap:8px;
-  flex-wrap:wrap;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.pagination a{
-  padding:8px 12px;
-  border:1px solid #ccc;
-  border-radius:6px;
-  text-decoration:none;
-  color:#333;
-  background:#fff;
+.pagination a {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #333;
+  background: #fff;
 }
 
-.pagination a.active{
-  background:#2563eb;
-  color:#fff;
-  border-color:#2563eb;
+.pagination a.active {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
 }

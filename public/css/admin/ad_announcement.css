@@ -1,4 +1,3 @@
-
 /* ========================
    Page Heading
 ======================== */
@@ -120,34 +119,53 @@ form button:hover {
     background: #1c80d7;
 }
 
+.announcement-form {
+    max-width: 640px;
+    margin-top: 10px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+    align-items: center;
+}
+
 /* ========================
    Table
 ======================== */
 .table-container {
-  overflow-x: auto;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  padding: 15px;
+    background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        padding: 0;
+        overflow-x: auto;
+        width: 100%;
 }
 
 table {
-  width: 100%;
-  border-collapse: collapse;
+    width: 100%;
+        max-width: 1400px;
+        border-collapse: collapse;
+        background: white;
+        overflow: hidden;
+
 }
 
-table th, table td {
-  padding: 14px;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
+table th,
+table td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 table th {
-  background: #1e88e5;
-  font-weight: 700;
-  font-size: 18px;
-  color: white;
+    background: #1e88e5;
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
 }
+
 /* Row Hover */
 table tr:hover {
     background-color: #f9fafb;
@@ -205,5 +223,10 @@ table td a.delete:hover {
     table td {
         font-size: 13px;
         padding: 10px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
     }
 }

@@ -15,14 +15,14 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_users.css">
   <!-- Design System Override (ensures consistency) -->
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 </head>
 
 <body>
   <main class="main-content">
-    <h2>Staff Roles and Access Control</h2>
-    <!-- Add User Button -->
-    <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/userCRUD/add'">Add User</button>
+    <div class="page-header">
+      <h1>Staff Roles and Access Control</h1>
+      <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/userCRUD/add'">Add User</button>
+    </div>
 
     <!-- Users Table -->
     <div class="table-container">
@@ -62,16 +62,6 @@
       </table>
     </div>
   </main>
-  <!-- JS for Search Filter -->
-  <script>
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('keyup', function() {
-      const filter = this.value.toLowerCase();
-      document.querySelectorAll('tbody tr').forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
-      });
-    });
-  </script>
 
   <!-- Custom JS -->
   <script src="<?php echo URLROOT; ?>/public/js/admin/ad_users.js"></script>

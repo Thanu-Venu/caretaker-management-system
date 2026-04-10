@@ -11,7 +11,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_bookings.css">
   <!-- Design System Override (ensures consistency) -->
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 </head>
 
 <body>
@@ -82,7 +81,7 @@
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="5" style="text-align:center;">No bookings found</td>
+              <td colspan="6" style="text-align:center;">No bookings found</td>
             </tr>
           <?php endif; ?>
         </tbody>

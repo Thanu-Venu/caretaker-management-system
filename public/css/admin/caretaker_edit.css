@@ -1,9 +1,9 @@
 /* caretaker_edit.css */
 
 body {
-    font-family: 'Poppins', Arial, sans-serif;
+    font-family: 'Inter', Arial, sans-serif;
     background: #f4f7fb;
-    
+
 }
 
 .main-content {
@@ -12,14 +12,14 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    
+
 }
 
 .form-section {
     background: #fff;
     padding: 40px 30px;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 500px;
 }
@@ -53,7 +53,7 @@ body {
 .form-section select:focus {
     outline: none;
     border-color: #1565c0;
-    box-shadow: 0 0 5px rgba(0,123,255,0.3);
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
 }
 
 .form-section button {
@@ -119,8 +119,9 @@ body {
     background: #e5e7eb;
     color: #111;
     font-weight: 600;
-    line-height: 42px; /* aligns text with button height */
-    
+    line-height: 42px;
+    /* aligns text with button height */
+
 }
 
 /* Hover */
@@ -137,52 +138,54 @@ body {
         flex-direction: column;
     }
 }
+
 /* =========================
    Full-width form card
 ========================= */
 
-.form-section{
-  width: 100%;
-  max-width: none;
-  margin: 0;
+.form-section {
+    width: 100%;
+    max-width: none;
+    margin: 0;
 }
 
 /* =========================
    Two-column grid
 ========================= */
 
-.form-grid{
-  display: grid;
-  grid-template-columns: 1fr; /* mobile */
-  gap: 18px;
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    /* mobile */
+    gap: 18px;
 }
 
-.field label{
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 500;
+.field label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
 }
 
 .field input,
-.field select{
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 15px;
+.field select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
 }
 
 /* Desktop */
-@media (min-width: 900px){
-  .form-grid{
-    grid-template-columns: 1fr 1fr;
-  }
+@media (min-width: 900px) {
+    .form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
 
-  .field.full{
-    grid-column: 1 / -1;
-  }
+    .field.full {
+        grid-column: 1 / -1;
+    }
 }
 
-a{
+a {
     text-decoration: none;
 }

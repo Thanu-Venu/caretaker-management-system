@@ -12,7 +12,6 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
   <title>Announcements</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_announcement.css">
   <!-- Design System Override (ensures consistency) -->
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 </head>
 
 <body>

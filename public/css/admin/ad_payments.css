@@ -1,5 +1,5 @@
 :root {
-  --bg: #f4f6fb;
+  --bg: #ffff;
   --surface: #ffffff;
   --line: #d9e1ec;
   --text: #0f172a;
@@ -13,7 +13,7 @@
 
 * {
   box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-family: "Inter", Arial, sans-serif;
 }
 
 body {
@@ -24,7 +24,7 @@ body {
 
 .payments-page {
   margin-left: 300px;
-  padding: 26px 20px 30px;
+  padding: 16px 20px 24px;
 }
 
 .payments-header {
@@ -36,7 +36,7 @@ body {
 }
 
 .payments-header h1 {
-  margin: 0 0 6px;
+  margin: 0 0 4px;
   font-size: 30px;
   color: var(--primary);
 }
@@ -89,7 +89,7 @@ body {
   display: grid;
   grid-template-columns: repeat(6, minmax(120px, 1fr));
   gap: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .summary-card {
@@ -112,12 +112,11 @@ body {
 }
 
 .filters-panel,
-.table-panel,
 .detail-card {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 14px;
+  padding: 12px;
 }
 
 .filters-panel {
@@ -153,26 +152,21 @@ body {
   align-items: flex-end;
 }
 
-.table-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.table-meta h2 {
-  margin: 0;
-  font-size: 20px;
-}
-
 .table-wrap {
+background: var(--bg);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 0;
   overflow-x: auto;
+  width: 100%;
 }
 
-.payments-table {
+table {
   width: 100%;
-  border-collapse: collapse;
-  min-width: 1050px;
+    max-width: 1400px;
+    border-collapse: collapse;
+    background: white;
+    overflow: hidden;
 }
 
 .payments-table th,
@@ -184,9 +178,8 @@ body {
 }
 
 .payments-table th {
-  background: #f8fafc;
-  color: #334155;
-  font-size: 12px;
+  background: #1e88e5;
+    font-size: 14px;
   text-transform: uppercase;
 }
 

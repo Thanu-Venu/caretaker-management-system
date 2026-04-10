@@ -1,5 +1,5 @@
 * {
-  font-family: 'Poppins', Arial, sans-serif;
+  font-family: 'Inter', Arial, sans-serif;
   font-weight: 300;
 }
 
@@ -23,14 +23,14 @@ body {
 .content {
   margin-bottom: 15px;
   margin-left: 300px;
-  padding-top: 25px;
+  padding-top: 16px;
 }
 
 .content h2 {
   font-size: 28px;
   color: #1e88e5;
   font-weight: 700;
-  margin-bottom: 40px;
+  margin-bottom: 12px;
 }
 
 /* Tabs */
@@ -48,7 +48,7 @@ body {
 .tab-section h2 {
   font-size: 24px;
   font-weight: 600;
-  color:#084479
+  color: #084479
 }
 
 .tab-btn {
@@ -71,15 +71,16 @@ body {
   display: flex;
   gap: 15px;
   align-items: center;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin-top: 12px;
+  margin-bottom: 14px;
 }
 
 .filters label {
   font-weight: 600;
 }
 
-select, input[type="date"] {
+select,
+input[type="date"] {
   padding: 6px 10px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
@@ -102,7 +103,8 @@ table {
   border-collapse: collapse;
 }
 
-table th, table td {
+table th,
+table td {
   padding: 14px 16px;
   text-align: left;
   border-bottom: 1px solid #eee;
@@ -111,7 +113,7 @@ table th, table td {
 table th {
   background: #1e88e5;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 14px;
   color: #fff;
 }
 
@@ -121,7 +123,7 @@ table tbody tr:hover {
 
 table td {
   color: black;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 #complaintsSection {
@@ -131,7 +133,8 @@ table td {
 
 /* Stars */
 .stars {
-  color: #fbe524fb; /* gold color */
+  color: #fbe524fb;
+  /* gold color */
   font-size: 20px;
 }
 
@@ -158,4 +161,3 @@ table td {
   color: white;
   padding: 4px 13px;
 }
-
