@@ -19,6 +19,17 @@ if (isset($data['user'])) {
   <div class="main-content">
     <h1>Profile & Settings</h1>
 
+    <?php
+    if (!empty($_SESSION['success'])) {
+        echo '<div style="background:#28a745; color:white; padding:10px; border-radius:5px; margin-bottom:15px;">' . htmlspecialchars($_SESSION['success']) . '</div>';
+        unset($_SESSION['success']);
+    }
+    if (!empty($_SESSION['error'])) {
+        echo '<div style="background:#dc3545; color:white; padding:10px; border-radius:5px; margin-bottom:15px;">' . htmlspecialchars($_SESSION['error']) . '</div>';
+        unset($_SESSION['error']);
+    }
+    ?>
+
     <div class="settings-container">
 
       <!-- Profile Picture & Info -->
