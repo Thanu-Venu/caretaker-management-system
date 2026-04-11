@@ -1,232 +1,42 @@
-/* ========================
-   Page Heading
-======================== */
-h2 {
-    text-align: center;
-    margin: 30px 0 15px;
-    font-size: 26px;
-    font-weight: 600;
-    color: #1e88e5;
-}
-
-/* ========================
-   Buttons (Global)
-======================== */
-.btn-add {
-    padding: 10px 14px;
-    background: #2563eb;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    display: inline-block;
-}
-
-.btn-add:hover {
-    background: #1d4ed8;
-}
-
-.btn-cancel {
-    padding: 10px 14px;
-    background: #e5e7eb;
-    color: #111;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-}
-
-.btn-cancel:hover {
-    background: #d1d5db;
-}
-
-/* ========================
-   Form Container
-======================== */
-form {
-    width: 90%;
-    max-width: 750px;
-    margin: 25px auto;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-
-    background: #ffffff;
-    padding: 22px 25px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-}
-
-/* ========================
-   Form Labels
-======================== */
-form label {
-    font-weight: 600;
-    font-size: 14px;
-    color: #374151;
-}
-
-/* ========================
-   Inputs & Select & Textarea
-======================== */
-form input[type="text"],
-form textarea,
-form select {
-    padding: 11px 14px;
-    border-radius: 8px;
-    border: 1px solid #d1d5db;
-    font-size: 14px;
-    background-color: #f9fafb;
-    transition: all 0.2s ease;
-    width: 100%;
-}
-
-form textarea {
-    resize: vertical;
-    min-height: 120px;
-}
-
-form input::placeholder,
-form textarea::placeholder {
-    color: #9ca3af;
-}
-
-form input:focus,
-form textarea:focus,
-form select:focus {
-    outline: none;
-    background-color: #ffffff;
-    border-color: #1e88e5;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
-}
-
-/* ========================
-   Form Buttons
-======================== */
-form button {
-    align-self: flex-start;
-    padding: 11px 22px;
-    background: #1e88e5;
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.25s ease;
-}
-
-form button:hover {
-    background: #1c80d7;
-}
-
-.announcement-form {
-    max-width: 640px;
-    margin-top: 10px;
-}
-
-.form-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 8px;
+/* Announcements list & forms */
+.announcement-header.page-header {
     align-items: center;
 }
 
-/* ========================
-   Table
-======================== */
-.table-container {
-    background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        padding: 0;
-        overflow-x: auto;
-        width: 100%;
-}
-
-table {
-    width: 100%;
-        max-width: 1400px;
-        border-collapse: collapse;
-        background: white;
-        overflow: hidden;
-
-}
-
-table th,
-table td {
-    padding: 14px;
-    text-align: left;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-table th {
-    background: #1e88e5;
-    font-weight: 700;
-    font-size: 14px;
-    color: white;
-}
-
-/* Row Hover */
-table tr:hover {
-    background-color: #f9fafb;
-}
-
-/* ========================
-   Action Links
-======================== */
-table td a {
-    text-decoration: none;
-    color: #2563eb;
-    font-weight: 600;
-}
-
-table td a:hover {
-    text-decoration: underline;
-}
-
-table td a.delete {
-    color: #ef4444;
-}
-
-table td a.delete:hover {
-    color: #b91c1c;
-}
-
-/* ========================
-   Empty State
-======================== */
 .no-data {
     text-align: center;
-    padding: 25px;
-    color: #6b7280;
+    padding: 28px 16px;
+    color: var(--admin-muted, #64748b);
     font-size: 14px;
 }
 
-/* ========================
-   Responsive
-======================== */
-@media screen and (max-width: 768px) {
-    h2 {
-        font-size: 22px;
-    }
+.main-content form.announcement-form,
+form.announcement-form {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    padding: 24px 28px;
+    box-shadow: var(--admin-shadow, 0 4px 24px rgba(15, 23, 42, 0.06));
+}
 
-    form {
-        width: 95%;
-        padding: 20px;
-    }
+.form-wrapper form.announcement-form {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    max-width: none;
+}
 
-    table {
-        width: 95%;
-    }
+form.announcement-form textarea {
+    min-height: 140px;
+    resize: vertical;
+}
 
-    table th,
-    table td {
-        font-size: 13px;
-        padding: 10px;
-    }
-
-    .form-actions {
-        flex-direction: column;
-        align-items: stretch;
-    }
+form.announcement-form .form-actions {
+    margin-top: 8px;
 }
