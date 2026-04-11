@@ -13,7 +13,7 @@
     /* Vertical accent: matches sidebar; thin bars only (not full-width table chrome) */
     --admin-heading-accent: linear-gradient(180deg, var(--admin-primary) 0%, var(--admin-accent-teal) 100%);
     /* Table header: deep blue-ink (same family as --admin-primary), reads cohesive with chrome */
-    --admin-table-header-bg: #0c4a6e;
+    --admin-table-header-bg: #1e88e5;
     --admin-table-header-text: #f1f5f9;
     /* Page titles: cool ink (not pure neutral black) so they sit in the same story as blue/teal */
     --admin-page-heading-color: #0f3555;
@@ -302,6 +302,8 @@ body > header.main-header ~ .content h2 {
 
 .page-header>h1,
 .page-header>h2,
+.page-header > .page-header-main > h1,
+.page-header > .page-header-main > h2,
 .client-header>h1,
 .client-header>h2,
 .caretaker-header>h1,
@@ -318,6 +320,8 @@ body > header.main-header ~ .content h2 {
 
 .page-header>h1::before,
 .page-header>h2::before,
+.page-header > .page-header-main > h1::before,
+.page-header > .page-header-main > h2::before,
 .client-header>h1::before,
 .client-header>h2::before,
 .caretaker-header>h1::before,
@@ -1556,6 +1560,13 @@ button.action-view-btn.action-view-btn--icon i {
     padding: 24px 16px;
 }
 
+/* List footnote under .table-container (staff, announcements, etc.) */
+.table-list-meta {
+    margin: 10px 0 0;
+    font-size: 13px;
+    color: var(--admin-muted, #64748b);
+}
+
 /* Logs & legacy pages: inner table shell */
 .content .container,
 .main-content .container:not(.settings-container) {
@@ -1715,7 +1726,11 @@ button.action-view-btn.action-view-btn--icon i {
 .form-section input:not([type="checkbox"]):not([type="radio"]),
 .form-section select,
 .user-form input,
-.user-form select {
+.user-form select,
+.user-form textarea,
+.caretaker-form input,
+.caretaker-form select,
+.caretaker-form textarea {
     width: 100%;
 }
 
@@ -1837,4 +1852,32 @@ button.action-view-btn.action-view-btn--icon i {
     .stats-cards {
         grid-template-columns: 1fr;
     }
+}
+
+/* ---------- Admin form validation (shared) ---------- */
+.required-mark {
+    color: #e63946;
+    font-weight: 700;
+    margin-left: 3px;
+    white-space: nowrap;
+}
+
+.field-error,
+p.field-error {
+    margin: 6px 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    color: #e63946;
+    font-weight: 500;
+}
+
+input.is-invalid,
+select.is-invalid,
+textarea.is-invalid {
+    border-color: #e63946 !important;
+    box-shadow: 0 0 0 1px rgba(230, 57, 70, 0.25);
+}
+
+.field .field-hint + .field-error {
+    margin-top: 4px;
 }

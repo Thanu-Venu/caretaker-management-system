@@ -1,5 +1,13 @@
 /* Staff list — tables from admin-ui; form modals */
 
+.staff-users-filters {
+    margin-bottom: 0;
+}
+
+.staff-users-pagination {
+    margin-top: 14px;
+}
+
 .admin-staff-users-page .success-message {
     padding: 12px 16px;
     margin-bottom: 14px;
