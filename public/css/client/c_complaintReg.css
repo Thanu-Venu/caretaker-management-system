@@ -24,7 +24,6 @@
     border: 1px solid #eef2f7;
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
     margin-bottom: 30px;
-    min-height: 75vh;
 }
 
 .page-wrapper h2 {
@@ -45,25 +44,34 @@
 .page-wrapper select,
 .page-wrapper textarea {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 14px;
+    padding: 14px;
+    margin-bottom: 24px;
     border: 1px solid #ccc;
-    border-radius: 6px;
+    border-radius: 8px;
+    font-size: 15px;
 }
 
 .page-wrapper textarea {
     resize: vertical;
+    min-height: 150px;
+}
+
+.page-wrapper form {
+    display: flex;
+    flex-direction: column;
 }
 
 .page-wrapper button {
+    width: 100%;
     background: #1e88e5;
     color: white;
     border: none;
-    padding: 12px;
+    padding: 16px;
     font-size: 16px;
     font-weight: 700;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
+    margin-top: 10px;
 }
 
 .page-wrapper button:hover {

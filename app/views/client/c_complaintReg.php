@@ -20,7 +20,7 @@
                     <a href="<?= URLROOT ?>/public/index.php?url=Complaint/complaintlist" style="font-weight:600;">View Complaint List</a>
                 </div>
 
-                <form action="<?= URLROOT ?>/public/index.php?url=Complaint/store" method="POST" style="margin-top:16px;">
+                <form action="<?= URLROOT ?>/public/index.php?url=Complaint/store" method="POST" style="margin-top: 36px;">
                     <label>Client Name</label>
                     <input type="text" name="client_name" value="<?= htmlspecialchars($_SESSION['user']['name']) ?>" readonly>
 
