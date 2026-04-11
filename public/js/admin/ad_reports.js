@@ -5,8 +5,10 @@ let bookingsChart = null;
 document.addEventListener('DOMContentLoaded', function () {
   initializeCharts();
 
-  // Download Report button
-  document.getElementById('downloadReport').addEventListener('click', downloadReport);
+  const downloadBtn = document.getElementById('downloadReport');
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', downloadReport);
+  }
 });
 
 /**
