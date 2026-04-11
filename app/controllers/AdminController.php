@@ -58,14 +58,32 @@ class AdminController extends Controller
         $totalClients    = $this->clientModel->countClients();
         $upcomingBookings = $this->clientModel->countUpcomingBookings();
         $pendingLeaves   = $this->adminLeaveModel->countPendingLeaves();
-        //$monthlyPayments = $this->clientModel->getMonthlyPaymentsTotal(); // implement based on your payments table (or bookings)
 
-        // Recent activity (history table)
-        $recentLogs = $this->historyModel->getRecentLogs(8); // last 8
+        $paymentSummary = $this->adminPaymentModel->getPaymentSummary([]);
+        $pendingProfileRequests = $this->profileChangeRequestModel->countPending();
 
-        // Charts data (example: last 4 weeks bookings, last 6 months engagement)
-        $bookingStats = $this->clientModel->getBookingsLast4Weeks();     // labels + values
-        $engagement   = $this->clientModel->getClientEngagementLast6Months(); // labels + values
+        $complaints = $this->complaintModel->getAllComplaints();
+        $openComplaints = 0;
+        foreach ($complaints as $c) {
+            if (strtolower((string) ($c['status'] ?? '')) === 'open') {
+                $openComplaints++;
+            }
+        }
+
+        $staffCount = count($this->userModel->getAllUsers());
+        $feedbackEntries = $this->feedbackModel->getAll();
+        $feedbackCount = is_array($feedbackEntries) ? count($feedbackEntries) : 0;
+
+        // Charts: line/bar (bottom) + doughnut overview (replaces recent activity)
+        $bookingStats = $this->clientModel->getBookingsLast4Weeks();
+        $engagement   = $this->clientModel->getClientEngagementLast6Months();
+        $bookingStatusDist = $this->clientModel->getBookingStatusDistribution();
+        $caretakerStatusDist = $this->caretakerModel->getCaretakerStatusDistribution();
+
+        $payTotal = (int) ($paymentSummary['total_records'] ?? 0);
+        $payPending = (int) ($paymentSummary['pending_count'] ?? 0);
+        $payRejected = (int) ($paymentSummary['rejected_count'] ?? 0);
+        $payApproved = max(0, $payTotal - $payPending - $payRejected);
 
         $this->view("admin/ad_dashboard", [
             'stats' => [
@@ -73,11 +91,25 @@ class AdminController extends Controller
                 'totalClients' => $totalClients,
                 'upcomingBookings' => $upcomingBookings,
                 'pendingLeaves' => $pendingLeaves,
-                //'monthlyPayments' => $monthlyPayments,
+                'totalCollected' => (float) ($paymentSummary['total_collected'] ?? 0),
             ],
-            'recentLogs' => $recentLogs,
+            'review' => [
+                'pendingPayments' => (int) ($paymentSummary['pending_count'] ?? 0),
+                'rejectedPayments' => (int) ($paymentSummary['rejected_count'] ?? 0),
+                'pendingLeaves' => $pendingLeaves,
+                'pendingProfileRequests' => $pendingProfileRequests,
+                'openComplaints' => $openComplaints,
+                'staffCount' => $staffCount,
+                'feedbackCount' => $feedbackCount,
+            ],
             'bookingStats' => $bookingStats,
-            'engagement' => $engagement
+            'engagement' => $engagement,
+            'chartPaymentStatus' => [
+                'labels' => ['Pending', 'Approved', 'Rejected'],
+                'values' => [$payPending, $payApproved, $payRejected],
+            ],
+            'chartBookingStatus' => $bookingStatusDist,
+            'chartCaretakerStatus' => $caretakerStatusDist,
         ]);
     }
 
@@ -182,14 +214,22 @@ class AdminController extends Controller
     }
     public function ad_clients()
     {
-        $clients = $this->clientModel->getAllClients();
-        $this->view("admin/ad_clients", ['clients' => $clients]);
+        $filters = [
+            'q' => trim((string)($_GET['q'] ?? '')),
+            'date_from' => trim((string)($_GET['date_from'] ?? '')),
+            'date_to' => trim((string)($_GET['date_to'] ?? '')),
+        ];
+        $clients = $this->clientModel->getAllClientsFiltered($filters);
+        $this->view('admin/ad_clients', [
+            'clients' => $clients,
+            'filters' => $filters,
+        ]);
     }
 
     public function ad_users()
     {
-        $users = $this->userModel->getAllUsers(); // ✅ use the initialized property
-        $this->view("admin/ad_users", ['users' => $users]);
+        header('Location: ' . URLROOT . '/userCRUD/list');
+        exit;
     }
 
     public function ad_feedback()
