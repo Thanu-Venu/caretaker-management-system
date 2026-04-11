@@ -87,11 +87,9 @@
             <?php
             $tabs = [
                 'all' => 'All Payments',
-                'due_now' => 'Due Now',
+                'due' => 'Due',
                 'upcoming' => 'Upcoming Payments',
-                'overdue' => 'Overdue Payments',
-                'paid_history' => 'Paid History',
-                'by_booking' => 'By Booking'
+                'history' => 'History'
             ];
 
             foreach ($tabs as $key => $label):
