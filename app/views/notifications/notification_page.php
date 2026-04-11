@@ -22,9 +22,6 @@ $header_file = match ($template_role) {
     default => 'admin/ad_header.php',
 };
 
-include APPROOT . "/views/templates/" . $header_file;
-
-
 $sidebar_file = match ($template_role) {
     'admin' => 'admin/ad_sidebar.php',
     'client' => 'client/c_sidebar.php',
@@ -32,9 +29,6 @@ $sidebar_file = match ($template_role) {
     'hr' => 'hr/hr_sidebar.php',
     default => 'admin/ad_sidebar.php',
 };
-
-include APPROOT . "/views/templates/" . $sidebar_file;
-
 
 // Get all notifications (or limit as needed)
 $notifications = $notifModel->getNotifications($user_id, $user_role, 50);
@@ -49,11 +43,17 @@ $user_display = $_SESSION['user']['name'] ?? $_SESSION['user']['username'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notifications - SmartCare</title>
+    <?php if ($template_role === 'admin'): ?>
+        <?php include_once APPROOT . '/views/templates/admin/ad_admin_core_styles.php'; ?>
+    <?php else: ?>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <?php endif; ?>
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_notification.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
+    <?php include APPROOT . "/views/templates/" . $header_file; ?>
+    <?php include APPROOT . "/views/templates/" . $sidebar_file; ?>
 
     <main class="notif-page">
         <h2>Notifications for <?= htmlspecialchars($user_display) ?></h2>

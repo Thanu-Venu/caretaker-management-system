@@ -94,6 +94,32 @@ class AdminReportsModel
     }
 
     /**
+     * Bookings count + completed/paid revenue per month (respects date filter; otherwise last 6 months).
+     *
+     * @return list<array{month_key: string, month_label: string, bookings: int|string, revenue: float|string}>
+     */
+    public function getMonthlyBookingRevenueTrend($fromDate = null, $toDate = null)
+    {
+        $dateCondition = $this->buildDateCondition('booking_date', $fromDate, $toDate);
+        $where = $dateCondition
+            ? 'WHERE ' . $dateCondition
+            : 'WHERE booking_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)';
+        $query = "
+            SELECT
+                DATE_FORMAT(booking_date, '%Y-%m') as month_key,
+                DATE_FORMAT(booking_date, '%b %Y') as month_label,
+                COUNT(*) as bookings,
+                SUM(CASE WHEN status IN ('Completed', 'Paid') THEN COALESCE(total_payment, 0) ELSE 0 END) as revenue
+            FROM bookings
+            $where
+            GROUP BY DATE_FORMAT(booking_date, '%Y-%m'), DATE_FORMAT(booking_date, '%b %Y')
+            ORDER BY month_key ASC
+        ";
+
+        return $this->executeQuery($query);
+    }
+
+    /**
      * Get service type distribution
      */
     public function getServiceTypeDistribution($fromDate = null, $toDate = null)
@@ -397,22 +423,29 @@ class AdminReportsModel
     }
 
     /**
-     * Get client location distribution
+     * Get client location distribution (optional booking date range).
      */
-    public function getClientLocationDistribution($limit = 10)
+    public function getClientLocationDistribution($limit = 10, $fromDate = null, $toDate = null)
     {
+        $dateCondition = $this->buildDateCondition('b.booking_date', $fromDate, $toDate);
         $query = "
             SELECT b.district, COUNT(DISTINCT b.client_id) as count
             FROM bookings b
             WHERE b.district IS NOT NULL AND b.district != ''
+        ";
+        if ($dateCondition) {
+            $query .= ' AND ' . $dateCondition;
+        }
+        $query .= '
             GROUP BY b.district
             ORDER BY count DESC
             LIMIT ?
-        ";
+        ';
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $limit);
+        $stmt->bind_param('i', $limit);
         $stmt->execute();
+
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -556,10 +589,9 @@ class AdminReportsModel
         return [
             'summary' => $this->getSummaryStats($fromDate, $toDate),
             'bookingStatus' => $this->getBookingStatusBreakdown($fromDate, $toDate),
-            'monthlyBookings' => $this->getMonthlyBookingTrend(),
+            'monthlyTrends' => $this->getMonthlyBookingRevenueTrend($fromDate, $toDate),
             'serviceDistribution' => $this->getServiceTypeDistribution($fromDate, $toDate),
             'basisBreakdown' => $this->getBookingBasisBreakdown($fromDate, $toDate),
-            'monthlyRevenue' => $this->getMonthlyRevenueTrend(),
             'revenueByService' => $this->getRevenueByServiceType($fromDate, $toDate),
             'paymentStatus' => $this->getPaymentStatusBreakdown($fromDate, $toDate),
             'advanceVsFinal' => $this->getAdvanceVsFinalPayments($fromDate, $toDate),
@@ -572,7 +604,7 @@ class AdminReportsModel
             'newClients' => $this->getNewClientsCount(30),
             'topClientsByBookings' => $this->getTopClientsByBookings(10, $fromDate, $toDate),
             'topClientsBySpending' => $this->getTopClientsBySpending(10, $fromDate, $toDate),
-            'clientLocations' => $this->getClientLocationDistribution(10),
+            'clientLocations' => $this->getClientLocationDistribution(10, $fromDate, $toDate),
             'serviceRatings' => $this->getServiceWiseRatings($fromDate, $toDate),
             'lowRatedBookings' => $this->getLowRatedBookings(3.0, 20),
             'complaints' => $this->getComplaintStatistics($fromDate, $toDate)

@@ -11,6 +11,17 @@ class ProfileChangeRequestModel
         $this->conn = $db->conn;
     }
 
+    public function countPending(): int
+    {
+        $res = $this->conn->query("SELECT COUNT(*) AS c FROM caretaker_profile_change_requests WHERE status = 'Pending'");
+        if (!$res) {
+            return 0;
+        }
+        $row = $res->fetch_assoc();
+
+        return (int) ($row['c'] ?? 0);
+    }
+
     public function hasPendingRequest(int $caretakerId): bool
     {
         $stmt = $this->conn->prepare("SELECT id FROM caretaker_profile_change_requests WHERE caretaker_id = ? AND status = 'Pending' LIMIT 1");

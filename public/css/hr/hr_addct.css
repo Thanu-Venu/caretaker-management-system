@@ -240,6 +240,8 @@ tbody tr:hover {
   gap:8px;
   justify-content:center;
   margin-top:15px;
+  margin-bottom:24px;
+  padding-bottom:4px;
 }
 
 .pagination a{

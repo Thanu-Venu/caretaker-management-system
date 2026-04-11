@@ -58,7 +58,7 @@ class CaretakerCRUDController extends Controller
             // If there are validation errors, store and redirect
             if (!empty($errors)) {
                 $_SESSION['error'] = implode("; ", $errors);
-                header("Location: " . URLROOT . "/CaretakerCRUD/add");
+                header("Location: " . URLROOT . "/CaretakerCRUD/list?open=add");
                 exit;
             }
 
@@ -84,7 +84,7 @@ class CaretakerCRUDController extends Controller
                         $_SESSION['error'] = "Image too large. Please upload a smaller file (e.g., under 2MB).";
                     }
 
-                    header("Location: " . URLROOT . "/CaretakerCRUD/add");
+                    header("Location: " . URLROOT . "/CaretakerCRUD/list?open=add");
                     exit;
                 }
 
@@ -92,7 +92,7 @@ class CaretakerCRUDController extends Controller
                 $maxSize = 2 * 1024 * 1024;
                 if ($_FILES['profile_image']['size'] > $maxSize) {
                     $_SESSION['error'] = "Image too large. Max 2MB allowed.";
-                    header("Location: " . URLROOT . "/admin/caretaker_add");
+                    header("Location: " . URLROOT . "/CaretakerCRUD/list?open=add");
                     exit;
                 }
 
@@ -101,7 +101,7 @@ class CaretakerCRUDController extends Controller
                 $ext = strtolower(pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION));
                 if (!in_array($ext, $allowedExt)) {
                     $_SESSION['error'] = "Invalid image type. Use JPG/PNG/WEBP.";
-                    header("Location: " . URLROOT . "/CaretakerCRUD/add");
+                    header("Location: " . URLROOT . "/CaretakerCRUD/list?open=add");
                     exit;
                 }
 
@@ -111,7 +111,7 @@ class CaretakerCRUDController extends Controller
 
                 if (!move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetPath)) {
                     $_SESSION['error'] = "Failed to save image. Check public/uploads permission.";
-                    header("Location: " . URLROOT . "/CaretakerCRUD/add");
+                    header("Location: " . URLROOT . "/CaretakerCRUD/list?open=add");
                     exit;
                 }
 
@@ -123,7 +123,7 @@ class CaretakerCRUDController extends Controller
 
             if (!$ok) {
                 $_SESSION['error'] = "Failed to add caretaker. Please try again.";
-                header("Location: " . URLROOT . "/CaretakerCRUD/add");
+                header("Location: " . URLROOT . "/CaretakerCRUD/list?open=add");
                 exit;
             }
 
@@ -137,11 +137,12 @@ class CaretakerCRUDController extends Controller
             ]);
 
             $_SESSION['success'] = "Caretaker added successfully!";
-            header("Location: " . URLROOT . "/admin/ad_caretakers");
+            header("Location: " . URLROOT . "/CaretakerCRUD/list");
             exit;
         }
 
-        $this->view("admin/caretaker_add");
+        header("Location: " . URLROOT . "/CaretakerCRUD/list?open=add");
+        exit;
     }
 
     // Edit caretaker
@@ -183,7 +184,7 @@ class CaretakerCRUDController extends Controller
             // If there are validation errors, store and redirect
             if (!empty($errors)) {
                 $_SESSION['error'] = implode("; ", $errors);
-                header("Location: " . URLROOT . "/CaretakerCRUD/edit/" . $id);
+                header("Location: " . URLROOT . "/CaretakerCRUD/list?open=edit&id=" . (int) $id);
                 exit;
             }
 
@@ -216,12 +217,13 @@ class CaretakerCRUDController extends Controller
                 'section' => "Caretakers"
             ]);
 
-            header("Location: " . URLROOT . "/admin/ad_caretakers");
+            $_SESSION['success'] = 'Caregiver updated successfully.';
+            header("Location: " . URLROOT . "/CaretakerCRUD/list");
             exit;
-        } else {
-            $caretaker = $this->caretakerModel->getCaretakerById($id);
-            $this->view("admin/caretaker_edit", ['caretaker' => $caretaker]);
         }
+
+        header("Location: " . URLROOT . "/CaretakerCRUD/list?open=edit&id=" . (int) $id);
+        exit;
     }
 
     // Delete caretaker
@@ -236,7 +238,7 @@ class CaretakerCRUDController extends Controller
             'section' => "Caretakers"
         ]);
 
-        header("Location: " . URLROOT . "/admin/ad_caretakers");
+        header("Location: " . URLROOT . "/CaretakerCRUD/list");
         exit;
     }
 
@@ -262,11 +264,23 @@ class CaretakerCRUDController extends Controller
 
         $totalPages = max(1, (int) ceil($total / $perPage));
 
+        $openModal = trim((string) ($_GET['open'] ?? ''));
+        $editId = (int) ($_GET['id'] ?? 0);
+        $editCaretaker = null;
+        if ($openModal === 'edit' && $editId > 0) {
+            $editCaretaker = $this->caretakerModel->getCaretakerById($editId);
+            if (!$editCaretaker) {
+                $openModal = '';
+            }
+        }
+
         $this->view("admin/ad_caretakers", [
             'caretakers' => $caretakers,
             'filters' => $filters,
             'page' => $page,
-            'totalPages' => $totalPages
+            'totalPages' => $totalPages,
+            'openModal' => $openModal,
+            'editCaretaker' => $editCaretaker,
         ]);
     }
 

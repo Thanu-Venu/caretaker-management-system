@@ -1,5 +1,3 @@
-<?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
 <?php
 $requests = $data['requests'] ?? [];
 $selectedStatus = $data['selectedStatus'] ?? 'All';
@@ -8,18 +6,22 @@ $selectedStatus = $data['selectedStatus'] ?? 'All';
 <html lang="en">
 
 <head>
+    <?php include_once APPROOT . '/views/templates/admin/ad_admin_core_styles.php'; ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Update Requests</title>
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_profile_requests.css">
     <!-- Design System Override (ensures consistency) -->
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/system/legacy-overrides.css">
 </head>
 
 <body>
+    <?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
+    <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
     <main class="content">
         <section>
-            <h1>Caretaker Profile Update Requests</h1>
+            <div class="page-header">
+                <h1 class="page-title">Caretaker Profile Update Requests</h1>
+            </div>
 
             <?php if (!empty($_SESSION['success'])): ?>
                 <p class="flash success"><?= htmlspecialchars($_SESSION['success']) ?></p>
@@ -105,9 +107,13 @@ $selectedStatus = $data['selectedStatus'] ?? 'All';
 
     <script>
         function applyFilter() {
-            const status = document.getElementById('status').value;
+            const sel = document.getElementById('status');
+            if (!sel) return;
             const params = new URLSearchParams(window.location.search);
-            params.set('status', status);
+            if (!params.get('url')) {
+                params.set('url', 'admin/ad_profile_requests');
+            }
+            params.set('status', sel.value);
             window.location = window.location.pathname + '?' + params.toString();
         }
     </script>
