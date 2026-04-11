@@ -33,13 +33,13 @@
   font-weight: 600;
   border: none;
   text-decoration: none;
-  background: #22c55e;
+  background: #1e88e5;
   color: #fff;
   transition: all 0.2s ease;
 }
 
 .register-btn:hover {
-  background: #16a34a;
+  background: #1565c0;
   transform: translateY(-1px);
 }
 
@@ -193,6 +193,7 @@
   }
 
   .complaints-table {
-    min-width: 800px; /* still scrollable */
+    min-width: 800px;
+    /* still scrollable */
   }
 }
