@@ -1,7 +1,7 @@
 .main-content {
   margin-left: 270px; /* adjust based on sidebar */
   padding: 20px;
-  font-family: Arial, sans-serif;
+  font-family: var(--font-primary);
   margin-right: 20px;
 }
 

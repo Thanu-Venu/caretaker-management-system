@@ -7,7 +7,7 @@
   width: 240px;
   background: linear-gradient(180deg, #1E88E5, #00BFA5);
   padding: 20px 0;
-  font-family: Arial, sans-serif;
+  font-family: var(--font-primary);
   transition: all 0.3s ease;
   overflow-y: auto;  /* enables vertical scrolling */
   overflow-x: hidden;

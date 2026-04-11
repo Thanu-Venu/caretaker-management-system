@@ -1,7 +1,7 @@
 .content {
   margin-left: 270px;
   padding: 30px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-primary);
   background-color: #f9fafc;
   min-height: 100vh;
 }

@@ -9,7 +9,7 @@
   left: 0;
   padding: 20px;
   overflow-y: auto;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-primary);
   overflow-x: hidden;
 }
 .sidebar::-webkit-scrollbar {
@@ -25,7 +25,7 @@
 
 .brand-name {
   color: #fff;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-primary);
 }
 
 /* Sidebar menu */
