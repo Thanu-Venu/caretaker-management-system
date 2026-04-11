@@ -20,88 +20,70 @@ $user_display = $_SESSION['user']['name']
 
 $profilePic = $_SESSION['user']['profile_pic'] ?? 'default.png';
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartCare</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- FONT AWESOME (REQUIRED) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-    <!-- Legacy/Page-specific CSS -->
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/ad_header.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/ad_sidebar.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
-</head>
-
-<body>
-
-    <header class="main-header">
-        <div class="left-section">
-            <div class="logo-section">
-                <img src="<?= URLROOT ?>/public/images/logo.jpg" class="logo">
-                <span class="company-name">SmartCare</span>
-            </div>
+<!-- Restore collapsed rail before paint (avoids full-width flash; must run before layout CSS paints) -->
+<script>
+(function () {
+    try {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('adminSidebarCollapsed') === '1') {
+            document.body.classList.add('admin-sidebar-collapsed');
+        }
+    } catch (e) { /* private mode / blocked storage */ }
+})();
+</script>
+<!-- Admin top bar (fragment — include once inside the real page <body>, after <body> opens) -->
+<header class="main-header">
+    <div class="left-section">
+        <div class="logo-section">
+            <img src="<?= URLROOT ?>/public/images/logo.jpg" class="logo" alt="">
+            <span class="company-name">SmartCare</span>
         </div>
+    </div>
 
-        <div class="header-icons">
+    <div class="header-icons">
 
-            <!-- Notifications -->
-            <div class="notification-wrapper">
-                <button id="notifBtn" class="notif-btn">
-                    <i class="fa-solid fa-bell"></i>
-                    <span class="notif-count"><?= $unreadCount ?></span>
-                </button>
+        <!-- Notifications -->
+        <div class="notification-wrapper">
+            <button id="notifBtn" class="notif-btn" type="button">
+                <i class="fa-solid fa-bell"></i>
+                <span class="notif-count"><?= $unreadCount ?></span>
+            </button>
 
-                <div id="notifDropdown" class="notif-dropdown">
-                    <ul>
-                        <?php if (empty($notifications)): ?>
-                            <li>No notifications</li>
-                        <?php else: ?>
-                            <?php foreach ($notifications as $n): ?>
-                                <li style="<?= $n['is_read'] == 0 ? 'font-weight:bold;' : '' ?>">
-                                    <?= htmlspecialchars($n['title']) ?><br>
-                                    <small><?= htmlspecialchars($n['message']) ?></small>
-                                </li>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </ul>
-                    <div class="see-all">
-                        <a href="<?= URLROOT ?>/notification/index">See all notifications</a>
-                    </div>
+            <div id="notifDropdown" class="notif-dropdown">
+                <ul>
+                    <?php if (empty($notifications)): ?>
+                        <li>No notifications</li>
+                    <?php else: ?>
+                        <?php foreach ($notifications as $n): ?>
+                            <li style="<?= $n['is_read'] == 0 ? 'font-weight:bold;' : '' ?>">
+                                <?= htmlspecialchars($n['title']) ?><br>
+                                <small><?= htmlspecialchars($n['message']) ?></small>
+                            </li>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </ul>
+                <div class="see-all">
+                    <a href="<?= URLROOT ?>/notification/index">See all notifications</a>
                 </div>
             </div>
-
-            <div class="header-logout">
-                <a href="<?= URLROOT ?>/index.php?url=auth/logout" class="logout-btn" title="Logout">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Logout</span>
-                </a>
-            </div>
-
-            <!-- Profile -->
-            <div class="profile-wrapper">
-                <a href="http://localhost/CMA/public?url=admin/ad_settings" class="profile-link">
-                    <img src="<?= URLROOT ?>/public/images/profiles/<?= htmlspecialchars($profilePic) ?>" class="profile-img"
-                        alt="Profile">
-                    <span><?= htmlspecialchars($user_display) ?></span>
-                </a>
-            </div>
-
-
         </div>
-    </header>
 
-    <script src="<?= URLROOT ?>/public/js/notification.js"></script>
-</body>
+        <div class="header-logout">
+            <a href="<?= URLROOT ?>/index.php?url=auth/logout" class="logout-btn" title="Logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+        </div>
 
-</html>
+        <!-- Profile -->
+        <div class="profile-wrapper">
+            <a href="<?= URLROOT ?>/public?url=admin/ad_settings" class="profile-link">
+                <img src="<?= URLROOT ?>/public/images/profiles/<?= htmlspecialchars($profilePic) ?>" class="profile-img"
+                    alt="">
+                <span><?= htmlspecialchars($user_display) ?></span>
+            </a>
+        </div>
+
+    </div>
+</header>
+
+<script src="<?= URLROOT ?>/public/js/notification.js"></script>
