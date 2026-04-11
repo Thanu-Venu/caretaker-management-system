@@ -53,19 +53,21 @@ table {
 }
 
 thead {
-  background-color: #f6fafe;
+  background-color: #1e88e5;
   color: #fff;
 }
 
-th, td {
-  padding: 12px 15px;
+th,
+td {
+  padding: 14px 15px;
   border-bottom: 1px solid #edf3f9;
   text-align: left;
 }
 
 th {
-  color: #173b72;
+  color: #ffffff;
   font-weight: 700;
+  font-size: 14px;
 }
 
 td {
@@ -109,6 +111,7 @@ tbody tr:hover {
   .page-title {
     font-size: 24px;
   }
+
   .card {
     padding: 15px;
   }
