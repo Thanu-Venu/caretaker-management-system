@@ -67,20 +67,25 @@ $profilePic = $_SESSION['user']['profile_pic'] ?? 'default.png';
             </div>
         </div>
 
-        <div class="header-logout">
-            <a href="<?= URLROOT ?>/index.php?url=auth/logout" class="logout-btn" title="Logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </a>
-        </div>
-
-        <!-- Profile -->
+        <!-- Profile + logout (dropdown, same pattern as client header) -->
         <div class="profile-wrapper">
-            <a href="<?= URLROOT ?>/public?url=admin/ad_settings" class="profile-link">
+            <button type="button" id="profileMenuBtn" class="profile-menu-trigger" aria-expanded="false"
+                aria-haspopup="true" aria-controls="adminProfileDropdown" title="Account menu">
                 <img src="<?= URLROOT ?>/public/images/profiles/<?= htmlspecialchars($profilePic) ?>" class="profile-img"
                     alt="">
-                <span><?= htmlspecialchars($user_display) ?></span>
-            </a>
+                <span class="profile-menu-name"><?= htmlspecialchars($user_display) ?></span>
+                <i class="fa-solid fa-chevron-down profile-menu-chevron" aria-hidden="true"></i>
+            </button>
+            <div id="adminProfileDropdown" class="profile-dropdown" role="menu">
+                <a href="<?= URLROOT ?>/public?url=admin/ad_settings" class="profile-menu-item" role="menuitem">
+                    <i class="fa-solid fa-user" aria-hidden="true"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="<?= URLROOT ?>/index.php?url=auth/logout" class="profile-menu-item profile-menu-item--logout" role="menuitem">
+                    <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
         </div>
 
     </div>
