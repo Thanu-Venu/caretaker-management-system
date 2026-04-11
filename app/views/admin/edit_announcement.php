@@ -1,7 +1,4 @@
 <?php
-include_once APPROOT . "/views/templates/admin/ad_header.php";
-include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
-
 // Safe assignment to avoid undefined index errors
 $announcement = $data['announcement'] ?? [];
 $title = htmlspecialchars($announcement['title'] ?? '', ENT_QUOTES, 'UTF-8');
@@ -12,6 +9,7 @@ $target_role = $announcement['target_role'] ?? '';
 <html lang="en">
 
 <head>
+  <?php include_once APPROOT . '/views/templates/admin/ad_admin_core_styles.php'; ?>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit Announcement</title>
@@ -20,6 +18,8 @@ $target_role = $announcement['target_role'] ?? '';
 </head>
 
 <body>
+  <?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
+  <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
   <main class="main-content">
     <h2>Edit Announcement</h2>
 

@@ -89,14 +89,9 @@ include_once APPROOT . "/views/templates/hr/hr_sidebar.php";
       </div>
     </div>
 
-    <div class="action-buttons">
-      <a href="<?= URLROOT ?>/HRCaretakerCRUD/edit/<?= $data['caretaker']['id'] ?>" class="btn btn-edit">
-        <i class="bx bx-edit"></i> Edit
-      </a>
-      <a href="<?= URLROOT ?>/HRCaretakerCRUD/list" class="btn btn-back">
-        <i class="bx bx-arrow-back"></i> Back to List
-      </a>
-    </div>
+    <p class="caretaker-view-back">
+      <a href="<?= URLROOT ?>/HRCaretakerCRUD/list">← Back to caregivers list</a>
+    </p>
   </div>
 </main>
 

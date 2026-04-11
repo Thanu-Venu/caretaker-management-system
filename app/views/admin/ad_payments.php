@@ -1,6 +1,3 @@
-<?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
-
 <?php
 $summary = $data['summary'] ?? [];
 $payments = $data['payments'] ?? [];
@@ -30,6 +27,7 @@ $bookingStatuses = $filterOptions['booking_statuses'] ?? [];
 <html lang="en">
 
 <head>
+  <?php include_once APPROOT . '/views/templates/admin/ad_admin_core_styles.php'; ?>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Payment Summary</title>
@@ -38,6 +36,8 @@ $bookingStatuses = $filterOptions['booking_statuses'] ?? [];
 </head>
 
 <body>
+  <?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
+  <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
   <div class="payments-page">
     <div class="payments-header">
       <div>
@@ -143,21 +143,15 @@ $bookingStatuses = $filterOptions['booking_statuses'] ?? [];
               <th>Payment ID</th>
               <th>Booking ID</th>
               <th>Client</th>
-              <th>Caretaker</th>
-              <th>Service</th>
-              <th>Type</th>
-              <th>Method</th>
               <th>Amount</th>
-              <th>Balance</th>
               <th>Status</th>
-              <th>Created</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             <?php if (empty($payments)): ?>
               <tr>
-                <td colspan="12" class="empty">No payment records found for selected filters.</td>
+                <td colspan="6" class="empty">No payment records found for selected filters.</td>
               </tr>
             <?php else: ?>
               <?php foreach ($payments as $payment): ?>
@@ -165,26 +159,21 @@ $bookingStatuses = $filterOptions['booking_statuses'] ?? [];
                   <td>#<?php echo esc($payment['payment_id']); ?></td>
                   <td>#<?php echo esc($payment['booking_id']); ?></td>
                   <td><?php echo esc($payment['client_name']); ?></td>
-                  <td><?php echo esc($payment['caretaker_name']); ?></td>
-                  <td><?php echo esc($payment['service_type']); ?></td>
-                  <td><?php echo esc(ucfirst($payment['payment_type'])); ?></td>
-                  <td><?php echo esc(str_replace('_', ' ', (string)$payment['payment_method'])); ?></td>
                   <td><?php echo esc(money($payment['amount'])); ?></td>
-                  <td><?php echo esc(money($payment['remaining_balance'])); ?></td>
                   <td>
                     <span class="status status-<?php echo esc($payment['status']); ?>">
                       <?php echo esc(ucfirst($payment['status'])); ?>
                     </span>
                   </td>
-                  <td><?php echo esc($payment['created_at']); ?></td>
-                  <td class="action-cell">
+                  <td class="action-cell actions">
                     <button
                       type="button"
-                      class="btn tiny js-view-detail"
-                      data-payment='<?php echo esc(json_encode($payment)); ?>'>
-                      Quick View
+                      class="btn secondary btn-sm action-view-btn action-view-btn--icon js-payment-detail"
+                      aria-label="View full payment details"
+                      title="View details"
+                      data-payment="<?php echo esc(json_encode($payment, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT)); ?>">
+                      <i class="bx bx-show" aria-hidden="true"></i>
                     </button>
-                    <a class="btn tiny ghost" href="<?php echo URLROOT; ?>/admin/ad_payment_detail/<?php echo (int)$payment['payment_id']; ?>">Full Detail</a>
                   </td>
                 </tr>
               <?php endforeach; ?>
@@ -210,14 +199,6 @@ $bookingStatuses = $filterOptions['booking_statuses'] ?? [];
         </div>
       <?php endif; ?>
     </section>
-  </div>
-
-  <div id="paymentModal" class="modal" aria-hidden="true">
-    <div class="modal-content">
-      <button type="button" class="modal-close" id="modalCloseBtn">x</button>
-      <h3>Payment Quick Detail</h3>
-      <dl id="paymentModalBody" class="detail-list"></dl>
-    </div>
   </div>
 
   <script src="<?php echo URLROOT; ?>/public/js/admin/ad_payments.js"></script>

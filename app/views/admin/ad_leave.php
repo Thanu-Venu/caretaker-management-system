@@ -1,5 +1,3 @@
-<?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
 <?php
 $currentPage = $data['currentPage'] ?? 1;
 $totalPages  = $data['totalPages'] ?? 1;
@@ -11,6 +9,7 @@ $selectedStatus = $data['selectedStatus'] ?? 'All';
 <html lang="en">
 
 <head>
+  <?php include_once APPROOT . '/views/templates/admin/ad_admin_core_styles.php'; ?>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Leave Management</title>
@@ -21,9 +20,13 @@ $selectedStatus = $data['selectedStatus'] ?? 'All';
 </head>
 
 <body>
+  <?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
+  <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
   <main class="content">
     <section>
-      <h1>Leave Management</h1>
+      <div class="page-header">
+        <h1 class="page-title">Leave Management</h1>
+      </div>
 
       <!-- Filter Section -->
       <div class="filter-section">
@@ -74,54 +77,53 @@ $selectedStatus = $data['selectedStatus'] ?? 'All';
               <?php endforeach; ?>
             <?php else: ?>
               <tr>
-                <td colspan="6">No leave requests found.</td>
+                <td colspan="5">No leave requests found.</td>
               </tr>
             <?php endif; ?>
           </tbody>
         </table>
+
         <div class="pagination">
           <?php
-          $currentPage = $data['currentPage'] ?? 1;
-          $totalPages  = $data['totalPages'] ?? 1;
-
-          $query = $_GET; // keeps type/status
+          $query = $_GET;
           ?>
+          <?php if ($currentPage > 1): ?>
+            <?php $query['page'] = $currentPage - 1; ?>
+            <a href="<?= URLROOT ?>/admin/ad_leave?<?= http_build_query($query) ?>">Prev</a>
+          <?php endif; ?>
 
-          <div class="pagination">
-            <?php if ($currentPage > 1): ?>
-              <?php $query['page'] = $currentPage - 1; ?>
-              <a href="<?= URLROOT ?>/admin/ad_leave?<?= http_build_query($query) ?>">Prev</a>
-            <?php endif; ?>
+          <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <?php $query['page'] = $i; ?>
+            <a class="<?= ($i == $currentPage) ? 'active' : '' ?>"
+              href="<?= URLROOT ?>/admin/ad_leave?<?= http_build_query($query) ?>">
+              <?= $i ?>
+            </a>
+          <?php endfor; ?>
 
-            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-              <?php $query['page'] = $i; ?>
-              <a class="<?= ($i == $currentPage) ? 'active' : '' ?>"
-                href="<?= URLROOT ?>/admin/ad_leave?<?= http_build_query($query) ?>">
-                <?= $i ?>
-              </a>
-            <?php endfor; ?>
-
-            <?php if ($currentPage < $totalPages): ?>
-              <?php $query['page'] = $currentPage + 1; ?>
-              <a href="<?= URLROOT ?>/admin/ad_leave?<?= http_build_query($query) ?>">Next</a>
-            <?php endif; ?>
-          </div>
-
+          <?php if ($currentPage < $totalPages): ?>
+            <?php $query['page'] = $currentPage + 1; ?>
+            <a href="<?= URLROOT ?>/admin/ad_leave?<?= http_build_query($query) ?>">Next</a>
+          <?php endif; ?>
         </div>
+      </div>
     </section>
   </main>
 
   <script>
     function applyFilters() {
-      const type = document.getElementById('type').value;
-      const status = document.getElementById('status').value;
+      const typeEl = document.getElementById('type');
+      const statusEl = document.getElementById('status');
+      if (!typeEl || !statusEl) return;
 
       const params = new URLSearchParams(window.location.search);
-      params.set("page", "1");
-      params.set("type", type);
-      params.set("status", status);
+      if (!params.get('url')) {
+        params.set('url', 'admin/ad_leave');
+      }
+      params.set('page', '1');
+      params.set('type', typeEl.value);
+      params.set('status', statusEl.value);
 
-      window.location = window.location.pathname + "?" + params.toString();
+      window.location = window.location.pathname + '?' + params.toString();
     }
   </script>
 

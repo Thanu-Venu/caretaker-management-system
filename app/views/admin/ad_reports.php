@@ -1,6 +1,3 @@
-<?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
-
 <?php
 $summary = $data['summary'] ?? [];
 $bookingStatus = $data['bookingStatus'] ?? [];
@@ -36,6 +33,7 @@ function esc($value)
 <html lang="en">
 
 <head>
+    <?php include_once APPROOT . '/views/templates/admin/ad_admin_core_styles.php'; ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Reports</title>
@@ -45,6 +43,8 @@ function esc($value)
 </head>
 
 <body>
+    <?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
+    <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
     <div class="reports-container">
         <div class="reports-header">
             <div>
@@ -53,7 +53,7 @@ function esc($value)
             </div>
 
             <div class="header-actions">
-                <div class="filters">
+                <div class="filters filters-inline">
                     <label for="fromDate">From</label>
                     <input type="date" id="fromDate" value="<?= esc($fromDate) ?>">
                     <label for="toDate">To</label>

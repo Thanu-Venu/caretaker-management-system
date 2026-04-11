@@ -1,6 +1,3 @@
-<?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
-
 <?php
 $user = $data['user'] ?? null;
 $flash_success = $_SESSION['flash_success'] ?? '';
@@ -14,6 +11,7 @@ unset($_SESSION['flash_success'], $_SESSION['flash_error']);
 <html lang="en">
 
 <head>
+    <?php include_once APPROOT . '/views/templates/admin/ad_admin_core_styles.php'; ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Settings</title>
@@ -22,6 +20,8 @@ unset($_SESSION['flash_success'], $_SESSION['flash_error']);
 </head>
 
 <body>
+    <?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
+    <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
     <div class="main-content">
         <h1>Profile & Settings</h1>
 

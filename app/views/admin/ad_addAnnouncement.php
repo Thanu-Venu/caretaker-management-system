@@ -1,12 +1,8 @@
-<?php
-include_once APPROOT . "/views/templates/admin/ad_header.php";
-include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+  <?php include_once APPROOT . '/views/templates/admin/ad_admin_core_styles.php'; ?>
   <meta charset="UTF-8">
   <title>Add Announcement</title>
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/ad_announcement.css">
@@ -14,6 +10,8 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
 </head>
 
 <body>
+  <?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
+  <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
   <main class="main-content">
     <div class="form-wrapper">
       <h2>Add Announcement</h2>

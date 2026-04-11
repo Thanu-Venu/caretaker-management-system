@@ -1,9 +1,8 @@
-<?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+  <?php include_once APPROOT . '/views/templates/admin/ad_admin_core_styles.php'; ?>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>History Logs - SmartCare</title>
@@ -12,8 +11,12 @@
 </head>
 
 <body>
+  <?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
+  <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
   <main class="content">
-    <h1>Logs</h1>
+    <div class="page-header">
+      <h1 class="page-title">Logs</h1>
+    </div>
     <div class="container">
       <section>
         <table id="logTable">

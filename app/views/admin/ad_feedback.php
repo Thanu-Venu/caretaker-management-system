@@ -1,10 +1,8 @@
-<?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+  <?php include_once APPROOT . '/views/templates/admin/ad_admin_core_styles.php'; ?>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin dashboard</title>
@@ -14,9 +12,13 @@
 </head>
 
 <body>
+  <?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
+  <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
 
-  <div class="main-content">
-    <h2>Feedback & Complaints</h2>
+  <main class="main-content">
+    <section class="feedback-header page-header">
+      <h1 class="page-title">Feedback &amp; Complaints</h1>
+    </section>
 
     <!-- Tabs -->
     <div class="tabs">
@@ -28,7 +30,7 @@
     <div id="feedbackSection" class="tab-section">
 
       <!-- Filters -->
-      <div class="filters">
+      <div class="filters filters-inline">
         <label for="ratingFilter">Rating:</label>
         <select id="ratingFilter">
           <option value="">All</option>
@@ -135,6 +137,8 @@
         </table>
       </div>
     </div>
+
+  </main>
 
     <script src="<?php echo URLROOT; ?>/public/js/admin/ad_feedback.js"></script>
 </body>
