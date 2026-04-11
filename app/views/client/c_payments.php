@@ -104,18 +104,6 @@
         <form method="get" action="<?= URLROOT ?>/client/payments" class="filter-panel">
             <input type="hidden" name="tab" value="<?= htmlspecialchars($tab) ?>">
 
-            <input type="text" name="search" placeholder="Search by Booking ID, caretaker, service..."
-                value="<?= htmlspecialchars($filters['search'] ?? '') ?>">
-
-            <select name="status">
-                <option value="all">All Status</option>
-                <option value="advance_required" <?= (($filters['status'] ?? '') === 'advance_required') ? 'selected' : '' ?>>Advance Required</option>
-                <option value="pending" <?= (($filters['status'] ?? '') === 'pending') ? 'selected' : '' ?>>Pending</option>
-                <option value="overdue" <?= (($filters['status'] ?? '') === 'overdue') ? 'selected' : '' ?>>Overdue</option>
-                <option value="approved" <?= (($filters['status'] ?? '') === 'approved') ? 'selected' : '' ?>>Approved</option>
-                <option value="rejected" <?= (($filters['status'] ?? '') === 'rejected') ? 'selected' : '' ?>>Rejected</option>
-            </select>
-
             <select name="service_type">
                 <option value="all">All Services</option>
                 <option value="Elder Care" <?= (($filters['service_type'] ?? '') === 'Elder Care') ? 'selected' : '' ?>>Elder Care</option>
@@ -130,9 +118,6 @@
                 <option value="Accepted" <?= (($filters['booking_status'] ?? '') === 'Accepted') ? 'selected' : '' ?>>Accepted</option>
                 <option value="Completed" <?= (($filters['booking_status'] ?? '') === 'Completed') ? 'selected' : '' ?>>Completed</option>
             </select>
-
-            <input type="date" name="from_date" value="<?= htmlspecialchars($filters['from_date'] ?? '') ?>">
-            <input type="date" name="to_date" value="<?= htmlspecialchars($filters['to_date'] ?? '') ?>">
 
             <button type="submit">Apply</button>
             <a href="<?= URLROOT ?>/client/payments?tab=<?= urlencode($tab) ?>" class="reset-btn">Reset</a>
