@@ -1,127 +1,24 @@
-body {
-    font-family: 'Inter', Arial, sans-serif;
-    margin: 0;
-    background: #f4f7fb;
-}
-
-.content {
-    margin-left: 270px;
-    padding: 16px 20px;
-}
-
-h1 {
-    color: #1565c0;
-    margin-bottom: 12px;
-}
-
-.flash {
-    padding: 10px 12px;
-    border-radius: 8px;
-    margin-bottom: 12px;
-}
-
-.flash.success {
-    background: #d4edda;
-    color: #155724;
-}
-
-.flash.error {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-.filter-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-}
-
-select {
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: 1px solid #cfd8e3;
-}
-
-.table-wrap {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 1100px;
-}
-
-th,
-td {
-    padding: 12px;
-    border-bottom: 1px solid #edf1f5;
-    vertical-align: top;
-    text-align: left;
-}
-
-th {
-    background: #1e88e5;
-    color: #fff;
-}
-
-.status {
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.status.pending {
-    background: #fff3cd;
-    color: #856404;
-}
-
-.status.approved {
-    background: #d4edda;
-    color: #155724;
-}
-
-.status.rejected {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-.action-form {
-    margin-bottom: 8px;
-}
-
+/* Profile requests — toolbar + table shell from admin-ui.css */
 .action-form textarea {
     width: 100%;
     min-height: 56px;
-    margin-bottom: 8px;
-    border: 1px solid #d5dde8;
-    border-radius: 8px;
-    padding: 8px;
-    resize: vertical;
+    margin: 8px 0;
 }
 
-.btn {
-    border: none;
-    border-radius: 8px;
-    padding: 7px 12px;
-    color: #fff;
-    cursor: pointer;
+.action-form {
+    margin-bottom: 10px;
 }
 
-.btn.approve {
-    background: #2e7d32;
+.action-form .btn {
+    margin-top: 4px;
 }
 
-.btn.reject {
-    background: #c62828;
+.content .table-wrap table {
+    min-width: 1100px;
 }
 
 .done {
-    color: #607d8b;
+    font-size: 13px;
     font-weight: 600;
+    color: var(--admin-muted, #64748b);
 }
