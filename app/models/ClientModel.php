@@ -67,6 +67,68 @@ class ClientModel
         return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     }
 
+    /**
+     * Admin client list with optional search and registration date range.
+     *
+     * @param array{q?:string,date_from?:string,date_to?:string} $filters
+     * @return array<int, array<string, mixed>>
+     */
+    public function getAllClientsFiltered(array $filters = []): array
+    {
+        $q = trim((string)($filters['q'] ?? ''));
+        $from = trim((string)($filters['date_from'] ?? ''));
+        $to = trim((string)($filters['date_to'] ?? ''));
+
+        if ($from !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $from)) {
+            $from = '';
+        }
+        if ($to !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $to)) {
+            $to = '';
+        }
+
+        $sql = 'SELECT id, name, email, phone, created_at FROM clients WHERE 1=1';
+        $types = '';
+        $params = [];
+
+        if ($q !== '') {
+            $sql .= ' AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)';
+            $like = '%' . $q . '%';
+            $types .= 'sss';
+            $params[] = $like;
+            $params[] = $like;
+            $params[] = $like;
+        }
+        if ($from !== '') {
+            $sql .= ' AND DATE(created_at) >= ?';
+            $types .= 's';
+            $params[] = $from;
+        }
+        if ($to !== '') {
+            $sql .= ' AND DATE(created_at) <= ?';
+            $types .= 's';
+            $params[] = $to;
+        }
+
+        $sql .= ' ORDER BY created_at DESC';
+
+        if ($types === '') {
+            $result = $this->conn->query($sql);
+            return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+        }
+
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            return [];
+        }
+
+        $stmt->bind_param($types, ...$params);
+        $stmt->execute();
+        $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $rows;
+    }
+
     public function getClientById($id)
     {
         $stmt = $this->conn->prepare(
@@ -1569,6 +1631,29 @@ class ClientModel
             $labels[] = "Week " . $r['yw'];
             $values[] = (int)$r['total'];
         }
+        return ['labels' => $labels, 'values' => $values];
+    }
+
+    /**
+     * Booking counts by status (admin dashboard).
+     *
+     * @return array{labels: string[], values: int[]}
+     */
+    public function getBookingStatusDistribution(): array
+    {
+        $res = $this->conn->query(
+            "SELECT COALESCE(NULLIF(TRIM(status), ''), 'Unknown') AS st, COUNT(*) AS cnt FROM bookings GROUP BY st ORDER BY cnt DESC"
+        );
+        if (!$res) {
+            return ['labels' => [], 'values' => []];
+        }
+        $labels = [];
+        $values = [];
+        while ($row = $res->fetch_assoc()) {
+            $labels[] = (string) $row['st'];
+            $values[] = (int) $row['cnt'];
+        }
+
         return ['labels' => $labels, 'values' => $values];
     }
 
