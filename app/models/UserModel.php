@@ -46,8 +46,9 @@ class UserModel
         $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
 
         if (!$this->hasAccountLinking()) {
-            $stmt = $this->conn->prepare("INSERT INTO users (username, email, password, role, status) VALUES (?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssss", $data['username'], $data['email'], $hashedPassword, $data['role'], $data['status']);
+            $phone = $data['phone'] ?? '';
+            $stmt = $this->conn->prepare("INSERT INTO users (username, email, password, role, status, phone) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssss", $data['username'], $data['email'], $hashedPassword, $data['role'], $data['status'], $phone);
             return $stmt->execute();
         }
 
@@ -102,8 +103,9 @@ class UserModel
     public function updateUser($id, $data)
     {
         if (!$this->hasAccountLinking()) {
-            $stmt = $this->conn->prepare("UPDATE users SET username=?, email=?, role=?, status=? WHERE id=?");
-            $stmt->bind_param("ssssi", $data['username'], $data['email'], $data['role'], $data['status'], $id);
+            $phone = $data['phone'] ?? '';
+            $stmt = $this->conn->prepare("UPDATE users SET username=?, email=?, role=?, status=?, phone=? WHERE id=?");
+            $stmt->bind_param("sssssi", $data['username'], $data['email'], $data['role'], $data['status'], $phone, $id);
             return $stmt->execute();
         }
 
@@ -117,8 +119,9 @@ class UserModel
             $roleNormalized = AccountModel::normalizeRole($data['role'] ?? '');
             $roleLegacy = AccountModel::toLegacyRole($roleNormalized);
 
-            $stmt = $this->conn->prepare("UPDATE users SET username=?, email=?, role=?, status=? WHERE id=?");
-            $stmt->bind_param("ssssi", $data['username'], $data['email'], $roleLegacy, $data['status'], $id);
+            $phone = $data['phone'] ?? '';
+            $stmt = $this->conn->prepare("UPDATE users SET username=?, email=?, role=?, status=?, phone=? WHERE id=?");
+            $stmt->bind_param("sssssi", $data['username'], $data['email'], $roleLegacy, $data['status'], $phone, $id);
             if (!$stmt->execute()) {
                 throw new Exception('Failed to update user profile');
             }
