@@ -52,9 +52,9 @@ table {
   border-radius: 12px;
 }
 
-thead {
+thead th {
   background-color: #1e88e5;
-  color: #fff;
+  color: #ffffff;
 }
 
 th,

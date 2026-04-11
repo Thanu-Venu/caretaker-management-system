@@ -52,20 +52,21 @@ table {
   border-radius: 12px;
 }
 
-thead {
-  background-color: #f6fafe;
-  color: #fff;
+thead th {
+  background-color: #1e88e5;
+  color: #ffffff;
 }
 
 th, td {
-  padding: 12px 15px;
+  padding: 14px 15px;
   border-bottom: 1px solid #edf3f9;
   text-align: left;
 }
 
 th {
-  color: #173b72;
+  color: #ffffff;
   font-weight: 700;
+  font-size: 14px;
 }
 
 td {
