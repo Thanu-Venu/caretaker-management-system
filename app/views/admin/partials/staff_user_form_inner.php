@@ -17,29 +17,32 @@ $val = static function (string $key, string $default = '') use ($u): string {
 ?>
 <div class="form-grid">
   <div class="field">
-    <label for="<?= $fp ?>-username">Username</label>
-    <input id="<?= $fp ?>-username" type="text" name="username" required placeholder="Username" value="<?= $val('username'); ?>">
+    <label for="<?= $fp ?>-username">Username<span class="required-mark" aria-hidden="true">*</span></label>
+    <input id="<?= $fp ?>-username" type="text" name="username" required placeholder="Username" maxlength="48" autocomplete="username" value="<?= $val('username'); ?>">
   </div>
 
   <div class="field">
-    <label for="<?= $fp ?>-email">Email</label>
-    <input id="<?= $fp ?>-email" type="email" name="email" required placeholder="Email" value="<?= $val('email'); ?>">
+    <label for="<?= $fp ?>-email">Email<span class="required-mark" aria-hidden="true">*</span></label>
+    <input id="<?= $fp ?>-email" type="email" name="email" required placeholder="Email" autocomplete="email" value="<?= $val('email'); ?>">
   </div>
 
   <?php if ($mode === 'add'): ?>
     <div class="field">
-      <label for="<?= $fp ?>-password">Password</label>
-      <input id="<?= $fp ?>-password" type="password" name="password" required placeholder="Password" autocomplete="new-password">
+      <label for="<?= $fp ?>-password">Password<span class="required-mark" aria-hidden="true">*</span></label>
+      <input id="<?= $fp ?>-password" type="password" name="password" required placeholder="Min. 8 chars, upper, lower, number" autocomplete="new-password">
     </div>
   <?php endif; ?>
 
   <div class="field">
-    <label for="<?= $fp ?>-phone">Phone</label>
-    <input id="<?= $fp ?>-phone" type="text" name="phone" <?= $mode === 'add' ? 'required' : ''; ?> placeholder="Phone number" value="<?= $val('phone'); ?>">
+    <label for="<?= $fp ?>-phone">Phone<?php if ($mode === 'add'): ?><span class="required-mark" aria-hidden="true">*</span><?php endif; ?></label>
+    <input id="<?= $fp ?>-phone" type="text" name="phone" <?= $mode === 'add' ? 'required' : ''; ?> placeholder="10-digit number" maxlength="10" inputmode="numeric" pattern="[0-9]*" autocomplete="tel" value="<?= $val('phone'); ?>">
+    <?php if ($mode === 'edit'): ?>
+      <p class="field-hint">Leave blank or enter exactly 10 digits.</p>
+    <?php endif; ?>
   </div>
 
   <div class="field">
-    <label for="<?= $fp ?>-role">Role</label>
+    <label for="<?= $fp ?>-role">Role<span class="required-mark" aria-hidden="true">*</span></label>
     <select id="<?= $fp ?>-role" name="role" required>
       <option value="">Select role</option>
       <option value="Admin" <?= (($u['role'] ?? '') === 'Admin' || ($u['role'] ?? '') === 'admin') ? 'selected' : '' ?>>Admin</option>
@@ -48,7 +51,7 @@ $val = static function (string $key, string $default = '') use ($u): string {
   </div>
 
   <div class="field">
-    <label for="<?= $fp ?>-status">Status</label>
+    <label for="<?= $fp ?>-status">Status<span class="required-mark" aria-hidden="true">*</span></label>
     <select id="<?= $fp ?>-status" name="status" required>
       <option value="Active" <?= (($u['status'] ?? 'Active') === 'Active') ? 'selected' : '' ?>>Active</option>
       <option value="Inactive" <?= (($u['status'] ?? '') === 'Inactive') ? 'selected' : '' ?>>Inactive</option>

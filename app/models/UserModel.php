@@ -40,6 +40,92 @@ class UserModel
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
+    /**
+     * WHERE clause for staff list filters (status + role).
+     *
+     * @return array{0: string, 1: string, 2: list<string>}
+     */
+    private function usersListWhere(array $filters): array
+    {
+        $parts = ['1=1'];
+        $types = '';
+        $params = [];
+
+        $status = trim((string)($filters['status'] ?? ''));
+        if ($status === 'Active' || $status === 'Inactive') {
+            $parts[] = 'status = ?';
+            $types .= 's';
+            $params[] = $status;
+        }
+
+        $role = trim((string)($filters['role'] ?? ''));
+        if ($role === 'Admin' || $role === 'Manager') {
+            $parts[] = 'LOWER(TRIM(role)) = ?';
+            $types .= 's';
+            $params[] = strtolower($role);
+        }
+
+        return [implode(' AND ', $parts), $types, $params];
+    }
+
+    private function bindUserListParams(\mysqli_stmt $stmt, string $types, array $params): bool
+    {
+        if ($types === '' || $params === []) {
+            return true;
+        }
+        $refs = [$types];
+        foreach ($params as $key => $value) {
+            $refs[] = &$params[$key];
+        }
+
+        return call_user_func_array([$stmt, 'bind_param'], $refs);
+    }
+
+    public function countUsersFiltered(array $filters): int
+    {
+        [$where, $types, $params] = $this->usersListWhere($filters);
+        $sql = 'SELECT COUNT(*) AS cnt FROM users WHERE ' . $where;
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            return 0;
+        }
+        if (!$this->bindUserListParams($stmt, $types, $params)) {
+            $stmt->close();
+
+            return 0;
+        }
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        return (int)($row['cnt'] ?? 0);
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public function getUsersFilteredPaged(array $filters, int $limit, int $offset): array
+    {
+        $limit = max(1, min(100, $limit));
+        $offset = max(0, $offset);
+        [$where, $types, $params] = $this->usersListWhere($filters);
+        $sql = 'SELECT * FROM users WHERE ' . $where . ' ORDER BY id DESC LIMIT ' . (int) $limit . ' OFFSET ' . (int) $offset;
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            return [];
+        }
+        if (!$this->bindUserListParams($stmt, $types, $params)) {
+            $stmt->close();
+
+            return [];
+        }
+        $stmt->execute();
+        $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $rows ?: [];
+    }
+
     // 🔹 Add user
     public function addUser($data)
     {

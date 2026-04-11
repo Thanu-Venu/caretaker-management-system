@@ -201,7 +201,7 @@ $paginationQuery = static function (int $p) use ($filters): string {
         <div class="error-message" role="alert"><?php echo htmlspecialchars($flashError, ENT_QUOTES, 'UTF-8'); ?></div>
       <?php endif; ?>
       <form id="caretakerAddForm" method="POST" class="caretaker-form" enctype="multipart/form-data"
-        action="<?php echo URLROOT; ?>/CaretakerCRUD/add">
+        action="<?php echo URLROOT; ?>/CaretakerCRUD/add" data-admin-validate>
         <?php
         $mode = 'add';
         $caretaker = [];
@@ -227,7 +227,7 @@ $paginationQuery = static function (int $p) use ($filters): string {
         <div class="error-message" role="alert"><?php echo htmlspecialchars($flashError, ENT_QUOTES, 'UTF-8'); ?></div>
       <?php endif; ?>
       <form id="caretakerEditForm" method="POST" class="caretaker-form" enctype="multipart/form-data"
-        action="<?php echo URLROOT; ?>/CaretakerCRUD/edit/<?php echo (int) ($ec['id'] ?? 0); ?>">
+        action="<?php echo URLROOT; ?>/CaretakerCRUD/edit/<?php echo (int) ($ec['id'] ?? 0); ?>" data-admin-validate>
         <?php
         $mode = 'edit';
         $caretaker = $ec;

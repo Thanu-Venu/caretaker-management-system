@@ -14,3 +14,4 @@
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/ad_header.css">
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/ad_sidebar.css">
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
+<script defer src="<?= URLROOT ?>/public/js/admin/admin-form-validation.js"></script>
