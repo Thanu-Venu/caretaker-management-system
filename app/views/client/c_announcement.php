@@ -14,36 +14,41 @@
 <body>
 
 <div class="announcement-container">
-
-    <h2 class="page-title">📢 Announcements</h2>
-
-    <?php if (empty($data)): ?>
-        <div class="no-announcement">
-            <p>No announcements available at the moment.</p>
+    <div class="card">
+        <h2 class="page-title">📢 Announcements</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Title</th>
+                        <th>Message</th>
+                        <th>Target</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($data)): ?>
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--announcement-muted); padding: 24px;">No announcements available at the moment.</td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($data as $announcement): ?>
+                            <tr>
+                                <td>
+                                    <span class="announcement-date">
+                                        <?= date('M d, Y', strtotime($announcement['created_at'])); ?>
+                                    </span>
+                                </td>
+                                <td><strong><?= htmlspecialchars($announcement['title']); ?></strong></td>
+                                <td><?= nl2br(htmlspecialchars($announcement['message'])); ?></td>
+                                <td><span class="role-tag">For Clients</span></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
-    <?php else: ?>
-        <?php foreach ($data as $announcement): ?>
-            <div class="announcement-card">
-
-                <div class="announcement-header">
-                    <h3><?= htmlspecialchars($announcement['title']); ?></h3>
-                    <span class="announcement-date">
-                        <?= date('M d, Y', strtotime($announcement['created_at'])); ?>
-                    </span>
-                </div>
-
-                <div class="announcement-body">
-                    <p><?= nl2br(htmlspecialchars($announcement['message'])); ?></p>
-                </div>
-
-                <div class="announcement-footer">
-                    <span class="role-tag">For Clients</span>
-                </div>
-
-            </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
-
+    </div>
 </div>
 
 </body>
