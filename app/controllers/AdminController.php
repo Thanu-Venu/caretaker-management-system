@@ -207,9 +207,49 @@ class AdminController extends Controller
 
     public function ad_announcement()
     {
-        $announcements = $this->announcementModel->getAllAnnouncements();
-        $this->view("admin/ad_announcement", [
-            'announcements' => $announcements
+        $perPage = 10;
+        $filters = [
+            'target_role' => trim((string)($_GET['target_role'] ?? '')),
+            'date_from' => trim((string)($_GET['date_from'] ?? '')),
+            'date_to' => trim((string)($_GET['date_to'] ?? '')),
+            'q' => trim((string)($_GET['q'] ?? '')),
+        ];
+        $page = max(1, (int)($_GET['page'] ?? 1));
+        $total = $this->announcementModel->countAnnouncementsFiltered($filters);
+        $totalPages = max(1, (int)ceil($total / $perPage));
+        if ($page > $totalPages) {
+            $page = $totalPages;
+        }
+        $offset = ($page - 1) * $perPage;
+        $announcements = $this->announcementModel->getAnnouncementsFilteredPaged($filters, $perPage, $offset);
+        $listUrl = URLROOT . '/public?url=admin/ad_announcement';
+
+        $openModal = trim((string)($_GET['open'] ?? ''));
+        if ($openModal !== 'add' && $openModal !== 'edit') {
+            $openModal = '';
+        }
+        $editId = (int)($_GET['edit_id'] ?? 0);
+        $editAnnouncement = null;
+        if ($openModal === 'edit' && $editId > 0) {
+            $editAnnouncement = $this->announcementModel->getAnnouncementById($editId);
+            if (!is_array($editAnnouncement) || empty($editAnnouncement['id'])) {
+                $editAnnouncement = null;
+                $openModal = '';
+            }
+        }
+
+        $this->view('admin/ad_announcement', [
+            'announcements' => $announcements,
+            'filters' => $filters,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'totalRecords' => $total,
+            'perPage' => $perPage,
+            'listUrl' => $listUrl,
+            'filterFormAction' => URLROOT . '/public',
+            'filterFormHidden' => [['name' => 'url', 'value' => 'admin/ad_announcement']],
+            'openModal' => $openModal,
+            'editAnnouncement' => $editAnnouncement,
         ]);
     }
     public function ad_clients()
@@ -228,7 +268,10 @@ class AdminController extends Controller
 
     public function ad_users()
     {
-        header('Location: ' . URLROOT . '/userCRUD/list');
+        $parts = $_GET;
+        unset($parts['url']);
+        $fwd = http_build_query($parts);
+        header('Location: ' . URLROOT . '/userCRUD/list' . ($fwd !== '' ? '?' . $fwd : ''));
         exit;
     }
 
