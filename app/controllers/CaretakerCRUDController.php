@@ -84,7 +84,7 @@ class CaretakerCRUDController extends Controller
                         $_SESSION['error'] = "Image too large. Please upload a smaller file (e.g., under 2MB).";
                     }
 
-                    header("Location: " . URLROOT . "/admin/caretaker_add");
+                    header("Location: " . URLROOT . "/CaretakerCRUD/add");
                     exit;
                 }
 
@@ -92,7 +92,7 @@ class CaretakerCRUDController extends Controller
                 $maxSize = 2 * 1024 * 1024;
                 if ($_FILES['profile_image']['size'] > $maxSize) {
                     $_SESSION['error'] = "Image too large. Max 2MB allowed.";
-                    header("Location: " . URLROOT . "/admin/caretaker_add");
+                    header("Location: " . URLROOT . "/CaretakerCRUD/add");
                     exit;
                 }
 
@@ -101,7 +101,7 @@ class CaretakerCRUDController extends Controller
                 $ext = strtolower(pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION));
                 if (!in_array($ext, $allowedExt)) {
                     $_SESSION['error'] = "Invalid image type. Use JPG/PNG/WEBP.";
-                    header("Location: " . URLROOT . "/admin/caretaker_add");
+                    header("Location: " . URLROOT . "/CaretakerCRUD/add");
                     exit;
                 }
 
@@ -111,7 +111,7 @@ class CaretakerCRUDController extends Controller
 
                 if (!move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetPath)) {
                     $_SESSION['error'] = "Failed to save image. Check public/uploads permission.";
-                    header("Location: " . URLROOT . "/admin/caretaker_add");
+                    header("Location: " . URLROOT . "/CaretakerCRUD/add");
                     exit;
                 }
 
@@ -123,7 +123,7 @@ class CaretakerCRUDController extends Controller
 
             if (!$ok) {
                 $_SESSION['error'] = "Failed to add caretaker. Please try again.";
-                header("Location: " . URLROOT . "/admin/caretaker_add");
+                header("Location: " . URLROOT . "/CaretakerCRUD/add");
                 exit;
             }
 

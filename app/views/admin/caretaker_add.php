@@ -19,7 +19,14 @@ include_once APPROOT . "/views/templates/admin/ad_sidebar.php";
   <main class="main-content">
     <div class="form-wrapper">
       <h1>Add Caregiver</h1>
-      <form method="POST" class="caretaker-form" enctype="multipart/form-data">
+      <?php if (!empty($_SESSION['error'])): ?>
+        <div class="alert alert-error" style="background:#fde8e8; color:#9b1c1c; padding:10px 12px; border-radius:8px; margin-bottom:12px;">
+          <?= htmlspecialchars($_SESSION['error']); ?>
+        </div>
+        <?php unset($_SESSION['error']); ?>
+      <?php endif; ?>
+
+      <form method="POST" action="<?= URLROOT ?>/CaretakerCRUD/add" class="caretaker-form" enctype="multipart/form-data">
 
         <div class="form-grid">
 
