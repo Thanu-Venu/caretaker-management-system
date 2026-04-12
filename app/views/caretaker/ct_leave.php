@@ -24,29 +24,38 @@ $warning = $data['warning'] ?? '';
 
 <body>
     <main class="content">
-        <section>
+        <div class="header-row">
+        <h2>Leave Requests</h2>
+
+        <button class="add-btn"
+            onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">
+            Request Leave
+        </button>
+        </div>
+        <div class="booking">
+
             <div class="card">
                 <div class="leave-summary-strip">
                     <div class="summary-item">
-                        <span>Monthly Leave Limit</span>
+                        <span>Monthly Leave Limit</span><br>
                         <strong><?= (int)$summary['limit'] ?> days</strong>
                     </div>
                     <div class="summary-item">
-                        <span>Used</span>
+                        <span>Used</span><br>
                         <strong><?= (int)$summary['used'] ?> days</strong>
                     </div>
                     <div class="summary-item">
-                        <span>Remaining</span>
+                        <span>Remaining</span><br>
                         <strong><?= (int)$summary['remaining'] ?> days</strong>
                     </div>
                     <div class="summary-progress">
-                        <span><?= htmlspecialchars($summary['label']) ?></span>
+                        <span><?= htmlspecialchars($summary['label']) ?></span><br>
                         <div class="track">
                             <div class="fill" style="width: <?= (int)$summary['percentage'] ?>%"></div>
                         </div>
                     </div>
                 </div>
-
+<br>
                 <?php if ($success): ?>
                     <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
                 <?php endif; ?>
@@ -55,12 +64,6 @@ $warning = $data['warning'] ?? '';
                     <div class="alert alert-warning"><?= htmlspecialchars($warning) ?></div>
                 <?php endif; ?>
 
-                <div class="card-header">
-                    <h2 style="color:#1e88e5;">Leave Requests</h2><br>
-
-                    <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">Request Leave</button>
-                </div>
-                <br><br>
                 <div class="table-container">
                     <table>
                         <thead>
@@ -105,9 +108,8 @@ $warning = $data['warning'] ?? '';
                     </table>
                 </div>
             </div>
-            </div>
-
-            <!-- Optional: Search Filter -->
+        </div>
+    </main>
             <script>
                 const searchInput = document.getElementById('searchInput');
                 if (searchInput) {

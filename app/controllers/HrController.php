@@ -43,7 +43,10 @@ class HrController extends Controller
             exit;
         }
 
+        $user = $this->userModel->withDisplayNameForProfile($user);
+        $_SESSION['name'] = (string) ($user['name'] ?? ($_SESSION['name'] ?? ''));
         $_SESSION['user'] = $user;
+        AuthSession::refreshLegacyUser($user);
     }
     public function hr_dashboard()
     {
@@ -85,6 +88,8 @@ class HrController extends Controller
             $performanceCounts[] = (int)$row['count'];
         }
 
+        $pendingCountModel = $this->model('PendingCountModel');
+
         $data = [
             'totalCaretakers' => $dash->totalCaretakers(),
             'activeServices'  => $dash->activeServicesToday(),
@@ -93,6 +98,7 @@ class HrController extends Controller
             'recentLeaves'    => $dash->recentLeaveRequests(5),
             'recentComplaints' => $dash->recentComplaints(5),
             'recentBookings'  => $dash->recentClientRequests(5),
+            'badgeCounts'     => $pendingCountModel->getHRPendingCounts(),
             // Chart data
             'bookingStatusLabels' => json_encode($bookingStatusLabels),
             'bookingStatusCounts' => json_encode($bookingStatusCounts),
@@ -371,6 +377,25 @@ class HrController extends Controller
         }
     }
 
+    /**
+     * Redirect back to the pending-requests list preserving filter and page from POST.
+     */
+    private function redirectHrPendingRequestList(): void
+    {
+        $allowedStatuses = [
+            'All', 'Requested', 'Payment_Requested', 'Advance_Paid', 'Accepted', 'Change_Requested',
+            'Rejected', 'Cancelled', 'Completed', 'Reschedule_Requested',
+        ];
+        $status = (string) ($_POST['return_status'] ?? 'All');
+        if (!in_array($status, $allowedStatuses, true)) {
+            $status = 'All';
+        }
+        $page = max(1, (int) ($_POST['return_page'] ?? 1));
+        $q = http_build_query(['status' => $status, 'page' => $page]);
+        header('Location: ' . URLROOT . '/hr/hr_pending_request?' . $q);
+        exit;
+    }
+
     public function requestAdvancePayment()
     {
 
@@ -384,8 +409,7 @@ class HrController extends Controller
 
         if (!$booking_id || !$client_id) {
             $_SESSION['error'] = "Invalid booking or client information.";
-            header("Location: " . URLROOT . "/hr/hr_pending_request");
-            exit;
+            $this->redirectHrPendingRequestList();
         }
 
         // Ensure assigned caregiver is still available for the booking period before requesting advance payment.
@@ -399,16 +423,20 @@ class HrController extends Controller
             $_SESSION['error'] = "Cannot request advance payment for Booking #{$booking_id}. " .
                 "Assigned caregiver has a schedule conflict with Booking #{$conflictId} " .
                 "({$conflictStart} to {$conflictEnd}, status: {$conflictStatus}).";
-            header("Location: " . URLROOT . "/hr/hr_pending_request");
-            exit;
+            $this->redirectHrPendingRequestList();
         }
 
         // 1️⃣ Update booking status
         $updated = $this->hrModel->requestAdvancePayment($booking_id);
+        if (!$updated) {
+            $_SESSION['error'] = 'Could not request advance payment. The booking may no longer be in Requested status.';
+            $this->redirectHrPendingRequestList();
+        }
+
         $booking = $this->hrModel->getBookingSummary($booking_id);
 
         $details = "";
-        if ($booking && $updated) {
+        if ($booking) {
             $details =
                 "Booking #{$booking['booking_id']} | " .
                 "Service: {$booking['service_type']} | " .
@@ -430,9 +458,43 @@ class HrController extends Controller
 
         $this->logHrAction("Requested advance payment for Booking #{$booking_id}", 'Pending Requests');
 
-        // 3️⃣ Redirect HR
-        header("Location: " . URLROOT . "/hr/hr_pending_request");
-        exit;
+        $_SESSION['success'] = 'Advance payment requested. The client has been notified.';
+        $this->redirectHrPendingRequestList();
+    }
+
+    public function rejectBookingRequest()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: " . URLROOT . "/hr/hr_pending_request");
+            exit;
+        }
+
+        $booking_id = (int) ($_POST['booking_id'] ?? 0);
+        if ($booking_id < 1) {
+            $_SESSION['error'] = 'Invalid booking.';
+            $this->redirectHrPendingRequestList();
+        }
+
+        $ok = $this->hrModel->rejectBookingIfRequested($booking_id);
+        if (!$ok) {
+            $_SESSION['error'] = 'This booking could not be rejected. It may no longer be in Requested status.';
+            $this->redirectHrPendingRequestList();
+        }
+
+        $clientId = $this->hrModel->getBookingClientId($booking_id);
+        if ($clientId) {
+            $this->notificationModel->addNotification(
+                $clientId,
+                'client',
+                'Booking request declined',
+                "Your booking request #{$booking_id} has been declined by HR.",
+                URLROOT . '/client/c_upcomingBookings'
+            );
+        }
+
+        $this->logHrAction("Rejected booking request #{$booking_id}", 'Pending Requests');
+        $_SESSION['success'] = 'Booking request rejected.';
+        $this->redirectHrPendingRequestList();
     }
     public function updateComplaintStatus()
     {
@@ -463,7 +525,10 @@ class HrController extends Controller
 
     public function hr_feedback()
     {
-        $this->view("hr/hr_feedback");
+        require_once APPROOT . '/models/FeedbackModel.php';
+        $feedbackModel = new FeedbackModel();
+        $feedbacks = $feedbackModel->getAll();
+        $this->view('hr/hr_feedback', ['feedbacks' => $feedbacks]);
     }
 
     public function hr_reports()
@@ -557,9 +622,28 @@ class HrController extends Controller
     public function hr_announcement()
     {
         $announcementModel = $this->model('AnnouncementModel');
-        $announcements = $announcementModel->getUserAnnouncements();
+        $perPage     = 15;
+        $currentPage = max(1, (int) ($_GET['page'] ?? 1));
+        $filters     = [
+            'for_hr_portal' => true,
+            'date_from'     => trim((string) ($_GET['date_from'] ?? '')),
+            'date_to'       => trim((string) ($_GET['date_to'] ?? '')),
+            'q'             => trim((string) ($_GET['q'] ?? '')),
+        ];
+        $totalRecords = $announcementModel->countAnnouncementsFiltered($filters);
+        $totalPages   = $totalRecords > 0 ? (int) ceil($totalRecords / $perPage) : 1;
+        $currentPage  = max(1, min($currentPage, $totalPages));
+        $offset         = ($currentPage - 1) * $perPage;
+        $announcements = $announcementModel->getAnnouncementsFilteredPaged($filters, $perPage, $offset);
 
-        $this->view("hr/hr_announcement", $announcements);
+        $this->view('hr/hr_announcement', [
+            'announcements' => $announcements,
+            'filters'       => $filters,
+            'currentPage'   => $currentPage,
+            'totalPages'    => $totalPages,
+            'totalRecords'  => $totalRecords,
+            'perPage'       => $perPage,
+        ]);
     }
 
 
@@ -689,9 +773,27 @@ class HrController extends Controller
         $crModel = $this->model('ChangeRequestModel');
         $pendingRequests = $crModel->getPendingRequests();
         $completedRequests = $crModel->getCompletedRequests();
+        $changeRequests = array_merge($pendingRequests, $completedRequests);
+
+        $allowedStatus = ['all', 'pending', 'approved', 'rejected'];
+        $statusFilter = strtolower(trim((string) ($_GET['status'] ?? 'all')));
+        if (!in_array($statusFilter, $allowedStatus, true)) {
+            $statusFilter = 'all';
+        }
+        if ($statusFilter !== 'all') {
+            $changeRequests = array_values(array_filter(
+                $changeRequests,
+                static function (array $r) use ($statusFilter): bool {
+                    return strtolower((string) ($r['status'] ?? '')) === $statusFilter;
+                }
+            ));
+        }
+
         $this->view('hr/changeRequests', [
-            'pending_requests' => $pendingRequests,
-            'completed_requests' => $completedRequests
+            'change_requests' => $changeRequests,
+            'pending_count' => count($pendingRequests),
+            'history_count' => count($completedRequests),
+            'status_filter' => $statusFilter,
         ]);
     }
 
@@ -701,9 +803,27 @@ class HrController extends Controller
         $rrModel = $this->model('RescheduleRequestModel');
         $pendingRequests = $rrModel->getPendingRequests();
         $completedRequests = $rrModel->getCompletedRequests();
+        $rescheduleRequests = array_merge($pendingRequests, $completedRequests);
+
+        $allowedStatus = ['all', 'pending', 'approved', 'rejected'];
+        $statusFilter = strtolower(trim((string) ($_GET['status'] ?? 'all')));
+        if (!in_array($statusFilter, $allowedStatus, true)) {
+            $statusFilter = 'all';
+        }
+        if ($statusFilter !== 'all') {
+            $rescheduleRequests = array_values(array_filter(
+                $rescheduleRequests,
+                static function (array $r) use ($statusFilter): bool {
+                    return strtolower((string) ($r['status'] ?? '')) === $statusFilter;
+                }
+            ));
+        }
+
         $this->view('hr/rescheduleRequests', [
-            'pending_requests' => $pendingRequests,
-            'completed_requests' => $completedRequests
+            'reschedule_requests' => $rescheduleRequests,
+            'pending_count' => count($pendingRequests),
+            'history_count' => count($completedRequests),
+            'status_filter' => $statusFilter,
         ]);
     }
 
@@ -793,31 +913,59 @@ class HrController extends Controller
             header("Location: " . URLROOT . "/hr/rescheduleRequests");
             exit;
         }
-        $requestId = $_POST['request_id'] ?? null;
-        $hrNote = $_POST['hr_note'] ?? '';
-        if (!$requestId) {
+
+        $requestId = (int) ($_POST['request_id'] ?? 0);
+        $hrNote = trim((string) ($_POST['hr_note'] ?? ''));
+
+        if ($requestId <= 0) {
+            $_SESSION['error'] = "Invalid request ID.";
             header("Location: " . URLROOT . "/hr/rescheduleRequests");
             exit;
         }
 
         $rrModel = $this->model('RescheduleRequestModel');
-        // determine associated booking id before changing status
         $reqDetails = $rrModel->getRequestById($requestId);
-        $rrModel->rejectRequest($requestId, $hrNote);
 
-        // Revert booking status to 'Requested' so client can continue normal workflow
-        if ($reqDetails && isset($reqDetails['booking_id'])) {
-            $this->model('ClientModel')->updateBookingStatus($reqDetails['booking_id'], 'Requested');
-            // notify client of rejection
+        if (!$reqDetails) {
+            $_SESSION['error'] = "Reschedule request not found.";
+            header("Location: " . URLROOT . "/hr/rescheduleRequests");
+            exit;
+        }
+
+        if (($reqDetails['status'] ?? '') !== 'pending') {
+            $_SESSION['error'] = "This request has already been processed.";
+            header("Location: " . URLROOT . "/hr/rescheduleRequests");
+            exit;
+        }
+
+        if ($hrNote === '') {
+            $_SESSION['error'] = "A reason or HR note is required when rejecting.";
+            header("Location: " . URLROOT . "/hr/rescheduleRequests");
+            exit;
+        }
+
+        $ok = $rrModel->rejectRequest($requestId, $hrNote);
+        if (!$ok) {
+            $_SESSION['error'] = "Failed to reject reschedule request. It may have already been processed.";
+            header("Location: " . URLROOT . "/hr/rescheduleRequests");
+            exit;
+        }
+
+        $bookingId = (int) ($reqDetails['booking_id'] ?? 0);
+        if ($bookingId > 0) {
+            $this->model('ClientModel')->updateBookingStatus($bookingId, 'Requested');
             require_once APPROOT . '/models/NotificationModel.php';
             $notif = new NotificationModel();
-            $cid = $reqDetails['client_id'];
-            $msg = "Your reschedule request for booking #{$reqDetails['booking_id']} has been rejected. The booking remains on the original date. Please check for any HR notes.";
+            $cid = (int) ($reqDetails['client_id'] ?? 0);
+            $msg = "Your reschedule request for booking #{$bookingId} has been rejected. The booking remains on the original date. Please check for any HR notes.";
+            if ($hrNote !== '') {
+                $msg .= "\nHR note: {$hrNote}";
+            }
             $notif->addNotification($cid, 'client', 'Reschedule Rejected', $msg, URLROOT . "/client/c_upcomingBookings");
         }
 
-        if ($reqDetails && isset($reqDetails['booking_id'])) {
-            $this->logHrAction("Rejected reschedule request #{$requestId} (Booking #{$reqDetails['booking_id']})", 'Reschedule Requests');
+        if ($bookingId > 0) {
+            $this->logHrAction("Rejected reschedule request #{$requestId} (Booking #{$bookingId})", 'Reschedule Requests');
         } else {
             $this->logHrAction("Rejected reschedule request #{$requestId}", 'Reschedule Requests');
         }
@@ -908,7 +1056,7 @@ class HrController extends Controller
             header("Location: " . URLROOT . "/hr/changeRequests");
             exit;
         }
-        $requestId = $_POST['request_id'] ?? null;
+        $requestId = (int) ($_POST['request_id'] ?? 0);
         $hrNote = trim($_POST['hr_note'] ?? '');
         if ($requestId <= 0) {
             header("Location: " . URLROOT . "/hr/changeRequests");

@@ -24,6 +24,14 @@
     <!-- Status Legend -->
     <div class="status-legend">
       <div class="legend-item">
+        <span class="legend-color" style="background-color: #ffc107;"></span>
+        <span class="legend-label">Payment Pending</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #17a2b8;"></span>
+        <span class="legend-label">Payment Approved</span>
+      </div>
+      <div class="legend-item">
         <span class="legend-color" style="background-color: #4CAF50;"></span>
         <span class="legend-label">Accepted</span>
       </div>
@@ -117,13 +125,19 @@
           let statusClass = '';
           let statusText = status;
 
-          // Apply appropriate styling based on status (only Accepted or Completed)
+          // Apply appropriate styling based on status
           if (status === 'Completed') {
             statusClass = 'status-completed';
             statusText = 'Completed';
           } else if (status === 'Accepted') {
             statusClass = 'status-accepted';
             statusText = 'Accepted';
+          } else if (status === 'Payment_Requested') {
+            statusClass = 'status-payment-pending';
+            statusText = 'Payment Pending';
+          } else if (status === 'Advance_Paid') {
+            statusClass = 'status-payment-approved';
+            statusText = 'Payment Approved';
           } else {
             statusClass = 'status-default';
           }

@@ -67,7 +67,7 @@ textarea {
 }
 
 .submit-btn {
-  background: #1e88e5;
+  background: #51a7f3;
   color: white;
   border: none;
   padding: 12px 20px;
@@ -75,19 +75,23 @@ textarea {
   cursor: pointer;
 }
 
-.submit-btn:hover {
-  background: #1b7acd;
-}
 
 .cancel-btn {
   display: inline-block;
   margin-left: 10px;
   text-decoration: none;
-  color: #555;
+  color: #e00404;
+  background-color: #e00404;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 
 .cancel-btn:hover {
-  color: #000;
+  background: #fff2f0;
+  border-color: #e53e3e;
+  color: #9f2b20;
 }
 
 @media (max-width: 768px) {

@@ -26,7 +26,7 @@ $impact = $data['impact'] ?? [];
   <main class="main-content">
     <section class="leave-layout">
       <div class="leave-summary-card">
-        <h1>Request Leave</h1>
+        <h1>Request Leave</h1><br>
         <p class="subtitle">All requests are submitted as <strong>Pending</strong> and require HR approval.</p>
 
         <div class="summary-grid">
@@ -52,13 +52,11 @@ $impact = $data['impact'] ?? [];
         </div>
 
         <ul class="policy-list">
-          <li>Request at least <?= (int)$policy['advanceNoticeDays'] ?> days in advance</li>
-          <li>Maximum <?= (int)$policy['maxPerRequest'] ?> days per request</li>
-          <li>Maximum <?= (int)$policy['monthlyLimit'] ?> days per month (Approved + Pending)</li>
+          <li><strong>Sick Leave:</strong> Can start today; maximum 5 days duration.</li>
+          <li><strong>Other Leaves:</strong> Request at least 3 days in advance.</li>
+          <li><strong>Limits:</strong> Maximum 5 days per request and 5 days total per month.</li>
         </ul>
-      </div>
 
-      <div class="form-section">
         <?php if (!empty($errors)): ?>
           <div class="alert alert-error">
             <?php foreach ($errors as $error): ?>
@@ -101,10 +99,10 @@ $impact = $data['impact'] ?? [];
             <option value="Personal Leave" <?= (($form['leave_type'] ?? '') === 'Personal Leave') ? 'selected' : '' ?>>Personal Leave</option>
             <option value="Maternity Leave" <?= (($form['leave_type'] ?? '') === 'Maternity Leave') ? 'selected' : '' ?>>Maternity Leave</option>
           </select>
-
+<br>
           <div class="row">
             <label>
-              Start Date
+              Start Date<br>
               <input
                 type="date"
                 name="start_date"
@@ -117,7 +115,7 @@ $impact = $data['impact'] ?? [];
             </label>
 
             <label>
-              End Date
+              End Date <br>
               <input
                 type="date"
                 name="end_date"
@@ -129,18 +127,11 @@ $impact = $data['impact'] ?? [];
             </label>
           </div>
 
-          <div class="duration-wrap" id="durationWrap" hidden>
-            <span class="duration-label">Selected Duration</span>
-            <span class="duration-badge" id="durationBadge">0 days</span>
-          </div>
+          
 
           <div class="inline-errors" id="inlineErrors"></div>
 
-          <div class="row">
-            <label>Start Time <input type="time" name="start_time" value="<?= htmlspecialchars($form['start_time'] ?? '09:00') ?>" required></label>
-            <label>End Time <input type="time" name="end_time" value="<?= htmlspecialchars($form['end_time'] ?? '17:00') ?>" required></label>
-          </div>
-
+       
           <label>Reason for Leave</label>
           <textarea name="reason" id="reason" placeholder="Explain briefly why you need leave..." required><?= htmlspecialchars($form['reason'] ?? '') ?></textarea>
 

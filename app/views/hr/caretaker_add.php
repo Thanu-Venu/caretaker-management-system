@@ -1,19 +1,11 @@
-<?php  
-include_once APPROOT . "/views/templates/hr/hr_header.php"; 
-include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; 
+<?php
+$hrPageTitle = 'Add caregiver — HR';
+$hrExtraCss  = ['hr/caretaker_add.css'];
+include_once APPROOT . '/views/templates/hr/hr_layout_head.php';
+include_once APPROOT . '/views/templates/hr/hr_header.php';
+include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HR dashboard</title>
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/caretaker_add.css">
-</head>
 
-<body>
-<script src="<?php echo URLROOT; ?>/public/js/hr/caretaker_form.js"></script>
 <main class="main-content">
     <section class="form-section">
         <h1>Add Caregiver</h1>
@@ -100,8 +92,8 @@ include_once APPROOT . "/views/templates/hr/hr_sidebar.php";
   </div>
 
   <div class="form-actions">
-    <button type="submit" class="submit-btn">Add Caregiver</button>
-    <a href="<?= URLROOT ?>/HRCaretakerCRUD/list" class="btn-cancel">Cancel</a>
+    <button type="submit" class="submit-btn btn">Add Caregiver</button>
+    <a href="<?= URLROOT ?>/HRCaretakerCRUD/list" class="btn-cancel btn">Cancel</a>
   </div>
 
 </form>
@@ -109,10 +101,5 @@ include_once APPROOT . "/views/templates/hr/hr_sidebar.php";
     </section>
 </main>
 
-</form>
-
-    </section>
-</main>
-</body>
-
-</html>
+<script src="<?php echo URLROOT; ?>/public/js/hr/caretaker_form.js"></script>
+<?php include_once APPROOT . '/views/templates/hr/hr_layout_close.php'; ?>

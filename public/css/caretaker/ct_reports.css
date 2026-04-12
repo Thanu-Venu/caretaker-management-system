@@ -1,79 +1,198 @@
+:root {
+  --report-bg-1: #f8fbff;
+  --report-bg-2: #eef6ff;
+  --report-card: #ffffff;
+  --report-text: #17324d;
+  --report-muted: #5b7288;
+  --report-accent: #1e88e5;
+  --report-accent-strong: #166fc1;
+  --report-border: #e4ebf8;
+  --report-hover: #eef7ff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+    color: var(--accent);
+    background: #f4f7fb;
+}
+
 .main-content {
-  margin-left: 260px;
-  padding: 20px;
-  font-family: 'Poppins', Arial, sans-serif;
+    margin-left: 280px;
+    margin-right: 18px;
+    padding: 18px 6px 24px;
 }
 
 h1 {
-  color: #1e88e5;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+    margin: 0;
+    font-size: 28px;
+    color: var(--report-accent);
+    line-height: 1.2;
+}
+
+h2 {
+  font-size: 22px;
+  color: #2451a4;
+  font-weight: 600;
+  margin-top: 20px;
   margin-bottom: 20px;
-  font-size: 28px;
 }
 
-h2{
-    color: #333;
-    font-size: 20px;
-}
-
-/* Summary Cards */
-.report-summary .summary-cards {
-  display: flex;
-  gap: 20px;
+/* Card General Wrapper for table */
+.card-wrapper {
+  background: var(--report-card);
+  padding: 22px;
+  border-radius: 16px;
+  border: 1px solid var(--report-border);
+  box-shadow: 0 10px 28px rgba(26, 42, 71, 0.12);
   margin-bottom: 30px;
 }
 
+.card-wrapper h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #2451a4;
+    font-weight: 600;
+    font-size: 24px;
+}
+
+/* Summary Cards (Dashboard style) */
+.report-summary .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
 .summary-cards .card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  flex: 1;
+ background: var(--report-card);
+  border: 1px solid var(--report-border);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 10px 24px rgba(16, 24, 40, 0.08);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  position: relative;
+  overflow: hidden;
   text-align: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.summary-cards .card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(600px 180px at 30% -20%, rgba(30,136,229,0.18), transparent 60%);
+  pointer-events: none;
+}
+
+.summary-cards .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgba(16, 24, 40, 0.12);
+  border-color: #dce6f6;
 }
 
 .summary-cards .card h3 {
-  margin-bottom: 10px;
-  color: #1565c0;
+    display: block;
+    color: #10244a;
+    font-size: 22px;
+    font-weight: 650;
+    margin-bottom: 8px;
 }
 
 .summary-cards .card p {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 30px;
+  font-weight: 800;
+  margin-top: 2px;
+  color: var(--report-accent);
 }
 
 /* Service Table */
+.report-table-container {
+    overflow-x: auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 15px;
+}
+
 .report-table {
-  width: 100%;
-  border-collapse: collapse;
+    width: 100%;
+    border-collapse: collapse;
+      background: white;
+}
+
+.report-table thead {
+    color: white;
+  background: #1e88e5;
 }
 
 .report-table th, .report-table td {
-  padding: 12px 15px;
-  border: 1px solid #ddd;
+    font-size: 14px;
+    white-space: nowrap;
+      padding: 10px;
   text-align: left;
+  border-bottom: 1px solid #eee;
+  color: var(--filter);
 }
 
 .report-table th {
-  background: #1E88E5;
-  color: #fff;
+    position: sticky;
+    top: 0;
+    padding: 8px;
+        font-size: 16px;
+    font-weight: 700;
 }
 
-.report-table tr:nth-child(even) {
-  background: #f7f7f7;
+.report-table td {
+  color: #000000;
+}
+
+.report-table tbody tr:hover {
+  background-color: #f9f9f9;
 }
 
 /* Download Button */
 .btn-download {
   margin-top: 20px;
-  background: #1E88E5;
-  color: #fff;
-  font-weight: 600;
-  padding: 10px 15px;
+  background: #1e88e5;
+  color: #ffffff;
+  font-weight: 650;
+  font-size: 16px;
+  padding: 12px 20px;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
+  transition: filter 0.2s;
+  display: inline-block;
 }
 
 .btn-download:hover {
-  background: #1a74c4;
+  filter: brightness(1.05);
+}
+
+@media (max-width: 1024px) {
+  .main-content {
+    margin-left: 0;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 760px) {
+  h1 {
+    font-size: 24px;
+  }
+  .report-summary .summary-cards {
+    flex-direction: column;
+  }
+  .card-wrapper {
+      padding: 15px;
+  }
 }

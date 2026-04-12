@@ -12,7 +12,8 @@
 
 <body>
 <div class="main-content">
-    <h2>Client Feedback & Ratings</h2>
+  <h2>Client Feedback & Ratings</h2>  
+  <div class="card">
 
     <div class="feedback-table-container">
       <table id="feedbackTable">
@@ -25,28 +26,26 @@
             <th>Feedback</th>
           </tr>
         </thead>
-<tbody>
-<?php if (!empty($data['feedbacks'])) : ?>
-    <?php foreach ($data['feedbacks'] as $fb) : ?>
-        <tr>
-            <td><?= htmlspecialchars($fb['client_name']) ?></td>
-            <td><?= htmlspecialchars($fb['service']) ?></td>
-            <td><?= date('Y-m-d', strtotime($fb['created_at'])) ?></td>
-            <td>⭐ <?= htmlspecialchars($fb['rating']) ?></td>
-            <td><?= htmlspecialchars($fb['comment']) ?></td>
-        </tr>
-    <?php endforeach; ?>
-<?php else : ?>
-    <tr>
-        <td colspan="5" style="text-align:center;">No feedback yet</td>
-    </tr>
-<?php endif; ?>
-</tbody>
-
-
-
+        <tbody>
+        <?php if (!empty($data['feedbacks'])) : ?>
+            <?php foreach ($data['feedbacks'] as $fb) : ?>
+                <tr>
+                    <td><?= htmlspecialchars($fb['client_name']) ?></td>
+                    <td><?= htmlspecialchars($fb['service']) ?></td>
+                    <td><?= date('Y-m-d', strtotime($fb['created_at'])) ?></td>
+                    <td>⭐ <?= htmlspecialchars($fb['rating']) ?></td>
+                    <td><?= htmlspecialchars($fb['comment']) ?></td>
+                </tr>
+            <?php endforeach; ?>
+        <?php else : ?>
+            <tr>
+                <td colspan="5">No feedback yet</td>
+            </tr>
+        <?php endif; ?>
+        </tbody>
       </table>
     </div>
+  </div>
 </div>
 
 <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_review.js"></script>

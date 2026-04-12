@@ -1,18 +1,6 @@
 body {
   margin: 0;
-  font-family: var(--font-primary);
-}
-
-/* Shared page content spacing beside fixed sidebar */
-.main-content,
-.content,
-.client-dashboard,
-.payments-page,
-.confirmation-container,
-.booking-container,
-.client-container {
-  margin-left: 270px !important;
-  margin-right: 20px !important;
+  font-family: 'Inter', sans-serif;
 }
 
 .sidebar {

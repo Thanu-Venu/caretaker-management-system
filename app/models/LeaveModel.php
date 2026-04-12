@@ -335,6 +335,22 @@ class LeaveModel
         return $stmt->execute();
     }
 
+    /**
+     * HR rejection: set status + note only when still pending.
+     */
+    public function rejectLeave(int $leaveId, string $hrNote = ''): bool
+    {
+        $stmt = $this->conn->prepare(
+            "UPDATE leaves SET status = 'Rejected', hr_note = ? WHERE id = ? AND status = 'Pending'"
+        );
+        $stmt->bind_param("si", $hrNote, $leaveId);
+        if (!$stmt->execute()) {
+            return false;
+        }
+
+        return $stmt->affected_rows > 0;
+    }
+
     /* ================= HR - REASSIGN + APPROVE (USING booking_reassignments) ================= */
 
     // Bookings affected by leave overlap (booking_date..end_date overlaps leaveStart..leaveEnd)
@@ -764,11 +780,15 @@ class LeaveModel
         $limit  = max(1, (int)$limit);
         $offset = max(0, (int)$offset);
 
-        $sql = "SELECT l.*, c.id AS caretaker_id, c.name AS caretaker_name
-            FROM leaves l
-            JOIN caretakers c ON l.user_id = c.id
-            ORDER BY l.start_date DESC
-            LIMIT $limit OFFSET $offset";
+        $sql = "SELECT l.*,
+                       c.id AS caretaker_id,
+                       c.name AS caretaker_name,
+                       rpl.name AS replacement_caretaker_name
+                FROM leaves l
+                JOIN caretakers c ON l.user_id = c.id
+                LEFT JOIN caretakers rpl ON l.replacement_caretaker_id = rpl.id
+                ORDER BY l.start_date DESC
+                LIMIT $limit OFFSET $offset";
 
         $result = $this->conn->query($sql);
         $rows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];

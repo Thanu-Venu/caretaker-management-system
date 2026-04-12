@@ -13,18 +13,17 @@
 
 <body>
   <main class="content">
-    <div class="booking">
-      <h2>Bookings</h2>
+    <h2>Bookings</h2>
+        <?php $selectedBookingId = isset($_GET['booking_id']) ? (int)$_GET['booking_id'] : null; ?>
+        <div class="top">
+          <button class="top-button active" onclick="switchTab('ongoing', event)">Ongoing Bookings</button>
+          <button class="top-button" onclick="switchTab('upcoming', event)">Upcoming Bookings</button>
+          <button class="top-button" onclick="switchTab('past', event)">Past Bookings</button>
+        </div>
 
-      <?php $selectedBookingId = isset($_GET['booking_id']) ? (int)$_GET['booking_id'] : null; ?>
-      <div class="top">
-        <button class="ongoing-book active" data-tab="ongoing" onclick="showTab('ongoing', event)">Ongoing Bookings</button>
-        <button class="up-book" data-tab="upcoming" onclick="showTab('upcoming', event)">Upcoming Bookings</button>
-        <button class="past-book" data-tab="past" onclick="showTab('past', event)">Past Bookings</button>
-      </div>
-
-      <section class="card">
+      <div class="card">
         <!-- Ongoing -->
+        <div class="table-container">
         <div id="ongoing" class="tab-content active">
           <table>
             <thead>
@@ -66,6 +65,7 @@
                 <th>Service</th>
                 <th>Location</th>
                 <th>Date / Time</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -79,11 +79,30 @@
                     <td>
                       <?= $b['booking_date'] ?> - <?= $b['preferred_time'] ?>
                     </td>
+                    <td>
+                      <?php 
+                        $status = $b['status'] ?? 'Accepted';
+                        $badgeClass = '';
+                        $displayStatus = str_replace('_', ' ', $status);
+                        
+                        if ($status === 'Payment_Requested') {
+                          $badgeClass = 'status-pending';
+                          $displayStatus = '⏳ Payment Pending';
+                        } elseif ($status === 'Advance_Paid') {
+                          $badgeClass = 'status-approved';
+                          $displayStatus = '✓ Payment Approved';
+                        } elseif ($status === 'Accepted') {
+                          $badgeClass = 'status-active';
+                          $displayStatus = '✓ Accepted';
+                        }
+                      ?>
+                      <span class="status-badge <?= $badgeClass ?>"><?= htmlspecialchars($displayStatus) ?></span>
+                    </td>
                   </tr>
                 <?php endforeach; ?>
               <?php else : ?>
                 <tr>
-                  <td colspan="4">No upcoming bookings</td>
+                  <td colspan="5">No upcoming bookings</td>
                 </tr>
               <?php endif; ?>
             </tbody>
@@ -123,7 +142,7 @@
             </tbody>
           </table>
         </div>
-      </section>
+      </div>
 
     </div>
   </main>

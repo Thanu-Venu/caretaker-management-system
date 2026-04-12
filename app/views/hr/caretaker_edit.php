@@ -1,23 +1,14 @@
 <?php  
-include_once APPROOT . "/views/templates/hr/hr_header.php"; 
-include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; 
-
-
 // unpack the data array into $caretaker so you can use it easily
 $caretaker = $data['caretaker'];
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HR dashboard</title>
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/caretaker_edit.css">
-</head>
 
-<body>
-<script src="<?php echo URLROOT; ?>/public/js/hr/caretaker_form.js"></script>
+$hrPageTitle = 'Edit caregiver — HR';
+$hrExtraCss  = ['hr/caretaker_edit.css'];
+include_once APPROOT . '/views/templates/hr/hr_layout_head.php';
+include_once APPROOT . '/views/templates/hr/hr_header.php';
+include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
+?>
+
 <main class="main-content">
   <section class="form-section">
     <h1>Edit Caregiver</h1>
@@ -105,13 +96,13 @@ $caretaker = $data['caretaker'];
   </div>
 
   <div class="form-actions">
-    <button type="submit" class="submit-btn">Update Caregiver</button>
-    <a href="<?= URLROOT ?>/HRCaretakerCRUD/list" class="btn-cancel">Cancel</a>
+    <button type="submit" class="submit-btn btn">Update Caregiver</button>
+    <a href="<?= URLROOT ?>/HRCaretakerCRUD/list" class="btn-cancel btn">Cancel</a>
   </div>
 
 </form>
 
   </section>
 </main>
-</body>
-</html>
+<script src="<?php echo URLROOT; ?>/public/js/hr/caretaker_form.js"></script>
+<?php include_once APPROOT . '/views/templates/hr/hr_layout_close.php'; ?>

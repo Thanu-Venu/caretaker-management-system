@@ -262,9 +262,9 @@ document.addEventListener('DOMContentLoaded', function () {
     fixedWeekCount: false,
     showNonCurrentDates: true,
     headerToolbar: {
-      left: 'prev,next today',
+      left: 'prev,next',
       center: 'title',
-      right: 'dayGridMonth'
+      right: ''
     },
     dateClick: async function (info) {
       selectedDate = info.dateStr;

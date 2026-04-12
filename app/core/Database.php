@@ -4,11 +4,11 @@ class Database {
 
     public function __construct() {
 
-    $this->conn = new mysqli("localhost", "root", "", "smartcare");
+    $this->conn = new mysqli("localhost", "root", "Thanuvenu", "smartcare");
         $host = "localhost";
         $user = "root";
-        $pass = "";            
-        $dbname = "smartcare";  
+        $pass = "Thanuvenu";
+        $dbname = "smartcare";
 
         $this->conn = new mysqli($host, $user, $pass, $dbname);
 
@@ -17,5 +17,5 @@ class Database {
             die("DB Connection failed: " . $this->conn->connect_error);
         }
     }
-    
+
 }

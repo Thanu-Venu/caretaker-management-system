@@ -251,6 +251,7 @@ class CaretakerController extends Controller
 
             if ($basis === 'hourly') {
                 // Hourly work is only on the booking date.
+                $inclusiveEndDate = clone $startDate;
             } elseif ($basis === 'monthly') {
                 $inclusiveEndDate->modify('+' . $duration . ' month')->modify('-1 day');
             } elseif ($basis === 'yearly') {
@@ -260,59 +261,72 @@ class CaretakerController extends Controller
                 $inclusiveEndDate->modify('+' . ($duration - 1) . ' day');
             }
 
-            // FullCalendar end date is exclusive for all-day ranges.
-            $exclusiveEndDate = clone $inclusiveEndDate;
-            $exclusiveEndDate->modify('+1 day');
-            $dateRange = $startDate->format('Y-m-d');
-            if ($startDate->format('Y-m-d') !== $inclusiveEndDate->format('Y-m-d')) {
-                $dateRange .= ' to ' . $inclusiveEndDate->format('Y-m-d');
-            }
-
-            // Add a compact duration tag for easier month-view scanning.
-            $titleSuffix = '';
-            if ($duration > 0) {
-                if ($basis === 'hourly') {
-                    $unit = $duration === 1 ? 'hour' : 'hours';
-                    $titleSuffix = ' for ' . $duration . ' ' . $unit;
-                } elseif ($basis === 'monthly') {
-                    $unit = $duration === 1 ? 'month' : 'months';
-                    $titleSuffix = ' for ' . $duration . ' ' . $unit;
-                } elseif ($basis === 'yearly') {
-                    $unit = $duration === 1 ? 'year' : 'years';
-                    $titleSuffix = ' for ' . $duration . ' ' . $unit;
-                } else {
-                    $unit = $duration === 1 ? 'day' : 'days';
-                    $titleSuffix = ' for ' . $duration . ' ' . $unit;
-                }
-            }
-
-            // Set color based on status (only Accepted or Completed)
+            // Set color based on status
             $backgroundColor = '#4CAF50'; // green for accepted
             $borderColor = '#45a049';
 
             if ($booking['status'] === 'Completed') {
                 $backgroundColor = '#6c757d'; // gray for completed
                 $borderColor = '#5a6268';
+            } elseif ($booking['status'] === 'Payment_Requested') {
+                $backgroundColor = '#ffc107'; // yellow for payment requested
+                $borderColor = '#e0a800';
+            } elseif ($booking['status'] === 'Advance_Paid') {
+                $backgroundColor = '#17a2b8'; // blue for advance paid
+                $borderColor = '#138496';
             }
 
-            $events[] = [
-                'id' => $booking['booking_id'],
-                'title' => $booking['client_name'] . ' - ' . $booking['service_type'] . $titleSuffix,
-                'start' => $startDate->format('Y-m-d'),
-                'end' => $exclusiveEndDate->format('Y-m-d'),
-                'allDay' => true,
-                'backgroundColor' => $backgroundColor,
-                'borderColor' => $borderColor,
-                'extendedProps' => [
-                    'client' => $booking['client_name'],
-                    'service' => $booking['service_type'],
-                    'time' => $booking['preferred_time'],
-                    'duration' => $durationText,
-                    'dateRange' => $dateRange,
-                    'location' => $booking['service_location'],
-                    'status' => $booking['status']
-                ]
-            ];
+            // Create individual events for each day in the booking period
+            $currentDate = clone $startDate;
+            $eventId = 0;
+
+            while ($currentDate <= $inclusiveEndDate) {
+                $dateRange = $startDate->format('Y-m-d');
+                if ($startDate->format('Y-m-d') !== $inclusiveEndDate->format('Y-m-d')) {
+                    $dateRange .= ' to ' . $inclusiveEndDate->format('Y-m-d');
+                }
+
+                // Add a compact duration tag for easier month-view scanning.
+                $titleSuffix = '';
+                if ($duration > 0) {
+                    if ($basis === 'hourly') {
+                        $unit = $duration === 1 ? 'hour' : 'hours';
+                        $titleSuffix = ' for ' . $duration . ' ' . $unit;
+                    } elseif ($basis === 'monthly') {
+                        $unit = $duration === 1 ? 'month' : 'months';
+                        $titleSuffix = ' for ' . $duration . ' ' . $unit;
+                    } elseif ($basis === 'yearly') {
+                        $unit = $duration === 1 ? 'year' : 'years';
+                        $titleSuffix = ' for ' . $duration . ' ' . $unit;
+                    } else {
+                        $unit = $duration === 1 ? 'day' : 'days';
+                        $titleSuffix = ' for ' . $duration . ' ' . $unit;
+                    }
+                }
+
+                $events[] = [
+                    'id' => $booking['booking_id'] . '_' . $eventId,
+                    'title' => $booking['client_name'] . ' - ' . $booking['service_type'],
+                    'start' => $currentDate->format('Y-m-d'),
+                    'end' => $currentDate->format('Y-m-d'), // Single day event
+                    'allDay' => true,
+                    'backgroundColor' => $backgroundColor,
+                    'borderColor' => $borderColor,
+                    'extendedProps' => [
+                        'client' => $booking['client_name'],
+                        'service' => $booking['service_type'],
+                        'time' => $booking['preferred_time'],
+                        'duration' => $durationText,
+                        'dateRange' => $dateRange,
+                        'location' => $booking['service_location'],
+                        'status' => $booking['status'],
+                        'bookingId' => $booking['booking_id']
+                    ]
+                ];
+
+                $currentDate->modify('+1 day');
+                $eventId++;
+            }
         }
 
         echo json_encode($events);
@@ -323,16 +337,17 @@ class CaretakerController extends Controller
     {
         $this->view("caretaker/ct_leaveHistory");
     }
+public function ct_complaints()
+{
+    $caretakerId = AuthSession::profileId();
 
-    public function ct_complaints()
-    {
-        $caretakerId = AuthSession::profileId();
-        $complaints = $this->complaintModel->getComplaintsByCaretaker($caretakerId);
+    $data = [
+        'clients' => $this->caretakerModel->getClients($caretakerId),
+        'resolvedComplaints' => $this->caretakerModel->getResolvedComplaintsByCaretaker($caretakerId)
+    ];
 
-        $this->view('caretaker/ct_complaints', [
-            'complaints' => $complaints
-        ]);
-    }
+    $this->view('caretaker/ct_complaints', $data);
+}
 
     public function getClientInfo()
     {
@@ -341,28 +356,47 @@ class CaretakerController extends Controller
             echo json_encode($client);
         }
     }
+public function addComplaint()
+{
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    public function addComplaint()
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $data = [
+            'caretaker_id' => AuthSession::profileId(),
+            'client_id' => $_POST['client_id'], // ✅ CHANGE THIS
+            'service_type' => $_POST['service_type'],
+            'service_date' => $_POST['service_date'], // ✅ CHANGE THIS
+            'description' => $_POST['description']
+        ];
 
-            $data = [
-                'caretaker_id' => AuthSession::profileId(),
-                'client_name' => $_POST['client_name'],
-                'service_type' => $_POST['service_type'],
-                'date_of_service' => $_POST['date_of_service'],
-                'description' => $_POST['description']
-            ];
+        $this->caretakerModel->addComplaint($data);
 
-            $this->caretakerModel->addComplaint($data);
-
-            echo "success";
-        }
+     
     }
+}
+public function saveComplaint()
+{
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
+        $data = [
+            'caretaker_id' => AuthSession::profileId(),
+            'client_id' => $_POST['client_id'],
+            'service_type' => $_POST['service_type'],
+            'service_date' => $_POST['service_date'],
+            'description' => $_POST['description']
+        ];
+
+        $this->caretakerModel->addComplaint($data);
+
+        echo "success";
+    }
+}
     public function ct_reports()
     {
-        $this->view("caretaker/ct_reports");
+        $caretakerId = AuthSession::profileId();
+        $services = $this->caretakerModel->getPastBookings($caretakerId);
+        $this->view("caretaker/ct_reports", [
+            'services' => $services
+        ]);
     }
 
     public function ct_settings()

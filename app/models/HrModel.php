@@ -48,7 +48,7 @@ class HrModel
         $stmt = $this->conn->prepare("
         UPDATE bookings
         SET status = 'Payment_Requested'
-        WHERE id = ?
+        WHERE id = ? AND status = 'Requested'
     ");
 
         if (!$stmt) {
@@ -61,15 +61,14 @@ class HrModel
 
         if (!$result) {
             error_log("Execute failed: " . $stmt->error);
+            $stmt->close();
             return false;
         }
 
-        // Check if any rows were actually updated
-        $affected_rows = $this->conn->affected_rows;
-        error_log("Booking ID: $booking_id, Affected rows: $affected_rows");
-
+        $affected_rows = $stmt->affected_rows;
         $stmt->close();
-        return $result;
+
+        return $affected_rows > 0;
     }
 
     public function getRequestedBookings()
@@ -242,19 +241,7 @@ class HrModel
     ): array {
         $sql = "
         SELECT
-            b.id AS booking_id,
-            b.client_id,
-            b.caretaker_id,
-            b.booking_date,
-            b.preferred_time,
-            b.status,
-            b.customization,
-            b.customization_hours,
-            b.customization_price,
-            b.total_payment,
-            b.service_type,
-            b.duration,
-            b.basis,
+            b.*,
             c.name AS client_name,
             ct.name AS caretaker_name
         FROM bookings b
@@ -293,8 +280,36 @@ class HrModel
             return [];
         }
 
-        return $res->fetch_all(MYSQLI_ASSOC);
+        $rows = $res->fetch_all(MYSQLI_ASSOC);
+        foreach ($rows as &$row) {
+            if (!isset($row['booking_id']) && isset($row['id'])) {
+                $row['booking_id'] = (int) $row['id'];
+            }
+        }
+        unset($row);
+
+        return $rows;
     }
+
+    /**
+     * HR rejects a booking that is still in Requested status.
+     */
+    public function rejectBookingIfRequested(int $bookingId): bool
+    {
+        $stmt = $this->conn->prepare(
+            "UPDATE bookings SET status = 'Rejected' WHERE id = ? AND status = 'Requested'"
+        );
+        if (!$stmt) {
+            return false;
+        }
+        $stmt->bind_param('i', $bookingId);
+        $stmt->execute();
+        $ok = $stmt->affected_rows > 0;
+        $stmt->close();
+
+        return $ok;
+    }
+
     public function getBookingSummary($bookingId)
     {
         $sql = "SELECT b.id AS booking_id, b.booking_date, b.preferred_time, b.duration, b.basis, b.service_type,
@@ -508,6 +523,8 @@ class HrModel
         $sql = "SELECT
                 rp.id,
                 rp.booking_id,
+                rp.client_id,
+                rp.caretaker_id,
                 rp.cycle_number,
                 rp.cycle_type,
                 rp.due_date,
@@ -516,11 +533,29 @@ class HrModel
                 rp.paid_at,
                 rp.payment_id,
                 rp.grace_period_end,
+                rp.reminder_7_days_sent,
+                rp.reminder_3_days_sent,
+                rp.reminder_due_date_sent,
+                rp.created_at AS recurring_created_at,
+                rp.updated_at AS recurring_updated_at,
                 c.name AS client_name,
                 ct.name AS caretaker_name,
                 b.service_type,
                 b.basis,
-                b.booking_date
+                b.duration AS booking_duration,
+                b.booking_date,
+                b.preferred_time,
+                b.total_payment AS booking_total_payment,
+                b.status AS booking_status,
+                b.district AS booking_district,
+                b.street AS booking_street,
+                b.address_line1 AS booking_address_line1,
+                b.address_line2 AS booking_address_line2,
+                b.postal_code AS booking_postal_code,
+                b.service_location AS booking_service_location,
+                b.customization AS booking_customization,
+                b.customization_hours AS booking_customization_hours,
+                b.customization_price AS booking_customization_price
             FROM recurring_payments rp
             JOIN clients c ON c.id = rp.client_id
             JOIN caretakers ct ON ct.id = rp.caretaker_id
@@ -578,16 +613,37 @@ class HrModel
         $sql = "SELECT
                 p.id,
                 p.booking_id,
+                p.client_id,
+                p.caretaker_id,
                 p.amount,
+                p.total_booking_amount,
+                p.remaining_balance,
                 p.payment_type,
                 p.payment_method,
                 p.status,
                 p.due_date,
+                p.paid_date,
                 p.created_at,
                 p.approved_at,
+                p.customization_price AS payment_customization_price,
                 c.name AS client_name,
                 ct.name AS caretaker_name,
-                b.service_type
+                b.service_type,
+                b.basis,
+                b.duration AS booking_duration,
+                b.booking_date,
+                b.preferred_time,
+                b.total_payment AS booking_total_payment,
+                b.status AS booking_status,
+                b.district AS booking_district,
+                b.street AS booking_street,
+                b.address_line1 AS booking_address_line1,
+                b.address_line2 AS booking_address_line2,
+                b.postal_code AS booking_postal_code,
+                b.service_location AS booking_service_location,
+                b.customization AS booking_customization,
+                b.customization_hours AS booking_customization_hours,
+                b.customization_price AS booking_customization_price
             FROM payments p
             JOIN clients c ON c.id = p.client_id
             JOIN caretakers ct ON ct.id = p.caretaker_id

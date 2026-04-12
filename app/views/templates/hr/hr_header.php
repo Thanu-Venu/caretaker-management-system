@@ -6,91 +6,107 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
+/**
+ * Rehydrate manager profile for the HR shell. `users` may only expose `username` while the
+ * canonical display name lives on linked `accounts.name` (e.g. full name vs login handle).
+ */
+if (AuthSession::hasRole('manager')) {
+    require_once APPROOT . '/models/UserModel.php';
+    $hrShellUserModel = new UserModel();
+    $freshHrUser     = $hrShellUserModel->getUserById(AuthSession::profileId());
+    if (is_array($freshHrUser) && !empty($freshHrUser['id'])) {
+        $freshHrUser = $hrShellUserModel->withDisplayNameForProfile($freshHrUser);
+        $_SESSION['user'] = $freshHrUser;
+        $_SESSION['name'] = (string) ($freshHrUser['name'] ?? ($_SESSION['name'] ?? ''));
+        AuthSession::refreshLegacyUser($freshHrUser);
+    }
+}
+
 $notifModel = new NotificationModel();
 $user_id   = AuthSession::profileId();
-$user_role = $_SESSION['legacy_role'] ?? $_SESSION['role'];
+$user_role = $_SESSION['legacy_role'] ?? ($_SESSION['user']['role'] ?? ($_SESSION['role'] ?? 'hr'));
 
 $notifications = $notifModel->getNotifications($user_id, $user_role);
 $unreadCount   = $notifModel->countUnread($user_id, $user_role);
 
-$user_display = $_SESSION['user']['name'] ?? $_SESSION['user']['username'];
+$user_display = trim((string) ($_SESSION['user']['name'] ?? ''));
+if ($user_display === '') {
+    $user_display = trim((string) ($_SESSION['name'] ?? ''));
+}
+if ($user_display === '') {
+    $user_display = (string) ($_SESSION['user']['username'] ?? 'User');
+}
 
-$profilePic = $_SESSION['user']['profile_image'] ?? 'default.png';
+if (!empty($_SESSION['user']['profile_image'])) {
+    $profilePicUrl = URLROOT . '/public/uploads/' . rawurlencode((string) $_SESSION['user']['profile_image']);
+} else {
+    $profilePicFile = $_SESSION['user']['profile_pic'] ?? 'default.png';
+    $profilePicUrl  = URLROOT . '/public/images/profiles/' . rawurlencode((string) $profilePicFile);
+}
 ?>
-<!DOCTYPE html>
-<html lang="en">
+<!-- Same early collapsed-rail restore as Admin (sidebar-toggle.js + admin-ui) -->
+<script>
+(function () {
+    try {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('adminSidebarCollapsed') === '1') {
+            document.body.classList.add('admin-sidebar-collapsed');
+        }
+    } catch (e) { /* private mode / blocked storage */ }
+})();
+</script>
+<header class="main-header">
+    <div class="left-section">
+        <div class="logo-section">
+            <img src="<?= URLROOT ?>/public/images/logo.jpg" class="logo" alt="">
+            <span class="company-name">SmartCare</span>
+        </div>
+    </div>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartCare</title>
+    <div class="header-icons">
+        <div class="notification-wrapper">
+            <button id="notifBtn" class="notif-btn" type="button">
+                <i class="fa-solid fa-bell"></i>
+                <span class="notif-count"><?= (int) $unreadCount ?></span>
+            </button>
 
-    <!-- FONT AWESOME (REQUIRED) -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-    <!-- HEADER CSS -->
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/hr/hr_header.css">
-</head>
-
-<body>
-
-    <header class="main-header">
-        <div class="left-section">
-            <div class="logo-section">
-                <img src="<?= URLROOT ?>/public/images/logo.jpg" class="logo">
-                <span class="company-name">SmartCare</span>
+            <div id="notifDropdown" class="notif-dropdown">
+                <ul>
+                    <?php if (empty($notifications)): ?>
+                        <li>No notifications</li>
+                    <?php else: ?>
+                        <?php foreach ($notifications as $n): ?>
+                            <li style="<?= $n['is_read'] == 0 ? 'font-weight:bold;' : '' ?>">
+                                <?= htmlspecialchars((string) ($n['title'] ?? '')) ?><br>
+                                <small><?= htmlspecialchars((string) ($n['message'] ?? '')) ?></small>
+                            </li>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </ul>
+                <div class="see-all">
+                    <a href="<?= URLROOT ?>/notification/index">See all notifications</a>
+                </div>
             </div>
         </div>
 
-        <div class="header-icons">
-
-            <!-- Notifications -->
-            <div class="notification-wrapper">
-                <button id="notifBtn" class="notif-btn">
-                    <i class="fa-solid fa-bell"></i>
-                    <span class="notif-count"><?= $unreadCount ?></span>
-                </button>
-
-                <div id="notifDropdown" class="notif-dropdown">
-                    <ul>
-                        <?php if (empty($notifications)): ?>
-                            <li>No notifications</li>
-                        <?php else: ?>
-                            <?php foreach ($notifications as $n): ?>
-                                <li style="<?= $n['is_read'] == 0 ? 'font-weight:bold;' : '' ?>">
-                                    <?= htmlspecialchars($n['title']) ?><br>
-                                    <small><?= htmlspecialchars($n['message']) ?></small>
-                                </li>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </ul>
-                    <div class="see-all">
-                        <a href="<?= URLROOT ?>/notification/index">See all notifications</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="header-logout">
-                <a href="<?= URLROOT ?>/index.php?url=auth/logout" class="logout-btn" title="Logout">
-                    <i class="fa-solid fa-right-from-bracket"></i>
+        <div class="profile-wrapper">
+            <button type="button" id="profileMenuBtn" class="profile-menu-trigger" aria-expanded="false"
+                aria-haspopup="true" aria-controls="hrProfileDropdown" title="Account menu">
+                <img src="<?= htmlspecialchars($profilePicUrl, ENT_QUOTES, 'UTF-8') ?>" class="profile-img" alt="">
+                <span class="profile-menu-name"><?= htmlspecialchars((string) $user_display, ENT_QUOTES, 'UTF-8') ?></span>
+                <i class="fa-solid fa-chevron-down profile-menu-chevron" aria-hidden="true"></i>
+            </button>
+            <div id="hrProfileDropdown" class="profile-dropdown" role="menu">
+                <a href="<?= URLROOT ?>/public?url=hr/hr_settings" class="profile-menu-item" role="menuitem">
+                    <i class="fa-solid fa-user" aria-hidden="true"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="<?= URLROOT ?>/index.php?url=auth/logout" class="profile-menu-item profile-menu-item--logout" role="menuitem">
+                    <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
                     <span>Logout</span>
                 </a>
             </div>
-
-            <!-- Profile -->
-            <div class="profile-wrapper">
-                <a href="http://localhost/CMA/public?url=hr/hr_settings" class="profile-link">
-                    <img src="<?= URLROOT ?>/public/uploads/<?= htmlspecialchars($profilePic) ?>" class="profile-img"
-                        alt="Profile">
-                    <span><?= htmlspecialchars($user_display) ?></span>
-                </a>
-            </div>
-
         </div>
-    </header>
+    </div>
+</header>
 
-    <script src="<?= URLROOT ?>/public/js/notification.js"></script>
-</body>
-
-</html>
+<script src="<?= URLROOT ?>/public/js/notification.js"></script>

@@ -14,10 +14,8 @@
 <body>
 
 <div class="announcement-container">
-
-    <h2 class="page-title">📢 Announcements</h2>
-
-    <?php if (empty($data)): ?>
+        <h2 class="page-title">Announcements</h2>
+        <?php if (empty($data)): ?>
         <div class="no-announcement">
             <p>No announcements available at the moment.</p>
         </div>
@@ -37,7 +35,7 @@
                 </div>
 
                 <div class="announcement-footer">
-                    <span class="role-tag">For Caretakers</span>
+                    <span class="role-tag">For Caregiver</span>
                 </div>
 
             </div>

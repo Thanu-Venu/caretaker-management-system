@@ -67,7 +67,7 @@
                                     <!-- View Contact Button for completed bookings -->
                                     <a class="action-btn" id="contact-btn"
                                         href="<?= URLROOT ?>/client/c_contactCT?booking_id=<?= (int)$b['booking_id'] ?>"
-                                        style="background-color: #28a745; border-color: #28a745; padding: 8px 12px; text-decoration: none; display: inline-block; margin-bottom: 5px;">
+                                        style="background-color: #1e88e5; color: #fff; padding: 8px 12px; text-decoration: none; display: inline-block; margin-bottom: 5px; border-radius: 10px; font-weight: 600; border: none;">
                                         View Contact
                                     </a>
 

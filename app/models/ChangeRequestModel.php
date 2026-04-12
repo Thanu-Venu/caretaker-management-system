@@ -75,6 +75,9 @@ class ChangeRequestModel
     {
         $sql = "SELECT cr.id AS request_id,
                        cr.booking_id,
+                       cr.client_id,
+                       cr.old_caretaker_id,
+                       cr.new_caretaker_id,
                        cr.reason,
                        cr.created_at,
                        cr.status,
@@ -83,14 +86,37 @@ class ChangeRequestModel
                        b.booking_date,
                        b.preferred_time,
                        b.service_type,
+                       b.basis,
+                       b.duration,
+                       b.total_payment,
+                       b.caretaker_id AS booking_caretaker_id,
+                       b.status AS booking_status,
+                       b.service_start_date,
+                       b.district,
+                       b.street,
+                       b.address_line1,
+                       b.address_line2,
+                       b.postal_code,
+                       b.customization,
+                       b.customization_hours,
+                       b.customization_price,
+                       b.created_at AS booking_created_at,
+                       b.advance_months,
+                       b.total_months,
+                       b.advance_balance,
+                       b.cancellation_reason,
+                       b.cancelled_at,
+                       b.caretaker_changed_once,
                        c.name AS client_name,
                        oldc.name AS old_caretaker,
-                       newc.name AS new_caretaker
+                       newc.name AS new_caretaker,
+                       curct.name AS assigned_caretaker_name
                 FROM change_requests cr
                 JOIN bookings b ON cr.booking_id = b.id
                 JOIN clients c ON cr.client_id = c.id
                 LEFT JOIN caretakers oldc ON cr.old_caretaker_id = oldc.id
                 LEFT JOIN caretakers newc ON cr.new_caretaker_id = newc.id
+                LEFT JOIN caretakers curct ON b.caretaker_id = curct.id
                 WHERE cr.status = 'pending'
                 ORDER BY cr.created_at DESC";
 
@@ -102,6 +128,9 @@ class ChangeRequestModel
     {
         $sql = "SELECT cr.id AS request_id,
                        cr.booking_id,
+                       cr.client_id,
+                       cr.old_caretaker_id,
+                       cr.new_caretaker_id,
                        cr.reason,
                        cr.created_at,
                        cr.status,
@@ -110,14 +139,37 @@ class ChangeRequestModel
                        b.booking_date,
                        b.preferred_time,
                        b.service_type,
+                       b.basis,
+                       b.duration,
+                       b.total_payment,
+                       b.caretaker_id AS booking_caretaker_id,
+                       b.status AS booking_status,
+                       b.service_start_date,
+                       b.district,
+                       b.street,
+                       b.address_line1,
+                       b.address_line2,
+                       b.postal_code,
+                       b.customization,
+                       b.customization_hours,
+                       b.customization_price,
+                       b.created_at AS booking_created_at,
+                       b.advance_months,
+                       b.total_months,
+                       b.advance_balance,
+                       b.cancellation_reason,
+                       b.cancelled_at,
+                       b.caretaker_changed_once,
                        c.name AS client_name,
                        oldc.name AS old_caretaker,
-                       newc.name AS new_caretaker
+                       newc.name AS new_caretaker,
+                       curct.name AS assigned_caretaker_name
                 FROM change_requests cr
                 JOIN bookings b ON cr.booking_id = b.id
                 JOIN clients c ON cr.client_id = c.id
                 LEFT JOIN caretakers oldc ON cr.old_caretaker_id = oldc.id
                 LEFT JOIN caretakers newc ON cr.new_caretaker_id = newc.id
+                LEFT JOIN caretakers curct ON b.caretaker_id = curct.id
                 WHERE cr.status IN ('approved', 'rejected')
                 ORDER BY cr.reviewed_at DESC";
 
@@ -125,14 +177,14 @@ class ChangeRequestModel
         return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     }
 
-    public function approveRequest($requestId)
+    public function approveRequest($requestId, string $hrNote = '')
     {
         $this->conn->begin_transaction();
 
         try {
             // Get request details + ensure it's pending
             $stmt = $this->conn->prepare("
-            SELECT id, booking_id, old_caretaker_id, new_caretaker_id, status
+            SELECT id, booking_id, client_id, old_caretaker_id, new_caretaker_id, status
             FROM change_requests
             WHERE id = ?
             FOR UPDATE
@@ -162,11 +214,11 @@ class ChangeRequestModel
             $stmtB->bind_param("i", $req['booking_id']);
             $stmtB->execute();
             $booking = $stmtB->get_result()->fetch_assoc();
-            if (strtolower(trim($booking['status'])) !== 'change_requested') {
+            if (!$booking) {
                 $this->conn->rollback();
                 return false;
             }
-            if (!$booking) {
+            if (strtolower(trim($booking['status'])) !== 'change_requested') {
                 $this->conn->rollback();
                 return false;
             }

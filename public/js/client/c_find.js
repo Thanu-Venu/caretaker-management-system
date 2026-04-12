@@ -93,6 +93,59 @@ function updatePopupOptions(service) {
     durationInput.value = "";
     durationInput.max = "";
     durationInput.placeholder = "Enter duration";
+    durationInput.setAttribute('min', 1);
+  }
+}
+
+function enforceDurationRange() {
+  const durationInput = document.querySelector('input[name="duration"]');
+  if (!durationInput) {
+    return;
+  }
+
+  const min = parseInt(durationInput.min, 10) || 1;
+  const max = parseInt(durationInput.max, 10);
+  let value = parseInt(durationInput.value, 10);
+
+  if (Number.isNaN(value)) {
+    return;
+  }
+
+  if (!Number.isNaN(max) && value > max) {
+    durationInput.value = max;
+  } else if (value < min) {
+    durationInput.value = min;
+  }
+}
+
+function updateDurationLimits(basis) {
+  const durationInput = document.querySelector('input[name="duration"]');
+  if (!durationInput) {
+    return;
+  }
+
+  durationInput.setAttribute('min', 1);
+  let max = "";
+
+  if (basis === "Hourly") {
+    max = 23;
+  } else if (basis === "Daily") {
+    max = 30;
+  } else if (basis === "Monthly") {
+    max = 11;
+  } else if (basis === "Yearly") {
+    max = 5;
+  }
+
+  if (max !== "") {
+    durationInput.setAttribute('max', max);
+    durationInput.placeholder = `Enter 1 - ${max}`;
+    if (durationInput.value !== "" && parseInt(durationInput.value, 10) > max) {
+      durationInput.value = max;
+    }
+  } else {
+    durationInput.removeAttribute('max');
+    durationInput.placeholder = 'Enter duration';
   }
 }
 
@@ -138,23 +191,7 @@ const basisFilter = document.getElementById("basisFilter");
 if (basisFilter) {
   basisFilter.addEventListener("change", function () {
     const basis = this.value;
-    const durationInput = document.querySelector('input[name="duration"]');
-    if (!durationInput) {
-      return;
-    }
-
-    // update duration limits as before
-    if (basis === "Hourly") {
-      durationInput.max = 23;
-    } else if (basis === "Daily") {
-      durationInput.max = 30;
-    } else if (basis === "Monthly") {
-      durationInput.max = 11;
-    } else if (basis === "Yearly") {
-      durationInput.max = 5; // optional
-    }
-
-    durationInput.placeholder = `Enter 1 - ${durationInput.max}`;
+    updateDurationLimits(basis);
 
     // if maid + hourly, change preferred time options to hourly start times and update label
     const serviceSelect = document.getElementById("popupServiceFilter");
@@ -192,6 +229,11 @@ if (basisFilter) {
       }
     }
   });
+}
+
+const durationInput = document.querySelector('input[name="duration"]');
+if (durationInput) {
+  durationInput.addEventListener('input', enforceDurationRange);
 }
 
 

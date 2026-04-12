@@ -1,35 +1,27 @@
-<?php include_once APPROOT . "/views/templates/hr/hr_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; ?>
+<?php
+$hrPageTitle = 'Caregiver schedule — HR';
+$hrExtraCss  = ['hr/hr_schedule.css'];
+$hrHeadStylesheets = [
+    'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css',
+];
+include_once APPROOT . '/views/templates/hr/hr_layout_head.php';
+include_once APPROOT . '/views/templates/hr/hr_header.php';
+include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
+?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HR Schedule - SmartCare</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_schedule.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-</head>
-
-<body>
-  <div
+<main
     id="hrScheduleApp"
     class="main-content"
     data-month-url="<?= URLROOT; ?>/hr/scheduleMonthAggregates"
     data-day-url="<?= URLROOT; ?>/hr/scheduleDayDetails"
     data-today="<?= date('Y-m-d'); ?>">
-    <div class="schedule-topbar">
-      <div>
-        <h1>Caregiver Schedule</h1>
-        <p id="selectedDateText">Loading selected date...</p>
-      </div>
-      <div class="rule-chip">
-        Busy excludes caregivers on approved leave
-      </div>
-    </div>
+    <header class="page-header schedule-page-header">
+        <div class="schedule-page-header__main">
+            <h1 class="page-title">Caregiver schedule</h1>
+            <p class="page-subtitle" id="selectedDateText">Loading selected date…</p>
+        </div>
+        <p class="schedule-rule-chip" role="note">Busy excludes caregivers on approved leave</p>
+    </header>
 
     <div class="summary-grid" id="summaryCards">
       <button type="button" class="summary-card" data-type="active_bookings">
@@ -62,7 +54,7 @@
     <aside id="dayDetailsPanel" class="details-panel" aria-hidden="true">
       <div class="panel-header">
         <h3 id="panelTitle">Schedule Details</h3>
-        <button type="button" id="panelCloseBtn" class="panel-close" aria-label="Close panel">&times;</button>
+        <button type="button" id="panelCloseBtn" class="panel-close" aria-label="Close panel"><i class="bx bx-x" aria-hidden="true"></i></button>
       </div>
 
       <div class="panel-content">
@@ -93,12 +85,13 @@
       <div class="schedule-modal-content">
         <div class="schedule-modal-header">
           <h3 id="summaryModalTitle">List</h3>
-          <button type="button" id="summaryModalClose" class="panel-close" aria-label="Close modal">&times;</button>
+          <button type="button" id="summaryModalClose" class="panel-close" aria-label="Close modal"><i class="bx bx-x" aria-hidden="true"></i></button>
         </div>
         <div id="summaryModalBody" class="list-wrap"></div>
       </div>
     </div>
-  </div>
+</main>
 
-  <script src="<?php echo URLROOT; ?>/public/js/hr/hr_schedule.js"></script>
-</body>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script src="<?php echo URLROOT; ?>/public/js/hr/hr_schedule.js"></script>
+<?php include_once APPROOT . '/views/templates/hr/hr_layout_close.php'; ?>

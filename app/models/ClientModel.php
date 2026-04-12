@@ -67,6 +67,68 @@ class ClientModel
         return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     }
 
+    /**
+     * Admin client list with optional search and registration date range.
+     *
+     * @param array{q?:string,date_from?:string,date_to?:string} $filters
+     * @return array<int, array<string, mixed>>
+     */
+    public function getAllClientsFiltered(array $filters = []): array
+    {
+        $q = trim((string)($filters['q'] ?? ''));
+        $from = trim((string)($filters['date_from'] ?? ''));
+        $to = trim((string)($filters['date_to'] ?? ''));
+
+        if ($from !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $from)) {
+            $from = '';
+        }
+        if ($to !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $to)) {
+            $to = '';
+        }
+
+        $sql = 'SELECT id, name, email, phone, created_at FROM clients WHERE 1=1';
+        $types = '';
+        $params = [];
+
+        if ($q !== '') {
+            $sql .= ' AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)';
+            $like = '%' . $q . '%';
+            $types .= 'sss';
+            $params[] = $like;
+            $params[] = $like;
+            $params[] = $like;
+        }
+        if ($from !== '') {
+            $sql .= ' AND DATE(created_at) >= ?';
+            $types .= 's';
+            $params[] = $from;
+        }
+        if ($to !== '') {
+            $sql .= ' AND DATE(created_at) <= ?';
+            $types .= 's';
+            $params[] = $to;
+        }
+
+        $sql .= ' ORDER BY created_at DESC';
+
+        if ($types === '') {
+            $result = $this->conn->query($sql);
+            return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+        }
+
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            return [];
+        }
+
+        $stmt->bind_param($types, ...$params);
+        $stmt->execute();
+        $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $rows;
+    }
+
     public function getClientById($id)
     {
         $stmt = $this->conn->prepare(
@@ -1189,8 +1251,11 @@ class ClientModel
                     p.payment_method,
                     p.payment_type,
                     p.status,
+                    p.due_date,
+                    p.paid_date,
                     p.created_at,
                     p.approved_at,
+                    p.customization_price AS payment_customization_price,
                     c.name AS client_name,
                     c.phone AS client_phone,
                     ct.name AS caretaker_name,
@@ -1200,7 +1265,24 @@ class ClientModel
                     b.basis,
                     b.duration,
                     b.total_payment,
-                    b.status AS booking_status
+                    b.status AS booking_status,
+                    b.district AS booking_district,
+                    b.street AS booking_street,
+                    b.address_line1 AS booking_address_line1,
+                    b.address_line2 AS booking_address_line2,
+                    b.postal_code AS booking_postal_code,
+                    b.service_location AS booking_service_location,
+                    b.customization AS booking_customization,
+                    b.customization_hours AS booking_customization_hours,
+                    b.customization_price AS booking_customization_price,
+                    b.created_at AS booking_created_at,
+                    b.advance_paid_date AS booking_advance_paid_date,
+                    b.service_start_date AS booking_service_start_date,
+                    b.advance_amount AS booking_advance_amount,
+                    b.refund_status AS booking_refund_status,
+                    b.advance_balance AS booking_advance_balance,
+                    b.advance_months AS booking_advance_months,
+                    b.total_months AS booking_total_months
                 FROM payments p
                 JOIN clients c ON p.client_id = c.id
                 JOIN caretakers ct ON p.caretaker_id = ct.id
@@ -1572,6 +1654,29 @@ class ClientModel
         return ['labels' => $labels, 'values' => $values];
     }
 
+    /**
+     * Booking counts by status (admin dashboard).
+     *
+     * @return array{labels: string[], values: int[]}
+     */
+    public function getBookingStatusDistribution(): array
+    {
+        $res = $this->conn->query(
+            "SELECT COALESCE(NULLIF(TRIM(status), ''), 'Unknown') AS st, COUNT(*) AS cnt FROM bookings GROUP BY st ORDER BY cnt DESC"
+        );
+        if (!$res) {
+            return ['labels' => [], 'values' => []];
+        }
+        $labels = [];
+        $values = [];
+        while ($row = $res->fetch_assoc()) {
+            $labels[] = (string) $row['st'];
+            $values[] = (int) $row['cnt'];
+        }
+
+        return ['labels' => $labels, 'values' => $values];
+    }
+
     public function getClientEngagementLast6Months()
     {
         $stmt = $this->conn->prepare("
@@ -1631,7 +1736,7 @@ class ClientModel
         $sql = "SELECT COALESCE(SUM(p.amount),0) AS total
                 FROM payments p
                 WHERE p.client_id = ?
-                  AND p.status = 'approved'";
+                  AND LOWER(p.status) IN ('approved', 'paid', 'success', 'completed')";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $clientId);
