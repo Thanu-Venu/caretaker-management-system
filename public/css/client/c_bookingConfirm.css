@@ -22,33 +22,57 @@
   color: #00bfa5;
   margin-bottom: 10px;
   font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
 }
 
 .subtitle {
   color: #666;
   font-size: 15px;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .card i {
   color: #00bfa5;
   font-size: 24px;
-  margin-right: 6px;
+  margin-right: 0;
 }
 
 .details {
-  text-align: center;
-  margin: 25px 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 25px 0;
   font-size: 15px;
   line-height: 1.6;
-  flex-direction: column;
+  color: #444;
+  text-align: left;
+}
+
+.details p {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin: 0;
+  width: 100%;
 }
 
 .details strong {
-  width: 120px; /* same width for all labels */
-  text-align: right; /* labels end at same line */
-  margin-right: 10px;
   color: #333;
+  font-weight: 600;
+  flex: 0 0 170px;
+  text-align: left;
+}
+
+.details span {
+  color: #444;
+  flex: 1;
+  text-align: right;
 }
 
 .pending {
@@ -59,10 +83,11 @@
 .actions {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 12px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   margin-top: 12px;
+  width: 100%;
 }
 
 .actions button {
@@ -123,30 +148,6 @@ button.secondary:hover {
   outline-offset: 2px;
 }
 
-/* ---- enhanced details layout ---- */
-.details {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  column-gap: 20px;
-  row-gap: 12px;
-  align-items: start;
-  margin: 25px 0;
-  font-size: 15px;
-  line-height: 1.6;
-  color: #444;
-  text-align: left;
-}
-
-.details p {
-  margin: 0;
-}
-
-.details strong {
-  color: #333;
-  font-weight: 600;
-  justify-self: end;
-}
-
 @media (max-width: 600px) {
   .confirmation-container {
     margin-left: 0;
@@ -160,12 +161,18 @@ button.secondary:hover {
   }
 
   .details {
-    grid-template-columns: 1fr;
+    gap: 10px;
   }
-  .details strong {
-    justify-self: start;
-    display: block;
-    margin-bottom: 4px;
+
+  .details p {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .details strong,
+  .details span {
+    flex: none;
+    text-align: left;
   }
 
   .actions {

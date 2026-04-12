@@ -12,6 +12,21 @@
   font-family: var(--font-primary);
   overflow-x: hidden;
 }
+
+/* Shared page content spacing beside fixed sidebar */
+.main-content,
+.content,
+.admin-dashboard,
+.payments-page,
+.reports-container,
+.booking-container,
+.client-container,
+.user-container,
+.caretaker-container,
+.payment-container {
+  margin-left: 270px !important;
+  margin-right: 20px !important;
+}
 .sidebar::-webkit-scrollbar {
   display: none;
 }
@@ -86,6 +101,22 @@
 
 .submenu.active .arrow {
   transform: rotate(180deg);
+}
+
+@media (max-width: 900px) {
+  .main-content,
+  .content,
+  .admin-dashboard,
+  .payments-page,
+  .reports-container,
+  .booking-container,
+  .client-container,
+  .user-container,
+  .caretaker-container,
+  .payment-container {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
 }
 
 

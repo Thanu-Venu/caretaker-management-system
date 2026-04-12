@@ -3,6 +3,20 @@ body {
   font-family: var(--font-primary);
 }
 
+/* Shared page content spacing beside fixed sidebar */
+.main-content,
+.content,
+.payments-page,
+.reports-container,
+.booking-container,
+.caretaker-container,
+.client-container,
+.payment-container,
+.user-container {
+  margin-left: 270px !important;
+  margin-right: 20px !important;
+}
+
 :root {
   --text-color: #ffffff;
   --hover-bg: rgba(255, 255, 255, 0.2);
@@ -178,4 +192,19 @@ body {
   background: var(--hover-bg);
   margin: 0 10px;
   border-radius: 10px;
+}
+
+@media (max-width: 900px) {
+  .main-content,
+  .content,
+  .payments-page,
+  .reports-container,
+  .booking-container,
+  .caretaker-container,
+  .client-container,
+  .payment-container,
+  .user-container {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
 }

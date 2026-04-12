@@ -3,6 +3,18 @@ body {
   font-family: var(--font-primary);
 }
 
+/* Shared page content spacing beside fixed sidebar */
+.main-content,
+.content,
+.client-dashboard,
+.payments-page,
+.confirmation-container,
+.booking-container,
+.client-container {
+  margin-left: 270px !important;
+  margin-right: 20px !important;
+}
+
 .sidebar {
   width: 240px;
   height: 100vh;
@@ -142,6 +154,17 @@ body {
     flex-wrap: wrap;
     gap: 8px;
     padding: 10px;
+  }
+
+  .main-content,
+  .content,
+  .client-dashboard,
+  .payments-page,
+  .confirmation-container,
+  .booking-container,
+  .client-container {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 
   .menu li {
