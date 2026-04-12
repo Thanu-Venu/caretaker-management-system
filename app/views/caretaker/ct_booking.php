@@ -13,17 +13,17 @@
 
 <body>
   <main class="content">
-    <div class="booking">
-      <div class="card">
-        <h2>Bookings</h2>
-
+    <h2>Bookings</h2>
         <?php $selectedBookingId = isset($_GET['booking_id']) ? (int)$_GET['booking_id'] : null; ?>
         <div class="top">
-          <button class="ongoing-book active" data-tab="ongoing" onclick="showTab('ongoing', event)">Ongoing Bookings</button>
-          <button class="up-book" data-tab="upcoming" onclick="showTab('upcoming', event)">Upcoming Bookings</button>
-          <button class="past-book" data-tab="past" onclick="showTab('past', event)">Past Bookings</button>
+          <button class="top-button active" onclick="switchTab('ongoing', event)">Ongoing Bookings</button>
+          <button class="top-button" onclick="switchTab('upcoming', event)">Upcoming Bookings</button>
+          <button class="top-button" onclick="switchTab('past', event)">Past Bookings</button>
         </div>
+
+      <div class="card">
         <!-- Ongoing -->
+        <div class="table-container">
         <div id="ongoing" class="tab-content active">
           <table>
             <thead>

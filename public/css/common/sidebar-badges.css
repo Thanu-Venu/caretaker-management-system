@@ -259,6 +259,53 @@ li.active .sidebar-badge {
     }
 }
 
+/* Admin sidebar (blue rail): calmer count badges */
+.sidebar .sidebar-badge {
+    background: rgba(255, 255, 255, 0.94);
+    color: #9a3412;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+}
+
+.sidebar a:hover .sidebar-badge,
+.sidebar li.active .sidebar-badge {
+    background: #fff;
+    color: #c2410c;
+}
+
+/* ==================== Table status pills — uniform width (all shells using this file) ==================== */
+
+:root {
+    /* Fixed width so status chips align in table columns (admin, HR, client, caretaker) */
+    --smartcare-status-badge-width: 8.5rem;
+}
+
+/* HR pending: span.status-* ; admin: .status, .booking-status-pill */
+table td .status,
+table td .booking-status-pill,
+table td span[class^="status-"] {
+    width: var(--smartcare-status-badge-width);
+    min-width: var(--smartcare-status-badge-width);
+    max-width: var(--smartcare-status-badge-width);
+    box-sizing: border-box;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* HR uses inline-block on .status-* — normalize to flex for centering */
+table td span[class^="status-"] {
+    display: inline-flex;
+    align-items: center;
+}
+
+@media (max-width: 520px) {
+    :root {
+        --smartcare-status-badge-width: 7rem;
+    }
+}
+
 /* ==================== Dark Mode Support (Optional) ==================== */
 
 /* If your application supports dark mode, uncomment these styles */

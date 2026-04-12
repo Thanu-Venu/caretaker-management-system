@@ -1,154 +1,291 @@
 /**
  * ================================================
- * SMARTCARE - SIDEBAR MOBILE TOGGLE
- * JavaScript for responsive sidebar functionality
+ * SMARTCARE - SIDEBAR TOGGLE (desktop + mobile)
+ * Desktop (≥1024px): icon rail + localStorage preference
+ * Mobile: slide-over drawer + overlay
+ *
+ * Collapsed state changes ONLY via .sidebar-toggle (hamburger).
+ * Navigating via menu links never expands the rail.
  * ================================================
  */
 
 (function () {
     'use strict';
 
-    // Wait for DOM to be ready
+    var STORAGE_KEY = 'adminSidebarCollapsed';
+    var INIT_FLAG = 'data-admin-sidebar-js-init';
+
+    /**
+     * Must match CSS @media (min-width: 1024px) for sidebar / main margins.
+     */
+    function isDesktop() {
+        return window.matchMedia('(min-width: 1024px)').matches;
+    }
+
+    function readCollapsedPref() {
+        try {
+            return localStorage.getItem(STORAGE_KEY) === '1';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function saveCollapsedPref(collapsed) {
+        try {
+            localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0');
+        } catch (e) { /* ignore */ }
+    }
+
+    /**
+     * Apply body class from localStorage (desktop only). Does not toggle.
+     */
+    function applyCollapsedFromStorage(body) {
+        if (!body) return;
+        if (isDesktop()) {
+            if (readCollapsedPref()) {
+                body.classList.add('admin-sidebar-collapsed');
+            } else {
+                body.classList.remove('admin-sidebar-collapsed');
+            }
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         initSidebar();
         initDropdowns();
     });
 
-    /**
-     * Initialize sidebar toggle functionality
-     */
     function initSidebar() {
-        const sidebar = document.querySelector('.sidebar');
-        const sidebarToggle = document.querySelector('.sidebar-toggle');
-        const sidebarOverlay = document.querySelector('.sidebar-overlay');
-        const body = document.body;
+        var body = document.body;
+        if (body.getAttribute(INIT_FLAG) === '1') {
+            return;
+        }
+        body.setAttribute(INIT_FLAG, '1');
 
-        // Exit if sidebar doesn't exist
+        var sidebar = document.querySelector('.sidebar');
+        var sidebarToggle = document.querySelector('.sidebar-toggle');
+        var sidebarOverlay = document.querySelector('.sidebar-overlay');
+
         if (!sidebar) {
             console.warn('Sidebar element not found');
             return;
         }
 
-        // Create toggle button if it doesn't exist
         if (!sidebarToggle) {
-            const toggle = document.createElement('button');
-            toggle.className = 'sidebar-toggle';
-            toggle.innerHTML = '<i class="bx bx-menu"></i>';
-            toggle.setAttribute('aria-label', 'Toggle sidebar menu');
-            document.body.appendChild(toggle);
+            var t = document.createElement('button');
+            t.className = 'sidebar-toggle';
+            t.type = 'button';
+            t.innerHTML = '<i class="bx bx-menu"></i>';
+            t.setAttribute('aria-label', 'Toggle sidebar menu');
+            t.setAttribute('aria-expanded', 'true');
+            document.body.appendChild(t);
         }
 
-        // Create overlay if it doesn't exist
         if (!sidebarOverlay) {
-            const overlay = document.createElement('div');
-            overlay.className = 'sidebar-overlay';
-            document.body.appendChild(overlay);
+            var o = document.createElement('div');
+            o.className = 'sidebar-overlay';
+            document.body.appendChild(o);
         }
 
-        // Get elements (they now definitely exist)
-        const toggle = document.querySelector('.sidebar-toggle');
-        const overlay = document.querySelector('.sidebar-overlay');
+        var toggle = document.querySelector('.sidebar-toggle');
+        var overlay = document.querySelector('.sidebar-overlay');
 
-        // Toggle sidebar open/close
-        function toggleSidebar() {
-            const isOpen = sidebar.classList.contains('open');
+        function hydrateSidebarLinkTitles() {
+            sidebar.querySelectorAll('.sidebar-menu a[href]').forEach(function (a) {
+                if (a.getAttribute('title')) return;
+                var ml = a.querySelector('.menu-left > span');
+                if (ml && !ml.classList.contains('sidebar-badge')) {
+                    var label = ml.textContent.replace(/\s+/g, ' ').trim();
+                    a.setAttribute('title', label);
+                    if (!a.getAttribute('aria-label')) {
+                        a.setAttribute('aria-label', label);
+                    }
+                    return;
+                }
+                var kids = a.children;
+                for (var i = 0; i < kids.length; i++) {
+                    var el = kids[i];
+                    if (el.tagName === 'SPAN' && !el.classList.contains('menu-item-content')) {
+                        var txt = el.textContent.replace(/\s+/g, ' ').trim();
+                        if (txt) {
+                            a.setAttribute('title', txt);
+                            if (!a.getAttribute('aria-label')) {
+                                a.setAttribute('aria-label', txt);
+                            }
+                            return;
+                        }
+                    }
+                }
+            });
+        }
 
-            if (isOpen) {
-                closeSidebar();
+        hydrateSidebarLinkTitles();
+
+        function syncToggleIcon() {
+            if (!toggle) return;
+            if (isDesktop()) {
+                var collapsed = body.classList.contains('admin-sidebar-collapsed');
+                if (collapsed) {
+                    toggle.innerHTML = '<i class="bx bx-menu"></i>';
+                    toggle.setAttribute('aria-label', 'Expand sidebar');
+                    toggle.setAttribute('aria-expanded', 'false');
+                } else {
+                    toggle.innerHTML = '<i class="bx bx-chevrons-left"></i>';
+                    toggle.setAttribute('aria-label', 'Collapse sidebar');
+                    toggle.setAttribute('aria-expanded', 'true');
+                }
             } else {
-                openSidebar();
+                if (sidebar.classList.contains('open')) {
+                    toggle.innerHTML = '<i class="bx bx-x"></i>';
+                    toggle.setAttribute('aria-label', 'Close sidebar menu');
+                    toggle.setAttribute('aria-expanded', 'true');
+                } else {
+                    toggle.innerHTML = '<i class="bx bx-menu"></i>';
+                    toggle.setAttribute('aria-label', 'Open sidebar menu');
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
             }
         }
 
-        // Open sidebar
-        function openSidebar() {
-            sidebar.classList.add('open');
-            overlay.classList.add('active');
-            body.classList.add('sidebar-open');
-            toggle.innerHTML = '<i class="bx bx-x"></i>'; // Change to X icon
-            toggle.setAttribute('aria-label', 'Close sidebar menu');
-        }
-
-        // Close sidebar
-        function closeSidebar() {
+        function closeMobileDrawer() {
             sidebar.classList.remove('open');
             overlay.classList.remove('active');
             body.classList.remove('sidebar-open');
-            toggle.innerHTML = '<i class="bx bx-menu"></i>'; // Change back to menu icon
-            toggle.setAttribute('aria-label', 'Toggle sidebar menu');
         }
 
-        // Event listeners
+        function openMobileDrawer() {
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+            body.classList.add('sidebar-open');
+        }
+
+        var toggleCooldownUntil = 0;
+        var TOGGLE_COOLDOWN_MS = 280;
+
+        /** Only the hamburger / rail control may change desktop collapsed state. */
+        function toggleSidebarFromControl() {
+            var now = Date.now();
+            if (now < toggleCooldownUntil) {
+                return;
+            }
+            toggleCooldownUntil = now + TOGGLE_COOLDOWN_MS;
+
+            if (isDesktop()) {
+                closeMobileDrawer();
+                body.classList.toggle('admin-sidebar-collapsed');
+                saveCollapsedPref(body.classList.contains('admin-sidebar-collapsed'));
+                syncToggleIcon();
+            } else {
+                if (sidebar.classList.contains('open')) {
+                    closeMobileDrawer();
+                } else {
+                    openMobileDrawer();
+                }
+                syncToggleIcon();
+            }
+        }
+
+        function applyLayoutForViewport() {
+            if (isDesktop()) {
+                closeMobileDrawer();
+                applyCollapsedFromStorage(body);
+            } else {
+                closeMobileDrawer();
+            }
+            syncToggleIcon();
+        }
+
         if (toggle) {
-            toggle.addEventListener('click', toggleSidebar);
+            toggle.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleSidebarFromControl();
+            });
         }
 
         if (overlay) {
-            overlay.addEventListener('click', closeSidebar);
-        }
-
-        // Close sidebar when clicking a link (on mobile)
-        const sidebarLinks = sidebar.querySelectorAll('a:not(.dropdown-btn)');
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', function () {
-                // Only close on mobile (when toggle is visible)
-                if (window.innerWidth < 768) {
-                    closeSidebar();
+            overlay.addEventListener('click', function () {
+                if (!isDesktop()) {
+                    closeMobileDrawer();
+                    syncToggleIcon();
                 }
             });
+        }
+
+        /**
+         * Desktop: menu navigation must NOT change rail width.
+         * Capture phase: re-apply stored preference before navigation / other handlers.
+         */
+        var navLinks = sidebar.querySelectorAll('a[href]:not(.dropdown-btn)');
+        navLinks.forEach(function (link) {
+            link.addEventListener(
+                'click',
+                function () {
+                    if (!isDesktop()) {
+                        closeMobileDrawer();
+                        syncToggleIcon();
+                        return;
+                    }
+                    applyCollapsedFromStorage(body);
+                },
+                true
+            );
         });
 
-        // Close sidebar on ESC key
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && sidebar.classList.contains('open')) {
-                closeSidebar();
+                closeMobileDrawer();
+                syncToggleIcon();
             }
         });
 
-        // Handle window resize
-        let resizeTimer;
-        window.addEventListener('resize', function () {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function () {
-                // Close sidebar when resizing to desktop view
-                if (window.innerWidth >= 768 && sidebar.classList.contains('open')) {
-                    closeSidebar();
-                }
-            }, 250);
+        applyLayoutForViewport();
+
+        var mqDesktop = window.matchMedia('(min-width: 1024px)');
+        function onDesktopBreakpointChange() {
+            applyLayoutForViewport();
+        }
+        if (mqDesktop.addEventListener) {
+            mqDesktop.addEventListener('change', onDesktopBreakpointChange);
+        } else if (mqDesktop.addListener) {
+            mqDesktop.addListener(onDesktopBreakpointChange);
+        }
+
+        window.addEventListener('pageshow', function (ev) {
+            if (ev.persisted) {
+                applyLayoutForViewport();
+            }
+        });
+
+        window.addEventListener('storage', function (e) {
+            if (e.key === STORAGE_KEY) {
+                applyCollapsedFromStorage(body);
+                syncToggleIcon();
+            }
         });
     }
 
-    /**
-     * Initialize dropdown menus in sidebar
-     */
     function initDropdowns() {
-        const dropdownButtons = document.querySelectorAll('.dropdown-btn');
+        var dropdownButtons = document.querySelectorAll('.dropdown-btn');
 
-        dropdownButtons.forEach(button => {
-            // Get the dropdown container (next sibling)
-            const dropdownContainer = button.nextElementSibling;
+        dropdownButtons.forEach(function (button) {
+            var dropdownContainer = button.nextElementSibling;
 
             if (!dropdownContainer || !dropdownContainer.classList.contains('dropdown-container')) {
                 return;
             }
 
-            // Check if dropdown should be open (if any child link is active)
-            const activeLink = dropdownContainer.querySelector('a.active');
+            var activeLink = dropdownContainer.querySelector('a.active');
             if (activeLink) {
                 dropdownContainer.classList.add('open');
                 button.classList.add('active');
             }
 
-            // Toggle dropdown on click
             button.addEventListener('click', function (e) {
                 e.preventDefault();
 
-                const isOpen = dropdownContainer.classList.contains('open');
+                var isOpen = dropdownContainer.classList.contains('open');
 
-                // Close all other dropdowns (optional - comment out for accordion behavior)
-                // closeAllDropdowns();
-
-                // Toggle current dropdown
                 if (isOpen) {
                     dropdownContainer.classList.remove('open');
                     button.classList.remove('active');
@@ -158,46 +295,24 @@
                 }
             });
         });
-
-        /**
-         * Close all dropdowns in sidebar
-         */
-        function closeAllDropdowns() {
-            const allDropdowns = document.querySelectorAll('.dropdown-container');
-            const allButtons = document.querySelectorAll('.dropdown-btn');
-
-            allDropdowns.forEach(dropdown => {
-                dropdown.classList.remove('open');
-            });
-
-            allButtons.forEach(btn => {
-                btn.classList.remove('active');
-            });
-        }
     }
 
-    /**
-     * Set active menu item based on current URL
-     */
     function setActiveMenuItem() {
-        const currentPath = window.location.pathname;
-        const menuLinks = document.querySelectorAll('.sidebar a');
+        var currentPath = window.location.pathname;
+        var menuLinks = document.querySelectorAll('.sidebar a');
 
-        menuLinks.forEach(link => {
-            const linkPath = new URL(link.href).pathname;
+        menuLinks.forEach(function (link) {
+            var linkPath = new URL(link.href).pathname;
 
-            // Remove active class from all links first
             link.classList.remove('active');
 
-            // Add active class if paths match
             if (currentPath === linkPath) {
                 link.classList.add('active');
 
-                // If link is inside a dropdown, open the dropdown
-                const dropdownContainer = link.closest('.dropdown-container');
+                var dropdownContainer = link.closest('.dropdown-container');
                 if (dropdownContainer) {
                     dropdownContainer.classList.add('open');
-                    const dropdownBtn = dropdownContainer.previousElementSibling;
+                    var dropdownBtn = dropdownContainer.previousElementSibling;
                     if (dropdownBtn && dropdownBtn.classList.contains('dropdown-btn')) {
                         dropdownBtn.classList.add('active');
                     }
@@ -206,15 +321,14 @@
         });
     }
 
-    // Set active menu item on page load
     setActiveMenuItem();
 
-    // Export functions for global access if needed
     window.SmartCare = window.SmartCare || {};
     window.SmartCare.Sidebar = {
         init: initSidebar,
         initDropdowns: initDropdowns,
-        setActiveMenuItem: setActiveMenuItem
+        setActiveMenuItem: setActiveMenuItem,
+        readCollapsedPref: readCollapsedPref,
+        STORAGE_KEY: STORAGE_KEY
     };
-
 })();

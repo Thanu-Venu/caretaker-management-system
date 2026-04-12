@@ -12,8 +12,8 @@
 
 <body>
 <div class="main-content">
+  <h2>Client Feedback & Ratings</h2>  
   <div class="card">
-    <h2>Client Feedback & Ratings</h2>
 
     <div class="feedback-table-container">
       <table id="feedbackTable">

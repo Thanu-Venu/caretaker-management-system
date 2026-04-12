@@ -147,6 +147,8 @@ tbody tr:hover {
   justify-content: center;
   align-items: center;
   margin-top: 18px;
+  margin-bottom: 24px;
+  padding-bottom: 4px;
   flex-wrap: wrap;
 }
 

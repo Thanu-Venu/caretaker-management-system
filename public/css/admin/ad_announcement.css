@@ -1,209 +1,171 @@
+/* Announcements — filters, column hints, modals; table chrome from admin-ui */
 
-/* ========================
-   Page Heading
-======================== */
-h2 {
-    text-align: center;
-    margin: 30px 0 15px;
-    font-size: 26px;
+.announcement-admin-page .announcement-filters {
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px 20px;
+}
+
+.announcement-admin-page .announcement-filters .filter-group--grow {
+    flex: 1 1 200px;
+    min-width: 160px;
+}
+
+.announcement-admin-page .announcement-filters .filter-group--grow input[type="search"] {
+    min-width: 0;
+    width: 100%;
+    max-width: 320px;
+}
+
+.announcement-admin-page .announcement-filters .filter-group--actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+/* Column content (inherits thead/tbody from admin-ui) */
+.announcement-admin-page .announcements-table .ann-title {
     font-weight: 600;
-    color: #1e88e5;
+    color: var(--admin-text, #0f172a);
 }
 
-/* ========================
-   Buttons (Global)
-======================== */
-.btn-add {
-    padding: 10px 14px;
-    background: #2563eb;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    display: inline-block;
+.announcement-admin-page .announcements-table .ann-by {
+    margin-top: 2px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--admin-muted, #64748b);
 }
 
-.btn-add:hover {
-    background: #1d4ed8;
+.announcement-admin-page .announcements-table .ann-msg-cell {
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--admin-text-secondary, #475569);
 }
 
-.btn-cancel {
-    padding: 10px 14px;
-    background: #e5e7eb;
-    color: #111;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
+.announcement-admin-page .announcements-table .ann-date-cell {
+    white-space: nowrap;
+    font-size: 13px;
+    color: var(--admin-text-secondary, #475569);
 }
 
-.btn-cancel:hover {
-    background: #d1d5db;
+/* Add / edit modals */
+.announcement-form-modal {
+    z-index: 2100;
+    background: rgba(15, 23, 42, 0.52);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
-/* ========================
-   Form Container
-======================== */
-form {
-    width: 90%;
-    max-width: 750px;
-    margin: 25px auto;
+.announcement-form-modal__content {
+    position: relative;
+    max-width: min(560px, 100%);
+    max-height: min(90vh, 720px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    border: 1px solid rgba(30, 136, 229, 0.14);
+    border-radius: var(--admin-radius-lg, 16px);
+    box-shadow: var(--admin-shadow-hover, 0 12px 40px rgba(15, 23, 42, 0.12));
+}
+
+.announcement-form-modal__content > h3 {
+    margin: 0;
+    padding: 20px 52px 14px 22px;
+    font-size: 1.125rem;
+    font-weight: 700;
+    border-bottom: 1px solid var(--admin-border, #e2e8f0);
+    color: var(--admin-text, #0f172a);
+}
+
+.announcement-form-modal__close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--admin-radius-sm, 8px);
+    background: rgba(15, 23, 42, 0.06);
+    color: var(--admin-text-secondary, #475569);
+    cursor: pointer;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
+}
+
+.announcement-form-modal__close:hover {
+    background: rgba(30, 136, 229, 0.12);
+    color: var(--admin-primary, #1e88e5);
+}
+
+.announcement-form-modal__content .announcement-form--modal {
+    overflow-y: auto;
+    padding: 18px 22px 22px;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    max-width: none;
+}
+
+.announcement-form-modal__content .announcement-form-grid {
     display: flex;
     flex-direction: column;
     gap: 14px;
-
-    background: #ffffff;
-    padding: 22px 25px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
-/* ========================
-   Form Labels
-======================== */
-form label {
-    font-weight: 600;
-    font-size: 14px;
-    color: #374151;
+.announcement-form-modal__content .form-actions {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(15, 23, 42, 0.06);
 }
 
-/* ========================
-   Inputs & Select & Textarea
-======================== */
-form input[type="text"],
-form textarea,
-form select {
-    padding: 11px 14px;
-    border-radius: 8px;
-    border: 1px solid #d1d5db;
-    font-size: 14px;
-    background-color: #f9fafb;
-    transition: all 0.2s ease;
+.main-content form.announcement-form,
+form.announcement-form {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    padding: 24px 28px;
+    box-shadow: var(--admin-shadow, 0 4px 24px rgba(15, 23, 42, 0.06));
+}
+
+.form-wrapper form.announcement-form {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    max-width: none;
+}
+
+form.announcement-form textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+form.announcement-form .field input,
+form.announcement-form .field select,
+form.announcement-form .field textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+form.announcement-form .field.full {
     width: 100%;
 }
 
-form textarea {
-    resize: vertical;
-    min-height: 120px;
-}
-
-form input::placeholder,
-form textarea::placeholder {
-    color: #9ca3af;
-}
-
-form input:focus,
-form textarea:focus,
-form select:focus {
-    outline: none;
-    background-color: #ffffff;
-    border-color: #1e88e5;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
-}
-
-/* ========================
-   Form Buttons
-======================== */
-form button {
-    align-self: flex-start;
-    padding: 11px 22px;
-    background: #1e88e5;
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.25s ease;
-}
-
-form button:hover {
-    background: #1c80d7;
-}
-
-/* ========================
-   Table
-======================== */
-.table-container {
-  overflow-x: auto;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  padding: 15px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-table th, table td {
-  padding: 14px;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-table th {
-  background: #1e88e5;
-  font-weight: 700;
-  font-size: 18px;
-  color: white;
-}
-/* Row Hover */
-table tr:hover {
-    background-color: #f9fafb;
-}
-
-/* ========================
-   Action Links
-======================== */
-table td a {
-    text-decoration: none;
-    color: #2563eb;
-    font-weight: 600;
-}
-
-table td a:hover {
-    text-decoration: underline;
-}
-
-table td a.delete {
-    color: #ef4444;
-}
-
-table td a.delete:hover {
-    color: #b91c1c;
-}
-
-/* ========================
-   Empty State
-======================== */
-.no-data {
-    text-align: center;
-    padding: 25px;
-    color: #6b7280;
-    font-size: 14px;
-}
-
-/* ========================
-   Responsive
-======================== */
-@media screen and (max-width: 768px) {
-    h2 {
-        font-size: 22px;
-    }
-
-    form {
-        width: 95%;
-        padding: 20px;
-    }
-
-    table {
-        width: 95%;
-    }
-
-    table th,
-    table td {
-        font-size: 13px;
-        padding: 10px;
-    }
+form.announcement-form .form-actions {
+    margin-top: 8px;
 }

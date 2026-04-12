@@ -1,175 +1,198 @@
-/* Main Layout */
+:root {
+  --report-bg-1: #f8fbff;
+  --report-bg-2: #eef6ff;
+  --report-card: #ffffff;
+  --report-text: #17324d;
+  --report-muted: #5b7288;
+  --report-accent: #1e88e5;
+  --report-accent-strong: #166fc1;
+  --report-border: #e4ebf8;
+  --report-hover: #eef7ff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background-color: var(--bg-primary, #f4f7fb);
-    font-family: var(--font-primary, 'Poppins', Arial, sans-serif);
+    margin: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+    color: var(--accent);
+    background: #f4f7fb;
 }
 
 .main-content {
-    margin-left: 270px;
-    padding: 30px;
-    min-height: 100vh;
+    margin-left: 280px;
+    margin-right: 18px;
+    padding: 18px 6px 24px;
 }
 
 h1 {
-    font-size: 28px;
-    color: var(--primary-600, #1e88e5);
-    font-weight: 700;
-    margin-bottom: 25px;
-    letter-spacing: 0.2px;
-}
-
-/* Secondary headings */
-h2 {
-    font-size: 20px;
-    color: #475569;
-    margin-bottom: 20px;
-    font-weight: 600;
-}
-
-/* Summary Cards (Dashboard style) */
-.report-summary .summary-cards {
     display: flex;
-    gap: 20px;
-    margin-bottom: 30px;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+    margin: 0;
+    font-size: 28px;
+    color: var(--report-accent);
+    line-height: 1.2;
 }
 
-.summary-cards .card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 24px;
-    flex: 1;
-    text-align: center;
-    box-shadow: 0 10px 25px rgba(26, 42, 71, 0.08);
-    border: 1px solid #e2e8f0;
-    transition: transform 0.3s ease;
+h2 {
+  font-size: 22px;
+  color: #2451a4;
+  font-weight: 600;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-.summary-cards .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(26, 42, 71, 0.12);
-}
-
-.summary-cards .card h3 {
-    margin-bottom: 12px;
-    color: #64748b;
-    font-size: 15px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.summary-cards .card p {
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--primary-600, #1e88e5);
-}
-
-/* Card Table Wrapper */
+/* Card General Wrapper for table */
 .card-wrapper {
-    background: #ffffff;
-    padding: 25px;
-    border-radius: 16px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 25px rgba(26, 42, 71, 0.08);
-    margin-bottom: 30px;
+  background: var(--report-card);
+  padding: 22px;
+  border-radius: 16px;
+  border: 1px solid var(--report-border);
+  box-shadow: 0 10px 28px rgba(26, 42, 71, 0.12);
+  margin-bottom: 30px;
 }
 
 .card-wrapper h2 {
     margin-top: 0;
     margin-bottom: 20px;
-    color: var(--primary-600, #1e88e5);
-    font-size: 22px;
+    color: #2451a4;
+    font-weight: 600;
+    font-size: 24px;
 }
 
-/* Report Table Standardization */
+/* Summary Cards (Dashboard style) */
+.report-summary .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.summary-cards .card {
+ background: var(--report-card);
+  border: 1px solid var(--report-border);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 10px 24px rgba(16, 24, 40, 0.08);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.summary-cards .card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(600px 180px at 30% -20%, rgba(30,136,229,0.18), transparent 60%);
+  pointer-events: none;
+}
+
+.summary-cards .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgba(16, 24, 40, 0.12);
+  border-color: #dce6f6;
+}
+
+.summary-cards .card h3 {
+    display: block;
+    color: #10244a;
+    font-size: 22px;
+    font-weight: 650;
+    margin-bottom: 8px;
+}
+
+.summary-cards .card p {
+  font-size: 30px;
+  font-weight: 800;
+  margin-top: 2px;
+  color: var(--report-accent);
+}
+
+/* Service Table */
 .report-table-container {
     overflow-x: auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 15px;
 }
 
 .report-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 14px;
-    border-radius: 12px;
-    overflow: hidden;
+      background: white;
 }
 
 .report-table thead {
-    background-color: #f8fafc;
+    color: white;
+  background: #1e88e5;
 }
 
-.report-table th, 
-.report-table td {
-    padding: 16px;
-    border-bottom: 1px solid #f1f5f9;
-    text-align: left;
+.report-table th, .report-table td {
+    font-size: 14px;
+    white-space: nowrap;
+      padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  color: var(--filter);
 }
 
 .report-table th {
-    color: #1e3a8a;
+    position: sticky;
+    top: 0;
+    padding: 8px;
+        font-size: 16px;
     font-weight: 700;
-    font-size: 15px;
-    letter-spacing: 0.3px;
 }
 
 .report-table td {
-    color: #334155;
-    vertical-align: middle;
+  color: #000000;
 }
 
 .report-table tbody tr:hover {
-    background-color: #f8fbff;
+  background-color: #f9f9f9;
 }
 
-/* Download Button - Standardized Primary */
+/* Download Button */
 .btn-download {
-    margin-top: 20px;
-    background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
-    color: #ffffff;
-    font-weight: 700;
-    padding: 10px 28px;
-    border: none;
-    border-radius: 20px; /* Modern pill shape */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-block;
-    text-decoration: none;
-    box-shadow: 0 4px 10px rgba(30, 136, 229, 0.2);
+  margin-top: 20px;
+  background: #1e88e5;
+  color: #ffffff;
+  font-weight: 650;
+  font-size: 16px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: filter 0.2s;
+  display: inline-block;
 }
 
 .btn-download:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 15px rgba(30, 136, 229, 0.3);
-    filter: brightness(1.05);
+  filter: brightness(1.05);
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
-    .main-content {
-        margin-left: 0;
-        padding: 20px;
-    }
+  .main-content {
+    margin-left: 0;
+    padding: 16px;
+  }
 }
 
-@media (max-width: 768px) {
-    h1 {
-        font-size: 24px;
-    }
-    
-    .report-summary .summary-cards {
-        flex-direction: column;
-    }
-    
-    .card-wrapper {
-        padding: 15px;
-    }
-    
-    .report-table {
-        min-width: 600px;
-    }
-    
-    .btn-download {
-        width: 100%;
-        text-align: center;
-    }
+@media (max-width: 760px) {
+  h1 {
+    font-size: 24px;
+  }
+  .report-summary .summary-cards {
+    flex-direction: column;
+  }
+  .card-wrapper {
+      padding: 15px;
+  }
 }

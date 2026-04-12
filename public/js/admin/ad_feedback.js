@@ -5,16 +5,20 @@ const complaintsSection = document.getElementById("complaintsSection");
 
 // Function to switch tabs
 function switchTab(tab) {
+  if (!feedbackSection || !complaintsSection) return;
+
   tabButtons.forEach(btn => btn.classList.remove("active"));
 
   if (tab === "complaints") {
-    document.querySelector('[data-tab="complaints"]').classList.add("active");
+    const c = document.querySelector('[data-tab="complaints"]');
+    if (c) c.classList.add("active");
     feedbackSection.style.display = "none";
     complaintsSection.style.display = "block";
 
     history.pushState(null, "", "?url=admin/ad_feedback&tab=complaints");
   } else {
-    document.querySelector('[data-tab="feedback"]').classList.add("active");
+    const f = document.querySelector('[data-tab="feedback"]');
+    if (f) f.classList.add("active");
     feedbackSection.style.display = "block";
     complaintsSection.style.display = "none";
 
@@ -23,23 +27,24 @@ function switchTab(tab) {
 }
 
 // Button click events
-tabButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    switchTab(btn.dataset.tab);
+if (tabButtons.length && feedbackSection && complaintsSection) {
+  tabButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      switchTab(btn.dataset.tab);
+    });
   });
-});
 
-// Load correct tab on page refresh
-window.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const tab = params.get("tab");
+  window.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
 
-  if (tab === "complaints") {
-    switchTab("complaints");
-  } else {
-    switchTab("feedback");
-  }
-});
+    if (tab === "complaints") {
+      switchTab("complaints");
+    } else {
+      switchTab("feedback");
+    }
+  });
+}
 
 
 // ================= FEEDBACK FILTERING =================
@@ -48,7 +53,7 @@ const dateFilter = document.getElementById("dateFilter");
 const table = document.getElementById("feedbackTable");
 const noResults = document.getElementById("noResults");
 
-if (table) {
+if (table && ratingFilter && dateFilter && noResults) {
   const rows = table.querySelectorAll("tbody tr");
 
   function filterTable() {
@@ -64,10 +69,11 @@ if (table) {
       if (!ratingCell || !dateCell) return;
 
       const rowRating = ratingCell.getAttribute("data-rating");
-      const rowDate = dateCell.getAttribute("data-date");
+      const rawDate = (dateCell.getAttribute("data-date") || "").trim();
+      const rowDateKey = rawDate.slice(0, 10);
 
       const matchesRating = ratingValue === "" || rowRating === ratingValue;
-      const matchesDate = dateValue === "" || rowDate === dateValue;
+      const matchesDate = dateValue === "" || rowDateKey === dateValue;
 
       if (matchesRating && matchesDate) {
         row.style.display = "";

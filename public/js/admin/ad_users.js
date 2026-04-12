@@ -1,36 +1,157 @@
-// Show alert for table buttons
-document.querySelectorAll('.link-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    alert(`${btn.innerText} clicked!`);
-  });
-});
+/**
+ * Staff / access control: add & edit in modals (no separate pages).
+ */
+(function () {
+    'use strict';
 
-// Modal functionality
-const addBtn = document.querySelector('.add-btn');
-const modal = document.getElementById('addUserModal');
-const cancelBtn = document.querySelector('.cancel-btn');
-const form = document.getElementById('addUserForm');
+    var body = document.body;
+    var urlRoot = (body.getAttribute('data-urlroot') || '').replace(/\/$/, '');
+    var autoOpen = body.getAttribute('data-auto-open') || '';
 
-addBtn.addEventListener('click', () => {
-  modal.style.display = 'block';
-});
+    var addModal = document.getElementById('staffAddModal');
+    var editModal = document.getElementById('staffEditModal');
+    var editForm = document.getElementById('staffEditForm');
 
-cancelBtn.addEventListener('click', () => {
-  modal.style.display = 'none';
-  form.reset();
-});
+    function setBodyScroll(lock) {
+        document.body.style.overflow = lock ? 'hidden' : '';
+    }
 
-window.addEventListener('click', (e) => {
-  if (e.target == modal) {
-    modal.style.display = 'none';
-    form.reset();
-  }
-});
+    function anyStaffModalOpen() {
+        return (
+            (addModal && addModal.classList.contains('show')) ||
+            (editModal && editModal.classList.contains('show'))
+        );
+    }
 
-// Handle form submission
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  alert('User added successfully!');
-  modal.style.display = 'none';
-  form.reset();
-});
+    function openModal(el) {
+        if (!el) {
+            return;
+        }
+        el.classList.add('show');
+        el.setAttribute('aria-hidden', 'false');
+        setBodyScroll(true);
+    }
+
+    function closeModal(el) {
+        if (!el) {
+            return;
+        }
+        el.classList.remove('show');
+        el.setAttribute('aria-hidden', 'true');
+        if (!anyStaffModalOpen()) {
+            setBodyScroll(false);
+        }
+    }
+
+    function closeAllStaffModals() {
+        if (addModal) {
+            addModal.classList.remove('show');
+            addModal.setAttribute('aria-hidden', 'true');
+        }
+        if (editModal) {
+            editModal.classList.remove('show');
+            editModal.setAttribute('aria-hidden', 'true');
+        }
+        setBodyScroll(false);
+    }
+
+    function parsePayload(el) {
+        var raw = el.getAttribute('data-staff-user') || '{}';
+        try {
+            return JSON.parse(raw);
+        } catch (e) {
+            return {};
+        }
+    }
+
+    function populateEditForm(d) {
+        if (!editForm || !d || !d.id) {
+            return;
+        }
+        editForm.action = urlRoot + '/userCRUD/edit/' + encodeURIComponent(String(d.id));
+        var set = function (name, value) {
+            var field = editForm.querySelector('[name="' + name + '"]');
+            if (!field) {
+                return;
+            }
+            if (field.tagName === 'INPUT' && field.type !== 'file') {
+                field.value = value != null ? String(value) : '';
+            }
+            if (field.tagName === 'SELECT') {
+                var v = value != null ? String(value) : '';
+                field.value = v;
+                if (field.value !== v && name === 'role') {
+                    var lower = v.toLowerCase();
+                    for (var i = 0; i < field.options.length; i++) {
+                        if (field.options[i].value.toLowerCase() === lower) {
+                            field.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+        };
+        set('username', d.username);
+        set('email', d.email);
+        set('phone', d.phone);
+        set('role', d.role);
+        set('status', d.status);
+    }
+
+    function bindEditButtons() {
+        document.querySelectorAll('.js-staff-user-edit').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeAllStaffModals();
+                populateEditForm(parsePayload(btn));
+                openModal(editModal);
+            });
+        });
+    }
+
+    function bindCloseTargets() {
+        document.querySelectorAll('[data-close-staff-modal]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                closeAllStaffModals();
+            });
+        });
+        [addModal, editModal].forEach(function (m) {
+            if (!m) {
+                return;
+            }
+            m.addEventListener('click', function (e) {
+                if (e.target === m) {
+                    closeModal(m);
+                }
+            });
+        });
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') {
+            return;
+        }
+        if (anyStaffModalOpen()) {
+            closeAllStaffModals();
+        }
+    });
+
+    var openAddBtn = document.getElementById('staffOpenAddModal');
+    if (openAddBtn && addModal) {
+        openAddBtn.addEventListener('click', function () {
+            closeAllStaffModals();
+            openModal(addModal);
+        });
+    }
+
+    if (autoOpen === 'add' && addModal) {
+        openModal(addModal);
+    }
+    if (autoOpen === 'edit' && editModal) {
+        openModal(editModal);
+    }
+
+    bindEditButtons();
+    bindCloseTargets();
+})();

@@ -75,13 +75,16 @@ class AdminPaymentModel
                     b.basis,
                     b.duration,
                     b.booking_date,
+                    b.service_start_date,
                     b.preferred_time,
                     b.status AS booking_status,
                     b.district,
                     b.street,
                     b.address_line1,
                     b.address_line2,
-                    b.postal_code
+                    b.postal_code,
+                    b.customization,
+                    b.total_payment AS booking_total_payment
                 FROM payments p
                 INNER JOIN bookings b ON b.id = p.booking_id
                 INNER JOIN clients c ON c.id = p.client_id

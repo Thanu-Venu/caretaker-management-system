@@ -1,116 +1,82 @@
-/* Main Layout */
 body {
-    background-color: var(--bg-primary, #f4f7fb);
-    font-family: var(--font-primary, 'Poppins', Arial, sans-serif);
+    background: #f4f7fb;
 }
 
 .main-content {
-    margin-left: 270px;
-    padding: 30px;
-    min-height: 100vh;
+  flex: 1;
+  padding: 20px 40px;
+  margin-left: 260px;
+  font-family: 'Poppins', Arial, sans-serif;
 }
 
-/* Card Table Wrapper */
-.card {
-    background: #ffffff;
-    padding: 25px;
-    border-radius: 16px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 25px rgba(26, 42, 71, 0.08);
-    margin-bottom: 30px;
+h2 {
+    display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #1e88e5;
+  margin-top: 0;
+  font-size: 28px;
 }
 
-.card h2 {
-    font-size: 28px;
-    color: var(--primary-600, #1e88e5);
-    font-weight: 700;
-    margin-bottom: 25px;
-    letter-spacing: 0.2px;
-}
-
-/* Reviews Table Standardization */
 .feedback-table-container {
-    overflow-x: auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 15px;
+  overflow-x: auto;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 14px;
-    border-radius: 12px;
+    background: white;
     overflow: hidden;
 }
 
 thead {
-    background-color: #f8fafc;
+    background-color: #1E88E5;
+    color: white;
 }
 
-th,
-td {
-    padding: 16px;
-    border-bottom: 1px solid #f1f5f9;
+th, td {
+    padding: 14px;
     text-align: left;
+      border-bottom: 1px solid #eee;
 }
 
 th {
-    color: #1e3a8a;
     font-weight: 700;
-    font-size: 15px;
-    letter-spacing: 0.3px;
-}
-
-td {
-    color: #334155;
-    vertical-align: middle;
+    color: white;
+    font-size: 18px;
 }
 
 tbody tr:hover {
-    background-color: #f8fbff;
+  background-color: #f9f9f9;
 }
 
-/* Review Text Cell */
 td:last-child {
-    max-width: 350px;
-    word-wrap: break-word;
-    line-height: 1.5;
-    color: #475569;
+  max-width: 300px;
+  word-wrap: break-word;
 }
 
-/* Rating Stars */
 td:nth-child(4) {
-    color: #fbbf24;
-    /* Golden yellow for stars */
-    font-weight: 700;
-    font-size: 16px;
+  color: #ffb400; /* Rating stars color */
+  font-weight: 600;
 }
 
-/* Empty state message matching ct_booking.css */
-td[colspan] {
-    text-align: center;
-    color: #5b7288;
-    font-weight: 500;
-    padding: 30px 12px;
-    font-size: 16px;
-}
-
-/* Responsive */
 @media (max-width: 1024px) {
-    .main-content {
-        margin-left: 0;
-        padding: 20px;
-    }
+  .main-content {
+    margin-left: 0;
+    padding: 16px;
+  }
 }
 
-@media (max-width: 768px) {
-    .card h2 {
-        font-size: 24px;
-    }
-
-    .card {
-        padding: 15px;
-    }
-
-    table {
-        min-width: 600px;
-    }
+@media (max-width: 760px) {
+  .card h2 {
+    font-size: 24px;
+  }
+  .card {
+    padding: 15px;
+  }
 }

@@ -36,7 +36,7 @@
                 <thead>
                     <tr>
                         <th>Client ID</th>
-                        <th>Caretaker ID</th>
+                        <th>Caregiver ID</th>
                         <th>Service</th>
                         <th>Duration</th>
                         <th>Start Date</th>
@@ -180,7 +180,7 @@
                 <!-- Row 2 -->
                 <div class="detail-row">
                     <div class="detail-item">
-                        <label>Caretaker ID</label>
+                        <label>Caregiver ID</label>
                         <div class="detail-value" id="detailCaretakerId">—</div>
                     </div>
                     <div class="detail-item">
