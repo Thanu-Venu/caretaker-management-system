@@ -1,187 +1,188 @@
-<?php include_once APPROOT . "/views/templates/hr/hr_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; ?>
-<?php if (!empty($data['error'])): ?>
-  <div style="background:#ffebee;color:#b71c1c;padding:12px;border-radius:10px;margin-bottom:14px;">
-    <?= htmlspecialchars($data['error']) ?>
-  </div>
-<?php endif; ?>
-
 <?php
 $leaveDetails = $data['leaveDetails'] ?? [];
 $impact = $data['impact'] ?? [];
 $usage = $data['monthlyUsage'] ?? ['used_before' => 0, 'request_days' => 0, 'used_after' => 0, 'limit' => 5];
+
+$hrPageTitle = 'Approve leave — HR';
+$hrExtraCss  = ['hr/hr_leave_approve.css'];
+include_once APPROOT . '/views/templates/hr/hr_layout_head.php';
+include_once APPROOT . '/views/templates/hr/hr_header.php';
+include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
+
+$hasAffected = !empty($data['affected']);
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<main class="main-content leave-approve-page">
+    <?php if (!empty($data['error'])): ?>
+        <div class="error-message" role="alert"><?= htmlspecialchars((string) $data['error'], ENT_QUOTES, 'UTF-8') ?></div>
+    <?php endif; ?>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>History Logs - SmartCare</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_leave_approve.css">
-</head>
-
-<body>
-  <main class="content">
-    <div class="leave-approve-card">
-
-      <h1>Approve Leave (Reassign Required)</h1>
-
-      <?php if (!empty($impact['count'])): ?>
-        <div class="impact-banner">
-          This leave request affects active bookings. Please review and assign a replacement caretaker if required.
-          <br>
-          Affected bookings: <strong><?= (int)$impact['count'] ?></strong>
-          <?php if (!empty($impact['booking_ids'])): ?>
-            | IDs: <?= htmlspecialchars(implode(', ', $impact['booking_ids'])) ?>
-          <?php endif; ?>
+    <header class="leave-approve-topbar">
+        <a href="<?= htmlspecialchars(URLROOT . '/HrLeave/index', ENT_QUOTES, 'UTF-8') ?>"
+            class="leave-approve-back"
+            title="Back to leave list"
+            aria-label="Back to leave list">
+            <i class="bx bx-arrow-back" aria-hidden="true"></i>
+        </a>
+        <div class="leave-approve-topbar__main">
+            <h1 class="page-title">Approve leave</h1>
+            <?php if (!empty($impact['count'])): ?>
+                <span class="leave-approve-flag">Reassign required</span>
+            <?php endif; ?>
         </div>
-      <?php endif; ?>
+        <button type="button" id="leaveApproveOpenContext" class="btn secondary btn-sm leave-approve-context-trigger">
+            <i class="bx bx-show" aria-hidden="true"></i> Impact &amp; usage
+        </button>
+    </header>
 
-      <!-- ✅ Leave Info -->
-      <div class="leave-info">
-  <div class="info-row">
-    <span class="label">Leave ID</span>
-    <span class="value"><?= (int)$data['leave']->id ?></span>
-  </div>
+    <div class="leave-approve-card">
+        <div class="leave-info leave-info--compact">
+            <div class="info-row">
+                <span class="label">Leave ID</span>
+                <span class="value"><?= (int) $data['leave']->id ?></span>
+            </div>
+            <div class="info-row">
+                <span class="label">Caregiver name</span>
+                <span class="value"><?= htmlspecialchars($leaveDetails['caretaker_name'] ?? 'Unknown', ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
+            <div class="info-row">
+                <span class="label">Caregiver ID</span>
+                <span class="value"><?= (int) $data['leave']->user_id ?></span>
+            </div>
+            <div class="info-row">
+                <span class="label">Leave type</span>
+                <span class="value"><?= htmlspecialchars((string) $data['leave']->leave_type, ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
+            <div class="info-row">
+                <span class="label">Date range</span>
+                <span class="value">
+                    <?= htmlspecialchars((string) $data['leave']->start_date, ENT_QUOTES, 'UTF-8') ?> → <?= htmlspecialchars((string) $data['leave']->end_date, ENT_QUOTES, 'UTF-8') ?>
+                </span>
+            </div>
+            <div class="info-row">
+                <span class="label">Total days</span>
+                <span class="value"><?= (int) $usage['request_days'] ?> day(s)</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Time</span>
+                <span class="value">
+                    <?= htmlspecialchars((string) ($data['leave']->start_time ?? ''), ENT_QUOTES, 'UTF-8') ?>
+                    <?= ($data['leave']->start_time && $data['leave']->end_time) ? '→' : '' ?>
+                    <?= htmlspecialchars((string) ($data['leave']->end_time ?? ''), ENT_QUOTES, 'UTF-8') ?>
+                </span>
+            </div>
+            <div class="info-row info-row--wide">
+                <span class="label">Reason</span>
+                <span class="value value--multiline"><?= nl2br(htmlspecialchars((string) $data['leave']->reason, ENT_QUOTES, 'UTF-8')) ?></span>
+            </div>
+            <div class="info-row">
+                <span class="label">Status</span>
+                <span class="value"><?= htmlspecialchars((string) $data['leave']->status, ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
+        </div>
 
-  <div class="info-row">
-    <span class="label">Caregiver Name</span>
-    <span class="value"><?= htmlspecialchars($leaveDetails['caretaker_name'] ?? 'Unknown') ?></span>
-  </div>
+        <form class="approve-form" method="POST" action="<?= URLROOT ?>/HrLeave/approve_submit">
+            <input type="hidden" name="leave_id" value="<?= (int) $data['leave']->id ?>">
 
-  <div class="info-row">
-    <span class="label">Caregiver ID</span>
-    <span class="value"><?= (int)$data['leave']->user_id ?></span>
-  </div>
+            <div class="field full">
+                <label for="replacement_caretaker_id">Replacement caregiver</label>
+                <select id="replacement_caretaker_id" name="replacement_caretaker_id" class="form-input" <?= $hasAffected ? 'required' : '' ?>>
+                    <option value="">— <?= $hasAffected ? 'Required' : 'Optional' ?> —</option>
+                    <?php foreach ($data['caretakers'] as $ct): ?>
+                        <option value="<?= (int) $ct['id'] ?>">
+                            <?= htmlspecialchars((string) $ct['name'], ENT_QUOTES, 'UTF-8') ?> (ID: <?= (int) $ct['id'] ?>)
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
 
-  <div class="info-row">
-    <span class="label">Leave Type</span>
-    <span class="value"><?= htmlspecialchars($data['leave']->leave_type) ?></span>
-  </div>
+            <?php if (!$hasAffected): ?>
+                <p class="leave-approve-hint">No bookings affected — replacement not required.</p>
+            <?php else: ?>
+                <p class="leave-approve-hint">Select a replacement caregiver when bookings are affected. Open <strong>Impact &amp; usage</strong> above to review bookings.</p>
+            <?php endif; ?>
 
-  <div class="info-row">
-    <span class="label">Date Range</span>
-    <span class="value">
-      <?= htmlspecialchars($data['leave']->start_date) ?> → <?= htmlspecialchars($data['leave']->end_date) ?>
-    </span>
-  </div>
+            <div class="field full">
+                <label for="hr_note">HR note (optional)</label>
+                <textarea id="hr_note" name="hr_note" class="form-input" rows="3" placeholder="Add a note (optional)…"></textarea>
+            </div>
 
-  <div class="info-row">
-    <span class="label">Total Days</span>
-    <span class="value"><?= (int)$usage['request_days'] ?> day(s)</span>
-  </div>
+            <div class="leave-approve-form-actions">
+                <button type="submit" class="btn primary" <?= !empty($data['error']) ? 'disabled' : '' ?>
+                    onclick="return confirm('Approve this leave and reassign all affected bookings to the selected caregiver?');">
+                    <i class="bx bx-check" aria-hidden="true"></i> Approve leave
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
 
-  <div class="info-row">
-    <span class="label">Monthly Usage</span>
-    <span class="value">
-      <?= (int)$usage['used_before'] ?> + <?= (int)$usage['request_days'] ?> = <?= (int)$usage['used_after'] ?> / <?= (int)$usage['limit'] ?>
-    </span>
-  </div>
+<div id="leaveApproveContextModal" class="modal admin-row-detail-modal" aria-hidden="true">
+    <div class="modal-content admin-row-detail-modal__content leave-approve-context-modal__content" role="dialog" aria-modal="true"
+        aria-labelledby="leaveApproveContextTitle">
+        <button type="button" class="modal-close admin-row-detail-modal__close" data-leave-approve-context-close aria-label="Close">
+            <i class="bx bx-x" aria-hidden="true"></i>
+        </button>
+        <header class="admin-row-detail-modal__header">
+            <span class="admin-row-detail-modal__header-icon" aria-hidden="true"><i class="bx bx-show"></i></span>
+            <h3 id="leaveApproveContextTitle" class="admin-row-detail-modal__title">Impact &amp; monthly usage</h3>
+        </header>
+        <div class="leave-approve-context-body">
+            <?php if (!empty($impact['count'])): ?>
+                <div class="impact-banner impact-banner--in-modal">
+                    This leave overlaps active bookings. Assign a replacement before approving.
+                    <br>
+                    Affected bookings: <strong><?= (int) $impact['count'] ?></strong>
+                    <?php if (!empty($impact['booking_ids'])): ?>
+                        <br>Booking IDs: <?= htmlspecialchars(implode(', ', $impact['booking_ids']), ENT_QUOTES, 'UTF-8') ?>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
 
-  <div class="info-row">
-    <span class="label">Time</span>
-    <span class="value">
-      <?= htmlspecialchars($data['leave']->start_time ?? '') ?>
-      <?= ($data['leave']->start_time && $data['leave']->end_time) ? '→' : '' ?>
-      <?= htmlspecialchars($data['leave']->end_time ?? '') ?>
-    </span>
-  </div>
+            <dl class="leave-approve-usage-dl">
+                <dt>Monthly usage (leave month)</dt>
+                <dd>
+                    <?= (int) $usage['used_before'] ?> + <?= (int) $usage['request_days'] ?> = <strong><?= (int) $usage['used_after'] ?></strong>
+                    / <?= (int) $usage['limit'] ?> days allowed
+                </dd>
+            </dl>
 
-  <div class="info-row">
-    <span class="label">Reason</span>
-    <span class="value"><?= nl2br(htmlspecialchars($data['leave']->reason)) ?></span>
-  </div>
-
-  <div class="info-row">
-    <span class="label">Status</span>
-    <span class="value"><?= htmlspecialchars($data['leave']->status) ?></span>
-  </div>
+            <h4 class="leave-approve-context-subtitle">Affected bookings</h4>
+            <?php if (!$hasAffected): ?>
+                <p class="leave-approve-context-empty">No active bookings during this leave period.</p>
+            <?php else: ?>
+                <div class="leave-approve-modal-table-wrap">
+                    <table class="table booking-table leave-approve-modal-table">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Client ID</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Service</th>
+                                <th>Basis</th>
+                                <th>Duration</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($data['affected'] as $b): ?>
+                                <tr>
+                                    <td><?= (int) $b['id'] ?></td>
+                                    <td><?= (int) $b['client_id'] ?></td>
+                                    <td><?= htmlspecialchars((string) $b['booking_date'], ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td><?= htmlspecialchars((string) $b['status'], ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td><?= htmlspecialchars((string) $b['service_type'], ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td><?= htmlspecialchars((string) $b['basis'], ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td><?= htmlspecialchars((string) $b['duration'], ENT_QUOTES, 'UTF-8') ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
 </div>
 
-      <hr class="hr-divider" />
-
-      <!-- ✅ Affected bookings -->
-      <h3>Affected Bookings</h3>
-
-      <?php if (empty($data['affected'])): ?>
-        <p class="no-bookings">
-          ✅ No active bookings during this leave period. You can approve directly.
-        </p>
-      <?php else: ?>
-        <div class="table-container" style="overflow-x:auto;">
-          <table class="booking-table">
-            <thead>
-              <tr>
-                <th>Booking ID</th>
-                <th>Client ID</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Service</th>
-                <th>Basis</th>
-                <th>Duration</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php foreach ($data['affected'] as $b): ?>
-                <tr>
-                  <td><?= (int)$b['id'] ?></td>
-                  <td><?= (int)$b['client_id'] ?></td>
-                  <td><?= htmlspecialchars($b['booking_date']) ?></td>
-                  <td><?= htmlspecialchars($b['status']) ?></td>
-                  <td><?= htmlspecialchars($b['service_type']) ?></td>
-                  <td><?= htmlspecialchars($b['basis']) ?></td>
-                  <td><?= htmlspecialchars($b['duration']) ?></td>
-                </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
-        </div>
-      <?php endif; ?>
-
-      <hr class="hr-divider" />
-
-      <!-- ✅ Approve + Reassign Form -->
-      <form class="approve-form" method="POST" action="<?= URLROOT ?>/HrLeave/approve_submit">
-        <input type="hidden" name="leave_id" value="<?= (int)$data['leave']->id ?>" />
-
-        <?php $hasAffected = !empty($data['affected']); ?>
-
-        <label>Select Replacement Caregiver</label>
-        <select name="replacement_caretaker_id" <?= $hasAffected ? 'required' : '' ?>>
-          <option value="">-- <?= $hasAffected ? 'required' : 'not required' ?> --</option>
-          <?php foreach ($data['caretakers'] as $ct): ?>
-            <option value="<?= (int)$ct['id'] ?>">
-              <?= htmlspecialchars($ct['name']) ?> (ID: <?= (int)$ct['id'] ?>)
-            </option>
-          <?php endforeach; ?>
-        </select>
-
-        <?php if (!$hasAffected): ?>
-          <p class="no-bookings">✅ No bookings affected — replacement not needed.</p>
-        <?php else: ?>
-          <p class="requires-replacement">Replacement caretaker selection is required for this leave.</p>
-        <?php endif; ?>
-
-
-        <label for="hr_note">HR Note (Optional)</label>
-        <textarea id="hr_note" name="hr_note" rows="3" placeholder="Add a note (optional)..."></textarea>
-
-        <div class="action-buttons">
-          <button type="submit" class="approve-btn" <?= !empty($data['error']) ? 'disabled' : '' ?>
-            onclick="return confirm('Approve this leave and reassign all affected bookings to the selected caregiver?')">
-            <i class='bx bx-check-circle'></i> Approve 
-          </button>
-
-          <a href="<?= URLROOT ?>/HrLeave/index" class="back-btn">
-            <i class='bx bx-arrow-back'></i> Back
-          </a>
-        </div>
-      </form>
-
-    </div>
-  </main>
-</body>
-
-</html>
+<script defer src="<?= URLROOT ?>/public/js/hr/hr_leave_approve.js"></script>
+<?php include_once APPROOT . '/views/templates/hr/hr_layout_close.php'; ?>

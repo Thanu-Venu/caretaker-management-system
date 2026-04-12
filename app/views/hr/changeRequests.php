@@ -1,192 +1,166 @@
-<?php include_once APPROOT . "/views/templates/hr/hr_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; ?>
+<?php
+$hrPageTitle = 'Caregiver change requests — HR';
+$hrExtraCss  = ['hr/hr_change_requests.css'];
+include_once APPROOT . '/views/templates/hr/hr_layout_head.php';
+include_once APPROOT . '/views/templates/hr/hr_header.php';
+include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
 
-<!DOCTYPE html>
-<html lang="en">
+$rows = $data['change_requests'] ?? [];
+$pendingCount = (int) ($data['pending_count'] ?? 0);
+$historyCount = (int) ($data['history_count'] ?? 0);
+$statusFilter = (string) ($data['status_filter'] ?? 'all');
+$totalRecords = $pendingCount + $historyCount;
 
-<head>
-    <meta charset="UTF-8">
-    <title>Change Caregiver Requests</title>
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/hr/hr_requests.css">
-</head>
+$basisMap = ['Daily' => 'Day', 'Monthly' => 'Month', 'Hourly' => 'Hour', 'Weekly' => 'Week', 'Yearly' => 'Year'];
+?>
 
-<body>
-    <main class="content">
-        <h1>Caregiver Change Requests</h1>
+<main class="main-content">
+    <header class="page-header">
+        <h1 class="page-title">Caregiver change requests</h1>
+        <p class="page-subtitle">
+            <span class="page-subtitle__counts"><?= (int) $pendingCount ?> pending</span>
+            <span class="page-subtitle__sep">·</span>
+            <span class="page-subtitle__counts"><?= (int) $historyCount ?> in history</span>
+        </p>
+    </header>
 
-        <?php if (!empty($_SESSION['success'])): ?>
-            <p class="success-msg"><?php echo $_SESSION['success'];
-                                    unset($_SESSION['success']); ?></p>
-        <?php endif; ?>
+    <?php if (!empty($_SESSION['success'])): ?>
+        <div class="success-message" role="status"><?= htmlspecialchars((string) $_SESSION['success'], ENT_QUOTES, 'UTF-8') ?></div>
+        <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+    <?php if (!empty($_SESSION['error'])): ?>
+        <div class="error-message" role="alert"><?= htmlspecialchars((string) $_SESSION['error'], ENT_QUOTES, 'UTF-8') ?></div>
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
 
-        <!-- Tabs -->
-        <div class="tabs-container">
-            <button class="tab-button active" onclick="switchTab('pending')">
-                Pending Requests
-                <span>
-                    <?= is_array($data['pending_requests']) ? count($data['pending_requests']) : 0 ?>
-                </span>
-            </button>
-            <button class="tab-button" onclick="switchTab('completed')">
-                Request History
-                <span>
-                    <?= is_array($data['completed_requests']) ? count($data['completed_requests']) : 0 ?>
-                </span>
-            </button>
-        </div>
+    <div id="hr-change-requests-endpoints"
+        data-approve-url="<?= htmlspecialchars(URLROOT . '/hr/approveChange', ENT_QUOTES, 'UTF-8') ?>"
+        data-reject-url="<?= htmlspecialchars(URLROOT . '/hr/rejectChange', ENT_QUOTES, 'UTF-8') ?>"
+        hidden></div>
 
-        <!-- PENDING TAB -->
-        <div id="pending" class="tab-content active">
-            <?php if (empty($data['pending_requests'])): ?>
-                <div class="empty-state">
-                    <p>No pending change requests.</p>
-                </div>
-            <?php else: ?>
-                <div class="table-wrapper">
-                    <table class="requests-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Booking ID</th>
-                                <th>Client</th>
-                                <th>Service</th>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Old Caregiver</th>
-                                <th>Requested Caregiver</th>
-                                <th>Reason</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($data['pending_requests'] as $req): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($req['request_id']) ?></td>
-                                    <td><?= htmlspecialchars($req['booking_id']) ?></td>
-                                    <td><?= htmlspecialchars($req['client_name']) ?></td>
-                                    <td><?= htmlspecialchars($req['service_type']) ?></td>
-                                    <td><?= date('Y-m-d', strtotime($req['booking_date'])) ?></td>
-                                    <td><?= htmlspecialchars($req['preferred_time']) ?></td>
-                                    <td><?= htmlspecialchars($req['old_caretaker']) ?></td>
-                                    <td><?= htmlspecialchars($req['new_caretaker']) ?></td>
-                                    <td><?= htmlspecialchars($req['reason']) ?></td>
-                                    <td>
-                                        <form method="POST" action="<?= URLROOT ?>/hr/approveChange" style="margin-bottom:6px;">
-                                            <input type="hidden" name="request_id" value="<?= $req['request_id'] ?>">
-                                            <textarea name="hr_note"
-                                                placeholder="Optional HR note (visible to client)"
-                                                style="width:180px; height:50px; font-size:12px; margin-bottom:4px;"></textarea>
-                                            <div>
-                                                <button type="submit" class="approve-btn">Approve</button>
-                                            </div>
-                                        </form>
+    <form method="get" action="<?= htmlspecialchars(URLROOT . '/hr/changeRequests', ENT_QUOTES, 'UTF-8') ?>" class="hr-request-status-filter">
+        <label for="change-request-status-filter">Filter by status</label>
+        <select name="status" id="change-request-status-filter" class="form-input" onchange="this.form.submit()">
+            <option value="all" <?= $statusFilter === 'all' ? 'selected' : '' ?>>All</option>
+            <option value="pending" <?= $statusFilter === 'pending' ? 'selected' : '' ?>>Pending</option>
+            <option value="approved" <?= $statusFilter === 'approved' ? 'selected' : '' ?>>Approved</option>
+            <option value="rejected" <?= $statusFilter === 'rejected' ? 'selected' : '' ?>>Rejected</option>
+        </select>
+    </form>
 
-                                        <form method="POST" action="<?= URLROOT ?>/hr/rejectChange">
-                                            <input type="hidden" name="request_id" value="<?= $req['request_id'] ?>">
-                                            <textarea name="hr_note"
-                                                placeholder="Reason for rejection (recommended)"
-                                                required
-                                                style="width:180px; height:50px; font-size:12px; margin-bottom:4px;"></textarea>
-                                            <div>
-                                                <button type="submit" class="reject-btn">Reject</button>
-                                            </div>
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php endif; ?>
-        </div>
-
-        <!-- COMPLETED TAB -->
-        <div id="completed" class="tab-content">
-            <?php if (empty($data['completed_requests'])): ?>
-                <div class="empty-state">
-                    <p>No completed change requests yet.</p>
-                </div>
-            <?php else: ?>
-                <div>
-                    <?php foreach ($data['completed_requests'] as $req): ?>
-                        <div class="history-row">
-                            <div class="history-row-header">
-                                <div>
-                                    <strong>Booking #<?= htmlspecialchars($req['booking_id']) ?> - <?= htmlspecialchars($req['client_name']) ?></strong>
-                                </div>
-                                <div>
-                                    <span class="status-badge status-<?= strtolower($req['status']) ?>">
-                                        <?= ucfirst($req['status']) ?>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="history-row-content">
-                                <div class="history-field">
-                                    <span class="history-field-label">Old Caregiver</span>
-                                    <span class="history-field-value"><?= htmlspecialchars($req['old_caretaker']) ?></span>
-                                </div>
-                                <div class="history-field">
-                                    <span class="history-field-label">New Caregiver</span>
-                                    <span class="history-field-value"><?= htmlspecialchars($req['new_caretaker']) ?></span>
-                                </div>
-                                <div class="history-field">
-                                    <span class="history-field-label">Service</span>
-                                    <span class="history-field-value"><?= htmlspecialchars($req['service_type']) ?></span>
-                                </div>
-                                <div class="history-field">
-                                    <span class="history-field-label">Booking Date</span>
-                                    <span class="history-field-value"><?= date('Y-m-d', strtotime($req['booking_date'])) ?></span>
-                                </div>
-                                <div class="history-field">
-                                    <span class="history-field-label">Time</span>
-                                    <span class="history-field-value"><?= htmlspecialchars($req['preferred_time']) ?></span>
-                                </div>
-                                <div class="history-field">
-                                    <span class="history-field-label">Decision Date</span>
-                                    <span class="history-field-value"><?= $req['reviewed_at'] ? date('Y-m-d H:i', strtotime($req['reviewed_at'])) : 'N/A' ?></span>
-                                </div>
-                            </div>
-
-                            <div>
-                                <strong class="reason-title">Reason for Change:</strong>
-                                <p class="reason-text">
-                                    <?= htmlspecialchars($req['reason']) ?>
-                                </p>
-                            </div>
-
-                            <?php if (!empty($req['hr_note'])): ?>
-                                <div class="hr-note-box">
-                                    <div class="hr-note-label">HR Note (<?= ucfirst($req['status']) ?>)</div>
-                                    <div class="hr-note-text"><?= htmlspecialchars($req['hr_note']) ?></div>
-                                </div>
-                            <?php endif; ?>
-                        </div>
+    <?php if (empty($rows)): ?>
+        <p class="no-data"><?= $totalRecords > 0 && $statusFilter !== 'all'
+            ? 'No change requests match the selected status.'
+            : 'No change requests yet.' ?></p>
+    <?php else: ?>
+        <div class="table-container">
+            <table class="table booking-table change-requests-table" data-table-collapse="off">
+                <thead>
+                    <tr>
+                        <th>Client ID</th>
+                        <th>Caregiver ID</th>
+                        <th>Service type</th>
+                        <th>Duration</th>
+                        <th>Total amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($rows as $req): ?>
+                        <?php
+                        $st = strtolower((string) ($req['status'] ?? ''));
+                        $pendingActions = ($st === 'pending');
+                        $basis = $req['basis'] ?? '—';
+                        $displayBasis = $basisMap[$basis] ?? ucfirst((string) $basis);
+                        $durationText = htmlspecialchars((string) ($req['duration'] ?? '—'), ENT_QUOTES, 'UTF-8') . ' ' . htmlspecialchars($displayBasis, ENT_QUOTES, 'UTF-8');
+                        $oldId = (int) ($req['old_caretaker_id'] ?? 0);
+                        $newId = (int) ($req['new_caretaker_id'] ?? 0);
+                        $cgIds = $oldId . ' → ' . $newId;
+                        ?>
+                        <tr>
+                            <td><?= (int) ($req['client_id'] ?? 0) ?></td>
+                            <td><span class="cell-mono"><?= htmlspecialchars($cgIds, ENT_QUOTES, 'UTF-8') ?></span></td>
+                            <td><?= htmlspecialchars((string) ($req['service_type'] ?? ''), ENT_QUOTES, 'UTF-8') ?></td>
+                            <td><?= $durationText ?></td>
+                            <td><span class="amount-cell">LKR <?= number_format((float) ($req['total_payment'] ?? 0), 2) ?></span></td>
+                            <td>
+                                <span class="status-pill" data-change-status="<?= htmlspecialchars($st, ENT_QUOTES, 'UTF-8') ?>">
+                                    <?= htmlspecialchars(ucfirst((string) ($req['status'] ?? '')), ENT_QUOTES, 'UTF-8') ?>
+                                </span>
+                            </td>
+                            <td class="actions change-request-row-actions">
+                                <button type="button"
+                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-change-detail"
+                                    data-change-row="<?= htmlspecialchars(json_encode($req, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT), ENT_QUOTES, 'UTF-8') ?>"
+                                    title="View details"
+                                    aria-label="View change request details">
+                                    <i class="bx bx-show" aria-hidden="true"></i>
+                                </button>
+                                <button type="button"
+                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-change-approve"
+                                    data-request-id="<?= (int) ($req['request_id'] ?? 0) ?>"
+                                    title="Approve request"
+                                    aria-label="Approve caregiver change"
+                                    <?= $pendingActions ? '' : 'disabled' ?>>
+                                    <i class="bx bx-check" aria-hidden="true"></i>
+                                </button>
+                                <button type="button"
+                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-change-reject"
+                                    data-request-id="<?= (int) ($req['request_id'] ?? 0) ?>"
+                                    title="Reject request"
+                                    aria-label="Reject caregiver change"
+                                    <?= $pendingActions ? '' : 'disabled' ?>>
+                                    <i class="bx bx-x" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                        </tr>
                     <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
+                </tbody>
+            </table>
         </div>
-    </main>
+    <?php endif; ?>
+</main>
 
-    <script>
-        function switchTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(el => {
-                el.classList.remove('active');
-            });
+<div id="changeRequestDetailModal" class="modal admin-row-detail-modal" aria-hidden="true">
+    <div class="modal-content admin-row-detail-modal__content change-request-detail-modal__content" role="dialog" aria-modal="true"
+        aria-labelledby="changeRequestDetailTitle">
+        <button type="button" class="modal-close admin-row-detail-modal__close" data-close-change-detail aria-label="Close">
+            <i class="bx bx-x" aria-hidden="true"></i>
+        </button>
+        <header class="admin-row-detail-modal__header">
+            <span class="admin-row-detail-modal__header-icon" aria-hidden="true"><i class="bx bx-show"></i></span>
+            <h3 id="changeRequestDetailTitle" class="admin-row-detail-modal__title">Change request</h3>
+        </header>
+        <dl class="admin-row-detail-modal__dl" id="changeRequestDetailDl"></dl>
+    </div>
+</div>
 
-            // Remove active class from all buttons
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
+<div id="changeRequestApproveModal" class="modal" aria-hidden="true">
+    <div class="modal-content change-request-process-modal__content" role="dialog" aria-modal="true" aria-labelledby="changeApproveTitle">
+        <h3 id="changeApproveTitle">Approve change</h3>
+        <p class="change-request-modal-intro">The booking caregiver will be updated and notifications sent.</p>
+        <label class="change-request-modal-label" for="changeApproveNote">HR note (optional, visible to client)</label>
+        <textarea id="changeApproveNote" class="change-request-modal-textarea" rows="3" placeholder="Optional message…"></textarea>
+        <div class="modal-buttons">
+            <button type="button" class="btn ghost" id="changeApproveCancel">Cancel</button>
+            <button type="button" class="btn primary" id="changeApproveSubmit">Approve</button>
+        </div>
+    </div>
+</div>
 
-            // Show selected tab
-            document.getElementById(tabName).classList.add('active');
+<div id="changeRequestRejectModal" class="modal" aria-hidden="true">
+    <div class="modal-content change-request-process-modal__content" role="dialog" aria-modal="true" aria-labelledby="changeRejectTitle">
+        <h3 id="changeRejectTitle">Reject change</h3>
+        <p class="change-request-modal-intro">The booking stays with the current caregiver. Please add a short note for the client.</p>
+        <label class="change-request-modal-label" for="changeRejectNote">Reason / HR note <span class="required-mark">*</span></label>
+        <textarea id="changeRejectNote" class="change-request-modal-textarea" rows="3" required placeholder="Required for rejection…"></textarea>
+        <div class="modal-buttons">
+            <button type="button" class="btn ghost" id="changeRejectCancel">Cancel</button>
+            <button type="button" class="btn primary" id="changeRejectSubmit">Reject</button>
+        </div>
+    </div>
+</div>
 
-            // Add active class to clicked button
-            event.target.closest('.tab-button').classList.add('active');
-        }
-    </script>
-</body>
-
-</html>
+<script src="<?= URLROOT ?>/public/js/hr/hr_change_requests.js"></script>
+<?php include_once APPROOT . '/views/templates/hr/hr_layout_close.php'; ?>

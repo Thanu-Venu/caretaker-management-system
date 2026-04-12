@@ -1,18 +1,13 @@
-<?php include_once APPROOT . "/views/templates/hr/hr_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; ?>
+<?php
+$hrPageTitle = 'Refund details — HR';
+$hrExtraCss  = ['hr/hr_tables.css', 'hr/hr_refund_details.css'];
+include_once APPROOT . '/views/templates/hr/hr_layout_head.php';
+include_once APPROOT . '/views/templates/hr/hr_header.php';
+include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
+?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Refund Details</title>
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/hr/hr_tables.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/hr/hr_refund_details.css">
-</head>
-
-<body>
-    <main class="content">
+<main class="main-content">
+    <div class="hr-refund-details-inner">
         <div class="refund-details-container">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h1>Refund Details #<?= $data['refund']['id'] ?></h1>
@@ -248,7 +243,6 @@
                 </div>
             <?php endif; ?>
         </div>
-    </main>
-</body>
-
-</html>
+    </div>
+</main>
+<?php include_once APPROOT . '/views/templates/hr/hr_layout_close.php'; ?>
