@@ -1,265 +1,105 @@
-/* basic table styling */
-body {
-    background: #f4f7fb;
-}
-
-.content {
-  flex: 1;
-  padding: 20px 40px;
-  margin-left: 255px;
-  font-family: 'Poppins', Arial, sans-serif;
-}
-
-.content h1 {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  color: #1e88e5;
-  font-size: 28px;
-}
-
-.table-wrapper {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  padding: 15px;
-}
-
-.requests-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  overflow: hidden;
-}
-
-.requests-table th,
-.requests-table td {
-  padding: 14px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-}
-
-.requests-table th {
-  background: #1e88e5;
-  font-size: 18px;
-  font-weight: 700;
-  color: white;
-}
-
-.requests-table tbody tr:hover {
-  background-color: #f9f9f9;
-}
-
-.approve-btn {
-    background: #00ab94;
-    color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.reject-btn {
-    background: #ea0b34;
-    color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.approve-btn:hover {
-  opacity: 0.9;
-}
-
-.reject-btn:hover {
-  opacity: 0.9;
-}
-
-/* Tabs Navigation */
-.tabs-container {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  border-bottom: 2px solid #e0e0e0;
-}
-
-.tab-button {
-  padding: 12px 20px;
-  background: none;
-  border: none;
-  border-bottom: 3px solid transparent;
-  cursor: pointer;
-  font-size: 17px;
-  font-weight: 600;
-  color: #666;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.tab-button.active {
-  color: #1e88e5;
-  border-bottom-color: #1e88e5;
-}
-
-.tab-button:hover {
-  color: #1e88e5;
-}
-
-/* Tab Content */
+/**
+ * HR change / reschedule request pages — structure only.
+ * Tables, tabs, buttons, typography: admin-ui.css
+ */
 .tab-content {
-  display: none;
+    display: none;
 }
 
 .tab-content.active {
-  display: block;
+    display: block;
 }
 
-/* Status Badges */
-.status-badge {
-  display: inline-block;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
+.hr-action-cell {
+    vertical-align: top;
+    min-width: 200px;
 }
 
-.status-approved {
-  background-color: #d4edda;
-  color: #155724;
+.hr-action-form {
+    margin-bottom: 10px;
 }
 
-.status-rejected {
-  background-color: #f8d7da;
-  color: #721c24;
+.hr-action-note {
+    width: 100%;
+    max-width: 260px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    min-height: 52px;
 }
 
-/* History Cards */
-.history-row {
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 12px;
+.hr-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--admin-section-gap, 24px);
 }
 
 .history-row-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--admin-border, #e2e8f0);
 }
 
-.history-row-header strong {
-      color: #1371c3;
-      font-size: 20px;
+.history-row-body {
+    padding: 16px 18px 18px;
 }
 
 .history-row-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 15px;
-  font-size: 14px;
-  margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px 20px;
+    margin-bottom: 16px;
 }
 
 .history-field {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
-.history-field-label {
-  color: #2a313a;
-  font-size: 15px;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-  font-weight: 700;
+.history-row-header strong {
+    font-size: 1.0625rem;
+    color: var(--admin-page-heading-color, #0f3555);
 }
 
-.history-field-value {
-    color: #2d3c51;
-    font-size: 15px;
+.hr-reason-block {
+    margin-top: 4px;
 }
 
-.hr-note-box {
-  margin-top: 10px;
-  padding: 10px;
-  background: rgb(240, 240, 240);
-  border-left: 3px solid #1e88e5;
-  border-radius: 2px;
-}
-
-.hr-note-label {
-  font-size: 14px;
-  color: #6f6f6f;
-  text-transform: uppercase;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.hr-note-text {
-  font-size: 13px;
-  color: #333;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 40px;
-  color: #999;
-}
-
-/* Badge Counter in Tabs */
-.tab-button span {
-  margin-left: 8px;
-  color: white;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-/* Color badge based on tab type */
-.tab-button.active span {
-  background: #1e88e5;
-}
-
-.tab-button:not(.active) span {
-  background: #95a5a6;
-}
-
-@media (max-width: 1024px) {
-  .history-row-content {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .history-row-content {
-    grid-template-columns: 1fr;
-  }
-  .content {
-    margin-left: 0;
-  }
-}
-
-/* Reason Section */
 .reason-title {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-    color: rgb(69, 75, 82);
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    font-size: 15px;
+    color: var(--admin-muted, #64748b);
 }
 
 .reason-text {
-  margin: 8px 0;
-  color: #555;
-  font-size: 13px;
-  line-height: 1.5;
+    margin: 0;
+    font-size: 14px;
+    color: var(--admin-text-secondary, #334155);
+    line-height: 1.5;
+}
+
+.hr-note-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--admin-muted, #64748b);
+    margin-bottom: 6px;
+}
+
+.hr-note-text {
+    font-size: 14px;
+    color: var(--admin-text, #0f172a);
+}
+
+@media (max-width: 768px) {
+    .history-row-content {
+        grid-template-columns: 1fr;
+    }
 }

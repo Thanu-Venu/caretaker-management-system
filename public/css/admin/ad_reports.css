@@ -1,16 +1,17 @@
 /* Admin reports — summary, filtered charts, breakdown tables */
 
-.admin-reports-page .reports-page-header {
+/* Shared by admin + HR reports (main column uses .reports-container) */
+.reports-container .reports-page-header {
     align-items: flex-start;
     gap: 16px;
 }
 
-.admin-reports-page .page-header-main {
+.reports-container .page-header-main {
     flex: 1 1 220px;
     min-width: 0;
 }
 
-.admin-reports-page .page-subtitle {
+.reports-container .page-subtitle {
     margin: 6px 0 0;
     font-size: 14px;
     color: var(--admin-muted, #64748b);

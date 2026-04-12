@@ -1,327 +1,93 @@
-/* Base */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', Arial, sans-serif;
-}
+/**
+ * HR dashboard — layout tweaks only. Visual system: admin/ad_dashboard.css + admin-ui.css
+ */
 
-:root {
-  --bg: #f4f7fb;
-  --card: #ffffff;
-  --text: #1e88e5;
-  --muted: #10244a;
-  --border: #e4ebf8;
-  --primary: #165f9e;
-  --shadow: 0 10px 24px rgba(16, 24, 40, 0.08);
-  --shadowHover: 0 14px 34px rgba(16, 24, 40, 0.12);
-  --radius: 16px;
-}
-
-body {
-  background: var(--bg);
-  color: var(--text);
-}
-
-.main-content {
-  margin-left: 270px;
-  margin-right: 20px;
-  padding: 22px;
-}
-
-/* Page Header */
-.page-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.page-title {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.page-title h1 {
-  font-size: 28px;
-  font-weight: 750;
-  letter-spacing: 0.2px;
-  color: var(--text);
-}
-
-.page-title p {
-  font-size: 16px;
-  color: var(--muted);
-  font-weight: 500;
-}
-
-.header-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: #ffffff;
-  border: 1px solid var(--border);
-  box-shadow: 0 6px 16px rgba(16, 24, 40, 0.06);
-  color: var(--muted);
-  font-weight: 700;
-  font-size: 15px;
-}
-
-.header-chip i {
-  color: var(--primary);
-}
-
-/* KPI Cards */
-.kpi-cards {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(220px, 1fr));
-  gap: 18px;
-  margin-bottom: 18px;
-}
-
-@media (max-width: 1200px) {
-  .kpi-cards { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
-}
-@media (max-width: 700px) {
-  .kpi-cards { grid-template-columns: 1fr; }
-}
-
-.kpi-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px;
-  box-shadow: var(--shadow);
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.kpi-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(600px 180px at 30% -20%, rgba(30,136,229,0.18), transparent 60%);
-  pointer-events: none;
-}
-
-.kpi-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadowHover);
-  border-color: #dce6f6;
-}
-
-.kpi-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.kpi-title {
-  font-size: 18px;
-  font-weight: 650;
-  color: var(--muted);
-}
-
-.kpi-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  background: rgba(30, 136, 229, 0.10);
-  border: 1px solid rgba(30, 136, 229, 0.18);
-}
-
-.kpi-icon i {
-  color: var(--primary);
-  font-size: 16px;
-}
-
-.kpi-value {
-  font-size: 30px;
-  font-weight: 800;
-  letter-spacing: 0.2px;
-  margin-top: 2px;
-}
-
-.kpi-meta {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.view-link {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--primary);
-  text-decoration: none;
-}
-
-.view-link:hover { text-decoration: underline; }
-
-.kpi-note {
-  font-size: 13.5px;
-  color: var(--muted);
-}
-
-/* Charts */
-.charts-section {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 18px;
-  margin-top: 6px;
+/* Two chart tiles (admin overview grid defaults to 3 columns) */
+.admin-dashboard-page .dashboard-hr-overview-charts__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 @media (max-width: 1100px) {
-  .charts-section { grid-template-columns: 1fr; }
+    .admin-dashboard-page .dashboard-hr-overview-charts__grid {
+        grid-template-columns: 1fr;
+    }
 }
 
-.chart-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px;
-  box-shadow: var(--shadow);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+/* Optional single-row “caretaker onboarding” strip — align with quick review */
+.admin-dashboard-page .dashboard-review-badges--single {
+    margin-top: calc(var(--dash-section-gap, 32px) * -0.5);
 }
 
-.chart-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadowHover);
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.card-header h3 {
-  font-size: 24px;
-  font-weight: 750;
-  margin-bottom: 16px;
-  color: var(--text);
-}
-
-.card-header .subtitle {
-  font-size: 14px;
-  color: var(--muted);
-}
-
-.chart-wrap {
-  width: 100%;
-  height: 280px;
-}
-
-#performanceChart {
-  max-width: 320px;
-  max-height: 320px;
-  margin: 0 auto;
-}
-
-/* Recent Lists */
-.pending-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  margin-top: 18px;
-  margin-bottom: 20px;
+/* Recent activity: three columns on wide screens (inherits card chrome from ad_dashboard) */
+.admin-dashboard-page .dashboard-hr-recents__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 @media (max-width: 1100px) {
-  .pending-section { grid-template-columns: 1fr; }
+    .admin-dashboard-page .dashboard-hr-recents__grid {
+        grid-template-columns: 1fr;
+    }
 }
 
-.pending-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px;
-  box-shadow: var(--shadow);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+/* Recent list cards: avoid tall empty canvas height from analytics grid defaults */
+.admin-dashboard-page .dashboard-hr-recents__grid .card-body {
+    min-height: 0;
 }
 
-.pending-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadowHover);
+.hr-recent-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--dash-s-2, 16px);
 }
 
-.pending-card h3 {
-  font-size: 24px;
-  font-weight: 750;
-  margin-bottom: 16px;
+.hr-recent-list__item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--dash-s-2, 16px);
+    padding: var(--dash-s-2, 16px);
+    border-radius: var(--dash-radius-sm, 10px);
+    border: 1px solid var(--dash-glass-border-mute, rgba(15, 23, 42, 0.08));
+    background: rgba(255, 255, 255, 0.55);
 }
 
-.pending-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.hr-recent-list__title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--dash-text, #0f172a);
+    letter-spacing: -0.01em;
 }
 
-.pending-item {
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 12px 12px;
-  background: #fbfcff;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
+.hr-recent-list__meta {
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: var(--dash-muted, #64748b);
+    line-height: 1.4;
 }
 
-.pending-item .info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.hr-recent-list__link {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--admin-primary, #1e88e5);
+    text-decoration: none;
+    white-space: nowrap;
 }
 
-.pending-item .title {
-  font-weight: 750;
-  font-size: 16px;
-  color: var(--muted);
+.hr-recent-list__link:hover {
+    text-decoration: underline;
 }
 
-.pending-item .desc {
-  font-size: 14px;
-  color: var(--muted);
-}
-
-.pending-item .action {
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  border-radius: 12px;
-  border: 1px solid rgba(30, 136, 229, 0.18);
-  background: rgba(30, 136, 229, 0.08);
-  color: var(--primary);
-  font-weight: 750;
-  font-size: 15px;
-  text-decoration: none;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.pending-item .action:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 18px rgba(30, 136, 229, 0.16);
-}
-
-/* Empty */
-.empty {
-  color: var(--muted);
-  font-size: 14px;
-  padding: 8px 0;
+.hr-recent-list__empty {
+    margin: 0;
+    padding: var(--dash-s-2, 16px);
+    font-size: 0.875rem;
+    color: var(--dash-muted, #64748b);
+    text-align: center;
 }

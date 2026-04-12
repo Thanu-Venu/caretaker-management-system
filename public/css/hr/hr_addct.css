@@ -5,7 +5,6 @@ body {
 .main-content {
   flex: 1;
   padding: 20px 40px;
-  margin-left: 255px;
   font-family: 'Poppins', Arial, sans-serif;
 }
 
