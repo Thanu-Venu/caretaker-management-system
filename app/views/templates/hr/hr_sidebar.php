@@ -1,165 +1,163 @@
 <?php
-// Include badge helper
 require_once APPROOT . '/core/SidebarBadgeHelper.php';
-// Get badge counts once for this sidebar
 $badgeCounts = getSidebarBadgeCounts();
+$sbUser    = $_SESSION['user'] ?? [];
+$sbDisplay = $sbUser['name'] ?? $sbUser['username'] ?? 'HR';
+$sbParts   = preg_split('/\s+/', trim((string) $sbDisplay));
+if (count($sbParts) >= 2) {
+    $sbLast     = $sbParts[count($sbParts) - 1];
+    $sbInitials = strtoupper(substr($sbParts[0], 0, 1) . substr($sbLast, 0, 1));
+} else {
+    $sbInitials = strtoupper(substr((string) $sbDisplay, 0, min(2, strlen((string) $sbDisplay))));
+}
 ?>
-<!DOCTYPE html>
-<html lang="en">
+<button class="sidebar-toggle" type="button" aria-label="Toggle sidebar menu">
+    <i class="bx bx-menu"></i>
+</button>
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SmartCare — HR Sidebar</title>
-
-  <!-- Boxicons (used in markup) -->
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-  <!-- Your HR sidebar CSS -->
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_sidebar.css">
-
-  <!-- Sidebar badges CSS -->
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/common/sidebar-badges.css">
-
-</head>
-
-<body>
-  <div class="sidebar">
+<aside class="sidebar">
     <div class="menu-scroll">
-      <ul class="menu">
-        <li><a href="http://localhost/CMA/public?url=hr/hr_dashboard"><i class='bx bx-home'></i> <span>Dashboard</span></a></li>
-        <li><a href="http://localhost/CMA/public/HRCaretakerCRUD/list"><i class='bx bx-group'></i> <span>Caregivers</span></a></li>
-        <li>
-          <a href="http://localhost/CMA/public?url=hr/hr_pending_request">
-            <span class="menu-item-content">
-              <span class="menu-left">
-                <i class="fas fa-hourglass-half"></i> <span>Pending Request</span>
-              </span>
-              <?php echo renderBadge('bookings', $badgeCounts); ?>
-            </span>
-          </a>
-        </li>
-        <li>
-          <a href="http://localhost/CMA/public?url=hr/pendingPayments">
-            <span class="menu-item-content">
-              <span class="menu-left">
-                <i class='bx bx-money'></i> <span>Pending Payments</span>
-              </span>
-              <?php echo renderBadge('payments', $badgeCounts); ?>
-            </span>
-          </a>
-        </li>
-        <li><a href="http://localhost/CMA/public?url=hr/paymentMonitor"><i class='bx bx-line-chart'></i> <span>Payment Monitor</span></a></li>
-        <li>
-          <a href="<?= URLROOT ?>/hr/refunds">
-            <i class="fas fa-money-bill-wave"></i>
-            <span>Refunds</span>
-          </a>
-        </li>
-        <li>
-          <a href="http://localhost/CMA/public?url=hr/changeRequests">
-            <span class="menu-item-content">
-              <span class="menu-left">
-                <i class='bx bx-user-check'></i> <span>Change Requests</span>
-              </span>
-              <?php echo renderBadge('change_requests', $badgeCounts); ?>
-            </span>
-          </a>
-        </li>
-        <li>
-          <a href="http://localhost/CMA/public?url=hr/rescheduleRequests">
-            <span class="menu-item-content">
-              <span class="menu-left">
-                <i class='bx bx-calendar-edit'></i> <span>Reschedule Requests</span>
-              </span>
-              <?php echo renderBadge('reschedule_requests', $badgeCounts); ?>
-            </span>
-          </a>
-        </li>
-        <li><a href="http://localhost/CMA/public?url=hr/hr_schedule"><i class='bx bx-calendar'></i> <span>Schedule</span></a></li>
-        <li>
-          <a href="http://localhost/CMA/public?url=HrLeave/index">
-            <span class="menu-item-content">
-              <span class="menu-left">
-                <i class='bx bx-time'></i> <span>Leave</span>
-              </span>
-              <?php echo renderBadge('leave_requests', $badgeCounts); ?>
-            </span>
-          </a>
-        </li>
-        <li>
-          <a href="http://localhost/CMA/public/index.php?url=Complaint/index">
-            <span class="menu-item-content">
-              <span class="menu-left">
-                <i class='bx bx-error'></i> <span>Complaints</span>
-              </span>
-              <?php echo renderBadge('complaints', $badgeCounts); ?>
-            </span>
-          </a>
-        </li>
-        <li><a href="http://localhost/CMA/public?url=hr/hr_feedback"><i class='bx bx-message'></i> <span>Feedback</span></a></li>
-        <li><a href="http://localhost/CMA/public?url=hr/hr_logs"><i class='bx bx-history'></i> <span>Logs</span></a></li>
-        <li><a href="http://localhost/CMA/public?url=hr/hr_reports"><i class='bx bx-bar-chart'></i> <span>Reports</span></a></li>
-        <li><a href="http://localhost/CMA/public?url=hr/hr_announcement"><i class='bx bxs-megaphone'></i> <span>Announcement</span></a></li>
-        <li><a href="http://localhost/CMA/public?url=hr/hr_settings"><i class='bx bx-cog'></i> <span>Settings</span></a></li>
-      </ul>
+        <ul class="sidebar-menu">
+            <li><a href="<?= URLROOT ?>/public?url=hr/hr_dashboard"><i class="bx bxs-dashboard"></i> <span>Dashboard</span></a></li>
+            <li><a href="<?= URLROOT ?>/HRCaretakerCRUD/list"><i class="bx bx-group"></i> <span>Caregivers</span></a></li>
+            <li>
+                <a href="<?= URLROOT ?>/public?url=hr/hr_pending_request">
+                    <span class="menu-item-content">
+                        <span class="menu-left">
+                            <i class="bx bx-hourglass"></i> <span>Pending Request</span>
+                        </span>
+                        <?php echo renderBadge('bookings', $badgeCounts); ?>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="<?= URLROOT ?>/public?url=hr/pendingPayments">
+                    <span class="menu-item-content">
+                        <span class="menu-left">
+                            <i class="bx bx-money"></i> <span>Pending Payments</span>
+                        </span>
+                        <?php echo renderBadge('payments', $badgeCounts); ?>
+                    </span>
+                </a>
+            </li>
+            <li><a href="<?= URLROOT ?>/public?url=hr/paymentMonitor"><i class="bx bx-line-chart"></i> <span>Payment Monitor</span></a></li>
+            <li><a href="<?= URLROOT ?>/hr/refunds"><i class="bx bx-receipt"></i> <span>Refunds</span></a></li>
+            <li>
+                <a href="<?= URLROOT ?>/public?url=hr/changeRequests">
+                    <span class="menu-item-content">
+                        <span class="menu-left">
+                            <i class="bx bx-user-check"></i> <span>Change Requests</span>
+                        </span>
+                        <?php echo renderBadge('change_requests', $badgeCounts); ?>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="<?= URLROOT ?>/public?url=hr/rescheduleRequests">
+                    <span class="menu-item-content">
+                        <span class="menu-left">
+                            <i class="bx bx-calendar-edit"></i> <span>Reschedule Requests</span>
+                        </span>
+                        <?php echo renderBadge('reschedule_requests', $badgeCounts); ?>
+                    </span>
+                </a>
+            </li>
+            <li><a href="<?= URLROOT ?>/public?url=hr/hr_schedule"><i class="bx bx-calendar"></i> <span>Schedule</span></a></li>
+            <li>
+                <a href="<?= URLROOT ?>/HrLeave/index">
+                    <span class="menu-item-content">
+                        <span class="menu-left">
+                            <i class="bx bx-time"></i> <span>Leave</span>
+                        </span>
+                        <?php echo renderBadge('leave_requests', $badgeCounts); ?>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="<?= URLROOT ?>/public/index.php?url=Complaint/index">
+                    <span class="menu-item-content">
+                        <span class="menu-left">
+                            <i class="bx bx-error"></i> <span>Complaints</span>
+                        </span>
+                        <?php echo renderBadge('complaints', $badgeCounts); ?>
+                    </span>
+                </a>
+            </li>
+            <li><a href="<?= URLROOT ?>/public?url=hr/hr_feedback"><i class="bx bx-message-detail"></i> <span>Feedback</span></a></li>
+            <li><a href="<?= URLROOT ?>/public?url=hr/hr_logs"><i class="bx bx-history"></i> <span>Logs</span></a></li>
+            <li><a href="<?= URLROOT ?>/public?url=hr/hr_reports"><i class="bx bx-bar-chart"></i> <span>Reports</span></a></li>
+            <li><a href="<?= URLROOT ?>/public?url=hr/hr_announcement"><i class="bx bxs-megaphone"></i> <span>Announcements</span></a></li>
+            <li><a href="<?= URLROOT ?>/public?url=hr/hr_settings"><i class="bx bx-cog"></i> <span>Settings</span></a></li>
+        </ul>
     </div>
-  </div>
 
+    <a href="<?= URLROOT ?>/public?url=hr/hr_settings"
+       class="sidebar-rail-footer"
+       title="<?= htmlspecialchars($sbDisplay, ENT_QUOTES, 'UTF-8') ?> — Settings"
+       aria-label="<?= htmlspecialchars($sbDisplay, ENT_QUOTES, 'UTF-8') ?>, open account settings">
+        <span class="sidebar-rail-avatar" aria-hidden="true"><?= htmlspecialchars($sbInitials, ENT_QUOTES, 'UTF-8') ?></span>
+    </a>
+</aside>
 
+<div class="sidebar-overlay"></div>
 
-  <script>
-    // Dropdown toggle (works for items with class .dropdown-btn)
-    document.querySelectorAll(".dropdown-btn").forEach(button => {
-      button.addEventListener("click", function(e) {
-        e.preventDefault();
-        const dropdown = this.nextElementSibling; // .dropdown-container
-        if (dropdown) dropdown.classList.toggle("show");
+<script defer src="<?= URLROOT ?>/public/js/admin/admin-table-details.js"></script>
+<script src="<?= URLROOT ?>/public/js/sidebar-toggle.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const params = new URLSearchParams(window.location.search);
+    let currentPage = params.get('url');
+    const path = window.location.pathname.toLowerCase();
 
-        // rotate arrow on the clicked button
-        const arrow = this.querySelector(".arrow");
-        if (arrow) arrow.classList.toggle("rotate");
-      });
+    if (!currentPage) {
+        if (path.includes('hrcaretakercrud')) {
+            currentPage = '__hrcaretaker__';
+        } else if (path.includes('hrleave') || path.includes('hr_leave')) {
+            currentPage = 'HrLeave/index';
+        } else if (path.includes('complaint')) {
+            currentPage = 'Complaint/index';
+        } else if (path.includes('/hr/refunds')) {
+            currentPage = '__hr_refunds__';
+        }
+    }
+
+    document.querySelectorAll('.sidebar-menu a.active').forEach(function (link) {
+        link.classList.remove('active');
+    });
+    document.querySelectorAll('.sidebar-menu li.active').forEach(function (li) {
+        li.classList.remove('active');
     });
 
-    // Highlight active link based on "url" query param (e.g. ?url=hr/hr_dashboard)
-    (function highlightActive() {
-      const params = new URLSearchParams(window.location.search);
-      const current = params.get("url") || "";
-
-      // All anchors inside .menu
-      const menuLinks = document.querySelectorAll('.menu a[href*="url="]');
-
-
-      menuLinks.forEach(link => {
+    document.querySelectorAll('.sidebar-menu a').forEach(function (link) {
+        let match = false;
+        const href = (link.getAttribute('href') || '').toLowerCase();
         try {
-          const linkUrl = new URL(link.href).searchParams.get("url") || "";
-          if (!linkUrl) return; // skip links like href="#" (acts like continue)
-          if (linkUrl === current && current !== "") {
-            // add active class, but DO NOT auto-open the parent dropdown
-            link.classList.add("active");
+            const u = new URL(link.href, window.location.origin);
+            const linkPage = u.searchParams.get('url');
+            if (linkPage && currentPage && linkPage === currentPage) {
+                match = true;
+            }
+        } catch (e) { /* ignore */ }
 
-            // --- removed auto-open code so dropdown stays collapsed on load ---
-            // If you still want the parent arrow to appear rotated without opening,
-            // you could add a different visual indicator here, but avoid opening.
-          }
-        } catch (err) {
-          // ignore malformed hrefs
+        if (!match && currentPage === 'HrLeave/index' && href.indexOf('hrleave') !== -1) {
+            match = true;
         }
-      });
-    })();
-  </script>
+        if (!match && currentPage === 'Complaint/index' && href.indexOf('complaint') !== -1) {
+            match = true;
+        }
+        if (!match && currentPage === '__hrcaretaker__' && href.indexOf('hrcaretakercrud') !== -1) {
+            match = true;
+        }
+        if (!match && currentPage === '__hr_refunds__' && href.indexOf('/hr/refunds') !== -1) {
+            match = true;
+        }
 
-
-
-
-
-
-
-
-</body>
-
-</html>
+        if (match) {
+            link.classList.add('active');
+            if (link.parentElement) {
+                link.parentElement.classList.add('active');
+            }
+        }
+    });
+});
+</script>
