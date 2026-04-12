@@ -282,7 +282,7 @@ class ClientController extends Controller
             exit;
         }
 
-        $allowedTabs = ['all', 'due_now', 'upcoming', 'overdue', 'paid_history', 'by_booking'];
+        $allowedTabs = ['all', 'due', 'upcoming', 'history'];
         $tab = $_GET['tab'] ?? 'all';
         if (!in_array($tab, $allowedTabs, true)) {
             $tab = 'all';
@@ -339,7 +339,7 @@ class ClientController extends Controller
                 return false;
             }
 
-            if ($filters['tab'] === 'due_now') {
+            if ($filters['tab'] === 'due') {
                 return (string)$item['payment_status'] === 'overdue' || ((int)$item['days_delta'] <= 0 && (string)$item['payment_status'] !== 'advance_required');
             }
 
@@ -350,11 +350,7 @@ class ClientController extends Controller
                 return ((string)$item['payment_status'] === 'pending') && $dueTs > $todayTs && $dueTs <= $upcomingWindowTs;
             }
 
-            if ($filters['tab'] === 'overdue') {
-                return (string)$item['payment_status'] === 'overdue';
-            }
-
-            if ($filters['tab'] === 'paid_history') {
+            if ($filters['tab'] === 'history') {
                 return false;
             }
 
@@ -414,7 +410,7 @@ class ClientController extends Controller
                 return false;
             }
 
-            if ($filters['tab'] === 'paid_history') {
+            if ($filters['tab'] === 'history') {
                 return strtolower((string)$item['status']) === 'approved';
             }
 
