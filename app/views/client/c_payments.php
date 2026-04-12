@@ -83,24 +83,6 @@
             </div>
         </div>
 
-        <div class="tabs-wrap">
-            <?php
-            $tabs = [
-                'all' => 'All Payments',
-                'due' => 'Due',
-                'upcoming' => 'Upcoming Payments',
-                'history' => 'History'
-            ];
-
-            foreach ($tabs as $key => $label):
-                $isActive = $tab === $key;
-            ?>
-                <a class="tab-link <?= $isActive ? 'active' : '' ?>" href="<?= URLROOT ?>/client/payments?tab=<?= urlencode($key) ?>">
-                    <?= htmlspecialchars($label) ?>
-                </a>
-            <?php endforeach; ?>
-        </div>
-
         <form method="get" action="<?= URLROOT ?>/client/payments" class="filter-panel">
             <input type="hidden" name="tab" value="<?= htmlspecialchars($tab) ?>">
 
@@ -111,26 +93,37 @@
                 <option value="Maid" <?= (($filters['service_type'] ?? '') === 'Maid') ? 'selected' : '' ?>>Maid</option>
             </select>
 
-            <select name="booking_status">
-                <option value="all">All Booking Status</option>
-                <option value="Payment_Requested" <?= (($filters['booking_status'] ?? '') === 'Payment_Requested') ? 'selected' : '' ?>>Payment Requested</option>
-                <option value="Advance_Paid" <?= (($filters['booking_status'] ?? '') === 'Advance_Paid') ? 'selected' : '' ?>>Advance Paid</option>
-                <option value="Accepted" <?= (($filters['booking_status'] ?? '') === 'Accepted') ? 'selected' : '' ?>>Accepted</option>
-                <option value="Completed" <?= (($filters['booking_status'] ?? '') === 'Completed') ? 'selected' : '' ?>>Completed</option>
-            </select>
-
             <button type="submit">Apply</button>
             <a href="<?= URLROOT ?>/client/payments?tab=<?= urlencode($tab) ?>" class="reset-btn">Reset</a>
         </form>
 
-        <?php if ($tab === 'history'): ?>
-            <section class="section-card">
-                <div class="section-header">
-                    <h2>Payment History</h2>
-                    <span><?= count($paymentHistory) ?> record(s)</span>
-                </div>
+        <?php
+        $tabs = [
+            'all' => 'All Payments',
+            'due' => 'Due',
+            'upcoming' => 'Upcoming Payments',
+            'history' => 'History'
+        ];
+        $activeCount = $tab === 'history' ? count($paymentHistory) : count($actionItems);
+        $activeUnit = $tab === 'history' ? 'record(s)' : 'item(s)';
+        ?>
 
-                <div class="table-wrap">
+        <section class="section-card payments-results-card">
+            <div class="tabs-wrap">
+                <?php foreach ($tabs as $key => $label): ?>
+                    <a class="tab-link <?= $tab === $key ? 'active' : '' ?>" href="<?= URLROOT ?>/client/payments?tab=<?= urlencode($key) ?>">
+                        <?= htmlspecialchars($label) ?>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="section-header">
+                <h2>Payment Records</h2>
+                <span><?= $activeCount ?> <?= $activeUnit ?></span>
+            </div>
+
+            <div class="table-wrap">
+                <?php if ($tab === 'history'): ?>
                     <table>
                         <thead>
                             <tr>
@@ -165,26 +158,7 @@
                             <?php endif; ?>
                         </tbody>
                     </table>
-                </div>
-            </section>
-        <?php else: ?>
-            <section class="section-card">
-                <div class="section-header">
-                    <h2>
-                        <?php
-                        if ($tab === 'due') {
-                            echo 'Due Payments';
-                        } elseif ($tab === 'upcoming') {
-                            echo 'Upcoming Payments';
-                        } else {
-                            echo 'All Payments';
-                        }
-                        ?>
-                    </h2>
-                    <span><?= count($actionItems) ?> item(s)</span>
-                </div>
-
-                <div class="table-wrap">
+                <?php else: ?>
                     <table>
                         <thead>
                             <tr>
@@ -232,9 +206,9 @@
                             <?php endif; ?>
                         </tbody>
                     </table>
-                </div>
-            </section>
-        <?php endif; ?>
+                <?php endif; ?>
+            </div>
+        </section>
     </div>
 </body>
 
