@@ -58,33 +58,6 @@
     gap: 10px;
 }
 
-.header-logout {
-    display: flex;
-    align-items: center;
-}
-
-.logout-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 12px;
-    border-radius: var(--admin-radius-sm, 8px);
-    text-decoration: none;
-    color: #fff;
-    background: rgba(0, 0, 0, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    font-size: 13px;
-    font-weight: 600;
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease;
-}
-
-.logout-btn:hover {
-    background: rgba(0, 0, 0, 0.22);
-    border-color: rgba(255, 255, 255, 0.35);
-}
-
 .notification-wrapper {
     position: relative;
 }
@@ -190,36 +163,119 @@
     text-decoration: underline;
 }
 
-.profile-wrapper {
+/* ---------- Account menu (avatar + name + chevron → Profile / Logout) ---------- */
+
+.main-header .profile-wrapper {
+    position: relative;
     display: flex;
     align-items: center;
 }
 
-.profile-link {
-    display: flex;
+.main-header .profile-menu-trigger {
+    display: inline-flex;
     align-items: center;
     gap: 10px;
-    text-decoration: none;
+    margin: 0;
+    padding: 5px 12px 5px 5px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: var(--admin-radius-full, 9999px);
+    background: rgba(0, 0, 0, 0.12);
     color: #fff;
+    font-family: inherit;
     font-size: 14px;
     font-weight: 600;
-    padding: 6px 10px 6px 6px;
-    border-radius: var(--admin-radius-full, 9999px);
-    background: rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: background 0.2s ease;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-.profile-link:hover {
-    background: rgba(0, 0, 0, 0.18);
+.main-header .profile-menu-trigger:hover {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
-.profile-img {
-    width: 32px;
-    height: 32px;
+.main-header .profile-menu-name {
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.main-header .profile-menu-chevron {
+    font-size: 11px;
+    opacity: 0.95;
+    transition: transform 0.2s ease;
+}
+
+.main-header .profile-img {
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid rgba(255, 255, 255, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.55);
+    flex-shrink: 0;
+}
+
+.main-header .profile-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    min-width: 200px;
+    padding: 6px 0;
+    background: #fff;
+    border-radius: var(--admin-radius, 12px);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    box-shadow:
+        0 10px 40px rgba(15, 23, 42, 0.14),
+        0 2px 8px rgba(15, 23, 42, 0.06);
+    z-index: 1200;
+    overflow: hidden;
+}
+
+.main-header .profile-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: var(--admin-text, #0f172a);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.15s ease;
+}
+
+.main-header .profile-menu-item i {
+    width: 18px;
+    text-align: center;
+    font-size: 15px;
+    color: var(--admin-text-secondary, #475569);
+}
+
+.main-header .profile-menu-item:hover {
+    background: var(--admin-primary-soft, rgba(30, 136, 229, 0.08));
+}
+
+.main-header .profile-menu-item:hover i {
+    color: var(--admin-primary, #1e88e5);
+}
+
+.main-header .profile-menu-item--logout:hover {
+    background: rgba(254, 226, 226, 0.55);
+}
+
+.main-header .profile-menu-item--logout:hover i {
+    color: var(--admin-danger, #dc2626);
+}
+
+.main-header .profile-wrapper.active .profile-dropdown {
+    display: block;
+}
+
+.main-header .profile-wrapper.active .profile-menu-chevron {
+    transform: rotate(180deg);
 }
 
 .notification-wrapper.active .notif-dropdown {
@@ -227,12 +283,12 @@
 }
 
 @media (max-width: 600px) {
-    .profile-link span {
+    .main-header .profile-menu-name {
         display: none;
     }
 
-    .logout-btn span {
-        display: none;
+    .main-header .profile-menu-trigger {
+        padding-right: 10px;
     }
 
     .main-header {
