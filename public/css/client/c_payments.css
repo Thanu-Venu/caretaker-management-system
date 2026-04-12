@@ -3,16 +3,18 @@
     padding: 24px;
     background: #f4f7fb;
     min-height: 100vh;
+    font-size: 15px;
 }
 
 .page-title-wrap h1 {
     margin: 0;
-    color: #1f2a44;
+    color: #1e88e5;
 }
 
 .page-title-wrap p {
     margin-top: 6px;
     color: #5b6882;
+    font-size: 15px;
 }
 
 .summary-grid {
@@ -31,7 +33,7 @@
 
 .summary-card h3 {
     margin: 0;
-    font-size: 13px;
+    font-size: 14px;
     color: #4f5d78;
 }
 
@@ -56,7 +58,7 @@
     border: 1px solid #d9e2f0;
     padding: 8px 12px;
     border-radius: 999px;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .tab-link.active {
@@ -66,14 +68,21 @@
 }
 
 .filter-panel {
-    margin-top: 14px;
-    display: grid;
-    grid-template-columns: 2fr repeat(4, 1fr) 1fr 1fr auto auto;
+    margin-top: 24px;
+    margin-bottom: 34px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     gap: 8px;
-    background: #fff;
-    border: 1px solid #dde5f1;
-    border-radius: 12px;
-    padding: 10px;
+}
+
+.filter-panel select {
+    min-width: 170px;
+}
+
+.filter-panel button,
+.reset-btn {
+    min-width: 90px;
 }
 
 .filter-panel input,
@@ -83,7 +92,7 @@
     padding: 8px;
     border-radius: 8px;
     border: 1px solid #d5dfef;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .filter-panel button {
@@ -108,6 +117,13 @@
     padding: 12px;
 }
 
+.payments-results-card .tabs-wrap {
+    margin-top: 0;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #edf2f8;
+}
+
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -118,31 +134,40 @@
 .section-header h2 {
     margin: 0;
     color: #1f2a44;
-    font-size: 18px;
+    font-size: 20px;
 }
 
 .table-wrap {
     overflow-x: auto;
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #eef2f7;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     min-width: 920px;
+    font-size: 14px;
 }
 
 th,
 td {
-    border-bottom: 1px solid #edf2f8;
+    border-bottom: 1px solid #f1f5f9;
     padding: 10px;
-    font-size: 13px;
+    font-size: 14px;
     text-align: left;
 }
 
 th {
-    background: #f3f6fc;
-    color: #3d4a63;
-    font-weight: 600;
+    background: #1e88e5;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+tbody tr:hover {
+    background: #fafcff;
 }
 
 .pill {
@@ -150,7 +175,7 @@ th {
     padding: 4px 8px;
     border-radius: 999px;
     font-weight: 600;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .status-paid {
@@ -183,7 +208,7 @@ th {
     text-decoration: none;
     padding: 6px 10px;
     border-radius: 8px;
-    font-size: 12px;
+    font-size: 13px;
     margin-right: 6px;
     margin-top: 4px;
 }
@@ -258,7 +283,7 @@ th {
 
 @media (max-width: 1200px) {
     .filter-panel {
-        grid-template-columns: repeat(2, 1fr);
+        justify-content: flex-start;
     }
 }
 
@@ -269,6 +294,7 @@ th {
     }
 
     .filter-panel {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: stretch;
     }
 }
