@@ -16,26 +16,26 @@
       <p class="subtitle">Your caretaker booking request has been sent.</p>
 
      <div class="details">
-    <p><strong>Booking ID:</strong> <?= $data['booking']['booking_id'] ?></p>
-    <p><strong>Caretaker:</strong> <?= htmlspecialchars($data['booking']['caretaker_name']) ?></p>
-    <p><strong>Service:</strong> <?= htmlspecialchars($data['booking']['service_type']) ?></p>
-    <p><strong>Basis:</strong> <?= htmlspecialchars($data['booking']['basis']) ?></p>
-    <p><strong>Duration:</strong> <?= htmlspecialchars($data['booking']['duration']) ?> <?= htmlspecialchars($data['booking']['basis']) ?></p>
-    <p><strong>Preferred Time:</strong> <?= htmlspecialchars($data['booking']['preferred_time']) ?></p>
-    <p><strong>Booking Date:</strong> <?= date('d M Y', strtotime($data['booking']['booking_date'])) ?></p>
-    <p><strong>District:</strong> <?= htmlspecialchars($data['booking']['district']) ?></p>
-    <p><strong>Street:</strong> <?= htmlspecialchars($data['booking']['street']) ?></p>
-    <p><strong>Address 1:</strong> <?= htmlspecialchars($data['booking']['address_line1']) ?></p>
+    <p><strong>Booking ID:</strong> <span><?= $data['booking']['booking_id'] ?></span></p>
+    <p><strong>Caretaker:</strong> <span><?= htmlspecialchars($data['booking']['caretaker_name']) ?></span></p>
+    <p><strong>Service:</strong> <span><?= htmlspecialchars($data['booking']['service_type']) ?></span></p>
+    <p><strong>Basis:</strong> <span><?= htmlspecialchars($data['booking']['basis']) ?></span></p>
+    <p><strong>Duration:</strong> <span><?= htmlspecialchars($data['booking']['duration']) ?> <?= htmlspecialchars($data['booking']['basis']) ?></span></p>
+    <p><strong>Preferred Time:</strong> <span><?= htmlspecialchars($data['booking']['preferred_time']) ?></span></p>
+    <p><strong>Booking Date:</strong> <span><?= date('d M Y', strtotime($data['booking']['booking_date'])) ?></span></p>
+    <p><strong>District:</strong> <span><?= htmlspecialchars($data['booking']['district']) ?></span></p>
+    <p><strong>Street:</strong> <span><?= htmlspecialchars($data['booking']['street']) ?></span></p>
+    <p><strong>Address 1:</strong> <span><?= htmlspecialchars($data['booking']['address_line1']) ?></span></p>
     <?php if (!empty($data['booking']['address_line2'])): ?>
-        <p><strong>Address 2:</strong> <?= htmlspecialchars($data['booking']['address_line2']) ?></p>
+      <p><strong>Address 2:</strong> <span><?= htmlspecialchars($data['booking']['address_line2']) ?></span></p>
     <?php endif; ?>
     <?php if (!empty($data['booking']['postal_code'])): ?>
-        <p><strong>Postal Code:</strong> <?= htmlspecialchars($data['booking']['postal_code']) ?></p>
+      <p><strong>Postal Code:</strong> <span><?= htmlspecialchars($data['booking']['postal_code']) ?></span></p>
     <?php endif; ?>
     <?php if (!empty($data['booking']['customization'])): ?>
-        <p><strong>Customization Notes:</strong> <?= nl2br(htmlspecialchars($data['booking']['customization'])) ?></p>
+      <p><strong>Customization Notes:</strong> <span><?= nl2br(htmlspecialchars($data['booking']['customization'])) ?></span></p>
     <?php endif; ?>
-    <p><strong>Total Payment:</strong> Rs. <?= number_format($data['booking']['total_payment'],2) ?></p>
+    <p><strong>Total Payment:</strong> <span>Rs. <?= number_format($data['booking']['total_payment'],2) ?></span></p>
     <p><strong>Status:</strong> <span class="<?= strtolower($data['booking']['status']) ?>"><?= $data['booking']['status'] ?></span></p>
 </div>
 
