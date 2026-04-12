@@ -56,6 +56,28 @@ class AccountModel
         return $row ?: false;
     }
 
+    /**
+     * @return array|false Account row or false if missing / invalid id
+     */
+    public function findById(int $id)
+    {
+        if (!$this->isAccountsReady() || $id <= 0) {
+            return false;
+        }
+
+        $stmt = $this->conn->prepare('SELECT * FROM accounts WHERE id = ? LIMIT 1');
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        return $row ?: false;
+    }
+
     public function authenticate(string $email, string $password)
     {
         $account = $this->findByEmail($email);
