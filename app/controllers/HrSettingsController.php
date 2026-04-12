@@ -88,7 +88,7 @@ class HrSettingsController extends Controller
         $_SESSION['user'] = $user;
 
         // Redirect back to settings page
-        header("Location: " . URLROOT . "/hr/hr_settings");
+        header('Location: ' . URLROOT . '/public?url=hr/hr_settings');
         exit;
     }
 
@@ -105,13 +105,13 @@ class HrSettingsController extends Controller
 
             if (!password_verify($currentPassword, $user['password'])) {
                 $_SESSION['flash_error'] = "Current password is incorrect!";
-                header('Location: ' . URLROOT . '/hr/hr_settings');
+                header('Location: ' . URLROOT . '/public?url=hr/hr_settings');
                 exit();
             }
 
             if ($newPassword !== $confirmPassword) {
                 $_SESSION['flash_error'] = "New passwords do not match!";
-                header('Location: ' . URLROOT . '/hr/hr_settings');
+                header('Location: ' . URLROOT . '/public?url=hr/hr_settings');
                 exit();
             }
 
@@ -119,7 +119,7 @@ class HrSettingsController extends Controller
             $this->userModel->updatePassword($userId, $hashedPassword);
 
             $_SESSION['flash_success'] = "Password updated successfully!";
-            header('Location: ' . URLROOT . '/hr/hr_settings');
+            header('Location: ' . URLROOT . '/public?url=hr/hr_settings');
             exit();
         }
     }

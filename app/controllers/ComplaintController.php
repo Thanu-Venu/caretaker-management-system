@@ -102,11 +102,10 @@ class ComplaintController
 
     public function index()
     {
-        $complaintModel = new ComplaintModel();
-        $complaints = $this->complaintModel->getAllComplaints();
-        $data['ct_complaints'] = $complaintModel->getCaretakerComplaints();
+        $complaints    = $this->complaintModel->getAllComplaints();
+        $ct_complaints = $this->complaintModel->getCaretakerComplaints();
 
-        include_once "../app/views/hr/hr_complaint.php";
+        include_once APPROOT . '/views/hr/hr_complaint.php';
     }
 
 

@@ -143,17 +143,21 @@ class HrLeaveController extends Controller
         exit;
     }
 
-    // Reject
+    // Reject (legacy GET — kept for old links)
     public function reject($leaveId)
     {
         $this->requireManager();
-        $leave = $this->leaveModel->getLeaveById((int)$leaveId);
+        $leave = $this->leaveModel->getLeaveById((int) $leaveId);
+        if (!$leave || $leave->status !== 'Pending') {
+            header("Location: " . URLROOT . "/HrLeave/index");
+            exit;
+        }
 
-        $this->leaveModel->updateLeaveStatus((int)$leaveId, 'Rejected');
+        $this->leaveModel->updateLeaveStatus((int) $leaveId, 'Rejected');
 
         if ($leave) {
             $this->notifModel->addNotification(
-                (int)$leave->user_id,
+                (int) $leave->user_id,
                 'caretaker',
                 'Leave Request Rejected',
                 'Your leave request for ' . $leave->start_date . ' to ' . $leave->end_date . ' was rejected by HR.',
@@ -161,7 +165,53 @@ class HrLeaveController extends Controller
             );
         }
 
-        $this->logManagerAction("Rejected leave request (Leave ID: " . (int)$leaveId . ")", 'Leaves');
+        $this->logManagerAction("Rejected leave request (Leave ID: " . (int) $leaveId . ")", 'Leaves');
+        header("Location: " . URLROOT . "/HrLeave/index");
+        exit;
+    }
+
+    /** POST: reject with HR note (preferred from leave list UI). */
+    public function reject_submit()
+    {
+        $this->requireManager();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: " . URLROOT . "/HrLeave/index");
+            exit;
+        }
+
+        $leaveId = (int) ($_POST['leave_id'] ?? 0);
+        $hrNote  = trim((string) ($_POST['hr_note'] ?? ''));
+
+        if ($leaveId <= 0 || $hrNote === '') {
+            $_SESSION['error'] = 'A reason is required to reject a leave request.';
+            header("Location: " . URLROOT . "/HrLeave/index");
+            exit;
+        }
+
+        $leave = $this->leaveModel->getLeaveById($leaveId);
+        if (!$leave || $leave->status !== 'Pending') {
+            $_SESSION['error'] = 'This leave request was not found or is no longer pending.';
+            header("Location: " . URLROOT . "/HrLeave/index");
+            exit;
+        }
+
+        if (!$this->leaveModel->rejectLeave($leaveId, $hrNote)) {
+            $_SESSION['error'] = 'Could not reject this leave request. It may have already been processed.';
+            header("Location: " . URLROOT . "/HrLeave/index");
+            exit;
+        }
+
+        $this->notifModel->addNotification(
+            (int) $leave->user_id,
+            'caretaker',
+            'Leave Request Rejected',
+            'Your leave request for ' . $leave->start_date . ' to ' . $leave->end_date . ' was rejected by HR.' . ($hrNote !== '' ? "\nNote: {$hrNote}" : ''),
+            URLROOT . '/LeaveCRUD/index'
+        );
+
+        $this->logManagerAction("Rejected leave request (Leave ID: {$leaveId})", 'Leaves');
+        $_SESSION['success'] = 'Leave request rejected.';
         header("Location: " . URLROOT . "/HrLeave/index");
         exit;
     }

@@ -22,7 +22,7 @@ class HRCaretakerCRUDController extends Controller
             $errors = [];
 
             // Check required fields
-            $requiredFields = ['name', 'email', 'password', 'phone', 'experience', 'location', 'qualifications', 'service_type'];
+            $requiredFields = ['name', 'email', 'password', 'phone', 'experience', 'location', 'qualifications', 'service_type', 'status'];
             foreach ($requiredFields as $field) {
                 if (empty(trim($data[$field] ?? ''))) {
                     $errors[] = "Field '$field' is required.";
@@ -58,7 +58,7 @@ class HRCaretakerCRUDController extends Controller
             // If there are validation errors, store and redirect
             if (!empty($errors)) {
                 $_SESSION['error'] = implode("; ", $errors);
-                header("Location: " . URLROOT . "/HRCaretakerCRUD/add");
+                header("Location: " . URLROOT . "/HRCaretakerCRUD/list?open=add");
                 exit;
             }
 
@@ -84,7 +84,7 @@ class HRCaretakerCRUDController extends Controller
                         $_SESSION['error'] = "Image too large. Please upload a smaller file (e.g., under 2MB).";
                     }
 
-                    header("Location: " . URLROOT . "/hr/caretaker_add");
+                    header("Location: " . URLROOT . "/HRCaretakerCRUD/list?open=add");
                     exit;
                 }
 
@@ -92,7 +92,7 @@ class HRCaretakerCRUDController extends Controller
                 $maxSize = 2 * 1024 * 1024;
                 if ($_FILES['profile_image']['size'] > $maxSize) {
                     $_SESSION['error'] = "Image too large. Max 2MB allowed.";
-                    header("Location: " . URLROOT . "/hr/caretaker_add");
+                    header("Location: " . URLROOT . "/HRCaretakerCRUD/list?open=add");
                     exit;
                 }
 
@@ -101,7 +101,7 @@ class HRCaretakerCRUDController extends Controller
                 $ext = strtolower(pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION));
                 if (!in_array($ext, $allowedExt)) {
                     $_SESSION['error'] = "Invalid image type. Use JPG/PNG/WEBP.";
-                    header("Location: " . URLROOT . "/hr/caretaker_add");
+                    header("Location: " . URLROOT . "/HRCaretakerCRUD/list?open=add");
                     exit;
                 }
 
@@ -111,7 +111,7 @@ class HRCaretakerCRUDController extends Controller
 
                 if (!move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetPath)) {
                     $_SESSION['error'] = "Failed to save image. Check public/uploads permission.";
-                    header("Location: " . URLROOT . "/hr/caretaker_add");
+                    header("Location: " . URLROOT . "/HRCaretakerCRUD/list?open=add");
                     exit;
                 }
 
@@ -123,7 +123,7 @@ class HRCaretakerCRUDController extends Controller
 
             if (!$ok) {
                 $_SESSION['error'] = "Failed to add caretaker. Please try again.";
-                header("Location: " . URLROOT . "/hr/caretaker_add");
+                header("Location: " . URLROOT . "/HRCaretakerCRUD/list?open=add");
                 exit;
             }
 
@@ -136,11 +136,13 @@ class HRCaretakerCRUDController extends Controller
                 'section' => "Caretakers"
             ]);
 
+            $_SESSION['success'] = 'Caretaker added successfully!';
             header("Location: " . URLROOT . "/HRCaretakerCRUD/list");
             exit;
         }
 
-        $this->view("hr/caretaker_add");
+        header("Location: " . URLROOT . "/HRCaretakerCRUD/list?open=add");
+        exit;
     }
 
     // Edit caretaker
@@ -182,7 +184,7 @@ class HRCaretakerCRUDController extends Controller
             // If there are validation errors, store and redirect
             if (!empty($errors)) {
                 $_SESSION['error'] = implode("; ", $errors);
-                header("Location: " . URLROOT . "/HRCaretakerCRUD/edit/" . $id);
+                header("Location: " . URLROOT . "/HRCaretakerCRUD/list?open=edit&id=" . (int) $id);
                 exit;
             }
 
@@ -215,12 +217,13 @@ class HRCaretakerCRUDController extends Controller
                 'section' => "Caretakers"
             ]);
 
+            $_SESSION['success'] = 'Caregiver updated successfully.';
             header("Location: " . URLROOT . "/HRCaretakerCRUD/list");
             exit;
-        } else {
-            $caretaker = $this->caretakerModel->getCaretakerById($id);
-            $this->view("hr/caretaker_edit", ['caretaker' => $caretaker]);
         }
+
+        header("Location: " . URLROOT . "/HRCaretakerCRUD/list?open=edit&id=" . (int) $id);
+        exit;
     }
 
     // View caretaker details
@@ -273,11 +276,23 @@ class HRCaretakerCRUDController extends Controller
 
         $totalPages = max(1, (int) ceil($total / $perPage));
 
+        $openModal = trim((string) ($_GET['open'] ?? ''));
+        $editId = (int) ($_GET['id'] ?? 0);
+        $editCaretaker = null;
+        if ($openModal === 'edit' && $editId > 0) {
+            $editCaretaker = $this->caretakerModel->getCaretakerById($editId);
+            if (!$editCaretaker) {
+                $openModal = '';
+            }
+        }
+
         $this->view("hr/hr_addct", [
             'caretakers' => $caretakers,
             'filters' => $filters,
             'page' => $page,
-            'totalPages' => $totalPages
+            'totalPages' => $totalPages,
+            'openModal' => $openModal,
+            'editCaretaker' => $editCaretaker,
         ]);
     }
 
