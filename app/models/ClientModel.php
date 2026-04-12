@@ -1251,8 +1251,11 @@ class ClientModel
                     p.payment_method,
                     p.payment_type,
                     p.status,
+                    p.due_date,
+                    p.paid_date,
                     p.created_at,
                     p.approved_at,
+                    p.customization_price AS payment_customization_price,
                     c.name AS client_name,
                     c.phone AS client_phone,
                     ct.name AS caretaker_name,
@@ -1262,7 +1265,24 @@ class ClientModel
                     b.basis,
                     b.duration,
                     b.total_payment,
-                    b.status AS booking_status
+                    b.status AS booking_status,
+                    b.district AS booking_district,
+                    b.street AS booking_street,
+                    b.address_line1 AS booking_address_line1,
+                    b.address_line2 AS booking_address_line2,
+                    b.postal_code AS booking_postal_code,
+                    b.service_location AS booking_service_location,
+                    b.customization AS booking_customization,
+                    b.customization_hours AS booking_customization_hours,
+                    b.customization_price AS booking_customization_price,
+                    b.created_at AS booking_created_at,
+                    b.advance_paid_date AS booking_advance_paid_date,
+                    b.service_start_date AS booking_service_start_date,
+                    b.advance_amount AS booking_advance_amount,
+                    b.refund_status AS booking_refund_status,
+                    b.advance_balance AS booking_advance_balance,
+                    b.advance_months AS booking_advance_months,
+                    b.total_months AS booking_total_months
                 FROM payments p
                 JOIN clients c ON p.client_id = c.id
                 JOIN caretakers ct ON p.caretaker_id = ct.id

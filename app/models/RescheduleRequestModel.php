@@ -41,6 +41,7 @@ class RescheduleRequestModel
     {
         $sql = "SELECT rr.id AS request_id,
                        rr.booking_id,
+                       rr.client_id,
                        rr.reason,
                        rr.created_at,
                        rr.old_date,
@@ -49,12 +50,35 @@ class RescheduleRequestModel
                        rr.hr_note,
                        rr.reviewed_at,
                        b.service_type,
+                       b.basis,
+                       b.duration,
+                       b.total_payment,
+                       b.booking_date,
+                       b.preferred_time,
+                       b.caretaker_id AS booking_caretaker_id,
+                       b.status AS booking_status,
+                       b.service_start_date,
+                       b.district,
+                       b.street,
+                       b.address_line1,
+                       b.address_line2,
+                       b.postal_code,
+                       b.customization,
+                       b.customization_hours,
+                       b.customization_price,
+                       b.created_at AS booking_created_at,
+                       b.advance_months,
+                       b.total_months,
+                       b.advance_balance,
+                       b.cancellation_reason,
+                       b.cancelled_at,
+                       b.caretaker_changed_once,
                        c.name AS client_name,
                        ct.name AS caretaker_name
                 FROM reschedule_requests rr
                 JOIN bookings b ON rr.booking_id = b.id
                 JOIN clients c ON rr.client_id = c.id
-                JOIN caretakers ct ON b.caretaker_id = ct.id
+                LEFT JOIN caretakers ct ON b.caretaker_id = ct.id
                 WHERE rr.status = 'pending'
                 ORDER BY rr.created_at DESC";
 
@@ -69,6 +93,7 @@ class RescheduleRequestModel
     {
         $sql = "SELECT rr.id AS request_id,
                        rr.booking_id,
+                       rr.client_id,
                        rr.reason,
                        rr.created_at,
                        rr.old_date,
@@ -77,12 +102,35 @@ class RescheduleRequestModel
                        rr.hr_note,
                        rr.reviewed_at,
                        b.service_type,
+                       b.basis,
+                       b.duration,
+                       b.total_payment,
+                       b.booking_date,
+                       b.preferred_time,
+                       b.caretaker_id AS booking_caretaker_id,
+                       b.status AS booking_status,
+                       b.service_start_date,
+                       b.district,
+                       b.street,
+                       b.address_line1,
+                       b.address_line2,
+                       b.postal_code,
+                       b.customization,
+                       b.customization_hours,
+                       b.customization_price,
+                       b.created_at AS booking_created_at,
+                       b.advance_months,
+                       b.total_months,
+                       b.advance_balance,
+                       b.cancellation_reason,
+                       b.cancelled_at,
+                       b.caretaker_changed_once,
                        c.name AS client_name,
                        ct.name AS caretaker_name
                 FROM reschedule_requests rr
                 JOIN bookings b ON rr.booking_id = b.id
                 JOIN clients c ON rr.client_id = c.id
-                JOIN caretakers ct ON b.caretaker_id = ct.id
+                LEFT JOIN caretakers ct ON b.caretaker_id = ct.id
                 WHERE rr.status IN ('approved', 'rejected')
                 ORDER BY rr.reviewed_at DESC";
 
@@ -97,45 +145,44 @@ class RescheduleRequestModel
      */
     public function approveRequest($requestId, $hrNote = '')
     {
-        // Fetch the request details
-        $stmt = $this->conn->prepare("SELECT booking_id, new_date FROM reschedule_requests WHERE id = ?");
-        $stmt->bind_param("i", $requestId);
-        $stmt->execute();
-        $req = $stmt->get_result()->fetch_assoc();
-
-        if (!$req) {
-            return false;
-        }
-
-        // Begin transaction for atomic operation
         $this->conn->begin_transaction();
 
         try {
-            // Update booking with new date
+            $stmt = $this->conn->prepare(
+                "SELECT booking_id, new_date, status FROM reschedule_requests WHERE id = ? FOR UPDATE"
+            );
+            $stmt->bind_param("i", $requestId);
+            $stmt->execute();
+            $req = $stmt->get_result()->fetch_assoc();
+
+            if (!$req || strtolower(trim((string) ($req['status'] ?? ''))) !== 'pending') {
+                $this->conn->rollback();
+                return false;
+            }
+
+            $bookingId = (int) $req['booking_id'];
+
             $upd = $this->conn->prepare("UPDATE bookings SET booking_date = ? WHERE id = ?");
-            $upd->bind_param("si", $req['new_date'], $req['booking_id']);
+            $upd->bind_param("si", $req['new_date'], $bookingId);
 
             if (!$upd->execute()) {
                 throw new Exception("Failed to update booking date.");
             }
 
-            // Update request record with status, hr_note, and reviewed_at
             $stmt2 = $this->conn->prepare(
                 "UPDATE reschedule_requests
                  SET status = 'approved', hr_note = ?, reviewed_at = NOW()
-                 WHERE id = ?"
+                 WHERE id = ? AND status = 'pending'"
             );
             $stmt2->bind_param("si", $hrNote, $requestId);
 
-            if (!$stmt2->execute()) {
+            if (!$stmt2->execute() || $stmt2->affected_rows === 0) {
                 throw new Exception("Failed to update reschedule request status.");
             }
 
-            // Commit transaction
             $this->conn->commit();
-            return $req['booking_id'];
+            return $bookingId;
         } catch (Exception $e) {
-            // Rollback on error
             $this->conn->rollback();
             error_log("Reschedule approval failed: " . $e->getMessage());
             return false;
@@ -147,9 +194,17 @@ class RescheduleRequestModel
      */
     public function rejectRequest($requestId, $hrNote = '')
     {
-        $stmt = $this->conn->prepare("UPDATE reschedule_requests SET status = 'rejected', hr_note = ?, reviewed_at = NOW() WHERE id = ?");
+        $stmt = $this->conn->prepare(
+            "UPDATE reschedule_requests
+             SET status = 'rejected', hr_note = ?, reviewed_at = NOW()
+             WHERE id = ? AND status = 'pending'"
+        );
         $stmt->bind_param("si", $hrNote, $requestId);
-        return $stmt->execute();
+        if (!$stmt->execute()) {
+            return false;
+        }
+
+        return $stmt->affected_rows > 0;
     }
 
     /**

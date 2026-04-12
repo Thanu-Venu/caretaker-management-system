@@ -132,6 +132,10 @@ public function getClientAnnouncements()
             $params[] = $like;
         }
 
+        if (!empty($filters['for_hr_portal'])) {
+            $parts[] = "(a.target_role IN ('users', 'All'))";
+        }
+
         return [$parts, $types, $params];
     }
 
