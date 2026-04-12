@@ -192,6 +192,22 @@ header.site-header--hero.mhero-header.mhero-header--solid {
 .mhero-brand {
   justify-self: start;
   min-width: 0;
+  flex: 0 1 auto;
+}
+
+.mhero-header .logo.mhero-brand {
+  margin-left: 0;
+}
+
+.mhero-brand .logo-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.mhero-brand img {
+  flex-shrink: 0;
 }
 
 .mhero-nav {
@@ -207,17 +223,22 @@ header.site-header--hero.mhero-header.mhero-header--solid {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: clamp(4px, 1.2vw, 10px);
+  flex-wrap: nowrap;
   min-width: 0;
   max-width: 100%;
   justify-self: end;
 }
 
+.mhero-book-label--short {
+  display: none;
+}
+
 .mhero-book {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 6px;
   padding: 14px 26px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.14);
@@ -230,6 +251,8 @@ header.site-header--hero.mhero-header.mhero-header--solid {
   box-shadow: 0 10px 28px rgba(0, 20, 50, 0.16);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
   white-space: nowrap;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 .mhero-book:hover {
@@ -271,7 +294,7 @@ header.site-header--hero.mhero-header.mhero-header--solid {
     flex-wrap: nowrap;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: clamp(6px, 2vw, 14px);
   }
 
   .mhero-nav {
@@ -281,20 +304,102 @@ header.site-header--hero.mhero-header.mhero-header--solid {
     justify-self: stretch;
   }
 
+  .mhero-header-right {
+    gap: 6px;
+  }
+
   .mhero-book {
-    padding: 12px 18px;
-    font-size: 14px;
+    padding: 10px 16px;
+    font-size: 13px;
   }
 
   .mhero-book .bx-right-arrow-alt {
     display: none;
   }
+
+  /* Match circular icon buttons so the row stays one clean line */
+  header.site-header--hero.mhero-header .menu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  header.site-header--hero.mhero-header .menu-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+@media (max-width: 560px) {
+  .mhero-book-label--full {
+    display: none;
+  }
+
+  .mhero-book-label--short {
+    display: inline;
+  }
+
+  .mhero-book {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+
+  .mhero-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .mhero-icon i {
+    font-size: 18px;
+  }
+
+  header.site-header--hero.mhero-header .menu-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+  }
 }
 
 @media (max-width: 520px) {
   .mhero-book {
-    padding: 10px 14px;
-    font-size: 12px;
+    padding: 9px 12px;
+    font-size: 11px;
+  }
+
+  .mhero-header-inner {
+    padding-left: max(12px, env(safe-area-inset-left, 0px));
+    padding-right: max(10px, env(safe-area-inset-right, 0px));
+  }
+}
+
+@media (max-width: 380px) {
+  .mhero-brand .logo-text {
+    max-width: 7.5rem;
+  }
+
+  .mhero-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .mhero-icon i {
+    font-size: 17px;
+  }
+
+  header.site-header--hero.mhero-header .menu-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 19px;
   }
 }
 
@@ -959,20 +1064,31 @@ header.site-header--hero.mhero-header.mhero-header--solid {
 }
 
 @media (max-width: 820px) {
+  .hero.mhero {
+    --hero-pad-left: clamp(16px, 4.5vw, 32px);
+  }
+
   .mhero-stage {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: clamp(10px, 3vw, 20px);
-    padding-left: max(var(--hero-pad-x), env(safe-area-inset-left, 0px));
-    padding-right: max(var(--hero-pad-x), env(safe-area-inset-right, 0px));
+    padding-top: clamp(6px, 1.5vh, 14px);
+    padding-bottom: max(16px, calc(env(safe-area-inset-bottom, 0px) + 10px));
+    padding-left: max(14px, env(safe-area-inset-left, 0px));
+    padding-right: max(14px, env(safe-area-inset-right, 0px));
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .mhero-figure {
     order: 1;
-    max-width: min(96vw, 620px);
+    max-width: min(100%, 620px);
+    width: 100%;
     margin-top: 4px;
+    justify-content: center;
   }
 
   .mhero-figure::after {
@@ -984,10 +1100,11 @@ header.site-header--hero.mhero-header.mhero-header--solid {
 
   .mhero-intro {
     order: 2;
-    align-self: center;
+    align-self: stretch;
     align-items: center;
     text-align: center;
     max-width: min(42rem, 100%);
+    width: 100%;
     padding-top: 0;
     margin-top: 0;
     justify-content: flex-start;
@@ -1019,7 +1136,9 @@ header.site-header--hero.mhero-header.mhero-header--solid {
   }
 
   .mhero-img {
-    max-height: min(54vh, 540px);
+    max-height: min(52vh, 520px);
+    width: auto;
+    max-width: 100%;
     object-position: bottom center;
     margin-inline: auto;
   }
@@ -1029,12 +1148,24 @@ header.site-header--hero.mhero-header.mhero-header--solid {
     align-self: center;
     margin-top: 0;
     margin-bottom: 0;
+    transform: none;
+    max-width: min(26rem, 100%);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .mhero-pager {
     order: 5;
+    align-self: stretch;
     align-items: center;
-    margin-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+    width: 100%;
+    max-width: min(22rem, 100%);
+    margin-inline: auto;
+    margin-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  }
+
+  .mhero-pager-track {
+    width: min(220px, 78vw);
   }
 }
 
@@ -1043,19 +1174,79 @@ header.site-header--hero.mhero-header.mhero-header--solid {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 300px;
-    gap: var(--mhero-cta-gap);
+    max-width: min(100%, 22rem);
+    gap: 10px;
     margin-inline: auto;
   }
 
   .mhero-btn {
     width: 100%;
+    min-height: 48px;
+    padding: 12px 18px;
+    font-size: 13px;
   }
 
   .mhero-spot {
     flex-direction: column;
     text-align: center;
-    padding: 16px;
+    padding: 14px 16px;
+  }
+
+  .mhero-pager-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+
+  .mhero-h1 {
+    line-height: 1.06;
+  }
+
+  .mhero-h1-a {
+    font-size: clamp(1.45rem, 6.2vw + 0.35rem, 2.1rem);
+  }
+
+  .mhero-h1-b {
+    font-size: clamp(2.1rem, 10vw + 0.5rem, 3.25rem);
+    margin-top: 0.08em;
+    line-height: 1.05;
+  }
+
+  .mhero-lead {
+    font-size: clamp(0.88rem, 3.6vw + 0.2rem, 1rem);
+    line-height: 1.55;
+    padding-inline: 2px;
+  }
+}
+
+/* Small phones: headline before image, tighter hero rhythm */
+@media (max-width: 480px) {
+  .mhero-intro {
+    order: 1;
+  }
+
+  .mhero-figure {
+    order: 2;
+  }
+
+  .mhero-img {
+    max-height: min(42vh, 400px);
+  }
+
+  .mhero-ribbon {
+    max-width: 100%;
+    padding-inline: 16px;
+    font-size: clamp(10px, 2.8vw, 12px);
+  }
+
+  .mhero-pager-num {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 380px) {
+  .mhero-img {
+    max-height: min(36vh, 340px);
   }
 }
 
@@ -1103,6 +1294,13 @@ header.site-header--hero.mhero-header.mhero-header--solid {
 
   .card.animate {
     pointer-events: auto !important;
+  }
+}
+
+/* Stacked hero: drop optical lift on spot (reduced-motion rule uses !important above) */
+@media (max-width: 820px) {
+  .mhero-spot.animate-spot {
+    transform: none !important;
   }
 }
 
