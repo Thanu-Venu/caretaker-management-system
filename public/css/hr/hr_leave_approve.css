@@ -1,223 +1,256 @@
+/* HR approve leave — aligned with other HR pages */
+
 body {
     background: #f4f7fb;
 }
 
-.content {
-  flex: 1;
-  padding: 20px 40px;
-  margin-left: 260px;
-  margin-top: 20px;
-  font-family: 'Poppins', Arial, sans-serif;
+.leave-approve-page {
+    padding: 20px 25px;
+    min-width: 0;
 }
 
-/* Main Card */
+.leave-approve-page .error-message {
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    font-size: 14px;
+    background: rgba(239, 68, 68, 0.08);
+    color: #b91c1c;
+    border-radius: var(--admin-radius-sm, 8px);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.leave-approve-topbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 16px;
+    margin-bottom: 20px;
+}
+
+.leave-approve-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: var(--admin-radius-sm, 8px);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    background: var(--admin-surface, #fff);
+    color: var(--admin-primary, #1e88e5);
+    box-shadow: var(--admin-shadow-xs, 0 1px 2px rgba(15, 23, 42, 0.04));
+    text-decoration: none;
+    transition:
+        background var(--admin-transition, 0.2s ease),
+        border-color var(--admin-transition, 0.2s ease);
+}
+
+.leave-approve-back:hover {
+    background: var(--admin-primary-soft, rgba(30, 136, 229, 0.09));
+    border-color: var(--admin-primary-muted, rgba(30, 136, 229, 0.22));
+}
+
+.leave-approve-back i {
+    font-size: 1.35rem;
+}
+
+.leave-approve-topbar__main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+}
+
+.leave-approve-topbar__main .page-title {
+    margin: 0;
+    color: var(--admin-page-heading-color, #0f3555);
+}
+
+.leave-approve-flag {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--admin-warning-bg, #fef3c7);
+    color: var(--admin-warning-text, #b45309);
+    border: 1px solid rgba(217, 119, 6, 0.25);
+}
+
+.leave-approve-context-trigger {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
 .leave-approve-card {
-  margin-top: 20px;
-  background: #ffffff;
-  padding: 25px;
-  border-radius: 14px;
-  max-width: 950px;
-  margin: auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    padding: 20px 22px 24px;
+    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
 }
 
-.leave-approve-card h1 {
-  margin-bottom: 15px;
-  color: #1e88e5;
-  font-size: 28px;
-}
-
-.impact-banner {
-  background: #fff3de;
-  border: 1px solid #efca86;
-  color: #7b5100;
-  border-radius: 10px;
-  padding: 10px 12px;
-  margin-bottom: 14px;
-  font-size: 15px;
-}
-
-/* Align Leave Info */
 .leave-info {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px 16px;
+    margin-bottom: 22px;
+}
+
+.leave-info--compact .info-row--wide {
+    grid-column: 1 / -1;
 }
 
 .info-row {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  align-items: start;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 12px;
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius-sm, 8px);
+    background: #fafbfc;
 }
 
-.label {
-  font-weight: 700;
-  color: #000;
-  text-transform: uppercase;
-  font-size: 14px;
+.info-row .label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--admin-muted, #64748b);
 }
 
-.value {
-  color: #374151;
-  font-size: 15px;
+.info-row .value {
+    font-size: 14px;
+    color: var(--admin-text, #0f172a);
 }
 
-/* Divider */
-.hr-divider {
-  margin: 18px 0;
-  border: none;
-  height: 1px;
-  background: #e0e0e0;
+.value--multiline {
+    line-height: 1.45;
 }
 
-h3 {
-  color: #2555ad;
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 10px;
+.leave-approve-hint {
+    margin: 0 0 14px;
+    font-size: 14px;
+    color: var(--admin-muted, #64748b);
+    line-height: 1.45;
 }
 
-/* Affected Bookings Table */
-.table-container {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 2px 4px 8px rgba(0,0,0,0.1);
-  padding: 15px;
+.approve-form .field {
+    margin-bottom: 14px;
 }
 
-.booking-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  overflow: hidden;
+.leave-approve-form-actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--admin-border, #e2e8f0);
 }
 
-.booking-table th,
-.booking-table td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
+.leave-approve-form-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.booking-table thead {
-  background: #1e88e5;
-  color: white;
-  font-size: 16px;
-  font-weight: 700;
+.impact-banner {
+    padding: 12px 16px;
+    border-radius: var(--admin-radius-sm, 8px);
+    margin-bottom: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    border: 1px solid rgba(217, 119, 6, 0.25);
+    background: var(--admin-warning-bg, #fef3c7);
+    color: var(--admin-warning-text, #b45309);
 }
 
-.booking-table tbody tr:hover {
-  background: #f9f9f9;
+.impact-banner--in-modal {
+    margin-top: 0;
 }
 
-/* No booking message */
-.no-bookings {
-  background: #e8f5e9;
-  color: #2e7d32;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 15px;
+.leave-approve-context-modal__content {
+    max-width: min(720px, 100%);
+    max-height: min(88vh, 820px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
 }
 
-.requires-replacement {
-  margin-top: 8px;
-  background: #fff3de;
-  border: 1px solid #efca86;
-  color: #7b5100;
-  border-radius: 8px;
-  padding: 8px 10px;
-  font-size: 15px;
+.leave-approve-context-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 20px 20px;
 }
 
-/* Form Section */
-.approve-form label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 10px;
-  margin-top: 16px;
-  font-size: 20px;
-  color: #2555ad;
+.leave-approve-usage-dl {
+    margin: 0 0 18px;
+    padding: 12px 14px;
+    border-radius: var(--admin-radius-sm, 8px);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    background: rgba(248, 250, 252, 0.9);
 }
 
-.approve-form select,
-.approve-form textarea {
-  width: 100%;
-  padding: 10px 12px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  transition: border 0.3s;
+.leave-approve-usage-dl dt {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--admin-muted, #64748b);
+    margin-bottom: 6px;
 }
 
-.approve-form select:focus,
-.approve-form textarea:focus {
-  outline: none;
-  border-color: #4a90e2;
+.leave-approve-usage-dl dd {
+    margin: 0;
+    font-size: 15px;
+    color: var(--admin-text, #0f172a);
 }
 
-/* Buttons */
-.action-buttons {
-  margin-top: 20px;
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+.leave-approve-context-subtitle {
+    margin: 0 0 10px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--admin-muted, #64748b);
 }
 
-.approve-btn {
-    background: #00ab94;
-    color: white;
-  padding: 10px 18px;
-  border-radius: 10px;
-  border: none;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s;
+.leave-approve-context-empty {
+    margin: 0;
+    padding: 14px;
+    font-size: 14px;
+    color: var(--admin-muted, #64748b);
+    border: 1px dashed var(--admin-border-strong, #cbd5e1);
+    border-radius: var(--admin-radius-sm, 8px);
+    background: rgba(248, 250, 252, 0.9);
 }
 
-.approve-btn:hover {
-  opacity: 0.9;
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+.leave-approve-modal-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius-sm, 8px);
 }
 
-.back-btn {
-  background-color: #6c757d;
-  color: white;
-  padding: 10px 18px;
-  border-radius: 10px;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 600;
-  display: inline-block;
+.leave-approve-modal-table {
+    min-width: 560px;
+    margin: 0;
 }
 
-.back-btn:hover {
-  background-color: #545b62;
-}
-
-/* ===============================
-   Responsive
-   =============================== */
 @media (max-width: 768px) {
-  .content {
-    margin-left: 0;
-    padding: 20px;
-  }
+    .leave-approve-topbar {
+        align-items: flex-start;
+    }
 
-  .leave-approve-card {
-    padding: 18px;
-  }
-
-  .booking-table th,
-  .booking-table td {
-    font-size: 13px;
-    padding: 8px;
-  }
-
-  .approve-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
+    .leave-approve-context-trigger {
+        width: 100%;
+        justify-content: center;
+    }
 }

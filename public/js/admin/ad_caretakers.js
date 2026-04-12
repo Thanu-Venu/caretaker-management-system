@@ -6,6 +6,9 @@
 
     var body = document.body;
     var urlRoot = (body.getAttribute('data-urlroot') || '').replace(/\/$/, '');
+    var caretakerCrudBase = (
+        body.getAttribute('data-caretaker-crud-base') || urlRoot + '/CaretakerCRUD'
+    ).replace(/\/$/, '');
     var autoOpen = body.getAttribute('data-auto-open') || '';
 
     var detailModal = document.getElementById('caretakerDetailModal');
@@ -128,7 +131,7 @@
         if (!editForm || !d || !d.id) {
             return;
         }
-        editForm.action = urlRoot + '/CaretakerCRUD/edit/' + encodeURIComponent(String(d.id));
+        editForm.action = caretakerCrudBase + '/edit/' + encodeURIComponent(String(d.id));
         var set = function (name, value) {
             var field = editForm.querySelector('[name="' + name + '"]');
             if (!field) {

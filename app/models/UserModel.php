@@ -185,6 +185,37 @@ class UserModel
         return $stmt->get_result()->fetch_assoc();
     }
 
+    /**
+     * Public display name for headers / logs: prefers linked accounts.name (full name),
+     * then users.name if present, else username. Staff rows often only have username.
+     */
+    public function withDisplayNameForProfile(array $user): array
+    {
+        $out     = $user;
+        $display = trim((string) ($user['name'] ?? ''));
+        if ($display === '') {
+            $display = trim((string) ($user['username'] ?? ''));
+        }
+
+        $accountId = (int) ($user['account_id'] ?? 0);
+        if ($accountId > 0) {
+            $accModel = new AccountModel();
+            if ($accModel->isAccountsReady()) {
+                $acc = $accModel->findById($accountId);
+                if (is_array($acc)) {
+                    $accountName = trim((string) ($acc['name'] ?? ''));
+                    if ($accountName !== '') {
+                        $display = $accountName;
+                    }
+                }
+            }
+        }
+
+        $out['name'] = $display;
+
+        return $out;
+    }
+
     // 🔹 Update user
     public function updateUser($id, $data)
     {

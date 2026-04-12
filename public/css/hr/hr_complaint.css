@@ -1,191 +1,172 @@
+/* HR complaints — match leave / change-request HR pages */
+
 body {
-  background: #f4f7fb;
+    background: #f4f7fb;
 }
 
-.main-content {
-  flex: 1;
-  padding: 8px 40px;
-  margin-left: 255px;
-  font-family: 'Poppins', Arial, sans-serif;
+.hr-complaints-page {
+    padding: 20px 25px;
+    min-width: 0;
 }
 
-/* Title */
-h1 {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  color: #1e88e5;
-  margin-top: 0;
-  font-size: 28px;
+.page-header {
+    margin-bottom: 16px;
 }
 
-/* Tabs / Buttons */
-.top {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  border-bottom: 2px solid #e0e0e0;
+.page-header .page-title {
+    margin: 0;
+    color: var(--admin-page-heading-color, #0f3555);
 }
 
-.top-button {
-  padding: 12px 20px;
-  background: none;
-  border: none;
-  border-bottom: 3px solid transparent;
-  cursor: pointer;
-  font-size: 17px;
-  font-weight: 600;
-  color: #666;
-  transition: all 0.3s ease;
-  position: relative;
+.complaint-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 16px;
+    padding: 4px;
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius-sm, 8px);
+    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
 }
 
-.top-button.active {
-  color: #1e88e5;
-  border-bottom-color: #1e88e5;
+.complaint-tab-btn {
+    appearance: none;
+    margin: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: var(--admin-font, "Inter", system-ui, sans-serif);
+    color: var(--admin-muted, #64748b);
+    border-radius: var(--admin-radius-sm, 8px);
+    transition: color 0.2s ease, background 0.2s ease;
 }
 
-.top-button:hover {
-  color: #1e88e5;
+.complaint-tab-btn:hover {
+    color: var(--admin-text, #0f172a);
+    background: rgba(15, 23, 42, 0.04);
 }
 
-.tab-content {
-  display: none;
+.complaint-tab-btn.active {
+    color: var(--admin-primary, #1e88e5);
+    background: var(--admin-primary-soft, rgba(30, 136, 229, 0.09));
+    box-shadow: inset 0 -3px 0 var(--admin-primary, #1e88e5);
 }
 
-.tab-content.active {
-  display: block;
+.complaint-tab-panel {
+    display: none;
 }
 
-/* Card */
-.card {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  padding: 15px;
+.complaint-tab-panel.active {
+    display: block;
 }
 
-/* Table wrapper (optional but nice if table is wide) */
-.card {
-  overflow-x: auto;
+.complaint-table-wrap {
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    padding: 12px;
+    overflow-x: auto;
+    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
 }
 
-/* Table */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  overflow: hidden;
+.complaint-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
 }
 
-th, td {
-  padding: 14px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
+.complaint-table th,
+.complaint-table td {
+    padding: 11px 10px;
+    text-align: left;
+    border-bottom: 1px solid #eef2f7;
+    font-size: 14px;
+    vertical-align: middle;
 }
 
-th {
-    font-size: 18px;
+.complaint-table thead th {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 11px;
     font-weight: 700;
-    color: white;
-      background: #1e88e5;
 }
 
-tr:hover {
-  background: #f9f9f9;
+.complaint-details-cell {
+    max-width: 220px;
+    word-break: break-word;
 }
 
-/* Forms in table */
-td form {
-  display: flex;
-  gap: 10px;
-  align-items: center;
+.complaint-status-cell {
+    min-width: 200px;
 }
 
-/* Select */
-select {
-  padding: 8px 10px;
-  border-radius: 12px;
-  border: 1px solid #e6ebf2;
-  background: #fff;
-  outline: none;
-  font-size: 14px;
+.complaint-status-form,
+.complaint-ct-form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
 }
 
-select:focus {
-  border-color: #1e88e5;
-  box-shadow: 0 0 0 4px rgba(30, 136, 229, 0.12);
+.complaint-status-select {
+    min-width: 130px;
+    flex: 1;
+    max-width: 200px;
 }
 
-/* Update button */
-.btn-update {
-  background: #1e88e5;
-  color: white;
-  padding: 8px 14px;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  font-weight: 700;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+.complaint-update-btn {
+    flex-shrink: 0;
 }
 
-.btn-update:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 18px rgba(30, 136, 229, 0.22);
+.complaint-actions-cell {
+    white-space: nowrap;
+    width: 1%;
 }
 
-/* Status Badge */
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 12.5px;
-  letter-spacing: 0.2px;
-  border: 1px solid transparent;
+.complaint-empty {
+    text-align: center;
+    padding: 28px 12px;
+    color: var(--admin-muted, #64748b);
 }
 
-/* little dot inside badge */
-.status-badge::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  display: inline-block;
+.status-pill.complaint-status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
 }
 
-/* Client complaints statuses (your DB uses: Open, In Progress, Resolved) */
-.status-badge.open {
-  background: #f8d7da;
-  color: #721c24;
+.complaint-status-pill--open {
+    background: #fee2e2;
+    color: #991b1b;
 }
-.status-badge.open::before { background: #fb923c; }
 
-.status-badge.in-progress {
-  background: #eff6ff;
-  color: #1d4ed8;
+.complaint-status-pill--in-progress {
+    background: #dbeafe;
+    color: #1d4ed8;
 }
-.status-badge.in-progress::before { background: #3b82f6; }
 
-.status-badge.resolved {
-  background: #d4edda;
-  color: #155724;
+.complaint-status-pill--resolved {
+    background: #d1fae5;
+    color: #065f46;
 }
-.status-badge.resolved::before { background: #10b981; }
 
-/* Caretaker complaint statuses (Pending, In Progress, Resolved) */
-.status-badge.pending {
+.complaint-status-pill--pending {
     background: #fff3cd;
     color: #856404;
 }
-.status-badge.pending::before { background: #f59e0b; }
 
-/* Optional: show "no data" row nicer */
-td[colspan] {
-  color: #667085;
-  text-align: center;
-  padding: 22px;
+@media (max-width: 900px) {
+    .complaint-status-form,
+    .complaint-ct-form {
+        flex-wrap: wrap;
+    }
 }

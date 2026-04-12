@@ -1,52 +1,11 @@
-body {
-    background: #f4f7fb;
+/**
+ * HR Client Feedback — stars only; table chrome from admin-ui.css
+ */
+.feedback-stars {
+    letter-spacing: 0.06em;
+    color: var(--admin-warning, #d97706);
 }
 
-.main-content {
-  flex: 1;
-  padding: 20px 40px;
-  margin-left: 260px;
-  font-family: 'Poppins', Arial, sans-serif;
-}
-
-h1 {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  color: #1e88e5;
-  margin-top: 0;
-  font-size: 28px;
-}
-
-.table-container {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  padding: 15px;
-  overflow-x: auto;
-}
-
-.feedback-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    overflow: hidden;
-}
-
-.feedback-table th, .feedback-table td {
-    padding: 14px;
-    text-align: left;
-      border-bottom: 1px solid #eee;
-}
-
-.feedback-table th {
-    background-color: #1E88E5;
-    color: white;
-    font-weight: 700;
-    font-size: 18px;
-}
-
-.feedback-table tr:hover {
-    background-color: #f9f9f9;
+.feedback-stars .feedback-star--off {
+    color: var(--admin-border-strong, #cbd5e1);
 }

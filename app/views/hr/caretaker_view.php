@@ -1,17 +1,11 @@
-<?php  
-include_once APPROOT . "/views/templates/hr/hr_header.php"; 
-include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; 
+<?php
+$hrPageTitle = 'Caregiver details — HR';
+$hrExtraCss  = ['hr/caretaker_view.css'];
+include_once APPROOT . '/views/templates/hr/hr_layout_head.php';
+include_once APPROOT . '/views/templates/hr/hr_header.php';
+include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caregiver Details</title>
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/caretaker_view.css">
-</head>
-<body>
+
 <main class="main-content">
   <div class="view-container">
     <div class="view-header">
@@ -94,6 +88,4 @@ include_once APPROOT . "/views/templates/hr/hr_sidebar.php";
     </p>
   </div>
 </main>
-
-</body>
-</html>
+<?php include_once APPROOT . '/views/templates/hr/hr_layout_close.php'; ?>

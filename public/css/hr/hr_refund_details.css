@@ -1,10 +1,9 @@
 body { 
     background: #f4f7fb;
 }
-main.content {
+.hr-refund-details-inner {
   flex: 1;
   padding: 20px 40px;
-  margin-left: 255px;
   font-family: 'Poppins', Arial, sans-serif;
 }
 

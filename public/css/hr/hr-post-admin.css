@@ -1,0 +1,50 @@
+/**
+ * HR module — loaded after legacy per-page HR stylesheets.
+ * (Do not set font-family on `*` — it breaks Font Awesome / Boxicons.)
+ */
+
+/* HR history / request cards: reuse admin card chrome */
+body:has(aside.sidebar) .history-row,
+body:has(aside.sidebar) .hr-note-box {
+    background: var(--admin-surface-glass);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    box-shadow: var(--admin-shadow);
+}
+
+body:has(aside.sidebar) .history-row-header {
+    border-bottom: 1px solid var(--admin-border);
+}
+
+/* Map legacy tab buttons to admin tab rhythm when class not updated */
+body:has(aside.sidebar) .tabs-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    border-bottom: 1px solid var(--admin-border);
+    margin-bottom: var(--admin-section-gap);
+}
+
+body:has(aside.sidebar) .tab-button {
+    background: none;
+    border: none;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: var(--admin-font);
+    color: var(--admin-muted);
+    cursor: pointer;
+    border-radius: var(--admin-radius-sm) var(--admin-radius-sm) 0 0;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+body:has(aside.sidebar) .tab-button:hover {
+    color: var(--admin-text);
+    background: rgba(15, 23, 42, 0.04);
+}
+
+body:has(aside.sidebar) .tab-button.active {
+    color: var(--admin-primary);
+    background: var(--admin-primary-soft);
+    box-shadow: inset 0 -3px 0 var(--admin-primary);
+}

@@ -1,17 +1,19 @@
-function switchTab(tabId, event) {
-  // Hide all tabs
-  document.querySelectorAll(".tab-content").forEach(tab => {
-    tab.classList.remove("active");
-  });
+/**
+ * HR complaints — tab switch (client vs caregiver).
+ */
+function switchComplaintTab(tabId, event) {
+    document.querySelectorAll('.complaint-tab-panel').forEach(function (tab) {
+        tab.classList.remove('active');
+    });
+    document.querySelectorAll('.complaint-tab-btn').forEach(function (btn) {
+        btn.classList.remove('active');
+    });
 
-  // Remove active from buttons
-  document.querySelectorAll(".top-button").forEach(btn => {
-    btn.classList.remove("active");
-  });
-
-  // Show selected tab
-  document.getElementById(tabId).classList.add("active");
-
-  // Highlight clicked button
-  event.currentTarget.classList.add("active");
+    var pane = document.getElementById(tabId);
+    if (pane) {
+        pane.classList.add('active');
+    }
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
 }
