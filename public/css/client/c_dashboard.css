@@ -576,3 +576,133 @@
     font-size: 13px;
     color: var(--admin-text-secondary);
 }
+
+/* ---------- Mobile / small tablet (client dashboard only) ---------- */
+
+.admin-dashboard-page:has(.client-dashboard) .dashboard-layout {
+    padding-left: clamp(10px, 3vw, var(--dash-s-3));
+    padding-right: clamp(10px, 3vw, var(--dash-s-3));
+}
+
+@media (max-width: 899px) {
+    .client-dashboard-hero__toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.85rem;
+    }
+
+    .client-dashboard-hero__toolbar-right {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .admin-dashboard-page:has(.client-dashboard) .dashboard-quick-actions {
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .client-dashboard-hero .dashboard-breadcrumb__list {
+        flex-wrap: wrap;
+        row-gap: 4px;
+    }
+}
+
+@media (max-width: 639px) {
+    .client-dashboard-hero {
+        min-height: clamp(200px, 48vw, 300px);
+        border-radius: var(--admin-radius-sm, 10px);
+    }
+
+    .client-dashboard-hero__content {
+        padding: 1rem 0.9rem;
+    }
+
+    .client-dashboard-hero .client-dashboard-hero__date {
+        white-space: normal;
+        line-height: 1.35;
+    }
+
+    .admin-dashboard-page:has(.client-dashboard) .dashboard-quick-actions__link {
+        flex: 1 1 auto;
+        min-width: min(100%, 9.5rem);
+        justify-content: center;
+    }
+
+    .admin-dashboard-page:has(.client-dashboard) .dashboard-stats.stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .admin-dashboard-page:has(.client-dashboard) .dashboard-review-badges {
+        padding-left: var(--dash-s-2);
+    }
+
+    .admin-dashboard-page:has(.client-dashboard) .dashboard-shortcut-tiles__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .price-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modifier-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .quick-actions .actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 479px) {
+    .client-dashboard-hero__actions {
+        flex-direction: column;
+    }
+
+    .client-dashboard-hero__actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .admin-dashboard-page:has(.client-dashboard) .dashboard-stats.stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-dashboard-page:has(.client-dashboard) .dashboard-shortcut-tiles__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modifier-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .client-dashboard-recent .booking {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .client-dashboard-recent .booking .status {
+        margin-left: 0;
+        align-self: flex-start;
+    }
+
+    .client-dashboard-recent .booking img {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+/* Modals opened from client dashboard — fit small viewports */
+body:has(.client-dashboard) .modal .modal-content {
+    width: min(100%, 520px);
+    max-width: calc(100vw - 24px);
+    max-height: min(88vh, 640px);
+    overflow-y: auto;
+    margin: 12px;
+    box-sizing: border-box;
+}
