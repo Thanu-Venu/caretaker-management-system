@@ -1,63 +1,31 @@
-/* Reset */
-* {
-    font-family: var(--font-primary);
-  font-weight: 300;
-}
+/* Payment success — centered card using admin tokens */
 
-/* Main Content */
-.main-content {
-    margin-left: 270px;
-    padding: 50px 20px;
+.main-content.payment-success-page,
+.payment-success-wrap {
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 75vh;
+    align-items: flex-start;
 }
 
-/* Payment Success Box */
 .payment-success {
-    background: #f4f1f1;
-    padding: 100px 150px;
-    border-radius: 12px;
-    border-color: #555;
+    margin-top: 8vh;
+    max-width: 480px;
+    width: 100%;
     text-align: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 40px 36px;
+    background: var(--admin-surface-glass);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    box-shadow: var(--admin-shadow);
 }
 
 .payment-success .check-icon {
-    font-size: 60px;
-    color: #28a745;
-    margin-bottom: 20px;
+    font-size: 3.5rem;
+    color: var(--admin-success);
+    margin-bottom: 16px;
 }
 
-.payment-success h1 {
-    font-size: 28px;
-    margin-bottom: 10px;
-}
-
-.payment-success p {
-    font-size: 16px;
-    margin-bottom: 30px;
-    color: #555;
-}
-
-.payment-success .ok-btn {
-    padding: 10px 30px;
-    font-size: 16px;
-    border: none;
-    background: linear-gradient(to right, #1e90ff, #00bfff);
-    color: #fff;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.payment-success .ok-btn:hover {
-    opacity: 0.9;
-}
-
-.ok-btn a{
-    text-decoration: none;
-    color: white;
-
+.payment-success-actions {
+    justify-content: center;
+    margin-top: 20px;
 }

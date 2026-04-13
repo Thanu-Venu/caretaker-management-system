@@ -39,7 +39,12 @@ class ComplaintController
     // Show the complaint form
     public function create()
     {
-        include_once "../app/views/client/c_complaintReg.php";
+        $caretakers = [];
+        if (AuthSession::hasRole('client')) {
+            $clientId = AuthSession::profileId();
+            $caretakers = $this->clientModel->getBookedCaretakersByClient($clientId);
+        }
+        require_once APPROOT . "/views/client/c_complaintReg.php";
     }
 
     // Store complaint in DB
@@ -92,10 +97,7 @@ class ComplaintController
         $clientId = AuthSession::profileId();
         $caretakers = $this->clientModel->getBookedCaretakersByClient($clientId);
 
-        // Load the view with complaints
-        include_once APPROOT . "/views/templates/client/c_header.php";
-        include_once APPROOT . "/views/templates/client/c_sidebar.php";
-        include_once APPROOT . "/views/client/c_complaintReg.php";
+        require_once APPROOT . "/views/client/c_complaintReg.php";
     }
 
 
@@ -199,11 +201,8 @@ class ComplaintController
         $client_name = $_SESSION['user']['name'];
         $complaints = $this->complaintModel->getComplaintsByClient($client_name);
 
-        include_once APPROOT . "/views/templates/client/c_header.php";
-        include_once APPROOT . "/views/templates/client/c_sidebar.php";
-
-        // Then include main complaint list
-        include_once APPROOT . "/views/client/c_complaintlist.php";
+        $data = ['complaints' => $complaints];
+        require_once APPROOT . "/views/client/c_complaintlist.php";
     }
 
 
@@ -260,10 +259,8 @@ class ComplaintController
     {
         $client_name = $_SESSION['user']['name'];
         $complaints = $this->complaintModel->getComplaintsByClient($client_name);
-
-        include_once APPROOT . "/views/templates/client/c_header.php";
-        include_once APPROOT . "/views/templates/client/c_sidebar.php";
-        include_once APPROOT . "/views/client/c_complaintlist.php";
+        $data = ['complaints' => $complaints];
+        require_once APPROOT . "/views/client/c_complaintlist.php";
     }
 
 

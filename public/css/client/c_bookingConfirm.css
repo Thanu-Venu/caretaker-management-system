@@ -1,191 +1,168 @@
-/* ── Page layout ─────────────────────────────────── */
-.confirmation-container {
-  font-family: 'Segoe UI', Arial, sans-serif;
-  margin-left: 270px;
-  min-height: calc(10vh - 60px);
-  padding: 90px 24px 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Booking confirmation — same shell rhythm as client dashboard / browse (main.main-content + dashboard-layout) */
+
+.client-booking-confirm-page__header {
+    margin-bottom: var(--admin-section-gap);
 }
 
-.card {
-  background: #fff;
-  padding: 35px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 640px;
+.client-booking-confirm-page__header .page-title {
+    font-family: var(--admin-font, "Inter", system-ui, sans-serif);
+    color: var(--admin-page-heading-color, #0f3555);
 }
 
-.card h2 {
-  color: #00bfa5;
-  margin-bottom: 10px;
-  font-size: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  text-align: center;
+.client-booking-confirm-card {
+    max-width: 920px;
+    margin: 0 auto var(--admin-section-gap);
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius, 12px);
+    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
+    font-family: var(--admin-font, inherit);
 }
 
-.subtitle {
-  color: #666;
-  font-size: 15px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.card i {
-  color: #00bfa5;
-  font-size: 24px;
-  margin-right: 0;
-}
-
-.details {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 25px 0;
-  font-size: 15px;
-  line-height: 1.6;
-  color: #444;
-  text-align: left;
-}
-
-.details p {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 18px;
-  margin: 0;
-  width: 100%;
-}
-
-.details strong {
-  color: #333;
-  font-weight: 600;
-  flex: 0 0 170px;
-  text-align: left;
-}
-
-.details span {
-  color: #444;
-  flex: 1;
-  text-align: right;
-}
-
-.pending {
-  color: #e67e22;
-  font-weight: 600;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: nowrap;
-  margin-top: 12px;
-  width: 100%;
-}
-
-.actions button {
-  appearance: none;
-  border: none;
-  border-radius: 10px;
-  padding: 11px 18px;
-  min-height: 42px;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: 0.2px;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-/* ── Card ─────────────────────────────────────────── */
-.card {
-  background: #ffffff;
-  padding: 44px 48px;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.10);
-  width: 100%;
-  max-width: 640px;
-
-}
-
-.actions button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.actions button:active {
-  transform: translateY(0);
-}
-
-button.viewbtn {
-  background: #1e88e5;
-  color: #ffffff;
-}
-
-button.viewbtn:hover {
-  background: #1976d2;
-}
-
-button.secondary {
-  background: #f0f4f8;
-  color: #2c3e50;
-  border: 1px solid #ced4da;
-}
-
-button.secondary:hover {
-  background: #e2e8f0;
-}
-
-.actions button:focus-visible {
-  outline: 2px solid #1e88e5;
-  outline-offset: 2px;
-}
-
-@media (max-width: 600px) {
-  .confirmation-container {
-    margin-left: 0;
-    padding: 80px 16px 16px;
-    min-height: auto;
+.client-booking-confirm-card__success {
+    display: flex;
     align-items: flex-start;
-  }
-
-  .card {
-    padding: 28px 20px;
-  }
-
-  .details {
-    gap: 10px;
-  }
-
-  .details p {
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .details strong,
-  .details span {
-    flex: none;
-    text-align: left;
-  }
-
-  .actions {
-    flex-direction: column;
-  }
-
-  .actions button {
-    width: 100%;
-  }
+    gap: 1rem 1.25rem;
+    padding: 1.35rem 1.5rem;
+    background: linear-gradient(135deg, rgba(232, 243, 252, 0.65) 0%, rgba(240, 253, 250, 0.55) 100%);
+    border-bottom: 1px solid var(--admin-border);
 }
 
-@media (max-width: 1024px) {
-  .confirmation-container {
-    margin-left: 0;
-  }
+.client-booking-confirm-card__icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--admin-radius-sm, 8px);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(5, 150, 105, 0.25);
+    color: var(--admin-success, #059669);
+    font-size: 1.75rem;
+}
+
+.client-booking-confirm-card__title {
+    margin: 0 0 0.35rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--admin-page-heading-color, #0f3555);
+    letter-spacing: -0.02em;
+}
+
+.client-booking-confirm-card__subtitle {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--admin-muted);
+}
+
+.client-booking-confirm-details {
+    margin: 0;
+    padding: 1.25rem 1.5rem 1.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.client-booking-confirm-details__row {
+    display: grid;
+    grid-template-columns: minmax(9rem, 12rem) 1fr;
+    gap: 0.5rem 1.25rem;
+    align-items: start;
+}
+
+.client-booking-confirm-details__row--block dd {
+    white-space: normal;
+    word-break: break-word;
+}
+
+.client-booking-confirm-details dt {
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--admin-muted);
+    padding-top: 0.15rem;
+}
+
+.client-booking-confirm-details dd {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--admin-text);
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.client-booking-confirm-details__amount {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--admin-page-heading-color, #0f3555);
+}
+
+.client-booking-confirm-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: capitalize;
+    background: var(--admin-primary-soft, rgba(30, 136, 229, 0.09));
+    color: var(--admin-primary, #1e88e5);
+    border: 1px solid var(--admin-primary-muted, rgba(30, 136, 229, 0.22));
+}
+
+.client-booking-confirm-status--requested,
+.client-booking-confirm-status--payment_requested {
+    background: rgba(245, 158, 11, 0.12);
+    color: #b45309;
+    border-color: rgba(245, 158, 11, 0.35);
+}
+
+.client-booking-confirm-status--accepted,
+.client-booking-confirm-status--approved,
+.client-booking-confirm-status--advance_paid {
+    background: var(--admin-success-bg, #d1fae5);
+    color: var(--admin-success-text, #047857);
+    border-color: rgba(5, 150, 105, 0.25);
+}
+
+.client-booking-confirm-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.65rem;
+    padding: 1rem 1.5rem 1.35rem;
+    background: rgba(248, 250, 252, 0.75);
+    border-top: 1px solid var(--admin-border);
+}
+
+@media (max-width: 640px) {
+    .client-booking-confirm-details__row {
+        grid-template-columns: 1fr;
+        gap: 0.2rem;
+        padding-bottom: 0.75rem;
+        margin-bottom: 0.35rem;
+        border-bottom: 1px solid var(--admin-border);
+    }
+
+    .client-booking-confirm-details__row:last-of-type {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .client-booking-confirm-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .client-booking-confirm-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
 }

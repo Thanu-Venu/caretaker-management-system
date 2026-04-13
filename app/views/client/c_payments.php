@@ -1,17 +1,11 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
+<?php
+$clientPageTitle = 'Payments — SmartCare';
+$clientExtraCss  = ['admin/ad_dashboard.css', 'client/c_payments.css'];
+require_once APPROOT . '/views/templates/client/client_layout_head.php';
+require_once APPROOT . '/views/templates/client/c_header.php';
+require_once APPROOT . '/views/templates/client/c_sidebar.php';
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payments Dashboard</title>
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_payments.css">
-</head>
-
-<body>
+?>
     <?php
     $summary = $data['summary'] ?? [];
     $actionItems = $data['action_items'] ?? [];
@@ -64,166 +58,277 @@
     }
     ?>
 
+    <main class="main-content admin-dashboard-page client-payments-page">
     <div class="payments-page">
-        <div class="page-title-wrap">
-            <h1>Payment Dashboard</h1>
-            <p>Manage all payment obligations across your service bookings.</p>
-        </div>
+        <header class="page-header client-payments-header">
+            <div>
+                <h1 class="page-title">Payments</h1>
+                <p class="page-subtitle text-muted">See what you owe, what is coming up, and what you have already paid.</p>
+            </div>
+        </header>
 
-        <div class="summary-grid">
+        <p class="client-payments-lead" role="note">Start with the summary below, then use <strong>Pay now</strong> when payment is available, or <strong>View details</strong> for the full breakdown.</p>
+
+        <div class="summary-grid" aria-label="Payment summary">
             <div class="summary-card">
-                <h3>Total Pending Payments</h3>
+                <h3>Money still to pay</h3>
                 <p>LKR <?= number_format((float)($summary['pending_amount'] ?? 0), 2) ?></p>
             </div>
             <div class="summary-card">
-                <h3>Payments Due This Week</h3>
+                <h3>Due in the next 7 days</h3>
                 <p><?= (int)($summary['due_this_week_count'] ?? 0) ?></p>
             </div>
             <div class="summary-card">
-                <h3>Overdue Payments</h3>
+                <h3>Overdue</h3>
                 <p><?= (int)($summary['overdue_count'] ?? 0) ?></p>
             </div>
             <div class="summary-card">
-                <h3>Total Paid This Month</h3>
+                <h3>Paid this month</h3>
                 <p>LKR <?= number_format((float)($summary['paid_this_month'] ?? 0), 2) ?></p>
             </div>
             <div class="summary-card">
-                <h3>Active Bookings With Payments</h3>
+                <h3>Bookings with a payment plan</h3>
                 <p><?= (int)($summary['active_bookings_with_payments'] ?? 0) ?></p>
             </div>
         </div>
 
-        <form method="get" action="<?= URLROOT ?>/client/payments" class="filter-panel">
+        <p class="client-payments-tabs-hint text-muted">Choose a tab to change which list you are looking at. Your filters apply to the tables below.</p>
+        <div class="tabs-wrap" aria-label="Quick views for payment lists">
+            <?php
+            $tabs = [
+                'all' => 'All Payments',
+                'due_now' => 'Due Now',
+                'upcoming' => 'Upcoming Payments',
+                'overdue' => 'Overdue Payments',
+                'paid_history' => 'Paid History',
+                'by_booking' => 'By Booking'
+            ];
+
+            foreach ($tabs as $key => $label):
+                $isActive = $tab === $key;
+            ?>
+                <a class="tab-link <?= $isActive ? 'active' : '' ?>" href="<?= URLROOT ?>/client/payments?tab=<?= urlencode($key) ?>">
+                    <?= htmlspecialchars($label) ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+
+        <form method="get" action="<?= URLROOT ?>/client/payments" class="filter-panel" aria-label="Filter payments">
             <input type="hidden" name="tab" value="<?= htmlspecialchars($tab) ?>">
 
-            <select name="service_type">
+            <div class="filter-field filter-field--wide">
+                <label for="pay-filter-search">Search</label>
+                <input type="text" id="pay-filter-search" name="search" placeholder="Booking number, caregiver, or service"
+                    value="<?= htmlspecialchars($filters['search'] ?? '') ?>">
+            </div>
+
+            <div class="filter-field">
+                <label for="pay-filter-status">Payment status</label>
+                <select id="pay-filter-status" name="status">
+                <option value="all">All Status</option>
+                <option value="advance_required" <?= (($filters['status'] ?? '') === 'advance_required') ? 'selected' : '' ?>>Advance Required</option>
+                <option value="pending" <?= (($filters['status'] ?? '') === 'pending') ? 'selected' : '' ?>>Pending</option>
+                <option value="overdue" <?= (($filters['status'] ?? '') === 'overdue') ? 'selected' : '' ?>>Overdue</option>
+                <option value="approved" <?= (($filters['status'] ?? '') === 'approved') ? 'selected' : '' ?>>Approved</option>
+                <option value="rejected" <?= (($filters['status'] ?? '') === 'rejected') ? 'selected' : '' ?>>Rejected</option>
+                </select>
+            </div>
+
+            <div class="filter-field">
+                <label for="pay-filter-service">Service type</label>
+                <select id="pay-filter-service" name="service_type">
                 <option value="all">All Services</option>
                 <option value="Elder Care" <?= (($filters['service_type'] ?? '') === 'Elder Care') ? 'selected' : '' ?>>Elder Care</option>
                 <option value="Babysitter" <?= (($filters['service_type'] ?? '') === 'Babysitter') ? 'selected' : '' ?>>Babysitter</option>
                 <option value="Maid" <?= (($filters['service_type'] ?? '') === 'Maid') ? 'selected' : '' ?>>Maid</option>
-            </select>
-
-            <button type="submit">Apply</button>
-            <a href="<?= URLROOT ?>/client/payments?tab=<?= urlencode($tab) ?>" class="reset-btn">Reset</a>
-        </form>
-
-        <?php
-        $tabs = [
-            'all' => 'All Payments',
-            'due' => 'Due',
-            'upcoming' => 'Upcoming Payments',
-            'history' => 'History'
-        ];
-        $activeCount = $tab === 'history' ? count($paymentHistory) : count($actionItems);
-        $activeUnit = $tab === 'history' ? 'record(s)' : 'item(s)';
-        ?>
-
-        <section class="section-card payments-results-card">
-            <div class="tabs-wrap">
-                <?php foreach ($tabs as $key => $label): ?>
-                    <a class="tab-link <?= $tab === $key ? 'active' : '' ?>" href="<?= URLROOT ?>/client/payments?tab=<?= urlencode($key) ?>">
-                        <?= htmlspecialchars($label) ?>
-                    </a>
-                <?php endforeach; ?>
+                </select>
             </div>
 
+            <div class="filter-field">
+                <label for="pay-filter-booking-status">Booking status</label>
+                <select id="pay-filter-booking-status" name="booking_status">
+                <option value="all">All booking stages</option>
+                <option value="Payment_Requested" <?= (($filters['booking_status'] ?? '') === 'Payment_Requested') ? 'selected' : '' ?>>Payment Requested</option>
+                <option value="Advance_Paid" <?= (($filters['booking_status'] ?? '') === 'Advance_Paid') ? 'selected' : '' ?>>Advance Paid</option>
+                <option value="Accepted" <?= (($filters['booking_status'] ?? '') === 'Accepted') ? 'selected' : '' ?>>Accepted</option>
+                <option value="Completed" <?= (($filters['booking_status'] ?? '') === 'Completed') ? 'selected' : '' ?>>Completed</option>
+                </select>
+            </div>
+
+            <div class="filter-field">
+                <label for="pay-filter-from">From date</label>
+                <input type="date" id="pay-filter-from" name="from_date" value="<?= htmlspecialchars($filters['from_date'] ?? '') ?>">
+            </div>
+            <div class="filter-field">
+                <label for="pay-filter-to">To date</label>
+                <input type="date" id="pay-filter-to" name="to_date" value="<?= htmlspecialchars($filters['to_date'] ?? '') ?>">
+            </div>
+
+            <div class="filter-field filter-field--actions">
+                <span class="filter-actions-label" aria-hidden="true">&nbsp;</span>
+                <div class="filter-actions-btns">
+                    <button type="submit" class="btn primary">Apply filters</button>
+                    <a href="<?= URLROOT ?>/client/payments?tab=<?= urlencode($tab) ?>" class="reset-btn btn ghost">Clear filters</a>
+                </div>
+            </div>
+        </form>
+
+        <section class="section-card payments-results-card">
             <div class="section-header">
-                <h2>Payment Records</h2>
-                <span><?= $activeCount ?> <?= $activeUnit ?></span>
+                <div>
+                    <h2>Needs your attention</h2>
+                    <p class="section-sub text-muted">Payments where something is due or waiting on you.</p>
+                </div>
+                <span class="section-count"><?= count($actionItems) ?> row(s)</span>
             </div>
 
             <div class="table-wrap">
-                <?php if ($tab === 'history'): ?>
-                    <table>
-                        <thead>
+                <table class="client-payments-action-table" data-table-collapse="off">
+                    <thead>
+                        <tr>
+                            <th>Booking</th>
+                            <th>Service</th>
+                            <th>Caretaker</th>
+                            <th>Amount Due</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($actionItems)): ?>
                             <tr>
-                                <th>Booking</th>
-                                <th>Service</th>
-                                <th>Payment Date</th>
-                                <th>Amount Paid</th>
-                                <th>Method</th>
-                                <th>Status</th>
+                                <td colspan="7">No payment actions found.</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($paymentHistory)): ?>
+                        <?php else: ?>
+                            <?php foreach ($actionItems as $item): ?>
+                                <?php
+                                $effectiveStatus = effectivePaymentStatus($item);
+                                $canPayNow = !empty($item['can_pay_now']) && !in_array($effectiveStatus, ['cancelled', 'rejected'], true);
+                                ?>
                                 <tr>
-                                    <td colspan="6">No payment history found.</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach ($paymentHistory as $h): ?>
-                                    <tr>
-                                        <td>#<?= (int)$h['booking_id'] ?></td>
-                                        <td><?= htmlspecialchars($h['service_type']) ?> (<?= htmlspecialchars($h['basis']) ?>)</td>
-                                        <td><?= htmlspecialchars($h['paid_at'] ?? '-') ?></td>
-                                        <td>LKR <?= number_format((float)$h['amount'], 2) ?></td>
-                                        <td><?= ucfirst(str_replace('_', ' ', (string)$h['payment_method'])) ?></td>
-                                        <td>
-                                            <span class="pill <?= statusClass($h['status'] ?? '') ?>">
-                                                <?= htmlspecialchars(ucfirst((string)$h['status'])) ?>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                <?php else: ?>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Booking ID</th>
-                                <th>Service</th>
-                                <th>Caretaker</th>
-                                <th>Amount Due</th>
-                                <th>Due Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($actionItems)): ?>
-                                <tr>
-                                    <td colspan="7">No payments found for this tab.</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach ($actionItems as $item): ?>
-                                    <?php
-                                    $effectiveStatus = effectivePaymentStatus($item);
-                                    $canPayNow = !empty($item['can_pay_now']) && !in_array($effectiveStatus, ['cancelled', 'rejected'], true);
-                                    ?>
-                                    <tr>
-                                        <td>#<?= (int)$item['booking_id'] ?></td>
-                                        <td><?= htmlspecialchars($item['service_type']) ?> (<?= htmlspecialchars($item['basis']) ?>)</td>
-                                        <td><?= htmlspecialchars($item['caretaker_name']) ?></td>
-                                        <td>LKR <?= number_format((float)$item['amount_due'], 2) ?></td>
-                                        <td><?= htmlspecialchars($item['due_date'] ?? '-') ?></td>
-                                        <td>
-                                            <span class="pill <?= statusClass($effectiveStatus) ?>">
-                                                <?= htmlspecialchars(statusLabel($item)) ?>
-                                            </span>
-                                        </td>
-                                        <td>
+                                    <td>#<?= (int)$item['booking_id'] ?></td>
+                                    <td><?= htmlspecialchars($item['service_type']) ?> (<?= htmlspecialchars($item['basis']) ?>)</td>
+                                    <td><?= htmlspecialchars($item['caretaker_name']) ?></td>
+                                    <td>LKR <?= number_format((float)$item['amount_due'], 2) ?></td>
+                                    <td><?= htmlspecialchars($item['due_date'] ?? '-') ?></td>
+                                    <td>
+                                        <span class="pill <?= statusClass($effectiveStatus) ?>">
+                                            <?= htmlspecialchars(statusLabel($item)) ?>
+                                        </span>
+                                    </td>
+                                    <td class="payments-actions-cell">
+                                        <div class="payment-row-actions" role="group" aria-label="Actions for booking <?= (int)$item['booking_id'] ?>">
                                             <?php if ($canPayNow): ?>
                                                 <?php if (($item['source_type'] ?? '') === 'advance'): ?>
-                                                    <a class="action-btn pay" href="<?= URLROOT ?>/client/c_makePayment?booking_id=<?= (int)$item['booking_id'] ?>">Pay Now</a>
+                                                    <a class="action-btn pay" href="<?= URLROOT ?>/client/c_makePayment?booking_id=<?= (int)$item['booking_id'] ?>">Pay now</a>
                                                 <?php else: ?>
-                                                    <a class="action-btn pay" href="<?= URLROOT ?>/client/c_makePayment?booking_id=<?= (int)$item['booking_id'] ?>&recurring_payment_id=<?= (int)$item['recurring_payment_id'] ?>">Pay Now</a>
+                                                    <a class="action-btn pay" href="<?= URLROOT ?>/client/c_makePayment?booking_id=<?= (int)$item['booking_id'] ?>&recurring_payment_id=<?= (int)$item['recurring_payment_id'] ?>">Pay now</a>
                                                 <?php endif; ?>
                                             <?php else: ?>
-                                                <button class="action-btn disabled" disabled><?= in_array($effectiveStatus, ['cancelled', 'rejected'], true) ? 'Cancelled' : 'Pay Not Available' ?></button>
+                                                <button type="button" class="action-btn disabled" disabled>
+                                                    <?= in_array($effectiveStatus, ['cancelled', 'rejected'], true) ? 'Cancelled' : 'Pay unavailable' ?>
+                                                </button>
                                             <?php endif; ?>
-                                            <a class="action-btn details" href="<?= URLROOT ?>/client/paymentDetails/<?= (int)$item['booking_id'] ?>"><?= in_array($effectiveStatus, ['cancelled', 'rejected'], true) ? 'View Cancelled Details' : 'View Details' ?></a>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+                                            <a class="action-btn details" href="<?= URLROOT ?>/client/paymentDetails/<?= (int)$item['booking_id'] ?>">
+                                                <?= in_array($effectiveStatus, ['cancelled', 'rejected'], true) ? 'View cancelled details' : 'View details' ?>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <div class="section-header">
+                <div>
+                    <h2>Your bookings</h2>
+                    <p class="section-sub text-muted">Progress and next payment for each booking.</p>
+                </div>
+                <span class="section-count"><?= count($bookingOverview) ?> booking(s)</span>
+            </div>
+
+            <div class="booking-grid">
+                <?php if (empty($bookingOverview)): ?>
+                    <div class="empty">No booking payment data found.</div>
+                <?php else: ?>
+                    <?php foreach ($bookingOverview as $b): ?>
+                        <?php
+                        $paidCycles = (int)($b['paid_cycles'] ?? 0);
+                        $totalCycles = (int)($b['total_cycles'] ?? 0);
+                        $progress = $totalCycles > 0 ? min(100, round(($paidCycles / $totalCycles) * 100)) : 0;
+                        ?>
+                        <div class="booking-card">
+                            <h3>Booking #<?= (int)$b['booking_id'] ?></h3>
+                            <p><strong>Service:</strong> <?= htmlspecialchars($b['service_type']) ?></p>
+                            <p><strong>Basis:</strong> <?= htmlspecialchars($b['basis']) ?></p>
+                            <p><strong>Caretaker:</strong> <?= htmlspecialchars($b['caretaker_name']) ?></p>
+                            <p><strong>Service Start:</strong> <?= htmlspecialchars($b['service_start_date']) ?></p>
+                            <p><strong>Next Payment:</strong> <?= $b['next_payment_amount'] !== null ? ('LKR ' . number_format((float)$b['next_payment_amount'], 2)) : '-' ?></p>
+                            <p><strong>Due Date:</strong> <?= htmlspecialchars($b['next_payment_due_date'] ?? '-') ?></p>
+
+                            <div class="progress-row">
+                                <span>Payments Completed: <?= $paidCycles ?> / <?= $totalCycles ?></span>
+                                <div class="bar"><i style="width: <?= (int)$progress ?>%;"></i></div>
+                            </div>
+
+                            <a class="action-btn details" href="<?= URLROOT ?>/client/paymentDetails/<?= (int)$b['booking_id'] ?>">View Payment Schedule</a>
+                        </div>
+                    <?php endforeach; ?>
                 <?php endif; ?>
             </div>
         </section>
-    </div>
-</body>
 
-</html>
+        <section class="section-card">
+            <div class="section-header">
+                <div>
+                    <h2>Past payments</h2>
+                    <p class="section-sub text-muted">Confirmed payments you have already made.</p>
+                </div>
+                <span class="section-count"><?= count($paymentHistory) ?> record(s)</span>
+            </div>
+
+            <div class="table-wrap">
+                <table class="client-payments-history-table" data-table-collapse="off">
+                    <thead>
+                        <tr>
+                            <th>Booking</th>
+                            <th>Service</th>
+                            <th>Payment Date</th>
+                            <th>Amount Paid</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($paymentHistory)): ?>
+                            <tr>
+                                <td colspan="6">No payment history found.</td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($paymentHistory as $h): ?>
+                                <tr>
+                                    <td>#<?= (int)$h['booking_id'] ?></td>
+                                    <td><?= htmlspecialchars($h['service_type']) ?> (<?= htmlspecialchars($h['basis']) ?>)</td>
+                                    <td><?= htmlspecialchars($h['paid_at'] ?? '-') ?></td>
+                                    <td>LKR <?= number_format((float)$h['amount'], 2) ?></td>
+                                    <td><?= htmlspecialchars(ucfirst(str_replace('_', ' ', (string)($h['payment_method'] ?? '-')))) ?></td>
+                                    <td>
+                                        <span class="pill <?= statusClass($h['status'] ?? '') ?>">
+                                            <?= htmlspecialchars(ucfirst((string)($h['status'] ?? '-'))) ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    </main>
+<?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

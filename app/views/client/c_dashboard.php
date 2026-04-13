@@ -1,11 +1,10 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
-
-<?php if (!empty($_SESSION['flash_message'])): ?>
-  <div class="alert success"><?php echo $_SESSION['flash_message'];
-    unset($_SESSION['flash_message']); ?>
-   </div>
-<?php endif; ?>
+<?php
+$clientPageTitle = 'Dashboard - SmartCare';
+$clientExtraCss = ['client/c_dashboard.css'];
+require_once APPROOT . '/views/templates/client/client_layout_head.php';
+require_once APPROOT . '/views/templates/client/c_header.php';
+require_once APPROOT . '/views/templates/client/c_sidebar.php';
+?>
 <?php
 $servicePriceRates = [
   "Elder Care" => [
@@ -38,18 +37,13 @@ function moneyLKR($amount)
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<main class="main-content admin-dashboard-page client-dashboard-page">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client Dashboard</title>
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_dashboard.css">
-</head>
-
-<body>
+    <?php if (!empty($_SESSION['flash_message'])): ?>
+      <div class="alert success"><?php echo $_SESSION['flash_message'];
+        unset($_SESSION['flash_message']); ?>
+      </div>
+    <?php endif; ?>
 
     <div id="emergencyModal" class="modal">
       <div class="modal-content">
@@ -59,8 +53,7 @@ function moneyLKR($amount)
         <h2>🚨 Emergency Support</h2>
         <p>Submit your emergency request</p>
 
-        <form id="emergencyForm" method="POST" action="<?= URLROOT; ?>/client/c_dashboard">
-          <input type="hidden" name="emergency_submit" value="1">
+        <form method="POST" action="">
           
           <div class="form-group">
             <label>Emergency Type</label>
@@ -87,8 +80,8 @@ function moneyLKR($amount)
         </form>
 
         <div class="quick-call">
-          <a href="tel:110">🚑 Ambulance / Fire &amp; Rescue (110)</a>
-          <a href="tel:118">🚓 Police Emergency Hotline (118/119)</a>
+          <a href="tel:1990">🚑 Ambulance</a>
+          <a href="tel:119">🚓 Police</a>
         </div>
 
       </div>
@@ -121,9 +114,6 @@ function moneyLKR($amount)
         </div>
       </div>
     <?php endif; ?>
-    <div class="container">
-
-
       <div class="client-dashboard">
 
         <!-- Welcome -->
@@ -349,12 +339,8 @@ function moneyLKR($amount)
 
 
       </div>
-     
-    </div>
 
-    <script src="<?php echo URLROOT; ?>/public/js/client/c_dashboard.js"></script>
+</main>
 
-
-  </body>
-
-</html>
+<script src="<?php echo URLROOT; ?>/public/js/client/c_dashboard.js"></script>
+<?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

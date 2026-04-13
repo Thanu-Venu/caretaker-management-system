@@ -1,14 +1,11 @@
 <?php
 
-
-class LandingController {
-
-    public function home() {
-        $this->view("landing/home");
+class LandingController extends Controller
+{
+    public function home()
+    {
+        $landingModel = $this->model('LandingModel');
+        $landingMetrics = $landingModel->getPublicMetrics();
+        $this->view('landing/home', ['landingMetrics' => $landingMetrics]);
     }
-
-    public function view($view, $data = []) {
-        require_once "../app/views/" . $view . ".php";
-    }
-   
 }

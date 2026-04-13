@@ -190,6 +190,24 @@ class ClientController extends Controller
                 $_POST['duration'],
                 $location
             );
+            usort($caretakers, static function (array $a, array $b): int {
+                $ra = isset($a['rating']) && $a['rating'] !== '' && $a['rating'] !== null ? (float) $a['rating'] : null;
+                $rb = isset($b['rating']) && $b['rating'] !== '' && $b['rating'] !== null ? (float) $b['rating'] : null;
+                if ($ra === null && $rb === null) {
+                    return strcasecmp((string) ($a['name'] ?? ''), (string) ($b['name'] ?? ''));
+                }
+                if ($ra === null) {
+                    return 1;
+                }
+                if ($rb === null) {
+                    return -1;
+                }
+                if ((int) ($ra * 10) !== (int) ($rb * 10)) {
+                    return $rb <=> $ra;
+                }
+
+                return strcasecmp((string) ($a['name'] ?? ''), (string) ($b['name'] ?? ''));
+            });
         }
 
         $this->view("client/c_find", [
@@ -622,6 +640,18 @@ class ClientController extends Controller
         ]);
     }
 
+    public function c_myBookings()
+    {
+        $clientId = AuthSession::profileId();
+        $bookings = $this->clientModel->getAllBookingsForClientOverview($clientId);
+        $pendingAdvance = $this->clientModel->getAdvancePaymentPendingBookings($clientId);
+
+        $this->view('client/c_my_bookings', [
+            'bookings' => $bookings,
+            'pendingAdvance' => $pendingAdvance,
+        ]);
+    }
+
     // New ongoing bookings page for client
     public function c_ongoingBookings()
     {
@@ -635,7 +665,7 @@ class ClientController extends Controller
     public function requestCaretakerChange()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: " . URLROOT . "/client/myBookings");
+            header("Location: " . URLROOT . "/public?url=client/c_myBookings");
             exit;
         }
 
@@ -646,7 +676,7 @@ class ClientController extends Controller
 
         if ($bookingId <= 0 || $newCaretakerId <= 0 || $clientId <= 0 || $reason === '') {
             $_SESSION['error'] = "Missing details.";
-            header("Location: " . URLROOT . "/client/myBookings");
+            header("Location: " . URLROOT . "/public?url=client/c_myBookings");
             exit;
         }
 
@@ -798,7 +828,7 @@ class ClientController extends Controller
                 'rating_count' => (int)($c['rating_count'] ?? 0),
                 'experience_years' => (int)($c['experience'] ?? 0),
                 'qualification' => $c['qualifications'] ?? '',
-                'profile_image' => $c['profile_image'] ?? 'default.png'
+                'profile_image' => $c['profile_image'] ?? 'default.jpg'
             ];
         }, $list));
         error_reporting($prev);
@@ -1507,7 +1537,7 @@ class ClientController extends Controller
     public function c_ctprofileview()
     {
         if (!isset($_GET['id'])) {
-            header("Location: index.php?url=client/c_find1");
+            header('Location: ' . URLROOT . '/public?url=client/c_find1');
             exit;
         }
 
@@ -1518,8 +1548,21 @@ class ClientController extends Controller
             die("Caretaker not found");
         }
 
+        $allowedBookingKeys = ['service_type', 'basis', 'duration', 'date', 'time', 'customization_hours', 'customization_apply'];
+        $bookingContext = [];
+        foreach ($allowedBookingKeys as $key) {
+            if (!isset($_GET[$key])) {
+                continue;
+            }
+            $val = is_string($_GET[$key]) ? trim($_GET[$key]) : (string) $_GET[$key];
+            if ($val !== '') {
+                $bookingContext[$key] = $val;
+            }
+        }
+
         $this->view("client/c_ctprofileview", [
-            'caretaker' => $caretaker
+            'caretaker' => $caretaker,
+            'bookingContext' => $bookingContext,
         ]);
     }
 
@@ -1699,7 +1742,7 @@ class ClientController extends Controller
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            $profileImage = $user['profile_image'] ?? 'default.png';
+            $profileImage = $user['profile_image'] ?? 'default.jpg';
 
             if (!empty($_FILES['profile_image']['name'])) {
 
@@ -1736,17 +1779,34 @@ class ClientController extends Controller
         $user = $_SESSION['user'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if ($_POST['new-password'] !== $_POST['confirm-password']) {
-                die("Error: Passwords do not match.");
+            $current = (string) ($_POST['current_password'] ?? '');
+            $new     = (string) ($_POST['new_password'] ?? '');
+            $confirm = (string) ($_POST['confirm_password'] ?? '');
+
+            $hash = $this->clientModel->getClientPasswordHashById((int) $user['id']);
+            if ($hash === null || $hash === '' || !password_verify($current, $hash)) {
+                $_SESSION['error'] = 'Current password is incorrect.';
+                header('Location: ' . URLROOT . '/client/c_settings');
+                exit();
             }
 
-            $_POST['password'] = password_hash($_POST['new-password'], PASSWORD_DEFAULT);
+            if ($new !== $confirm) {
+                $_SESSION['error'] = 'New passwords do not match.';
+                header('Location: ' . URLROOT . '/client/c_settings');
+                exit();
+            }
 
-            $this->clientModel->updateClientPassword($user['id'], $_POST['password']);
+            if (strlen($new) < 8) {
+                $_SESSION['error'] = 'New password must be at least 8 characters.';
+                header('Location: ' . URLROOT . '/client/c_settings');
+                exit();
+            }
 
+            $hashed = password_hash($new, PASSWORD_DEFAULT);
+            $this->clientModel->updateClientPassword($user['id'], $hashed);
 
-            $_SESSION['success'] = "Password updated successfully!";
-            header("Location: " . URLROOT . "/client/c_settings");
+            $_SESSION['success'] = 'Password updated successfully!';
+            header('Location: ' . URLROOT . '/client/c_settings');
             exit();
         }
     }
@@ -1823,8 +1883,27 @@ class ClientController extends Controller
     public function c_announcement()
     {
         $announcementModel = $this->model('AnnouncementModel');
-        $announcements = $announcementModel->getClientAnnouncements();
+        $perPage     = 15;
+        $currentPage = max(1, (int) ($_GET['page'] ?? 1));
+        $filters     = [
+            'for_client_portal' => true,
+            'date_from'        => trim((string) ($_GET['date_from'] ?? '')),
+            'date_to'          => trim((string) ($_GET['date_to'] ?? '')),
+            'q'                => trim((string) ($_GET['q'] ?? '')),
+        ];
+        $totalRecords = $announcementModel->countAnnouncementsFiltered($filters);
+        $totalPages   = $totalRecords > 0 ? (int) ceil($totalRecords / $perPage) : 1;
+        $currentPage  = max(1, min($currentPage, $totalPages));
+        $offset       = ($currentPage - 1) * $perPage;
+        $announcements = $announcementModel->getAnnouncementsFilteredPaged($filters, $perPage, $offset);
 
-        $this->view("client/c_announcement", $announcements);
+        $this->view('client/c_announcement', [
+            'announcements' => $announcements,
+            'filters'       => $filters,
+            'currentPage'   => $currentPage,
+            'totalPages'    => $totalPages,
+            'totalRecords'  => $totalRecords,
+            'perPage'       => $perPage,
+        ]);
     }
 }

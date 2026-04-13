@@ -27,17 +27,75 @@ body {
     border-image-slice: 1;
 }
 
+.notif-list {
+    list-style: none;
+    margin: 30px;
+    padding: 0;
+}
+
 .notif-item {
     border-bottom: 1px solid var(--admin-border, #e2e8f0);
     padding: 16px 4px;
     transition: background 0.2s ease;
 }
 
-.notif-item:hover {
-    background: var(--admin-primary-soft, rgba(30, 136, 229, 0.08));
+.notif-item:last-child {
+    border-bottom: none;
 }
 
+.notif-item:hover {
+    background: rgba(15, 23, 42, 0.04);
+}
+
+/* Whole row is clickable — read like content, not a default browser link */
 .notif-item a {
-    color: var(--admin-primary, #1e88e5);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    text-decoration: none;
+    color: var(--admin-text-secondary, #64748b);
+    font-weight: 400;
+}
+
+.notif-item a:visited {
+    color: var(--admin-text-secondary, #64748b);
+}
+
+.notif-item a strong {
     font-weight: 600;
+    font-size: 1.0625rem;
+    color: var(--admin-text, #0f172a);
+    letter-spacing: -0.01em;
+}
+
+.notif-item a small {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--admin-text-muted, #94a3b8);
+}
+
+.notif-item a:hover strong {
+    color: #0d4d47;
+}
+
+.notif-item.unread a strong {
+    font-weight: 700;
+}
+
+.notif-item.unread {
+    border-left: 3px solid #0d9488;
+    padding-left: 12px;
+    margin-left: -2px;
+}
+
+.notif-item a:focus-visible {
+    outline: 2px solid #0d9488;
+    outline-offset: 3px;
+    border-radius: 6px;
+}
+
+/* App shell (client/HR/admin) already offsets `main.main-content` under the fixed header — do not add a second top margin here */
+main.main-content.notif-page {
+    margin-top: 0;
 }
