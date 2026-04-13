@@ -348,7 +348,7 @@ class ClientController extends Controller
             exit;
         }
 
-        $allowedTabs = ['all', 'due', 'upcoming', 'history'];
+        $allowedTabs = ['all', 'due_now', 'upcoming', 'overdue', 'paid_history'];
         $tab = $_GET['tab'] ?? 'all';
         if (!in_array($tab, $allowedTabs, true)) {
             $tab = 'all';
@@ -370,9 +370,8 @@ class ClientController extends Controller
         $history = $this->clientModel->getClientPaymentHistoryDetailed((int)$clientId);
 
         $todayTs = strtotime(date('Y-m-d'));
-        $upcomingWindowTs = strtotime('+30 days', $todayTs);
 
-        $filteredAction = array_values(array_filter($actionItems, function ($item) use ($filters, $todayTs, $upcomingWindowTs) {
+        $filteredAction = array_values(array_filter($actionItems, function ($item) use ($filters, $todayTs) {
             $search = strtolower($filters['search']);
             if ($search !== '') {
                 $haystack = strtolower(
@@ -405,18 +404,55 @@ class ClientController extends Controller
                 return false;
             }
 
-            if ($filters['tab'] === 'due') {
-                return (string)$item['payment_status'] === 'overdue' || ((int)$item['days_delta'] <= 0 && (string)$item['payment_status'] !== 'advance_required');
+            $paymentStatus = strtolower((string)($item['payment_status'] ?? ''));
+            $daysDelta = (int)($item['days_delta'] ?? 99);
+            $isCompleted = in_array($paymentStatus, ['approved', 'paid'], true);
+
+            if ($isCompleted) {
+                return false;
+            }
+
+            if ($filters['tab'] === 'due_now') {
+                if ($paymentStatus === 'overdue') {
+                    return true;
+                }
+                if (in_array($paymentStatus, ['pending', 'advance_required'], true)) {
+                    if ($daysDelta <= 0) {
+                        return true;
+                    }
+                    if ($dueTs !== null && $dueTs <= $todayTs) {
+                        return true;
+                    }
+                }
+                return false;
             }
 
             if ($filters['tab'] === 'upcoming') {
-                if ($dueTs === null) {
+                if (!in_array($paymentStatus, ['pending', 'advance_required'], true)) {
                     return false;
                 }
-                return ((string)$item['payment_status'] === 'pending') && $dueTs > $todayTs && $dueTs <= $upcomingWindowTs;
+                if ($dueTs !== null) {
+                    return $dueTs > $todayTs;
+                }
+                return $daysDelta > 0;
             }
 
-            if ($filters['tab'] === 'history') {
+            if ($filters['tab'] === 'overdue') {
+                if ($paymentStatus === 'overdue') {
+                    return true;
+                }
+                if (in_array($paymentStatus, ['pending', 'advance_required'], true)) {
+                    if ($daysDelta < 0) {
+                        return true;
+                    }
+                    if ($dueTs !== null && $dueTs < $todayTs) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            if ($filters['tab'] === 'paid_history') {
                 return false;
             }
 
@@ -476,8 +512,12 @@ class ClientController extends Controller
                 return false;
             }
 
-            if ($filters['tab'] === 'history') {
-                return strtolower((string)$item['status']) === 'approved';
+            if ($filters['tab'] === 'due_now' || $filters['tab'] === 'upcoming' || $filters['tab'] === 'overdue') {
+                return false;
+            }
+
+            if ($filters['tab'] === 'paid_history') {
+                return in_array(strtolower((string)$item['status']), ['approved', 'paid', 'completed'], true);
             }
 
             return true;

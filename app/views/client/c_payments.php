@@ -57,43 +57,9 @@ require_once APPROOT . '/views/templates/client/c_sidebar.php';
         return ucfirst($status);
     }
 
-    // Filter data based on selected tab
+    // Data is filtered in controller by selected tab.
     $filteredActionItems = $actionItems;
     $filteredPaymentHistory = $paymentHistory;
-
-    if ($tab === 'due_now') {
-        // Show only items due now (pending with days_delta <= 0)
-        $filteredActionItems = array_filter($actionItems, function($item) {
-            $status = effectivePaymentStatus($item);
-            $days = (int)($item['days_delta'] ?? 99);
-            return $status === 'pending' && $days <= 0;
-        });
-        $filteredPaymentHistory = [];
-    } elseif ($tab === 'upcoming') {
-        // Show only upcoming items (pending with days_delta > 0)
-        $filteredActionItems = array_filter($actionItems, function($item) {
-            $status = effectivePaymentStatus($item);
-            $days = (int)($item['days_delta'] ?? 99);
-            return $status === 'pending' && $days > 0;
-        });
-        $filteredPaymentHistory = [];
-    } elseif ($tab === 'overdue') {
-        // Show only overdue items
-        $filteredActionItems = array_filter($actionItems, function($item) {
-            $status = effectivePaymentStatus($item);
-            return $status === 'overdue';
-        });
-        $filteredPaymentHistory = [];
-    } elseif ($tab === 'paid_history') {
-        // Show only payment history
-        $filteredActionItems = [];
-        $filteredPaymentHistory = $paymentHistory;
-    } elseif ($tab === 'by_booking') {
-        // Group by booking - for now show all
-        $filteredActionItems = $actionItems;
-        $filteredPaymentHistory = $paymentHistory;
-    }
-    // 'all' tab shows everything (default behavior)
     ?>
 
     <main class="main-content admin-dashboard-page client-payments-page">
@@ -275,7 +241,7 @@ require_once APPROOT . '/views/templates/client/c_sidebar.php';
 
     
 
-        <section class="section-card" <?= in_array($tab, ['due_now', 'upcoming', 'overdue']) ? 'style="display: none;"' : '' ?></section>>
+        <section class="section-card" <?= in_array($tab, ['due_now', 'upcoming', 'overdue']) ? 'style="display: none;"' : '' ?>>
             <div class="section-header">
                 <div>
                     <h2>Past payments</h2>
