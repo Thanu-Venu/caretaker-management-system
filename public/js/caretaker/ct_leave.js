@@ -69,16 +69,42 @@ document.addEventListener('DOMContentLoaded', () => {
         const leaveType = leaveTypeInput ? leaveTypeInput.value : '';
         if (leaveType === 'Sick Leave') {
             startHint.textContent = `Sick leave can be requested starting from today.`;
+            startInput.min = new Date().toISOString().slice(0, 10);
         } else {
             startHint.textContent = `Leave must be requested at least ${policy.advanceNoticeDays} days in advance. Earliest start: ${formatDate(minAdvanceIso)}.`;
+            startInput.min = minAdvanceIso;
+        }
+
+        // Auto-correct invalid start dates
+        if (startInput.value && startInput.value < startInput.min && document.activeElement !== startInput) {
+            startInput.value = startInput.min;
         }
 
         if (startInput.value) {
+            const startDateObj = parseDate(startInput.value);
+            
+            // Limit max duration to 5 days
+            const maxEndDateObj = new Date(startDateObj);
+            maxEndDateObj.setDate(maxEndDateObj.getDate() + 4); // +4 days = exactly 5 days inclusive
+            const maxEndIso = maxEndDateObj.toISOString().slice(0, 10);
+            
             endInput.min = startInput.value;
-            endHint.textContent = `End date must be on or after ${formatDate(startInput.value)}.`;
+            endInput.max = maxEndIso;
+            endHint.textContent = `End date must be between ${formatDate(startInput.value)} and ${formatDate(maxEndIso)} (Max 5 days).`;
+            
+            // Auto-correct end date if it violates max
+            if (endInput.value && endInput.value > maxEndIso && document.activeElement !== endInput) {
+                 endInput.value = maxEndIso;
+            }
         } else {
-            endInput.min = minAdvanceIso;
+            endInput.min = startInput.min;
+            endInput.max = '';
             endHint.textContent = '';
+        }
+
+        // Auto-correct invalid end dates (min bound)
+        if (endInput.value && endInput.value < endInput.min && document.activeElement !== endInput) {
+            endInput.value = endInput.min;
         }
     }
 
