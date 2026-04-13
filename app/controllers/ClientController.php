@@ -76,6 +76,51 @@ class ClientController extends Controller
     {
         $clientId = AuthSession::profileId();
 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['emergency_submit'])) {
+            $type = trim((string)($_POST['type'] ?? ''));
+            $description = trim((string)($_POST['description'] ?? ''));
+            $phone = trim((string)($_POST['phone'] ?? ''));
+
+            if ($type === '' || $description === '' || $phone === '') {
+                $_SESSION['flash_message'] = "Please fill all emergency fields before sending the alert.";
+                header("Location: " . URLROOT . "/client/c_dashboard");
+                exit;
+            }
+
+            require_once APPROOT . '/models/NotificationModel.php';
+            $notifModel = new NotificationModel();
+            $hrUsers = $notifModel->getHRUsers();
+
+            $clientName = (string)($_SESSION['user']['name'] ?? $_SESSION['user']['username'] ?? ('Client #' . $clientId));
+            $title = 'Emergency Alert from Client';
+            $message = "Emergency Type: {$type}\n"
+                . "Client: {$clientName} (ID: {$clientId})\n"
+                . "Contact: {$phone}\n"
+                . "Description: {$description}";
+
+            $sentCount = 0;
+            foreach ($hrUsers as $hr) {
+                if ($notifModel->addNotification(
+                    (int)$hr['id'],
+                    'Manager',
+                    $title,
+                    $message,
+                    URLROOT . '/notification/index'
+                )) {
+                    $sentCount++;
+                }
+            }
+
+            if ($sentCount > 0) {
+                $_SESSION['flash_message'] = "Emergency alert sent to HR team successfully.";
+            } else {
+                $_SESSION['flash_message'] = "Emergency alert could not be sent right now. Please call emergency hotlines.";
+            }
+
+            header("Location: " . URLROOT . "/client/c_dashboard");
+            exit;
+        }
+
         $data = [
             'activeBookings' => $this->clientModel->getActiveBookingsCount($clientId),
             'caretakers'     => $this->clientModel->getAssignedCaretakersCount($clientId),
