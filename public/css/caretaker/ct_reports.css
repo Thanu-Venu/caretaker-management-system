@@ -25,6 +25,8 @@ body {
     margin-left: 280px;
     margin-right: 18px;
     padding: 18px 6px 24px;
+    width: calc(100% - 298px);
+    box-sizing: border-box;
 }
 
 h1 {

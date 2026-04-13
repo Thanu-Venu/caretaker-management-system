@@ -6,6 +6,8 @@ body {
   flex: 1;
   padding: 20px 40px;
   margin-left: 255px;
+  width: calc(100% - 255px);
+  box-sizing: border-box;
   font-family: 'Poppins', Arial, sans-serif;
 }
 
@@ -75,6 +77,7 @@ h2 {
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   padding: 15px;
+  overflow-x: auto;
 }
 
 table {
