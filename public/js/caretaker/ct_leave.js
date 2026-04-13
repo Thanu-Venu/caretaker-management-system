@@ -54,10 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function getMinAdvanceDate() {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        
+
         const leaveType = leaveTypeInput ? leaveTypeInput.value : '';
         const notice = (leaveType === 'Sick Leave') ? 0 : Number(policy.advanceNoticeDays);
-        
+
         today.setDate(today.getDate() + notice);
         return today;
     }
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function syncDateHints() {
         const minAdvance = getMinAdvanceDate();
         const minAdvanceIso = minAdvance.toISOString().slice(0, 10);
-        
+
         const leaveType = leaveTypeInput ? leaveTypeInput.value : '';
         if (leaveType === 'Sick Leave') {
             startHint.textContent = `Sick leave can be requested starting from today.`;
@@ -82,13 +82,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (startInput.value) {
             const startDateObj = parseDate(startInput.value);
-            
+
             // Check if start month is current month
             const isCurrentMonth = startDateObj.getMonth() === new Date().getMonth() && startDateObj.getFullYear() === new Date().getFullYear();
-            
-            let allowedDays = 5; 
+
+            let allowedDays = 5;
             if (isCurrentMonth && typeof policy.remainingThisMonth !== 'undefined') {
-                 allowedDays = Math.min(5, policy.remainingThisMonth);
+                allowedDays = Math.min(5, policy.remainingThisMonth);
             }
             if (allowedDays < 1) allowedDays = 0;
 
@@ -97,14 +97,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 maxEndDateObj.setDate(maxEndDateObj.getDate() + (allowedDays - 1));
             }
             const maxEndIso = maxEndDateObj.toISOString().slice(0, 10);
-            
+
             endInput.min = startInput.value;
             endInput.max = maxEndIso;
             endHint.textContent = allowedDays > 0 ? `End date must be between ${formatDate(startInput.value)} and ${formatDate(maxEndIso)} (Max ${allowedDays} days remaining).` : 'You have no leave days remaining this month.';
-            
+
             // Auto-correct end date if it violates max
             if (endInput.value && endInput.value > maxEndIso && document.activeElement !== endInput) {
-                 endInput.value = maxEndIso;
+                endInput.value = maxEndIso;
             }
         } else {
             endInput.min = startInput.min;
@@ -303,20 +303,8 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', (event) => {
         const errors = collectClientErrors();
         renderInlineErrors(errors);
-        
         if (errors.length > 0) {
             event.preventDefault();
-
-            // Check if the error is due to exhausted leave quota for a popup message
-            const startObj = parseDate(startInput.value);
-            if (startObj) {
-                const isCurrentMonth = startObj.getMonth() === new Date().getMonth() && startObj.getFullYear() === new Date().getFullYear();
-                if (isCurrentMonth && typeof policy.remainingThisMonth !== 'undefined' && policy.remainingThisMonth <= 0) {
-                    alert("Your monthly leave quota is completely finished. You cannot request more days this month!");
-                } else if (errors.some(e => e.includes('remaining leave days but requested'))) {
-                    alert("You are attempting to request more days than you have left in your monthly quota!");
-                }
-            }
         }
     });
 

@@ -27,10 +27,16 @@ $warning = $data['warning'] ?? '';
         <div class="header-row">
         <h2>Leave Requests</h2>
 
-        <button class="add-btn"
-            onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">
-            Request Leave
-        </button>
+        <?php if ((int)$summary['remaining'] <= 0): ?>
+            <button class="add-btn" onclick="alert('Your leave is finished for this month! You cannot request more leaves this month.');">
+                Request Leave
+            </button>
+        <?php else: ?>
+            <button class="add-btn"
+                onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">
+                Request Leave
+            </button>
+        <?php endif; ?>
         </div>
         <div class="booking">
 

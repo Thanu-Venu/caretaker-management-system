@@ -8,6 +8,21 @@ $warnings = $data['warnings'] ?? [];
 $summary = $data['monthlySummary'] ?? ['limit' => 5, 'used' => 0, 'remaining' => 5, 'percentage' => 0, 'label' => '0 / 5 days used'];
 $policy = $data['policy'] ?? ['advanceNoticeDays' => 3, 'maxPerRequest' => 7, 'monthlyLimit' => 5];
 $impact = $data['impact'] ?? [];
+
+// Refund this specific leave's footprint back to the remaining tally for UI editing purposes
+$refundDays = 0;
+if (!empty($leave->start_date) && !empty($leave->end_date)) {
+    $cursor = strtotime($leave->start_date);
+    $end = strtotime($leave->end_date);
+    $thisMonthStr = date('Y-m');
+    while ($cursor && $cursor <= $end) {
+        if (date('Y-m', $cursor) === $thisMonthStr) {
+            $refundDays++;
+        }
+        $cursor = strtotime('+1 day', $cursor);
+    }
+}
+$adjustedRemaining = min(5, $summary['remaining'] + $refundDays);
 ?>
 
 <!DOCTYPE html>
@@ -138,7 +153,7 @@ $impact = $data['impact'] ?? [];
       advanceNoticeDays: <?= (int)$policy['advanceNoticeDays'] ?>,
       maxPerRequest: <?= (int)$policy['maxPerRequest'] ?>,
       monthlyLimit: <?= (int)$policy['monthlyLimit'] ?>,
-      remainingThisMonth: <?= (int)$summary['remaining'] ?>
+      remainingThisMonth: <?= (int)$adjustedRemaining ?>
     };
     window.leavePreview = {
       impactUrl: '<?= htmlspecialchars($data['impactPreviewUrl'] ?? (URLROOT . '/LeaveCRUD/impactPreview')) ?>'
