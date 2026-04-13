@@ -162,14 +162,14 @@ function moneyLKR($amount)
             <p>Avg Rating Given</p>
           </div>
 
-          <div class="card" style="<?= !empty($data['pendingAdvance']) ? 'border-color: #e53935; box-shadow: 0 4px 12px rgba(229,57,53,0.1);' : '' ?>">
+          <div class="card">
             <div class="action1">
-              <i class='bx bx-wallet-alt' style="<?= !empty($data['pendingAdvance']) ? 'color: #e53935; background: rgba(229,57,53,0.1);' : '' ?>"></i>
+              <i class='bx bx-wallet-alt'></i>
             </div>
-            <h3 style="color: <?= !empty($data['pendingAdvance']) ? '#e53935' : '#111' ?>;">
+            <h3>
               <?= count($data['pendingAdvance'] ?? []); ?>
             </h3>
-            <p style="<?= !empty($data['pendingAdvance']) ? 'color: #e53935; font-weight: 500;' : '' ?>">Pending Advances</p>
+            <p>Pending Advances</p>
           </div>
         </div>
 
@@ -312,11 +312,15 @@ function moneyLKR($amount)
           </div>
         </section>
 
-        <section class="recent-bookings">
+        <section class="recent-bookings client-dashboard-recent">
           <h2>Recent Bookings</h2>
 
           <?php if (!empty($data['recentBookings'])): ?>
             <?php foreach ($data['recentBookings'] as $booking): ?>
+              <?php
+                $rawStatus = (string)($booking['status'] ?? '');
+                $statusClass = strtolower(trim(preg_replace('/[^a-z0-9]+/i', '-', $rawStatus), '-'));
+              ?>
               <div class="booking">
                 <img src="../public/images/find.png" alt="">
                 <div>
@@ -327,8 +331,8 @@ function moneyLKR($amount)
                     • <?= $booking['duration']; ?> hours
                   </p>
                 </div>
-                <span class="status <?= strtolower($booking['status']); ?>">
-                  <?= $booking['status']; ?>
+                <span class="status <?= htmlspecialchars($statusClass, ENT_QUOTES, 'UTF-8') ?>">
+                  <?= htmlspecialchars($rawStatus, ENT_QUOTES, 'UTF-8'); ?>
                 </span>
               </div>
             <?php endforeach; ?>
