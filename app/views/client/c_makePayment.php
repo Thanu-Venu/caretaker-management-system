@@ -38,6 +38,7 @@
     $paymentNote = $recurringPayment ? ('Due Date: ' . htmlspecialchars($recurringPayment['due_date'])) : $advanceNotes;
     ?>
 
+    <div class="payment-page">
     <div class="payment-container">
         <h1>Payment Details</h1>
 
@@ -112,6 +113,7 @@
             </form>
             <a href="<?= URLROOT ?>/client/c_upcomingBookings" class="btn btn-secondary">Cancel</a>
         </div>
+    </div>
     </div>
 </body>
 
