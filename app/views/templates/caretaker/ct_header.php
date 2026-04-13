@@ -14,7 +14,7 @@ $notifications = $notifModel->getNotifications($user_id, $user_role);
 $unreadCount   = $notifModel->countUnread($user_id, $user_role);
 
 $user_display = $_SESSION['user']['name'] ?? $_SESSION['user']['username'];
-$profilePic = $_SESSION['user']['profile_image'] ?? 'default.png';
+$profilePic = $_SESSION['user']['profile_image'] ?? 'default.jpg';
 ?>
 
 <!DOCTYPE html>
