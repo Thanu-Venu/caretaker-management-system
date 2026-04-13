@@ -1,0 +1,37 @@
+/* Ongoing bookings — caregiver picker in modal */
+
+.caretaker-select-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.caretaker-card {
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-sm);
+    padding: 12px;
+    cursor: pointer;
+    background: var(--admin-surface);
+    transition:
+        border-color var(--admin-transition),
+        box-shadow var(--admin-transition);
+}
+
+.caretaker-card.selected {
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 3px var(--admin-primary-ring);
+}
+
+.caretaker-card .ct-name {
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+.caretaker-card .ct-profile-image {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--admin-radius-sm);
+    object-fit: cover;
+    margin-bottom: 8px;
+}

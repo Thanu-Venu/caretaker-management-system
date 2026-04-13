@@ -150,14 +150,19 @@ document.addEventListener("DOMContentLoaded", () => {
         if (preferredHidden) preferredHidden.value = prefillTime;
       }
     } else {
-      // Show select dropdown for non-Hourly bookings
+      // Show select dropdown for non-Hourly bookings (keep options in sync with client/c_book.php $timeOptions)
       const currentValue = preferredHidden?.value || "";
+      const nightOption =
+        serviceType === "Elder Care" || serviceType === "Maid"
+          ? `<option value="Night (6pm - 10pm)" ${currentValue === "Night (6pm - 10pm)" ? "selected" : ""}>Night (6pm - 10pm)</option>`
+          : "";
       timeContainer.innerHTML = `
         <select id="preferredTime" required>
           <option value="">Select Time</option>
           <option value="Full Time (8am - 5pm)" ${currentValue === "Full Time (8am - 5pm)" ? "selected" : ""}>Full Time (8am - 5pm)</option>
           <option value="Morning (8am - 12pm)" ${currentValue === "Morning (8am - 12pm)" ? "selected" : ""}>Morning (8am - 12pm)</option>
           <option value="Evening (1pm - 5pm)" ${currentValue === "Evening (1pm - 5pm)" ? "selected" : ""}>Evening (1pm - 5pm)</option>
+          ${nightOption}
         </select>
       `;
       const selectElem = document.getElementById("preferredTime");

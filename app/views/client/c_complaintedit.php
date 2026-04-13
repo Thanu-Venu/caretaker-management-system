@@ -1,30 +1,33 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
+<?php
+$clientPageTitle = 'Edit complaint — SmartCare';
+$clientExtraCss  = ['client/c_complaintedit.css'];
+require_once APPROOT . '/views/templates/client/client_layout_head.php';
+require_once APPROOT . '/views/templates/client/c_header.php';
+require_once APPROOT . '/views/templates/client/c_sidebar.php';
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Complaint</title>
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/client/c_complaintedit.css">
-</head>
+/** @var array $complaint Set by ComplaintController::clientEdit */
+?>
 
-<body>
-<div class="main-content">
-    <h2>Edit My Complaint</h2>
+<main class="main-content">
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Edit complaint</h1>
+            <p class="text-muted">Update the details of your complaint.</p>
+        </div>
+    </header>
 
-    <?php if (!empty($success)): ?>
-        <p class="success-msg"><?= $success ?></p>
-    <?php endif; ?>
+    <section class="form-section form-section--wide">
+        <form method="POST" action="<?= URLROOT ?>/index.php?url=Complaint/clientUpdate/<?= (int) ($complaint['Id'] ?? 0) ?>">
+            <input type="hidden" name="Id" value="<?= (int) ($complaint['Id'] ?? 0) ?>">
+            <div class="field">
+                <label for="details">Details</label>
+                <textarea id="details" name="details" rows="6" required><?= htmlspecialchars((string) ($complaint['details'] ?? '')) ?></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">Update complaint</button>
+            </div>
+        </form>
+    </section>
+</main>
 
-    <form method="POST" action="<?= URLROOT ?>/index.php?url=Complaint/clientUpdate/<?= $complaint['Id'] ?>">
-        <input type="hidden" name="Id" value="<?= $complaint['Id'] ?>">
-
-        <label>Details</label>
-        <textarea name="details" required><?= htmlspecialchars($complaint['details']) ?></textarea>
-
-        <button type="submit">Update Complaint</button>
-    </form>
-</div>
-</body>
-</html>
+<?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

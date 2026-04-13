@@ -109,7 +109,7 @@
         dtImg.textContent = 'Profile image';
         var ddImg = document.createElement('dd');
         var fn = d.profile_image ? String(d.profile_image) : '';
-        if (fn && fn !== 'default.png') {
+        if (fn && fn !== 'default.jpg') {
             var img = document.createElement('img');
             img.src = urlRoot + '/public/uploads/' + encodeURIComponent(fn);
             img.alt = '';

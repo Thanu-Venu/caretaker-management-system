@@ -18,7 +18,7 @@ $user_display = $_SESSION['user']['name']
     ?? $_SESSION['user']['username']
     ?? 'User';
 
-$profilePic = $_SESSION['user']['profile_pic'] ?? 'default.png';
+$profilePic = $_SESSION['user']['profile_pic'] ?? 'default.jpg';
 ?>
 <!-- Restore collapsed rail before paint (avoids full-width flash; must run before layout CSS paints) -->
 <script>

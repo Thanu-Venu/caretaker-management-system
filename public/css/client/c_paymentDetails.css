@@ -1,148 +1,147 @@
-.payment-details-page {
-    margin-left: 250px;
-    padding: 24px;
-    background: #f4f7fb;
-    min-height: 100vh;
+/* Payment timeline (per booking) — client dashboard shell */
+
+.payment-details .payment-details-card {
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    box-shadow: var(--admin-shadow-xs, 0 1px 2px rgba(15, 23, 42, 0.04));
+    padding: var(--dash-s-3, 20px) var(--dash-s-3, 22px);
+    margin-bottom: var(--dash-s-3, 24px);
 }
 
-.top-bar {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+.payment-details-card__title {
+    margin: 0 0 14px;
+    padding-bottom: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--admin-page-heading-color, #0f3555);
+    border-bottom: 1px solid var(--admin-border, #e2e8f0);
 }
 
-.top-bar .back {
-    width: fit-content;
-    text-decoration: none;
-    color: #2258a0;
-    font-size: 13px;
-}
-
-.top-bar h1 {
+.payment-details-dl {
     margin: 0;
-    color: #1f2a44;
-}
-
-.booking-summary,
-.next-payment-card,
-.timeline-card {
-    margin-top: 14px;
-    background: #fff;
-    border: 1px solid #dde5f1;
-    border-radius: 12px;
-    padding: 12px;
-}
-
-.booking-summary p,
-.next-payment-card p {
-    margin: 6px 0;
-    color: #33415b;
     font-size: 14px;
 }
 
-.next-payment-card h3,
-.timeline-card h2 {
+.payment-details-card--accent {
+    border-color: rgba(30, 136, 229, 0.28);
+    background: rgba(30, 136, 229, 0.05);
+}
+
+.payment-details-card--accent .btn {
+    margin-top: 12px;
+}
+
+.payment-details-card--muted {
+    background: rgba(248, 250, 252, 0.9);
+}
+
+.payment-details-lead {
     margin: 0 0 8px;
-    color: #1f2a44;
-}
-
-.next-payment-card.muted {
-    background: #fafbfd;
-}
-
-.pay-now {
-    display: inline-block;
-    margin-top: 6px;
-    text-decoration: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-    background: #1f6feb;
-    color: #fff;
-    font-size: 13px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--admin-text, #0f172a);
 }
 
 .timeline-list {
-    margin-top: 8px;
+    margin-top: 4px;
 }
 
 .timeline-item {
     display: grid;
-    grid-template-columns: 22px 1fr;
-    gap: 10px;
-    margin-bottom: 12px;
+    grid-template-columns: 18px 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
 }
 
 .timeline-dot {
-    width: 12px;
-    height: 12px;
+    width: 11px;
+    height: 11px;
     border-radius: 50%;
-    margin-top: 5px;
+    margin-top: 6px;
 }
 
 .timeline-body {
-    border-left: 2px solid #e8edf6;
-    padding-left: 12px;
+    border-left: 2px solid var(--admin-border, #e2e8f0);
+    padding-left: 14px;
 }
 
 .timeline-head {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    gap: 10px;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .timeline-head h4 {
     margin: 0;
-    color: #1f2a44;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--admin-text, #0f172a);
 }
 
 .timeline-status {
-    padding: 3px 8px;
-    border-radius: 999px;
+    padding: 4px 10px;
+    border-radius: var(--admin-radius-full, 9999px);
     font-size: 12px;
     font-weight: 600;
 }
 
 .timeline-date {
-    margin: 6px 0;
-    color: #51607d;
+    margin: 6px 0 0;
+    color: var(--admin-muted, #64748b);
     font-size: 12px;
 }
 
 .timeline-note {
-    margin: 0;
-    color: #2f3c57;
+    margin: 6px 0 0;
+    color: var(--admin-text-secondary, #334155);
     font-size: 13px;
+    line-height: 1.45;
 }
 
 .status-paid {
-    background: #d7f4de;
-    color: #1b6d3c;
+    background: var(--admin-success-bg, #d1fae5);
+    color: var(--admin-success-text, #047857);
 }
 
 .status-upcoming {
-    background: #dcecff;
-    color: #1f5fab;
+    background: var(--admin-info-bg, #dbeafe);
+    color: var(--admin-info-text, #1d4ed8);
 }
 
 .status-due-soon {
-    background: #ffecc9;
-    color: #8a5a00;
+    background: var(--admin-warning-bg, #fef3c7);
+    color: var(--admin-warning-text, #b45309);
 }
 
 .status-overdue {
-    background: #ffd8d8;
-    color: #8f2323;
+    background: var(--admin-danger-bg, #fee2e2);
+    color: var(--admin-danger-text, #b91c1c);
 }
 
 .status-cancelled {
-    background: #eceef3;
-    color: #5e6470;
+    background: rgba(241, 245, 249, 0.95);
+    color: var(--admin-muted, #64748b);
 }
 
-@media (max-width: 1024px) {
-    .payment-details-page {
-        margin-left: 0;
-        padding: 16px;
-    }
+.timeline-dot.status-paid {
+    background: var(--admin-success, #059669);
+}
+
+.timeline-dot.status-upcoming {
+    background: var(--admin-primary, #1e88e5);
+}
+
+.timeline-dot.status-due-soon {
+    background: var(--admin-warning, #d97706);
+}
+
+.timeline-dot.status-overdue {
+    background: var(--admin-danger, #dc2626);
+}
+
+.timeline-dot.status-cancelled {
+    background: var(--admin-muted, #64748b);
 }
