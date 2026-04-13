@@ -76,6 +76,13 @@
     color: var(--admin-muted);
 }
 
+.book-service-page #customization {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
 .price-box {
     margin: 20px 0;
     padding: 16px 18px;
