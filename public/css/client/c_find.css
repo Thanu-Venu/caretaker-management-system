@@ -32,7 +32,7 @@ h1 {
 }
 
 .page-header.header-left-cta .book-btn {
-  margin-left: auto;
+  margin-left: 1000px;
 }
 
 .page-header h1 {
@@ -120,11 +120,10 @@ p.hint {
 /* ----------- EXISTING GLOBAL & FILTER CSS UNCHANGED ----------- */
 
 .caretakers {
-  margin: 0 50px;
-
+  margin: 0px 50px;
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* EXACT 3 CARDS PER ROW */
-  gap: 40px; /* better spacing, not too wide */
+  gap: 20px; /* better spacing, not too wide */
 }
 
 /* Card Container */
@@ -134,8 +133,7 @@ p.hint {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   padding: 15px;
   border: 1px solid #CCC;
-  
-  width: 100%; 
+  width: 83%; 
   display: flex;
   flex-direction: column;
 }
@@ -143,12 +141,12 @@ p.hint {
 /* Card Image — NO FACE CUT, CLEAN FIT */
 .card img {
   width: 100%;
-  height: 220px; /* taller image area */
+  height: 200px; /* taller image area */
   object-fit: cover; /* crop slightly but fits naturally */
   object-position: top; /* SHOW FACE PROPERLY */
   border-radius: 10px;
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
 /* Card Title */
