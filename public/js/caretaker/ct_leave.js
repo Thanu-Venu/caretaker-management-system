@@ -83,14 +83,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (startInput.value) {
             const startDateObj = parseDate(startInput.value);
             
-            // Limit max duration to 5 days
+            // Check if start month is current month
+            const isCurrentMonth = startDateObj.getMonth() === new Date().getMonth() && startDateObj.getFullYear() === new Date().getFullYear();
+            
+            let allowedDays = 5; 
+            if (isCurrentMonth && typeof policy.remainingThisMonth !== 'undefined') {
+                 allowedDays = Math.min(5, policy.remainingThisMonth);
+            }
+            if (allowedDays < 1) allowedDays = 0;
+
             const maxEndDateObj = new Date(startDateObj);
-            maxEndDateObj.setDate(maxEndDateObj.getDate() + 4); // +4 days = exactly 5 days inclusive
+            if (allowedDays > 0) {
+                maxEndDateObj.setDate(maxEndDateObj.getDate() + (allowedDays - 1));
+            }
             const maxEndIso = maxEndDateObj.toISOString().slice(0, 10);
             
             endInput.min = startInput.value;
             endInput.max = maxEndIso;
-            endHint.textContent = `End date must be between ${formatDate(startInput.value)} and ${formatDate(maxEndIso)} (Max 5 days).`;
+            endHint.textContent = allowedDays > 0 ? `End date must be between ${formatDate(startInput.value)} and ${formatDate(maxEndIso)} (Max ${allowedDays} days remaining).` : 'You have no leave days remaining this month.';
             
             // Auto-correct end date if it violates max
             if (endInput.value && endInput.value > maxEndIso && document.activeElement !== endInput) {
@@ -132,6 +142,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const days = getInclusiveDays(startInput.value, endInput.value);
         if (days > 0) {
+            if (startInput.value) {
+                const startObj = parseDate(startInput.value);
+                const isCurrentMonth = startObj.getMonth() === new Date().getMonth() && startObj.getFullYear() === new Date().getFullYear();
+                if (isCurrentMonth && typeof policy.remainingThisMonth !== 'undefined') {
+                    if (days > policy.remainingThisMonth) {
+                        errors.push(`You only have ${policy.remainingThisMonth} remaining leave days but requested ${days}.`);
+                    }
+                }
+            }
+
             if (leaveType === 'Sick Leave') {
                 if (days > 5) {
                     errors.push('Sick leave cannot exceed 5 days.');

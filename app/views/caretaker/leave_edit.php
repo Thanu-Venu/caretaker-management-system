@@ -137,7 +137,8 @@ $impact = $data['impact'] ?? [];
     window.leavePolicy = {
       advanceNoticeDays: <?= (int)$policy['advanceNoticeDays'] ?>,
       maxPerRequest: <?= (int)$policy['maxPerRequest'] ?>,
-      monthlyLimit: <?= (int)$policy['monthlyLimit'] ?>
+      monthlyLimit: <?= (int)$policy['monthlyLimit'] ?>,
+      remainingThisMonth: <?= (int)$summary['remaining'] ?>
     };
     window.leavePreview = {
       impactUrl: '<?= htmlspecialchars($data['impactPreviewUrl'] ?? (URLROOT . '/LeaveCRUD/impactPreview')) ?>'
