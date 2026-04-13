@@ -1,7 +1,21 @@
 /* Caregiver profile (client) — aligned with admin-ui + dashboard-layout pages */
 
 .client-ct-profile-page__header {
+    max-width: 880px;
+    margin-left: auto;
+    margin-right: auto;
     margin-bottom: var(--admin-section-gap);
+}
+
+.client-ct-profile-page__title-block {
+    flex: 1;
+    text-align: center;
+    padding-left: 18px;
+}
+
+.client-ct-profile-page__header .header-actions {
+    margin-left: auto;
+    transform: translateX(10px);
 }
 
 .client-ct-profile-page__header .page-title {
@@ -175,6 +189,15 @@
 }
 
 @media (max-width: 640px) {
+    .client-ct-profile-page__title-block {
+        text-align: left;
+        padding-left: 0;
+    }
+
+    .client-ct-profile-page__header .header-actions {
+        transform: none;
+    }
+
     .client-ct-profile-card__hero {
         flex-direction: column;
         align-items: center;

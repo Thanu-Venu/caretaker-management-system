@@ -23,7 +23,7 @@ $bookUrl = URLROOT . '/public?' . http_build_query($bookQuery);
 <main class="main-content client-ct-profile-page">
     <div class="dashboard-layout">
         <header class="page-header client-ct-profile-page__header">
-            <div>
+            <div class="client-ct-profile-page__title-block">
                 <h1 class="page-title">Caregiver profile</h1>
                 <p class="text-muted client-ct-profile-page__lead">Review experience and care details before requesting a booking.</p>
             </div>

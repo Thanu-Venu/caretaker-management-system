@@ -256,24 +256,34 @@ require_once APPROOT . '/views/templates/client/c_sidebar.php';
                         <tr>
                             <th>Booking</th>
                             <th>Service</th>
-                            <th>Payment Date</th>
+                            <th>Payment Date</th>    
+                            <th>Full Payment</th>
                             <th>Amount Paid</th>
+                            <th>Remaining Balance</th>
                             <th>Method</th>
                             <th>Status</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($filteredPaymentHistory)): ?>
                             <tr>
-                                <td colspan="6">No payment history found.</td>
+                                <td colspan="8">No payment history found.</td>
                             </tr>
                         <?php else: ?>
                             <?php foreach ($filteredPaymentHistory as $h): ?>
+                                <?php
+                                    $fullPayment = (float)($h['total_payment'] ?? 0);
+                                    $amountPaid = (float)($h['amount'] ?? 0);
+                                    $remainingBalance = max($fullPayment - $amountPaid, 0);
+                                ?>
                                 <tr>
                                     <td>#<?= (int)$h['booking_id'] ?></td>
                                     <td><?= htmlspecialchars($h['service_type']) ?> (<?= htmlspecialchars($h['basis']) ?>)</td>
                                     <td><?= htmlspecialchars($h['paid_at'] ?? '-') ?></td>
-                                    <td>LKR <?= number_format((float)$h['amount'], 2) ?></td>
+                                    <td>LKR <?= number_format($fullPayment, 2) ?></td>
+                                    <td>LKR <?= number_format($amountPaid, 2) ?></td>
+                                    <td>LKR <?= number_format($remainingBalance, 2) ?></td>
                                     <td><?= htmlspecialchars(ucfirst(str_replace('_', ' ', (string)($h['payment_method'] ?? '-')))) ?></td>
                                     <td>
                                         <span class="pill <?= statusClass($h['status'] ?? '') ?>">

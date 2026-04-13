@@ -1209,6 +1209,7 @@ class ClientModel
                     COALESCE(p.approved_at, p.paid_date, p.created_at) AS paid_at,
                     b.service_type,
                     b.basis,
+                    b.total_payment,
                     ct.name AS caretaker_name
                 FROM payments p
                 JOIN bookings b ON b.id = p.booking_id

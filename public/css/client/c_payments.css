@@ -124,6 +124,16 @@
     font-size: 13px;
 }
 
+.filter-field--actions .reset-btn {
+    background: white;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.filter-field--actions .reset-btn:hover {
+    background: #f9f9f9;
+}
+
 /* ===== SEARCH ===== */
 .filter-panel-top-actions {
     display: flex;
@@ -210,6 +220,16 @@ td {
 
 tr:hover {
     background: #f5faff;
+}
+
+/* ===== FULL PAYMENT ROW ===== */
+tr.full-payment {
+    background: #e8f5e9;
+    border-left: 4px solid #4caf50;
+}
+
+tr.full-payment:hover {
+    background: #c8e6c9;
 }
 
 /* ===== STATUS ===== */
