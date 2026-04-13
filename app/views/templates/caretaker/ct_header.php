@@ -31,6 +31,13 @@ $profilePic = $_SESSION['user']['profile_image'] ?? 'default.png';
 
     <!-- HEADER CSS -->
     <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
+    
+    <style>
+        .main-content, .content {
+            margin-top: 60px !important;
+            min-height: calc(100vh - 60px) !important;
+        }
+    </style>
 </head>
 
 <body>

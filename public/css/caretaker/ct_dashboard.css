@@ -182,7 +182,7 @@ input:checked+.slider:before {
 .table-container {
   background: #fff;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   padding: 15px;
 }
 
@@ -200,7 +200,8 @@ th {
   color: #1565c0;
 }
 
-th, td {
+th,
+td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #eee;
@@ -220,28 +221,28 @@ tbody tr:hover {
 }
 
 .status {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .status.approved {
-    background: #d1f2dd;
-    color: #1f6f3f;
+  background: #d1f2dd;
+  color: #1f6f3f;
   padding: 4px 14px;
 }
 
 .status.rejected {
-    background: #fde2e2;
-    color: #8a2430;
+  background: #fde2e2;
+  color: #8a2430;
   padding: 4px 16px;
 }
 
 .status.pending {
-    background: #fff3cd;
-    color: #7a5a00;
+  background: #fff3cd;
+  color: #7a5a00;
   padding: 4px 18px;
 }
 
