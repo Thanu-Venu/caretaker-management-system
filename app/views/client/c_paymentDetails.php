@@ -38,7 +38,7 @@
         <div class="booking-summary">
             <p><strong>Service:</strong> <?= htmlspecialchars($booking['service_type'] ?? '-') ?> (<?= htmlspecialchars($booking['basis'] ?? '-') ?>)</p>
             <p><strong>Caretaker:</strong> <?= htmlspecialchars($booking['caretaker_name'] ?? '-') ?></p>
-            <p><strong>Service Start:</strong> <?= htmlspecialchars($booking['service_start_date'] ?? '-') ?></p>
+            <p><strong>Service Start:</strong> <?= htmlspecialchars($booking['booking_date'] ?? '-') ?></p>
             <p><strong>Status:</strong> <?= htmlspecialchars($booking['status'] ?? '-') ?></p>
         </div>
 
