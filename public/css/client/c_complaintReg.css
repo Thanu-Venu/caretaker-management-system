@@ -1,1 +1,179 @@
-/* Complaint registration — admin-ui form only */
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+/* ===== PAGE WRAPPER (SIDEBAR OFFSET) ===== */
+.page-wrapper {
+    margin-left: 250px;
+    padding: 28px;
+    min-height: 100vh;
+    background-color: #f6f8fc;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.complaint-container {
+    width: 100%;
+}
+
+/* ===== SECTIONS ===== */
+.complaint-section {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 14px;
+    border: 1px solid #eef2f7;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    margin-bottom: 30px;
+}
+
+.page-wrapper h2 {
+    color: #1e88e5;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* ===== FORM ===== */
+.page-wrapper label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.page-wrapper input,
+.page-wrapper select,
+.page-wrapper textarea {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 24px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.page-wrapper textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.page-wrapper form {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-wrapper button {
+    width: 100%;
+    background: #1e88e5;
+    color: white;
+    border: none;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.page-wrapper button:hover {
+    background: #1a76c7;
+}
+
+/* ===== TABLE ===== */
+.page-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.page-wrapper th,
+.page-wrapper td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+}
+
+.page-wrapper th {
+    background-color: #1e88e5;
+    color: white;
+    font-weight: 600;
+}
+
+.page-wrapper tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* ===== LINKS ===== */
+.page-wrapper a {
+    color: #1e88e5;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.page-wrapper a:hover {
+    text-decoration: underline;
+}
+
+.page-wrapper em {
+    color: #888;
+}
+
+.page-wrapper p {
+    color: #555;
+    font-size: 15px;
+}
+
+.register-btn {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.complaints-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.complaints-table th,
+.complaints-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+/* modal */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 18px;
+    border-radius: 12px;
+    width: 92%;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 14px;
+    top: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .page-wrapper {
+        margin-left: 0;
+        padding: 16px;
+    }
+}
