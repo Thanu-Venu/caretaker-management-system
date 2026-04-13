@@ -1,5 +1,5 @@
 body {
-    background: #f4f7fb;
+    background: linear-gradient(180deg, #f4f7fb, #f9fcff);
 }
 
 .main-content {
@@ -79,5 +79,35 @@ td:nth-child(4) {
   }
   .card {
     padding: 15px;
+  }
+}
+
+
+/* =====================
+   Responsive Design & Table Fixes
+===================== */
+.table-container {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  min-width: 600px;
+}
+
+@media (max-width: 1024px) {
+  .content, .main-content {
+    padding: 16px;
+    width: calc(100% - 255px);
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 768px) {
+  .content, .main-content {
+    margin-left: 0 !important;
+    padding: 16px;
+    width: 100%;
+    box-sizing: border-box;
   }
 }
