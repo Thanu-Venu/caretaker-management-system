@@ -13,12 +13,13 @@
 
 <body>
 
-<div class="announcement-container">
-        <h2 class="page-title">Announcements</h2>
+<div class="main-content">
+        <h2>Announcements</h2>
         <?php if (empty($data)): ?>
         <div class="no-announcement">
             <p>No announcements available at the moment.</p>
         </div>
+        <?php else: ?>
         <div class="table-container">
             <table>
                 <thead>
@@ -32,9 +33,9 @@
                 <tbody>
                     <?php foreach ($data as $announcement): ?>
                         <tr>
-                            <td class="td-title"><strong><?= htmlspecialchars($announcement['title']); ?></strong></td>
-                            <td class="td-message"><?= nl2br(htmlspecialchars($announcement['message'])); ?></td>
-                            <td class="td-date"><?= date('M d, Y', strtotime($announcement['created_at'])); ?></td>
+                            <td><?= htmlspecialchars($announcement['title']); ?></td>
+                            <td><?= nl2br(htmlspecialchars($announcement['message'])); ?></td>
+                            <td><?= date('Y-m-d', strtotime($announcement['created_at'])); ?></td>
                             <td><span class="role-tag">Caregiver</span></td>
                         </tr>
                     <?php endforeach; ?>
