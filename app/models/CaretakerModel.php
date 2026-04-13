@@ -46,7 +46,10 @@ class CaretakerModel
      */
     public function getActiveCaretakers()
     {
-        $stmt = $this->conn->prepare("SELECT * FROM caretakers WHERE status = 'Active'");
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM caretakers WHERE status = 'Active'
+             ORDER BY (rating IS NULL) ASC, rating DESC, name ASC"
+        );
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }

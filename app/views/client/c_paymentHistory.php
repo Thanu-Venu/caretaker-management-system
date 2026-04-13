@@ -1,16 +1,11 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment History</title>
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_paymentHistory.css">
-</head>
-<body>
+<?php
+$clientPageTitle = 'Payment history — SmartCare';
+$clientExtraCss  = ['client/c_paymentHistory.css'];
+require_once APPROOT . '/views/templates/client/client_layout_head.php';
+require_once APPROOT . '/views/templates/client/c_header.php';
+require_once APPROOT . '/views/templates/client/c_sidebar.php';
+?>
+<main class="main-content">
   <div class="container">
 
     <?php
@@ -161,8 +156,6 @@
     </div>
 
   </div>
-
-  <!-- JavaScript -->
   <script src="<?php echo URLROOT; ?>/public/js/client/c_paymentHistory.js"></script>
-</body>
-</html>
+</main>
+<?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

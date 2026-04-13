@@ -22,20 +22,20 @@ document.addEventListener("DOMContentLoaded", () => {
             bookingIdInput.value = row.dataset.bookingId;
             caretakerIdInput.value = row.dataset.caretakerId;
 
-            modal.style.display = "flex";
+            modal.classList.add("show");
         });
     });
 
     /* CLOSE MODAL */
     closeBtn.onclick = cancelBtn.onclick = () => {
         resetForm();
-        modal.style.display = "none";
+        modal.classList.remove("show");
     };
 
     window.onclick = (e) => {
         if (e.target === modal) {
             resetForm();
-            modal.style.display = "none";
+            modal.classList.remove("show");
         }
     };
 

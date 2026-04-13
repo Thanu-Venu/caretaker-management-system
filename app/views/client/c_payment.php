@@ -1,19 +1,11 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
+<?php
+$clientPageTitle = 'Proceed to payment — SmartCare';
+$clientExtraCss  = ['client/c_paymentPage.css'];
+require_once APPROOT . '/views/templates/client/client_layout_head.php';
+require_once APPROOT . '/views/templates/client/c_header.php';
+require_once APPROOT . '/views/templates/client/c_sidebar.php';
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Proceed Payment</title>
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_paymentPage.css">
-</head>
-
-<body>
-
+?>
   <?php
   $booking = $data['booking'] ?? [];
   $calc = $data['payment_calc'] ?? null;
@@ -68,6 +60,4 @@
       </div>
     </form>
   </div>
-</body>
-
-</html>
+<?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

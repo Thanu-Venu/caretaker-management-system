@@ -296,12 +296,32 @@ $mheroSlides = [
     </div>
   </div>
 
-  <!-- IMPACT METRICS -->
+  <!-- IMPACT METRICS (values from DB via LandingModel) -->
+  <?php
+    $lm = isset($landingMetrics) && is_array($landingMetrics) ? $landingMetrics : [
+      'care_hours_display' => '0',
+      'families_display' => '0',
+      'rating_display' => '—',
+      'avg_rating' => null,
+      'has_family_feedback' => false,
+    ];
+    $ratingTitle = '';
+    if (($lm['rating_display'] ?? '—') !== '—' && empty($lm['has_family_feedback'])) {
+      $ratingTitle = ' title="From vetted caregiver profile scores until client reviews are published"';
+    }
+    if (!empty($lm['has_family_feedback'])) {
+      $ratingCaption = 'Average family rating';
+    } elseif (($lm['rating_display'] ?? '—') !== '—') {
+      $ratingCaption = 'Average team rating';
+    } else {
+      $ratingCaption = 'Average family rating';
+    }
+  ?>
   <div class="metrics-band" data-scroll-reveal data-reveal-stagger="110" aria-label="SmartCare at a glance">
     <div class="metrics-inner">
-      <div class="metric animate"><strong>10k+</strong><span>Care hours coordinated</span></div>
-      <div class="metric animate"><strong>500+</strong><span>Families supported through our team</span></div>
-      <div class="metric animate"><strong>4.8</strong><span>Average family rating</span></div>
+      <div class="metric animate"><strong><?php echo htmlspecialchars((string) ($lm['care_hours_display'] ?? '0'), ENT_QUOTES, 'UTF-8'); ?></strong><span>Care hours coordinated</span></div>
+      <div class="metric animate"><strong><?php echo htmlspecialchars((string) ($lm['families_display'] ?? '0'), ENT_QUOTES, 'UTF-8'); ?></strong><span>Families supported through our team</span></div>
+      <div class="metric animate"><strong<?php echo $ratingTitle; ?>><?php echo htmlspecialchars((string) ($lm['rating_display'] ?? '—'), ENT_QUOTES, 'UTF-8'); ?></strong><span><?php echo htmlspecialchars($ratingCaption, ENT_QUOTES, 'UTF-8'); ?></span></div>
       <div class="metric animate"><strong>24/7</strong><span>Support when it matters</span></div>
     </div>
   </div>
@@ -781,7 +801,30 @@ $mheroSlides = [
 
       const pad = (n) => String(n).padStart(2, "0");
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      /** Auto-advance hero photos (ms). */
+      const MHERO_AUTO_MS = 6000;
       let cur = 0;
+      let autoTimer = null;
+      /** Cancels in-flight fade/swap if a newer slide was requested. */
+      let mheroSwapGen = 0;
+      let mheroSwapFailsafe = null;
+
+      function stopMheroAuto() {
+        if (autoTimer != null) {
+          window.clearInterval(autoTimer);
+          autoTimer = null;
+        }
+      }
+
+      function startMheroAuto() {
+        stopMheroAuto();
+        if (slides.length < 2 || reduceMotion) {
+          return;
+        }
+        autoTimer = window.setInterval(() => {
+          applySlide(cur + 1);
+        }, MHERO_AUTO_MS);
+      }
 
       let autoSlide = null;
 
@@ -800,43 +843,87 @@ function startAutoSlide() {
         fill.style.width = ((cur + 1) / slides.length) * 100 + "%";
         if (initial) return;
 
-        const setSrc = () => {
+        const gen = ++mheroSwapGen;
+        if (mheroSwapFailsafe != null) {
+          window.clearTimeout(mheroSwapFailsafe);
+          mheroSwapFailsafe = null;
+        }
+
+        const finishSwap = () => {
+          if (gen !== mheroSwapGen) return;
+          img.classList.remove("mhero-img--fade");
+          if (mheroSwapFailsafe != null) {
+            window.clearTimeout(mheroSwapFailsafe);
+            mheroSwapFailsafe = null;
+          }
+        };
+
+        if (reduceMotion) {
           img.src = s.src;
           img.alt = s.alt;
-        };
-        if (reduceMotion) {
-          setSrc();
           return;
         }
+
         img.classList.add("mhero-img--fade");
         window.setTimeout(() => {
-          setSrc();
-          const done = () => {
-            img.removeEventListener("load", done);
-            img.removeEventListener("error", done);
-            img.classList.remove("mhero-img--fade");
+          if (gen !== mheroSwapGen) return;
+
+          let settled = false;
+          const onDone = () => {
+            if (settled) return;
+            settled = true;
+            finishSwap();
           };
-          img.addEventListener("load", done);
-          img.addEventListener("error", done);
-          if (img.complete) window.requestAnimationFrame(done);
+
+          img.addEventListener("load", onDone, { once: true });
+          img.addEventListener("error", onDone, { once: true });
+
+          img.alt = s.alt;
+          img.src = s.src;
+
+          // Cached images often fire `load` before our listener runs; `complete` covers that.
+          if (img.complete && img.naturalWidth > 0) {
+            window.queueMicrotask(onDone);
+          }
+
+          mheroSwapFailsafe = window.setTimeout(onDone, 10000);
         }, 160);
       }
 
+      function mheroNav(delta) {
+        applySlide(cur + delta);
+        startMheroAuto();
+      }
+
+      prev.addEventListener("click", () => mheroNav(-1));
+      next.addEventListener("click", () => mheroNav(1));
       pager?.addEventListener("keydown", (e) => {
         if (e.key === "ArrowLeft") {
           e.preventDefault();
-          applySlide(cur - 1);
+          mheroNav(-1);
         }
         if (e.key === "ArrowRight") {
           e.preventDefault();
-          applySlide(cur + 1);
+          mheroNav(1);
         }
       });
-      applySlide(0, { initial: true });
-      startAutoSlide();
 
-      img.addEventListener("mouseenter", () => clearInterval(autoSlide));
-      img.addEventListener("mouseleave", startAutoSlide);
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          stopMheroAuto();
+        } else {
+          startMheroAuto();
+        }
+      });
+
+      const stage = document.querySelector(".mhero-stage");
+      if (stage) {
+        stage.addEventListener("mouseenter", stopMheroAuto);
+        stage.addEventListener("mouseleave", startMheroAuto);
+      }
+
+      applySlide(0, { initial: true });
+      startMheroAuto();
     });
 
     // ===== Gallery strip (arrow nav, scrollbar hidden) =====

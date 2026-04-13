@@ -1,25 +1,22 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
+<?php
+$clientPageTitle = 'Payment successful — SmartCare';
+$clientExtraCss  = ['client/c_paymentSuccess.css'];
+require_once APPROOT . '/views/templates/client/client_layout_head.php';
+require_once APPROOT . '/views/templates/client/c_header.php';
+require_once APPROOT . '/views/templates/client/c_sidebar.php';
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartCare - Payment Successful</title>
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_paymentSuccess.css">
-</head>
-<body>
-    <div class="main-content">
-        <div class="payment-success">
-            <div class="check-icon">
-                <i class='bx bx-check-circle'></i>
-            </div>
-            <h1>Payment Successful!</h1>
-            <p>The payment was made successfully!</p>
-            <?php $paymentId = $data['payment_id'] ?? null; ?>
-            <button class="ok-btn"><a href="<?= URLROOT ?>/client/c_contactCT<?= $paymentId ? ('?payment_id=' . urlencode($paymentId)) : '' ?>">OK</a></button>
+$paymentId = $data['payment_id'] ?? null;
+?>
+<main class="main-content payment-success-page">
+    <div class="payment-success">
+        <div class="check-icon">
+            <i class="bx bx-check-circle" aria-hidden="true"></i>
+        </div>
+        <h1 class="page-title">Payment successful</h1>
+        <p class="text-muted">Your payment was processed successfully.</p>
+        <div class="header-actions payment-success-actions">
+            <a class="btn" href="<?= URLROOT ?>/client/c_contactCT<?= $paymentId ? ('?payment_id=' . urlencode((string) $paymentId)) : '' ?>">Continue</a>
         </div>
     </div>
-</body>
-</html>
+</main>
+<?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

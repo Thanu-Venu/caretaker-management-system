@@ -1,22 +1,24 @@
 function openEmergencyModal() {
-  document.getElementById('emergencyModal').style.display = 'flex';
+    var el = document.getElementById('emergencyModal');
+    if (el) el.classList.add('show');
 }
 
 function closeEmergencyModal() {
-  document.getElementById('emergencyModal').style.display = 'none';
+    var el = document.getElementById('emergencyModal');
+    if (el) el.classList.remove('show');
 }
 
 window.addEventListener('click', function (event) {
-  const emergencyModal = document.getElementById('emergencyModal');
-
-  if (event.target === emergencyModal) {
-    emergencyModal.style.display = 'none';
-  }
+    var emergencyModal = document.getElementById('emergencyModal');
+    if (event.target === emergencyModal) {
+        closeEmergencyModal();
+    }
 });
 
 document.addEventListener('keydown', function (event) {
-  if (event.key === 'Escape') {
-    closeEmergencyModal();
-  }
+    if (event.key === 'Escape') {
+        closeEmergencyModal();
+        var adv = document.getElementById('advanceModal');
+        if (adv) adv.classList.remove('show');
+    }
 });
-   

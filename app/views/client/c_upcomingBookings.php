@@ -1,250 +1,287 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
+<?php
+$clientPageTitle = 'Upcoming bookings — SmartCare';
+$clientExtraCss  = ['client/c_upcomingBookings.css'];
+require_once APPROOT . '/views/templates/client/client_layout_head.php';
+require_once APPROOT . '/views/client/partials/client_booking_status_helper.php';
+require_once APPROOT . '/views/templates/client/c_header.php';
+require_once APPROOT . '/views/templates/client/c_sidebar.php';
 
-<!DOCTYPE html>
-<html lang="en">
+$pendingAdvanceList = $data['pendingAdvance'] ?? [];
+$hasPendingAdvance  = !empty($pendingAdvanceList);
 
-<head>
-    <meta charset="UTF-8">
-    <title>My Upcoming Bookings</title>
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/client/c_upcomingBookings.css">
-    <style>
-        .status-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+require_once APPROOT . '/models/RescheduleRequestModel.php';
+$rrModelForUpcoming = new RescheduleRequestModel();
 
-        .status-requested {
-            background-color: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeeba;
-        }
+$upcomingStatusFilterOptions = [
+    '' => 'All statuses',
+    'Requested' => 'Requested',
+    'Payment_Requested' => 'Payment requested',
+    'Advance_Paid' => 'Advance paid',
+    'Accepted' => 'Accepted',
+    'Reschedule_Requested' => 'Reschedule requested',
+    'Change_Requested' => 'Change requested',
+];
+?>
 
-        .status-payment_requested {
-            background-color: #ffe5cc;
-            color: #cc6600;
-            border: 1px solid #ffccaa;
-        }
-
-        .status-advance_paid {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-    </style>
-</head>
-
-<body>
-    <?php if (!empty($data['pendingAdvance'])): ?>
-        <div id="advanceModal" class="modal" style="display:flex;">
-            <div class="modal-content" style="max-width:640px;">
-                <span class="close" onclick="document.getElementById('advanceModal').style.display='none'">&times;</span>
-                <h2 style="margin-bottom:12px; color:#1e88e5; font-family: 'Poppins', sans-serif; font-weight:700; font-size:24px;">Advance Payments Required</h2>
-                <p>You have pending advance payments for the following bookings:</p>
-
-                <?php foreach ($data['pendingAdvance'] as $p): ?>
-                    <div class="advance-details" style="margin-bottom:15px;">
-                        <div><b>Booking #:</b> <?= $p['booking_id'] ?></div>
-                        <div><b>Service:</b> <?= htmlspecialchars($p['service_type']) ?></div>
-                        <div><b>Date:</b> <?= htmlspecialchars($p['booking_date']) ?></div>
-                        <div><b>Time:</b> <?= htmlspecialchars($p['preferred_time']) ?></div>
-                        <div><b>Duration:</b> <?= htmlspecialchars($p['duration'] . ' ' . $p['basis']) ?></div>
-
-                        <a class="modal-submit-btn"
-                            style="margin-top:10px;"
-                            href="<?= URLROOT ?>/client/c_makePayment?booking_id=<?= $p['booking_id'] ?>">
-                            Pay Now
-                        </a>
-                    </div>
-                <?php endforeach; ?>
-
-            </div>
+<?php if ($hasPendingAdvance): ?>
+<div id="advanceModal" class="modal show" role="dialog" aria-modal="true" aria-labelledby="advanceModalTitle">
+    <div class="modal-content" style="max-width:640px;">
+        <button type="button" class="close" onclick="document.getElementById('advanceModal').classList.remove('show')" aria-label="Close">&times;</button>
+        <h3 id="advanceModalTitle">Advance payments required</h3>
+        <p class="text-muted">You have pending advance payments for the following bookings.</p>
+        <div class="advance-modal-list">
+            <?php require APPROOT . '/views/client/partials/advance_pending_booking_cards.php'; ?>
         </div>
+    </div>
+</div>
+<?php endif; ?>
+
+<main class="main-content">
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Upcoming bookings</h1>
+            <p class="text-muted">Bookings with a future start date that are still in progress.</p>
+        </div>
+        <div class="header-actions">
+            <a class="btn secondary" href="<?= URLROOT ?>/public?url=client/c_myBookings">All bookings</a>
+        </div>
+    </header>
+
+    <?php if (!empty($_SESSION['success'])): ?>
+        <div class="flash success"><?php echo htmlspecialchars((string) $_SESSION['success']);
+        unset($_SESSION['success']); ?></div>
     <?php endif; ?>
-    <main class="content">
-        <h1>My Upcoming Bookings</h1>
+    <?php if (!empty($_SESSION['error'])): ?>
+        <div class="flash error"><?php echo htmlspecialchars((string) $_SESSION['error']);
+        unset($_SESSION['error']); ?></div>
+    <?php endif; ?>
 
-        <?php if (!empty($_SESSION['success'])): ?>
-            <p class="success-msg"><?php echo $_SESSION['success'];
-                                    unset($_SESSION['success']); ?></p>
-        <?php endif; ?>
-        <?php if (!empty($_SESSION['error'])): ?>
-            <p class="error-msg"><?php echo $_SESSION['error'];
-                                    unset($_SESSION['error']); ?></p>
-        <?php endif; ?>
+    <?php if (empty($data['bookings'])): ?>
+        <p class="empty">You do not have any upcoming bookings yet.</p>
+    <?php else: ?>
+        <div class="client-page-note" role="note">
+            <i class="bx bx-info-circle" aria-hidden="true"></i>
+            <span>Reschedule is only available while the booking is in <strong>Requested</strong> status (before advance payment and confirmation).</span>
+        </div>
 
-        <?php if (empty($data['bookings'])): ?>
-            <p class="no-bookings">You don’t have any upcoming bookings yet.</p>
-        <?php else: ?>
-
-
-            <div class="table-wrapper">
-                <table class="bookings-table">
-                    <thead>
-                        <tr>
-                            <th>Caregiver</th>
-                            <th>Service</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Duration</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($data['bookings'] as $b): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($b['caretaker_name']) ?></td>
-                                <td><?= htmlspecialchars($b['service_type']) ?></td>
-                                <td><?= date('Y-m-d', strtotime($b['booking_date'])) ?></td>
-                                <td><?= htmlspecialchars($b['preferred_time']) ?></td>
-                                <td><?= $b['duration'] . ' ' . $b['basis'] ?></td>
-
-                                <td>
-                                    <span class="status-badge status-<?= strtolower($b['status']) ?>">
-                                        <?php
-                                        $statusDisplay = str_replace('_', ' ', $b['status']);
-                                        echo htmlspecialchars($statusDisplay);
-                                        ?>
-                                    </span>
-                                </td>
-
-                                <td class="actions">
-                                    <!-- VIEW CONTACT (only after advance payment) -->
-                                    <?php
-                                    $advancePaidStatuses = ['Advance_Paid', 'Accepted', 'Reschedule_Requested', 'Change_Requested'];
-                                    if (in_array($b['status'], $advancePaidStatuses)):
-                                    ?>
-                                        <a class="action-btn" id="contact-btn"
-                                            href="<?= URLROOT ?>/client/c_contactCT?booking_id=<?= (int)$b['booking_id'] ?>"
-                                            style="background-color: #28a745; border-color: #28a745;">
-                                            View Contact
-                                        </a>
-                                    <?php endif; ?>
-
-                                    <button class="action-btn" id="cancel-btn"
-                                        onclick="openCancelModal(<?= $b['booking_id'] ?>)">
-                                        Cancel
-                                    </button>
-
-                                    <!-- PAY NOW (only when Payment_Requested) -->
-                                    <?php if ($b['status'] === 'Payment_Requested'): ?>
-                                        <a class="action-btn" id="paynow-btn"
-                                            href="<?= URLROOT ?>/client/c_makePayment?booking_id=<?= (int)$b['booking_id'] ?>">
-                                            Pay Now
-                                        </a>
-                                    <?php endif; ?>
-
-                                    <?php
-                                    // ========== RESCHEDULE BUTTON LOGIC ==========
-                                    // Only show reschedule button if:
-                                    // 1. Booking status is 'Requested' (only this status allows reschedule)
-                                    // 2. No existing reschedule request (pending/approved)
-
-                                    $canShowReschedule = false;
-                                    $rescheduleTooltip = '';
-
-                                    if ($b['status'] === 'Requested') {
-                                        // Check if reschedule request already exists
-                                        require_once APPROOT . '/models/RescheduleRequestModel.php';
-                                        $rrCheck = new RescheduleRequestModel();
-                                        $hasReschedule = $rrCheck->hasRescheduleRequest($b['booking_id']);
-
-                                        if ($hasReschedule) {
-                                            $canShowReschedule = false;
-                                            $rescheduleTooltip = 'A reschedule request has already been submitted for this booking';
-                                        } else {
-                                            $canShowReschedule = true;
-                                        }
-                                    } else {
-                                        $rescheduleTooltip = "Only bookings with 'Requested' status can be rescheduled";
-                                    }
-                                    ?>
-
-                                    <?php if ($canShowReschedule): ?>
-                                        <button class="action-btn" id="reschedule-btn"
-                                            onclick="openRescheduleModal(<?= $b['booking_id'] ?>)">
-                                            Reschedule
-                                        </button>
-                                    <?php elseif ($b['status'] === 'Requested'): ?>
-                                        <!-- Show disabled button with tooltip for 'Requested' bookings that already have a reschedule request -->
-                                        <button class="action-btn" id="reschedule-btn"
-                                            disabled
-                                            style="opacity: 0.5; cursor: not-allowed;"
-                                            title="<?= htmlspecialchars($rescheduleTooltip) ?>">
-                                            Reschedule
-                                        </button>
-                                    <?php endif; ?>
-                                </td>
-                            <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-
-        <?php endif; ?>
-
-
-        <!-- ================= CANCEL MODAL ================= -->
-        <div id="cancelModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeCancelModal()">&times;</span>
-                <h2>Cancel Booking</h2>
-
-                <form method="POST" action="<?= URLROOT ?>/client/cancelBooking">
-                    <input type="hidden" name="booking_id" id="cancelBookingId">
-
-                    <label>Reason for cancellation</label>
-                    <textarea name="reason" rows="3" placeholder="Enter reason" required></textarea>
-
-                    <button type="submit" class="cancel1-btn">Confirm Cancel</button>
-                </form>
+        <div class="filter-row bookings-status-filter" role="search" aria-label="Filter by status">
+            <div class="filter-group">
+                <label for="upcomingBookingsStatusFilter">Filter by status</label>
+                <select id="upcomingBookingsStatusFilter" class="bookings-status-filter-select">
+                    <?php foreach ($upcomingStatusFilterOptions as $val => $label): ?>
+                        <option value="<?= htmlspecialchars((string) $val, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) $label, ENT_QUOTES, 'UTF-8') ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
         </div>
 
-        <!-- ================= RESCHEDULE MODAL ================= -->
-        <div id="rescheduleModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeRescheduleModal()">&times;</span>
-                <h2>Reschedule Booking</h2>
+        <div class="table-container">
+            <table id="upcomingBookingsTable" class="client-table bookings-data-table">
+                <thead>
+                    <tr>
+                        <th>Caregiver</th>
+                        <th>Service</th>
+                        <th>Date</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($data['bookings'] as $b): ?>
+                        <?php
+                        $bid = (int) $b['booking_id'];
+                        $canShowReschedule = false;
+                        $rescheduleHint = '';
+                        if ($b['status'] === 'Requested') {
+                            if ($rrModelForUpcoming->hasRescheduleRequest($bid)) {
+                                $rescheduleHint = 'A reschedule request has already been submitted for this booking.';
+                            } else {
+                                $canShowReschedule = true;
+                            }
+                        }
+                        $advancePaidStatuses = ['Advance_Paid', 'Accepted', 'Reschedule_Requested', 'Change_Requested'];
+                        $statusDisplay = str_replace('_', ' ', (string) $b['status']);
+                        $rawStatus = (string) $b['status'];
+                        ?>
+                        <tr data-status="<?= htmlspecialchars($rawStatus, ENT_QUOTES, 'UTF-8') ?>">
+                            <td><?= htmlspecialchars((string) $b['caretaker_name']) ?></td>
+                            <td><?= htmlspecialchars((string) $b['service_type']) ?></td>
+                            <td><?= htmlspecialchars(date('Y-m-d', strtotime((string) $b['booking_date']))) ?></td>
+                            <td><?= htmlspecialchars((string) ($b['duration'] . ' ' . $b['basis'])) ?></td>
+                            <td>
+                                <span class="status <?= client_booking_status_class($b['status'] ?? '') ?>"><?= htmlspecialchars($statusDisplay) ?></span>
+                            </td>
+                            <td class="booking-actions-cell">
+                                <div class="booking-actions-toolbar" role="group" aria-label="Actions for booking <?= $bid ?>">
+                                    <button type="button" class="btn btn-icon secondary booking-detail-open" title="View full details" aria-label="View full details for booking <?= $bid ?>"
+                                            onclick="SmartCareBookingDetail.open(<?= $bid ?>)">
+                                        <i class="bx bx-show" aria-hidden="true"></i>
+                                    </button>
+                                    <?php if (in_array($b['status'], $advancePaidStatuses, true)): ?>
+                                        <a class="btn tiny approve" href="<?= URLROOT ?>/client/c_contactCT?booking_id=<?= $bid ?>">Contact</a>
+                                    <?php endif; ?>
+                                    <?php if ($b['status'] === 'Payment_Requested'): ?>
+                                        <a class="btn tiny" href="<?= URLROOT ?>/client/c_makePayment?booking_id=<?= $bid ?>">Pay now</a>
+                                    <?php endif; ?>
+                                    <button type="button" class="btn tiny reject" onclick="openCancelModal(<?= $bid ?>)">Cancel</button>
+                                    <?php if ($canShowReschedule): ?>
+                                        <button type="button" class="btn tiny secondary" onclick="openRescheduleModal(<?= $bid ?>)">Reschedule</button>
+                                    <?php elseif ($b['status'] === 'Requested'): ?>
+                                        <button type="button" class="btn tiny secondary" disabled aria-disabled="true">Reschedule</button>
+                                    <?php endif; ?>
+                                </div>
+                                <?php if ($rescheduleHint !== ''): ?>
+                                    <p class="booking-row-hint" role="note">
+                                        <i class="bx bx-info-circle" aria-hidden="true"></i>
+                                        <span><?= htmlspecialchars($rescheduleHint) ?></span>
+                                    </p>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <tr id="upcomingBookingsEmptyFilter" hidden>
+                        <td colspan="6">No bookings match this status.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-                <div class="warning-box" style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; margin-bottom: 15px; border-radius: 4px;">
-                    <strong>⚠️ Important:</strong>
-                    <ul style="margin: 8px 0 0 20px; padding: 0;">
-                        <li>Only the <strong>date</strong> can be changed through reschedule</li>
-                        <li>Service type, duration, and caregiver remain the same</li>
-                        <li>You can only reschedule <strong>once per booking</strong></li>
-                        <li>Requests must be made at least <strong>5 days in advance</strong></li>
-                        <li>Status must be 'Requested' to allow reschedule</li>
-                    </ul>
+        <?php foreach ($data['bookings'] as $b): ?>
+            <?php
+            $bid = (int) $b['booking_id'];
+            $bkDate = (string) ($b['booking_date'] ?? '');
+            $svcStart = isset($b['service_start_date']) ? (string) $b['service_start_date'] : '';
+            $showSvcStart = $svcStart !== '' && $svcStart !== '0000-00-00' && $svcStart !== $bkDate;
+            $district = trim((string) ($b['district'] ?? ''));
+            $cust = trim((string) ($b['customization'] ?? ''));
+            $tp = (float) ($b['total_payment'] ?? 0);
+            $adv = (float) ($b['advance_amount'] ?? 0);
+            $statusDisplay = str_replace('_', ' ', (string) $b['status']);
+            ?>
+            <template id="booking-detail-template-<?= $bid ?>">
+                <div class="booking-detail-panel">
+                    <dl class="admin-row-detail-modal__dl">
+                        <dt>Booking ID</dt>
+                        <dd>#<?= $bid ?></dd>
+                        <dt>Caregiver</dt>
+                        <dd><?= htmlspecialchars((string) $b['caretaker_name']) ?></dd>
+                        <dt>Service</dt>
+                        <dd><?= htmlspecialchars((string) $b['service_type']) ?></dd>
+                        <?php if ($district !== ''): ?>
+                            <dt>Service area</dt>
+                            <dd><?= htmlspecialchars($district) ?></dd>
+                        <?php endif; ?>
+                        <dt>Booking date</dt>
+                        <dd><?= htmlspecialchars(date('Y-m-d', strtotime($bkDate))) ?></dd>
+                        <?php if ($showSvcStart): ?>
+                            <dt>Service start</dt>
+                            <dd><?= htmlspecialchars(date('Y-m-d', strtotime($svcStart))) ?></dd>
+                        <?php endif; ?>
+                        <dt>Preferred time</dt>
+                        <dd><?= htmlspecialchars((string) $b['preferred_time']) ?></dd>
+                        <dt>Duration</dt>
+                        <dd><?= htmlspecialchars((string) ($b['duration'] . ' ' . $b['basis'])) ?></dd>
+                        <dt>Status</dt>
+                        <dd><span class="status <?= client_booking_status_class($b['status'] ?? '') ?>"><?= htmlspecialchars($statusDisplay) ?></span></dd>
+                        <?php if ($cust !== ''): ?>
+                            <dt>Notes</dt>
+                            <dd class="booking-detail-dd--multiline"><?= htmlspecialchars($cust) ?></dd>
+                        <?php endif; ?>
+                        <dt>Total payment</dt>
+                        <dd class="booking-detail-money">LKR <?= number_format($tp, 2) ?></dd>
+                        <?php if ($adv > 0): ?>
+                            <dt>Advance recorded</dt>
+                            <dd class="booking-detail-money">LKR <?= number_format($adv, 2) ?></dd>
+                        <?php endif; ?>
+                    </dl>
+                    <p class="booking-detail-footnote text-muted">Use Pay now or Payments when your booking requires a payment.</p>
                 </div>
+            </template>
+        <?php endforeach; ?>
 
-                <form method="POST" action="<?= URLROOT ?>/client/rescheduleBooking">
-                    <input type="hidden" name="booking_id" id="rescheduleBookingId">
+        <?php require_once APPROOT . '/views/client/partials/booking_detail_modal.php'; ?>
+    <?php endif; ?>
 
-                    <label>New Date <span style="color: red;">*</span></label>
-                    <input type="date" name="new_date" required
+    <div id="cancelModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="cancelModalTitle">
+        <div class="modal-content">
+            <button type="button" class="close" onclick="closeCancelModal()" aria-label="Close">&times;</button>
+            <h3 id="cancelModalTitle">Cancel booking</h3>
+            <form method="POST" action="<?= URLROOT ?>/client/cancelBooking">
+                <input type="hidden" name="booking_id" id="cancelBookingId">
+                <div class="field">
+                    <label for="cancelReason">Reason for cancellation</label>
+                    <textarea id="cancelReason" name="reason" rows="3" placeholder="Enter reason" required></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn secondary" onclick="closeCancelModal()">Back</button>
+                    <button type="submit" class="btn reject">Confirm cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="rescheduleModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="rescheduleModalTitle">
+        <div class="modal-content">
+            <button type="button" class="close" onclick="closeRescheduleModal()" aria-label="Close">&times;</button>
+            <h3 id="rescheduleModalTitle">Reschedule booking</h3>
+            <div class="reschedule-warning">
+                <strong>Important</strong>
+                <ul>
+                    <li>Only the <strong>date</strong> can be changed through reschedule.</li>
+                    <li>Service type, duration, and caregiver stay the same.</li>
+                    <li>You can only reschedule <strong>once per booking</strong>.</li>
+                    <li>Requests must be at least <strong>5 days in advance</strong>.</li>
+                    <li>Status must be <strong>Requested</strong> to allow reschedule.</li>
+                </ul>
+            </div>
+            <form method="POST" action="<?= URLROOT ?>/client/rescheduleBooking">
+                <input type="hidden" name="booking_id" id="rescheduleBookingId">
+                <div class="field">
+                    <label for="rescheduleNewDate">New date <span class="required-mark">*</span></label>
+                    <input id="rescheduleNewDate" type="date" name="new_date" required
                         min="<?= date('Y-m-d', strtotime('+5 days')) ?>"
                         title="Must be at least 5 days from now">
-
-                    <label>Reason for Rescheduling <span style="color: #666; font-size: 0.9em;">(Optional)</span></label>
-                    <textarea name="reason" rows="3" placeholder="Provide a reason for HR review (optional)"></textarea>
-
-                    <button type="submit" class="reschedule-btn">Submit Reschedule Request</button>
-                </form>
-            </div>
+                </div>
+                <div class="field">
+                    <label for="rescheduleReason">Reason (optional)</label>
+                    <textarea id="rescheduleReason" name="reason" rows="3" placeholder="Optional note for HR"></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn secondary" onclick="closeRescheduleModal()">Back</button>
+                    <button type="submit" class="btn">Submit request</button>
+                </div>
+            </form>
         </div>
+    </div>
+</main>
 
-        <!-- ================= MINIMAL JS (ONLY FOR POPUPS) ================= -->
-
-        <script src="<?= URLROOT ?>/public/js/client/c_upcomingBookings.js"></script>
-
-
-
-</body>
-
-</html>
+<script src="<?= URLROOT ?>/public/js/client/booking-detail-modal.js"></script>
+<script src="<?= URLROOT ?>/public/js/client/c_upcomingBookings.js"></script>
+<?php if (!empty($data['bookings'])): ?>
+<script>
+(function () {
+    var sel = document.getElementById('upcomingBookingsStatusFilter');
+    var table = document.getElementById('upcomingBookingsTable');
+    var emptyRow = document.getElementById('upcomingBookingsEmptyFilter');
+    if (!sel || !table || !emptyRow) {
+        return;
+    }
+    function applyFilter() {
+        var v = sel.value;
+        var rows = table.querySelectorAll('tbody tr[data-status]');
+        var visible = 0;
+        rows.forEach(function (tr) {
+            var show = !v || tr.getAttribute('data-status') === v;
+            tr.hidden = !show;
+            if (show) {
+                visible += 1;
+            }
+        });
+        emptyRow.hidden = visible > 0;
+    }
+    sel.addEventListener('change', applyFilter);
+})();
+</script>
+<?php endif; ?>
+<?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

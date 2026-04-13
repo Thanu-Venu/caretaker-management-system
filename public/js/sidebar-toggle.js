@@ -175,6 +175,7 @@
                 body.classList.toggle('admin-sidebar-collapsed');
                 saveCollapsedPref(body.classList.contains('admin-sidebar-collapsed'));
                 syncToggleIcon();
+                window.dispatchEvent(new Event('smartcare-sidebar-layout'));
             } else {
                 if (sidebar.classList.contains('open')) {
                     closeMobileDrawer();
@@ -193,6 +194,7 @@
                 closeMobileDrawer();
             }
             syncToggleIcon();
+            window.dispatchEvent(new Event('smartcare-sidebar-layout'));
         }
 
         if (toggle) {
@@ -261,6 +263,7 @@
             if (e.key === STORAGE_KEY) {
                 applyCollapsedFromStorage(body);
                 syncToggleIcon();
+                window.dispatchEvent(new Event('smartcare-sidebar-layout'));
             }
         });
     }

@@ -1,0 +1,10 @@
+/* Feedback add/edit — uses admin-ui form-section; optional tweaks */
+
+.form-section .page-header {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-section .page-header .page-title {
+    margin-bottom: 0;
+}

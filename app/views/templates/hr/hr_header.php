@@ -40,7 +40,7 @@ if ($user_display === '') {
 if (!empty($_SESSION['user']['profile_image'])) {
     $profilePicUrl = URLROOT . '/public/uploads/' . rawurlencode((string) $_SESSION['user']['profile_image']);
 } else {
-    $profilePicFile = $_SESSION['user']['profile_pic'] ?? 'default.png';
+    $profilePicFile = $_SESSION['user']['profile_pic'] ?? 'default.jpg';
     $profilePicUrl  = URLROOT . '/public/images/profiles/' . rawurlencode((string) $profilePicFile);
 }
 ?>

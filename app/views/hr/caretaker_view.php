@@ -20,7 +20,7 @@ include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
         <?php 
           $profileImage = $data['caretaker']['profile_image'] ?? null;
           // Show profile image if it exists and it's not the default
-          if ($profileImage && $profileImage !== 'default.png'): 
+          if ($profileImage && $profileImage !== 'default.jpg'): 
             $imagePath = URLROOT . '/public/uploads/' . $profileImage;
         ?>
           <img src="<?= $imagePath ?>" alt="<?= htmlspecialchars($data['caretaker']['name'] ?? 'Profile') ?>">
