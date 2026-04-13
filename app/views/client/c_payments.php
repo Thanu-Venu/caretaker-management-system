@@ -32,9 +32,19 @@
         return 'status-upcoming';
     }
 
+    function effectivePaymentStatus($row)
+    {
+        $bookingStatus = strtolower(trim((string)($row['booking_status'] ?? '')));
+        if (in_array($bookingStatus, ['cancelled', 'rejected'], true)) {
+            return $bookingStatus;
+        }
+
+        return strtolower((string)($row['payment_status'] ?? $row['status'] ?? ''));
+    }
+
     function statusLabel($row)
     {
-        $status = strtolower((string)($row['payment_status'] ?? $row['status'] ?? ''));
+        $status = effectivePaymentStatus($row);
         if ($status === 'advance_required') return 'Advance Required';
         if ($status === 'pending') {
             $days = (int)($row['days_delta'] ?? 99);
@@ -178,6 +188,10 @@
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($actionItems as $item): ?>
+                                    <?php
+                                    $effectiveStatus = effectivePaymentStatus($item);
+                                    $canPayNow = !empty($item['can_pay_now']) && !in_array($effectiveStatus, ['cancelled', 'rejected'], true);
+                                    ?>
                                     <tr>
                                         <td>#<?= (int)$item['booking_id'] ?></td>
                                         <td><?= htmlspecialchars($item['service_type']) ?> (<?= htmlspecialchars($item['basis']) ?>)</td>
@@ -185,21 +199,21 @@
                                         <td>LKR <?= number_format((float)$item['amount_due'], 2) ?></td>
                                         <td><?= htmlspecialchars($item['due_date'] ?? '-') ?></td>
                                         <td>
-                                            <span class="pill <?= statusClass($item['payment_status'] ?? '') ?>">
+                                            <span class="pill <?= statusClass($effectiveStatus) ?>">
                                                 <?= htmlspecialchars(statusLabel($item)) ?>
                                             </span>
                                         </td>
                                         <td>
-                                            <?php if (!empty($item['can_pay_now'])): ?>
+                                            <?php if ($canPayNow): ?>
                                                 <?php if (($item['source_type'] ?? '') === 'advance'): ?>
                                                     <a class="action-btn pay" href="<?= URLROOT ?>/client/c_makePayment?booking_id=<?= (int)$item['booking_id'] ?>">Pay Now</a>
                                                 <?php else: ?>
                                                     <a class="action-btn pay" href="<?= URLROOT ?>/client/c_makePayment?booking_id=<?= (int)$item['booking_id'] ?>&recurring_payment_id=<?= (int)$item['recurring_payment_id'] ?>">Pay Now</a>
                                                 <?php endif; ?>
                                             <?php else: ?>
-                                                <button class="action-btn disabled" disabled>Pay Not Available</button>
+                                                <button class="action-btn disabled" disabled><?= in_array($effectiveStatus, ['cancelled', 'rejected'], true) ? 'Cancelled' : 'Pay Not Available' ?></button>
                                             <?php endif; ?>
-                                            <a class="action-btn details" href="<?= URLROOT ?>/client/paymentDetails/<?= (int)$item['booking_id'] ?>">View Details</a>
+                                            <a class="action-btn details" href="<?= URLROOT ?>/client/paymentDetails/<?= (int)$item['booking_id'] ?>"><?= in_array($effectiveStatus, ['cancelled', 'rejected'], true) ? 'View Cancelled Details' : 'View Details' ?></a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

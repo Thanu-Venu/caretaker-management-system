@@ -155,13 +155,12 @@ $timeOptions = [
                 <!-- ===== CUSTOMIZATION ===== -->
                 <div class="form-group">
                     <label for="customization_hours">Customization (Extra Hours)</label>
-                    <label>Extra hours apply</label>
-                    <input type="text" value="For every booking unit (duration)" readonly>
+                 
                     <input type="hidden" id="customization_apply" name="customization_apply" value="per_unit">
                     <small>Extra hours are always charged for the full duration.</small>
                     <input type="number" id="customization_hours" name="customization_hours" min="0" max="8"
                         value="<?= htmlspecialchars((string)($prefill['customization_hours'] ?? 0), ENT_QUOTES) ?>">
-                    <small>Extra hours are charged at LKR 300 per hour</small>
+                    <small>Extra hours are charged at LKR 100 per hour</small>
 
                     <label for="customization">Customization Notes</label>
                     <textarea id="customization" name="customization"

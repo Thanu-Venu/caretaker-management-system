@@ -53,6 +53,20 @@ body {
   transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.submenu .dropdown-btn {
+  position: relative;
+}
+
+.submenu .menu-badge-wrap {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
 .menu a:hover {
   background: rgba(255, 255, 255, 0.2);
 }

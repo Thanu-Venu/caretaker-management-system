@@ -99,6 +99,8 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
               </select>
             </div>
 
+        
+
             <div class="filter-group">
               <label>Location</label>
               <select id="locationFilter">
@@ -140,7 +142,8 @@ include_once APPROOT . "/views/templates/client/c_sidebar.php";
 
               <div class="card" data-service="<?= htmlspecialchars($ct['service_type']) ?>"
                 data-location="<?= htmlspecialchars($ct['location']) ?>"
-                data-rating="<?= htmlspecialchars($ct['rating'] ?? 0) ?>">
+                data-rating="<?= htmlspecialchars($ct['rating'] ?? 0) ?>"
+                data-experience="<?= htmlspecialchars($ct['experience'] ?? '') ?>">
 
                 <h3><?= htmlspecialchars($ct['name']) ?></h3>
                 <p><?= htmlspecialchars($ct['service_type']) ?> Specialist</p>

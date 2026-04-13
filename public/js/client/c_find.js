@@ -128,7 +128,7 @@ function updateDurationLimits(basis) {
   let max = "";
 
   if (basis === "Hourly") {
-    max = 23;
+    max = 15;
   } else if (basis === "Daily") {
     max = 30;
   } else if (basis === "Monthly") {
@@ -158,7 +158,7 @@ window.onload = function () {
   const today = new Date();
 
   const minDate = new Date(today);
-  minDate.setDate(today.getDate() + 4); // +4 days
+  minDate.setDate(today.getDate() + 1); // +1 day
 
   const formatDate = (d) => {
     let month = "" + (d.getMonth() + 1);
