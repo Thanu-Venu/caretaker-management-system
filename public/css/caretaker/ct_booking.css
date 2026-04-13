@@ -102,6 +102,8 @@ th {
   font-size: 18px;
   font-weight: 700;
   color: white;
+  background: #1e88e5;
+  border: 1px solid #1e88e5;
 }
 
 tbody tr:hover {

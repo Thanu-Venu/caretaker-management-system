@@ -193,11 +193,16 @@ table {
   overflow: hidden;
 }
 
+thead {
+  background: #1e88e5;
+}
+
 th {
-  background: #f1f6fb;
+  background: #1e88e5;
   text-align: left;
   padding: 12px;
-  color: #1565c0;
+  color: #ffffff;
+  border: 1px solid #1e88e5;
 }
 
 th,
