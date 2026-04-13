@@ -601,12 +601,13 @@ tbody tr:hover {
 }
 
 table {
-  min-width: 600px; /* Prevents tables from collapsing too tiny and breaking UI */
+  min-width: 600px;
+  /* Prevents tables from collapsing too tiny and breaking UI */
 }
 
 @media (max-width: 1200px) {
   .dashboard {
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
     grid-gap: 20px;
   }
 }
@@ -614,7 +615,8 @@ table {
 @media (max-width: 1024px) {
   .content {
     padding: 16px;
-    margin-left: 255px; /* Sidebar might still be fixed */
+    margin-left: 255px;
+    /* Sidebar might still be fixed */
   }
 }
 
@@ -623,7 +625,7 @@ table {
     margin-left: 0;
     padding: 16px;
   }
-  
+
   .profile-body {
     grid-template-columns: 1fr;
     text-align: center;

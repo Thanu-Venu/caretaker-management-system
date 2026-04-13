@@ -133,7 +133,7 @@
         <!-- Schedule -->
         <section class="card schedule">
           <h3>Schedule</h3>
-          <div class="calendar">
+          <div class="calendar" onclick="window.location.href='<?= URLROOT ?>/caretaker/ct_schedule'" style="cursor: pointer;" title="Click to view full schedule">
             <p id="calendarMonthLabel">-</p>
             <div class="days">
               <span>Su</span><span>Mo</span><span>Tu</span><span>We</span>
