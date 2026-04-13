@@ -71,79 +71,77 @@ $adjustedRemaining = min(5, $summary['remaining'] + $refundDays);
           <li><strong>Other Leaves:</strong> Request at least 3 days in advance.</li>
           <li><strong>Limits:</strong> Maximum 5 days per request and 5 days total per month.</li>
         </ul>
+
+      <?php if (!empty($errors)): ?>
+        <div class="alert alert-error">
+          <?php foreach ($errors as $error): ?>
+            <p><?= htmlspecialchars($error) ?></p>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
+
+      <?php if (!empty($warnings)): ?>
+        <div class="alert alert-warning">
+          <?php foreach ($warnings as $warning): ?>
+            <p><?= htmlspecialchars($warning) ?></p>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
+
+      <div class="booking-impact-box booking-impact-preview" id="bookingImpactPreview" hidden>
+        <h3>This leave affects active bookings</h3>
+        <p id="impactMessage"></p>
+        <p>Affected bookings: <strong id="impactCount">0</strong></p>
+        <p id="impactIdsLine" hidden>Booking IDs: <span id="impactIds"></span></p>
       </div>
 
-      <div class="form-section">
-        <?php if (!empty($errors)): ?>
-          <div class="alert alert-error">
-            <?php foreach ($errors as $error): ?>
-              <p><?= htmlspecialchars($error) ?></p>
-            <?php endforeach; ?>
-          </div>
-        <?php endif; ?>
+      <form method="POST" action="<?php echo URLROOT; ?>/LeaveCRUD/edit/<?php echo (int)$leave->id; ?>" id="leaveRequestForm">
+        <label>Leave Type</label>
+        <select name="leave_type" id="leave_type" required>
+          <option value="Vacation" <?php echo ($leave->leave_type === 'Vacation') ? 'selected' : ''; ?>>Vacation</option>
+          <option value="Sick Leave" <?php echo ($leave->leave_type === 'Sick Leave') ? 'selected' : ''; ?>>Sick Leave</option>
+          <option value="Personal Leave" <?php echo ($leave->leave_type === 'Personal Leave') ? 'selected' : ''; ?>>Personal Leave</option>
+          <option value="Maternity Leave" <?php echo ($leave->leave_type === 'Maternity Leave') ? 'selected' : ''; ?>>Maternity Leave</option>
+        </select>
+        <br>
 
-        <?php if (!empty($warnings)): ?>
-          <div class="alert alert-warning">
-            <?php foreach ($warnings as $warning): ?>
-              <p><?= htmlspecialchars($warning) ?></p>
-            <?php endforeach; ?>
-          </div>
-        <?php endif; ?>
+        <div class="row">
+          <label>
+            Start Date<br>
+            <input
+              type="date"
+              name="start_date"
+              id="start_date"
+              min="<?= htmlspecialchars($data['today'] ?? date('Y-m-d')) ?>"
+              value="<?= htmlspecialchars($leave->start_date) ?>"
+              data-min-start="<?= htmlspecialchars($data['minStartDate'] ?? '') ?>"
+              required>
+            <small id="start_date_hint"></small>
+          </label>
 
-        <div class="booking-impact-box booking-impact-preview" id="bookingImpactPreview" hidden>
-          <h3>This leave affects active bookings</h3>
-          <p id="impactMessage"></p>
-          <p>Affected bookings: <strong id="impactCount">0</strong></p>
-          <p id="impactIdsLine" hidden>Booking IDs: <span id="impactIds"></span></p>
+          <label>
+            End Date <br>
+            <input
+              type="date"
+              name="end_date"
+              id="end_date"
+              min="<?= htmlspecialchars($data['today'] ?? date('Y-m-d')) ?>"
+              value="<?= htmlspecialchars($leave->end_date) ?>"
+              required>
+            <small id="end_date_hint"></small>
+          </label>
         </div>
 
-        <form method="POST" action="<?php echo URLROOT; ?>/LeaveCRUD/edit/<?php echo (int)$leave->id; ?>" id="leaveRequestForm">
-          <label>Leave Type</label>
-          <select name="leave_type" id="leave_type" required>
-            <option value="Vacation" <?php echo ($leave->leave_type === 'Vacation') ? 'selected' : ''; ?>>Vacation</option>
-            <option value="Sick Leave" <?php echo ($leave->leave_type === 'Sick Leave') ? 'selected' : ''; ?>>Sick Leave</option>
-            <option value="Personal Leave" <?php echo ($leave->leave_type === 'Personal Leave') ? 'selected' : ''; ?>>Personal Leave</option>
-            <option value="Maternity Leave" <?php echo ($leave->leave_type === 'Maternity Leave') ? 'selected' : ''; ?>>Maternity Leave</option>
-          </select>
-          <br><br>
+        <div class="inline-errors" id="inlineErrors"></div>
 
-          <div class="row">
-            <label>
-              Start Date<br><br>
-              <input
-                type="date"
-                name="start_date"
-                id="start_date"
-                min="<?= htmlspecialchars($data['today'] ?? date('Y-m-d')) ?>"
-                value="<?= htmlspecialchars($leave->start_date) ?>"
-                data-min-start="<?= htmlspecialchars($data['minStartDate'] ?? '') ?>"
-                required>
-              <small id="start_date_hint"></small>
-            </label>
+        <label>Reason for Leave</label>
+        <textarea name="reason" id="reason" placeholder="Explain briefly why you need leave..." required><?= htmlspecialchars($leave->reason) ?></textarea>
 
-            <label>
-              End Date <br><br>
-              <input
-                type="date"
-                name="end_date"
-                id="end_date"
-                min="<?= htmlspecialchars($data['today'] ?? date('Y-m-d')) ?>"
-                value="<?= htmlspecialchars($leave->end_date) ?>"
-                required>
-              <small id="end_date_hint"></small>
-            </label>
-          </div>
-
-          <div class="inline-errors" id="inlineErrors"></div>
-
-          <label>Reason for Leave</label>
-          <textarea name="reason" id="reason" placeholder="Explain briefly why you need leave..." required><?= htmlspecialchars($leave->reason) ?></textarea>
-
-          <div class="form-actions">
-            <button type="submit" class="submit-btn" style="background: #51a7f3;">Update Leave</button>
-            <a href="<?php echo URLROOT; ?>/LeaveCRUD/index" class="cancel-btn" style="color: #e00404;">Cancel</a>
-          </div>
-        </form>
+        <div class="form-actions">
+          <button type="submit" class="submit-btn">Update Leave</button>
+          <a href="<?php echo URLROOT; ?>/LeaveCRUD/index" class="cancel-btn">Cancel</a>
+        </div>
+      </form>
       </div>
     </section>
   </main>
