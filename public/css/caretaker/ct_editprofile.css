@@ -18,9 +18,27 @@ body {
 
 
 .content {
-  margin-left: 270px;
+  margin-left: 255px;
+  width: calc(100% - 255px);
+  box-sizing: border-box;
   flex: 1;
   padding: 20px;
+}
+
+@media (max-width: 1024px) {
+  .content {
+    margin-left: 255px;
+    width: calc(100% - 255px);
+    padding: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0 !important;
+    width: 100%;
+    padding: 16px;
+  }
 }
 
 .dashboard {
