@@ -182,7 +182,7 @@ input:checked+.slider:before {
 .table-container {
   background: #fff;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   padding: 15px;
 }
 
@@ -194,14 +194,14 @@ table {
 }
 
 th {
-  background: #1e88e5;
-      font-size: 18px;
-    font-weight: 700;
-    color: white;
-    padding: 12px;
+  background: #f1f6fb;
+  text-align: left;
+  padding: 12px;
+  color: #1565c0;
 }
 
-th, td {
+th,
+td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #eee;
@@ -221,28 +221,28 @@ tbody tr:hover {
 }
 
 .status {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .status.approved {
-    background: #d1f2dd;
-    color: #1f6f3f;
+  background: #d1f2dd;
+  color: #1f6f3f;
   padding: 4px 14px;
 }
 
 .status.rejected {
-    background: #fde2e2;
-    color: #8a2430;
+  background: #fde2e2;
+  color: #8a2430;
   padding: 4px 16px;
 }
 
 .status.pending {
-    background: #fff3cd;
-    color: #7a5a00;
+  background: #fff3cd;
+  color: #7a5a00;
   padding: 4px 18px;
 }
 
@@ -413,14 +413,6 @@ body {
   background: linear-gradient(180deg, #f4f7fb, #f9fcff);
 }
 
-/* Smooth transitions everywhere */
-* {
-  transition: background-color 0.2s ease,
-    color 0.2s ease,
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
-}
-
 /* =====================
    Welcome Section
 ===================== */
@@ -439,6 +431,7 @@ body {
 .card {
   box-shadow: 0 8px 22px rgba(30, 136, 229, 0.08);
   border: 1px solid #eef3f8;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .card:hover {
@@ -471,21 +464,22 @@ body {
 .butn,
 .btn-le {
   box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
+  transition: all 0.2s ease;
 }
 
 .btn:hover,
 .btn-small:hover,
 .butn:hover,
 .btn-le:hover {
-  transform: translateY(-2px);
+  background: #1565c0;
+  box-shadow: 0 6px 16px rgba(30, 136, 229, 0.4);
 }
 
 .btn:active,
 .btn-small:active,
 .butn:active,
 .btn-le:active {
-  transform: translateY(0);
-  box-shadow: 0 3px 8px rgba(30, 136, 229, 0.2);
+  box-shadow: 0 2px 6px rgba(30, 136, 229, 0.2);
 }
 
 .btn-verify {
@@ -596,4 +590,54 @@ tbody tr:hover {
   color: #1b3a6f;
   font-weight: 600;
   font-size: 14px;
+}
+
+/* =====================
+   Responsive Fixes (Prevents Horizontal Shaking)
+===================== */
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  min-width: 600px;
+  /* Prevents tables from collapsing too tiny and breaking UI */
+}
+
+@media (max-width: 1200px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+    grid-gap: 20px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .content {
+    padding: 16px;
+    margin-left: 255px;
+    /* Sidebar might still be fixed */
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+    padding: 16px;
+  }
+
+  .profile-body {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .profile-body img {
+    margin: 0 auto;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
 }

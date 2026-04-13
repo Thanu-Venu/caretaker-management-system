@@ -12,7 +12,14 @@
 
 <body>
 <div class="main-content">
-  <h2>Client Feedback & Ratings</h2>  
+  <h2>
+    Client Feedback & Ratings
+    <?php if (isset($data['avgRating']) && $data['avgRating'] > 0): ?>
+        <span style="font-size: 20px; color: #f39c12; margin-left: 15px;">
+            Average: ⭐ <?= number_format($data['avgRating'], 1) ?>
+        </span>
+    <?php endif; ?>
+  </h2>  
   <div class="card">
 
     <div class="feedback-table-container">

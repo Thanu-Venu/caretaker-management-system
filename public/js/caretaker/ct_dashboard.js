@@ -74,37 +74,9 @@ function setupAvailabilityToggle() {
   });
 }
 
-function setupLeaveModal() {
-  const leaveModal = document.getElementById("leaveModal");
-  const openLeaveBtn = document.getElementById("openLeaveModal");
-  const closeLeaveBtn = document.getElementById("closeLeaveModal");
-  const dashboard = document.getElementById("dashboard");
-  const leaveForm = document.getElementById("leaveForm");
 
-  if (openLeaveBtn && leaveModal) {
-    openLeaveBtn.addEventListener("click", function () {
-      leaveModal.style.display = "flex";
-      if (dashboard) dashboard.classList.add("blur");
-    });
-  }
-
-  if (closeLeaveBtn && leaveModal) {
-    closeLeaveBtn.addEventListener("click", function () {
-      leaveModal.style.display = "none";
-      if (dashboard) dashboard.classList.remove("blur");
-    });
-  }
-
-  if (leaveForm) {
-    leaveForm.addEventListener("submit", function () {
-      if (leaveModal) leaveModal.style.display = "none";
-      if (dashboard) dashboard.classList.remove("blur");
-    });
-  }
-}
 
 document.addEventListener("DOMContentLoaded", function () {
   renderCalendar();
   setupAvailabilityToggle();
-  setupLeaveModal();
 });

@@ -11,6 +11,7 @@
   transition: all 0.3s ease;
   overflow-y: auto;  /* enables vertical scrolling */
   overflow-x: hidden;
+  z-index: 1000;
 }
 .sidebar::-webkit-scrollbar {
   display: none;
