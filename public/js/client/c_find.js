@@ -257,7 +257,7 @@ function applyFilters() {
   const location = locationEl ? locationEl.value.trim().toLowerCase() : "";
   const minRating = ratingEl ? parseFloat(ratingEl.value) : NaN;
 
-    const cards = document.querySelectorAll(".card");
+    const cards = document.querySelectorAll("#caretakersList .caretaker-card");
     const noCaretakerMessage = document.getElementById("noCaretakerMessage");
     let visibleCount = 0;
 

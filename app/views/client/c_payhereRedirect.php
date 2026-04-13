@@ -1,29 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting to PayHere</title>
-</head>
-
-<body>
-    <div style="max-width: 680px; margin: 40px auto; padding: 20px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; font-family: Arial, Helvetica, sans-serif;">
-        <h2>Redirecting to PayHere Sandbox...</h2>
-        <p>Please wait while we connect to the secure payment page.</p>
-
-        <form id="payhereForm" method="post" action="<?= htmlspecialchars((string)($gateway_url ?? '')) ?>">
+<?php
+$clientPageTitle = 'Redirecting to PayHere — SmartCare';
+$clientExtraCss  = ['client/c_payhereRedirect.css'];
+require_once APPROOT . '/views/templates/client/client_layout_head.php';
+require_once APPROOT . '/views/templates/client/c_header.php';
+require_once APPROOT . '/views/templates/client/c_sidebar.php';
+?>
+<main class="main-content">
+    <div class="payhere-redirect-card">
+        <h1 class="page-title">Redirecting to PayHere</h1>
+        <p class="text-muted">Please wait while we connect you to the secure payment page.</p>
+        <form id="payhereForm" method="post" action="<?= htmlspecialchars((string) ($gateway_url ?? '')) ?>">
             <?php $fields = $payhere ?? []; ?>
             <?php foreach ($fields as $key => $value): ?>
-                <input type="hidden" name="<?= htmlspecialchars((string)$key) ?>" value="<?= htmlspecialchars((string)$value) ?>">
+                <input type="hidden" name="<?= htmlspecialchars((string) $key) ?>" value="<?= htmlspecialchars((string) $value) ?>">
             <?php endforeach; ?>
-            <noscript><button type="submit">Continue to PayHere</button></noscript>
+            <noscript><button type="submit" class="btn">Continue to PayHere</button></noscript>
         </form>
     </div>
-
-    <script>
-        document.getElementById('payhereForm').submit();
-    </script>
-</body>
-
-</html>
+</main>
+<script>
+    document.getElementById('payhereForm').submit();
+</script>
+<?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

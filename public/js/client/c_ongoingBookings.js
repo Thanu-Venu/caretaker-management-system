@@ -1,10 +1,12 @@
 function openCancelModal(id) {
   document.getElementById("cancelBookingId").value = id;
-  document.getElementById("cancelModal").style.display = "flex";
+  var m = document.getElementById("cancelModal");
+  if (m) m.classList.add("show");
 }
 
 function closeCancelModal() {
-  document.getElementById("cancelModal").style.display = "none";
+  var m = document.getElementById("cancelModal");
+  if (m) m.classList.remove("show");
 }
 
 function openRescheduleModal(id) {
@@ -21,11 +23,13 @@ function openRescheduleModal(id) {
     dateInput.min = `${yyyy}-${mm}-${dd}`;
     dateInput.value = ""; // Clear any previously selected date
   }
-  document.getElementById("rescheduleModal").style.display = "flex";
+  var m = document.getElementById("rescheduleModal");
+  if (m) m.classList.add("show");
 }
 
 function closeRescheduleModal() {
-  document.getElementById("rescheduleModal").style.display = "none";
+  var m = document.getElementById("rescheduleModal");
+  if (m) m.classList.remove("show");
 }
 
 let availableCaretakers = []; // will be set in openChangeModal()
@@ -54,7 +58,8 @@ let availableCaretakers = []; // will be set in openChangeModal()
       const ratingCount = ct.rating_count ?? 0;
       const exp = ct.experience_years ?? 0;
       const qual = ct.qualification ?? "—";
-      const profileImage = ct.profile_image ? `uploads/${ct.profile_image}` : "uploads/default.png";
+      const uploadBase = (typeof window !== "undefined" && window.CLIENT_UPLOAD_BASE) ? window.CLIENT_UPLOAD_BASE : "";
+      const profileImage = ct.profile_image ? `${uploadBase}${ct.profile_image}` : `${uploadBase}default.jpg`;
 
       card.innerHTML = `
         <div class="ct-top">
@@ -98,11 +103,13 @@ let availableCaretakers = []; // will be set in openChangeModal()
     availableCaretakers = Array.isArray(caretakersJson) ? caretakersJson : [];
     renderCaretakerCards(availableCaretakers);
 
-    document.getElementById("changeModal").style.display = "block";
+    var cm = document.getElementById("changeModal");
+    if (cm) cm.classList.add("show");
   }
 
   function closeChangeModal(){
-    document.getElementById("changeModal").style.display = "none";
+    var cm = document.getElementById("changeModal");
+    if (cm) cm.classList.remove("show");
   }
 
   // small helper to prevent HTML injection
