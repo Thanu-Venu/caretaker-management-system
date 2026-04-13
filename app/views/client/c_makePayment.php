@@ -28,11 +28,6 @@ $paymentAmount = $recurringPayment ? (float) $recurringPayment['amount'] : (floa
 $paymentLabel = $recurringPayment ? 'Recurring installment' : 'Advance payment';
 $paymentNote = $recurringPayment ? ('Due date: ' . htmlspecialchars((string) $recurringPayment['due_date'])) : $advanceNotes;
 
-<<<<<<< HEAD
-    <div class="payment-page">
-    <div class="payment-container">
-        <h1>Payment Details</h1>
-=======
 $bkDate = (string) ($booking['booking_date'] ?? '');
 $svcStart = trim((string) ($booking['service_start_date'] ?? ''));
 $showSvcStart = $svcStart !== '' && $svcStart !== '0000-00-00' && $svcStart !== $bkDate;
@@ -40,7 +35,6 @@ $district = trim((string) ($booking['district'] ?? ''));
 $rawStatus = (string) ($booking['status'] ?? '');
 $statusDisplay = str_replace('_', ' ', $rawStatus);
 ?>
->>>>>>> 460c591ac37c19b771f06fef405fbc1364db34c4
 
 <main class="main-content admin-dashboard-page make-payment">
     <header class="page-header">
@@ -74,11 +68,6 @@ $statusDisplay = str_replace('_', ' ', $rawStatus);
             <?php endif; ?>
         </div>
     </div>
-<<<<<<< HEAD
-    </div>
-</body>
-=======
->>>>>>> 460c591ac37c19b771f06fef405fbc1364db34c4
 
     <div class="make-payment-grid">
         <section class="make-payment-card" aria-labelledby="make-pay-booking-heading">
