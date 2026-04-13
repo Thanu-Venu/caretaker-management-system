@@ -303,8 +303,20 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', (event) => {
         const errors = collectClientErrors();
         renderInlineErrors(errors);
+        
         if (errors.length > 0) {
             event.preventDefault();
+
+            // Check if the error is due to exhausted leave quota for a popup message
+            const startObj = parseDate(startInput.value);
+            if (startObj) {
+                const isCurrentMonth = startObj.getMonth() === new Date().getMonth() && startObj.getFullYear() === new Date().getFullYear();
+                if (isCurrentMonth && typeof policy.remainingThisMonth !== 'undefined' && policy.remainingThisMonth <= 0) {
+                    alert("Your monthly leave quota is completely finished. You cannot request more days this month!");
+                } else if (errors.some(e => e.includes('remaining leave days but requested'))) {
+                    alert("You are attempting to request more days than you have left in your monthly quota!");
+                }
+            }
         }
     });
 
