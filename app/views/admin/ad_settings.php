@@ -1,6 +1,3 @@
-<?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
-
 <?php
 $user = $data['user'] ?? null;
 $flash_success = $_SESSION['flash_success'] ?? '';
@@ -14,17 +11,21 @@ unset($_SESSION['flash_success'], $_SESSION['flash_error']);
 <html lang="en">
 
 <head>
+    <?php include_once APPROOT . '/views/templates/admin/ad_admin_core_styles.php'; ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Settings</title>
     <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/ad_settings.css">
     <!-- Design System Override (ensures consistency) -->
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/system/legacy-overrides.css">
 </head>
 
 <body>
+    <?php include_once APPROOT . "/views/templates/admin/ad_header.php"; ?>
+    <?php include_once APPROOT . "/views/templates/admin/ad_sidebar.php"; ?>
     <div class="main-content">
-        <h1>Profile & Settings</h1>
+        <section class="page-header settings-page-header">
+            <h1 class="page-title">Profile &amp; Settings</h1>
+        </section>
 
         <?php if ($flash_success): ?>
             <div class="flash-message success"><?= htmlspecialchars($flash_success) ?></div>
@@ -42,26 +43,33 @@ unset($_SESSION['flash_success'], $_SESSION['flash_error']);
                     <img id="profileImg"
                         src="<?= URLROOT ?>/public/images/profiles/<?= htmlspecialchars($user['profile_pic'] ?? 'admin.png') ?>"
                         alt="Profile">
-                    <form method="POST" action="<?= URLROOT ?>/adminsettings/update_profile"
-                        enctype="multipart/form-data">
+                    <form id="adminProfileForm" method="POST" action="<?= URLROOT ?>/adminsettings/update_profile"
+                        enctype="multipart/form-data" data-admin-validate>
                         <div class="pro-section">
-                            <label>Full Name
-                                <input type="text" name="username"
-                                    value="<?= htmlspecialchars($user['username'] ?? '') ?>" required>
-                            </label><br>
+                            <div class="field">
+                                <label for="settings-username">Full name<span class="required-mark" aria-hidden="true">*</span></label>
+                                <input id="settings-username" type="text" name="username" maxlength="120"
+                                    value="<?= htmlspecialchars($user['username'] ?? '') ?>" required autocomplete="name">
+                            </div>
 
-                            <label>Email
-                                <input type="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>"
-                                    readonly>
-                            </label><br>
+                            <div class="field">
+                                <label for="settings-email">Email</label>
+                                <input id="settings-email" type="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>"
+                                    readonly autocomplete="email">
+                            </div>
 
-                            <label>Phone Number
-                                <input type="text" name="phone" value="<?= htmlspecialchars($user['phone'] ?? '') ?>">
-                            </label><br>
+                            <div class="field">
+                                <label for="settings-phone">Phone number<span class="required-mark" aria-hidden="true">*</span></label>
+                                <input id="settings-phone" type="text" name="phone" required maxlength="10" inputmode="numeric" pattern="[0-9]*"
+                                    placeholder="10-digit number" autocomplete="tel"
+                                    value="<?= htmlspecialchars($user['phone'] ?? '') ?>">
+                            </div>
 
-                            <label>Profile Picture
-                                <input type="file" name="profileFile" id="profileFileInput" accept="image/*">
-                            </label><br><br>
+                            <div class="field">
+                                <label for="profileFileInput">Profile picture</label>
+                                <input type="file" name="profileFile" id="profileFileInput" accept="image/jpeg,image/png,image/gif,image/webp">
+                                <p class="field-hint">Optional. Max 5 MB.</p>
+                            </div>
 
                             <div class="form-actions">
                                 <button type="submit" class="btn-save">Save Profile</button>
@@ -76,18 +84,21 @@ unset($_SESSION['flash_success'], $_SESSION['flash_error']);
             <!-- Change Password -->
             <section class="card">
                 <h3>Change Password</h3>
-                <form method="POST" action="<?= URLROOT ?>/adminsettings/change_password">
-                    <label>Current Password
-                        <input type="password" name="current_password" placeholder="Current password" required>
-                    </label><br>
+                <form id="adminPasswordForm" method="POST" action="<?= URLROOT ?>/adminsettings/change_password" data-admin-validate>
+                    <div class="field">
+                        <label for="settings-current-password">Current password<span class="required-mark" aria-hidden="true">*</span></label>
+                        <input id="settings-current-password" type="password" name="current_password" placeholder="Current password" required autocomplete="current-password">
+                    </div>
 
-                    <label>New Password
-                        <input type="password" name="new_password" placeholder="New password" required>
-                    </label><br>
+                    <div class="field">
+                        <label for="settings-new-password">New password<span class="required-mark" aria-hidden="true">*</span></label>
+                        <input id="settings-new-password" type="password" name="new_password" placeholder="Min. 8 chars, upper, lower, number" required autocomplete="new-password">
+                    </div>
 
-                    <label>Confirm New Password
-                        <input type="password" name="confirm_password" placeholder="Confirm password" required>
-                    </label><br>
+                    <div class="field">
+                        <label for="settings-confirm-password">Confirm new password<span class="required-mark" aria-hidden="true">*</span></label>
+                        <input id="settings-confirm-password" type="password" name="confirm_password" placeholder="Re-enter new password" required autocomplete="new-password">
+                    </div>
 
                     <div class="form-actions">
                         <button type="submit" class="btn-save">Update Password</button>

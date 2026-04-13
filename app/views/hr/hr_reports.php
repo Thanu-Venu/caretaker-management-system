@@ -94,7 +94,7 @@ function esc($value)
                 <span class="card-value"><?= esc($completionRate['total'] ?? 0) ?></span>
             </article>
             <article class="card">
-                <span class="card-label">Active Caretakers</span>
+                <span class="card-label">Active Caregivers</span>
                 <span class="card-value"><?= esc($activeCaretakers) ?></span>
             </article>
             <article class="card">
@@ -110,18 +110,18 @@ function esc($value)
                 <span class="card-value"><?= esc($assignmentStats['unassigned'] ?? 0) ?></span>
             </article>
             <article class="card">
-                <span class="card-label">Avg Caretaker Rating</span>
+                <span class="card-label">Avg Caregiver Rating</span>
                 <span class="card-value"><?= esc(number_format($avgCaretakerRating, 2)) ?></span>
             </article>
         </section>
 
         <section class="panel-grid two-col">
             <article class="panel chart-panel">
-                <h3>Caretaker Status</h3>
+                <h3>Caregiver Status</h3>
                 <canvas id="caretakerStatusChart"></canvas>
             </article>
             <article class="panel chart-panel">
-                <h3>Caretaker Service Mix</h3>
+                <h3>Caregiver Service Mix</h3>
                 <canvas id="serviceMixChart"></canvas>
             </article>
         </section>
@@ -151,7 +151,7 @@ function esc($value)
             <article class="panel compact">
                 <h3>Operational Snapshot</h3>
                 <div class="stat-list">
-                    <div><span>Total Caretakers</span><strong><?= esc($summary['totalCaretakers'] ?? 0) ?></strong></div>
+                    <div><span>Total Caregivers</span><strong><?= esc($summary['totalCaretakers'] ?? 0) ?></strong></div>
                     <div><span>Active Today</span><strong><?= esc($summary['activeToday'] ?? 0) ?></strong></div>
                     <div><span>Pending Bookings</span><strong><?= esc($summary['pendingBookings'] ?? 0) ?></strong></div>
                     <div><span>Recent Complaints</span><strong><?= esc($summary['recentComplaints'] ?? 0) ?></strong></div>
@@ -166,7 +166,7 @@ function esc($value)
                     <table>
                         <thead>
                             <tr>
-                                <th>Caretaker</th>
+                                <th>Caregiver</th>
                                 <th>Service</th>
                                 <th>Leave Type</th>
                                 <th>From</th>
@@ -233,12 +233,12 @@ function esc($value)
 
         <section class="panel-grid two-col">
             <article class="panel">
-                <h3>Caretakers Currently on Leave</h3>
+                <h3>Caregivers Currently on Leave</h3>
                 <div class="table-wrap">
                     <table>
                         <thead>
                             <tr>
-                                <th>Caretaker</th>
+                                <th>Caregiver</th>
                                 <th>Service</th>
                                 <th>Leave Type</th>
                                 <th>From</th>
@@ -309,7 +309,7 @@ function esc($value)
                         <thead>
                             <tr>
                                 <th>Booking</th>
-                                <th>Caretaker</th>
+                                <th>Caregiver</th>
                                 <th>Client</th>
                                 <th>Date</th>
                                 <th>Time</th>
@@ -378,7 +378,7 @@ function esc($value)
                             <tr>
                                 <th>Booking</th>
                                 <th>Client</th>
-                                <th>Caretaker</th>
+                                <th>Caregiver</th>
                                 <th>Service</th>
                                 <th>Status</th>
                             </tr>
@@ -407,7 +407,7 @@ function esc($value)
 
         <section class="panel-grid two-col">
             <article class="panel">
-                <h3>Caretaker Feedback Snapshot</h3>
+                <h3>Caregiver Feedback Snapshot</h3>
                 <div class="table-wrap">
                     <table>
                         <thead>
@@ -439,13 +439,13 @@ function esc($value)
             </article>
 
             <article class="panel">
-                <h3>Caretaker Complaints</h3>
+                <h3>Caregiver Complaints</h3>
                 <div class="table-wrap">
                     <table>
                         <thead>
                             <tr>
                                 <th>Client</th>
-                                <th>Caretaker</th>
+                                <th>Caregiver</th>
                                 <th>Category</th>
                                 <th>Status</th>
                                 <th>Date</th>
@@ -482,7 +482,7 @@ function esc($value)
                             <tr>
                                 <th>Booking</th>
                                 <th>Client</th>
-                                <th>Caretaker</th>
+                                <th>Caregiver</th>
                                 <th>Service</th>
                                 <th>New Date</th>
                             </tr>
@@ -514,7 +514,7 @@ function esc($value)
                     <table>
                         <thead>
                             <tr>
-                                <th>Caretaker</th>
+                                <th>Caregiver</th>
                                 <th>Service</th>
                                 <th>Leave Type</th>
                                 <th>From</th>

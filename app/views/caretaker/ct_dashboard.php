@@ -68,7 +68,7 @@
               </p>
               <div class="tags">
                 <span class="tag"><?= htmlspecialchars($data['caretaker']['service_type']) ?></span>
-                <span class="tag"><?= htmlspecialchars($data['caretaker']['experience']) ?> Years Experience</span>
+                <span class="tag"><?= htmlspecialchars($data['caretaker']['experience']) ?> Experience</span>
                 <span class="tag"><?= htmlspecialchars($data['caretaker']['location']) ?></span>
               </div>
             </div>
@@ -92,6 +92,7 @@
         <!-- Bookings -->
         <section class="card bookings">
           <h3>Upcoming Bookings</h3>
+          <div class="table-container">
           <table>
             <thead>
               <tr>
@@ -122,6 +123,7 @@
             </tbody>
 
           </table>
+          </div>
 
           <div class="button-cont">
             <a class="btn-small" href="<?= URLROOT ?>/caretaker/ct_booking?tab=upcoming">See All</a>

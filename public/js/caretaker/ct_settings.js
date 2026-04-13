@@ -1,5 +1,5 @@
 // Profile Picture Preview
-const profileImg = document.getElementById('profileImg');
+const profileImg = document.getElementById('profile_image');
 const profileFile = document.getElementById('profileFile');
 
 if (profileFile) {

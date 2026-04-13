@@ -66,6 +66,68 @@ class ReportExporter
             fputcsv($output, []);
         }
 
+        if (isset($data['monthlyTrends']) && !empty($data['monthlyTrends'])) {
+            fputcsv($output, ['MONTHLY BOOKINGS AND REVENUE']);
+            fputcsv($output, ['Month', 'Bookings', 'Revenue (LKR)']);
+            foreach ($data['monthlyTrends'] as $row) {
+                fputcsv($output, [
+                    $row['month_label'] ?? $row['month_key'] ?? '',
+                    $row['bookings'] ?? 0,
+                    isset($row['revenue']) ? number_format((float) $row['revenue'], 2) : '0.00',
+                ]);
+            }
+            fputcsv($output, []);
+        }
+
+        if (isset($data['paymentStatus']) && !empty($data['paymentStatus'])) {
+            fputcsv($output, ['PAYMENT STATUS']);
+            fputcsv($output, ['Status', 'Count']);
+            foreach ($data['paymentStatus'] as $row) {
+                fputcsv($output, [$row['status'] ?? '', $row['count'] ?? 0]);
+            }
+            fputcsv($output, []);
+        }
+
+        if (isset($data['serviceDistribution']) && !empty($data['serviceDistribution'])) {
+            fputcsv($output, ['BOOKINGS BY SERVICE TYPE']);
+            fputcsv($output, ['Service Type', 'Count']);
+            foreach ($data['serviceDistribution'] as $row) {
+                fputcsv($output, [$row['service_type'] ?? '', $row['count'] ?? 0]);
+            }
+            fputcsv($output, []);
+        }
+
+        if (isset($data['basisBreakdown']) && !empty($data['basisBreakdown'])) {
+            fputcsv($output, ['BOOKING BASIS']);
+            fputcsv($output, ['Basis', 'Count']);
+            foreach ($data['basisBreakdown'] as $row) {
+                fputcsv($output, [$row['basis'] ?? '', $row['count'] ?? 0]);
+            }
+            fputcsv($output, []);
+        }
+
+        if (isset($data['advanceVsFinal']) && !empty($data['advanceVsFinal'])) {
+            fputcsv($output, ['ADVANCE VS FINAL PAYMENTS']);
+            fputcsv($output, ['Payment Type', 'Count', 'Total (LKR)']);
+            foreach ($data['advanceVsFinal'] as $row) {
+                fputcsv($output, [
+                    $row['payment_type'] ?? '',
+                    $row['count'] ?? 0,
+                    isset($row['total']) ? number_format((float) $row['total'], 2) : '0.00',
+                ]);
+            }
+            fputcsv($output, []);
+        }
+
+        if (isset($data['clientLocations']) && !empty($data['clientLocations'])) {
+            fputcsv($output, ['CLIENTS BY DISTRICT']);
+            fputcsv($output, ['District', 'Client Count']);
+            foreach ($data['clientLocations'] as $row) {
+                fputcsv($output, [$row['district'] ?? '', $row['count'] ?? 0]);
+            }
+            fputcsv($output, []);
+        }
+
         // Revenue by Service Type
         if (isset($data['revenueByService']) && !empty($data['revenueByService'])) {
             fputcsv($output, ['REVENUE BY SERVICE TYPE']);

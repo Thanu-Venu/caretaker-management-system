@@ -3,19 +3,17 @@
 require_once APPROOT . '/core/SidebarBadgeHelper.php';
 // Get badge counts once for this sidebar
 $badgeCounts = getSidebarBadgeCounts();
+$sbUser = $_SESSION['user'] ?? [];
+$sbDisplay = $sbUser['name'] ?? $sbUser['username'] ?? 'Admin';
+$sbParts = preg_split('/\s+/', trim((string) $sbDisplay));
+if (count($sbParts) >= 2) {
+    $sbLast = $sbParts[count($sbParts) - 1];
+    $sbInitials = strtoupper(substr($sbParts[0], 0, 1) . substr($sbLast, 0, 1));
+} else {
+    $sbInitials = strtoupper(substr((string) $sbDisplay, 0, min(2, strlen((string) $sbDisplay))));
+}
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Sidebar</title>
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-</head>
-
-<body>
-
+<!-- Admin sidebar shell (fragment — must be inside the page <body>) -->
   <!-- Mobile Toggle Button (auto-created by JS if missing) -->
   <button class="sidebar-toggle">
     <i class='bx bx-menu'></i>
@@ -27,11 +25,11 @@ $badgeCounts = getSidebarBadgeCounts();
 
     <div class="menu-scroll">
       <ul class="sidebar-menu">
-        <li><a href="http://localhost/CMA/public?url=admin/ad_dashboard"><i class='bx bxs-dashboard'></i> <span>Dashboard</span></a></li>
-        <li><a href="http://localhost/CMA/public?url=admin/ad_caretakers"><i class='bx bx-user-circle'></i> <span>Caregivers</span></a></li>
-        <li><a href="http://localhost/CMA/public?url=admin/ad_clients"><i class='bx bx-user'></i> <span>Clients</span></a></li>
+        <li><a href="<?= URLROOT ?>/public?url=admin/ad_dashboard"><i class='bx bxs-dashboard'></i> <span>Dashboard</span></a></li>
+        <li><a href="<?= URLROOT ?>/public?url=admin/ad_caretakers"><i class='bx bx-user-circle'></i> <span>Caregivers</span></a></li>
+        <li><a href="<?= URLROOT ?>/public?url=admin/ad_clients"><i class='bx bx-user'></i> <span>Clients</span></a></li>
         <li>
-          <a href="http://localhost/CMA/public?url=admin/ad_bookings">
+          <a href="<?= URLROOT ?>/public?url=admin/ad_bookings">
             <span class="menu-item-content">
               <span class="menu-left">
                 <i class='bx bx-calendar'></i> <span>Bookings</span>
@@ -41,7 +39,7 @@ $badgeCounts = getSidebarBadgeCounts();
           </a>
         </li>
         <li>
-          <a href="http://localhost/CMA/public?url=admin/ad_leave">
+          <a href="<?= URLROOT ?>/public?url=admin/ad_leave">
             <span class="menu-item-content">
               <span class="menu-left">
                 <i class='bx bx-time'></i> <span>Leave</span>
@@ -51,7 +49,7 @@ $badgeCounts = getSidebarBadgeCounts();
           </a>
         </li>
         <li>
-          <a href="http://localhost/CMA/public?url=admin/ad_profile_requests">
+          <a href="<?= URLROOT ?>/public?url=admin/ad_profile_requests">
             <span class="menu-item-content">
               <span class="menu-left">
                 <i class='bx bx-user-check'></i> <span>Profile Requests</span>
@@ -61,7 +59,7 @@ $badgeCounts = getSidebarBadgeCounts();
           </a>
         </li>
         <li>
-          <a href="http://localhost/CMA/public?url=admin/ad_payments">
+          <a href="<?= URLROOT ?>/public?url=admin/ad_payments">
             <span class="menu-item-content">
               <span class="menu-left">
                 <i class='bx bx-dollar-circle'></i> <span>Payments</span>
@@ -70,21 +68,29 @@ $badgeCounts = getSidebarBadgeCounts();
             </span>
           </a>
         </li>
-        <li><a href="http://localhost/CMA/public?url=admin/ad_feedback"><i class='bx bx-message-detail'></i> <span>Feedback</span></a></li>
-        <li><a href="http://localhost/CMA/public?url=admin/ad_users"><i class='bx bx-group'></i> <span>Staff</span></a></li>
-        <li><a href="http://localhost/CMA/public?url=admin/ad_announcement"><i class='bx bxs-megaphone'></i> <span>Announcements</span></a></li>
-        <li><a href="http://localhost/CMA/public?url=admin/ad_history"><i class='bx bx-history'></i> <span>Logs</span></a></li>
-        <li><a href="http://localhost/CMA/public?url=admin/ad_reports"><i class='bx bx-bar-chart'></i> <span>Reports</span></a></li>
-        <li><a href="http://localhost/CMA/public?url=admin/ad_settings"><i class='bx bx-cog'></i> <span>Settings</span></a></li>
+        <li><a href="<?= URLROOT ?>/public?url=admin/ad_feedback"><i class='bx bx-message-detail'></i> <span>Feedback</span></a></li>
+        <li><a href="<?= URLROOT ?>/public?url=admin/ad_users"><i class='bx bx-group'></i> <span>Staff</span></a></li>
+        <li><a href="<?= URLROOT ?>/public?url=admin/ad_announcement"><i class='bx bxs-megaphone'></i> <span>Announcements</span></a></li>
+        <li><a href="<?= URLROOT ?>/public?url=admin/ad_history"><i class='bx bx-history'></i> <span>Logs</span></a></li>
+        <li><a href="<?= URLROOT ?>/public?url=admin/ad_reports"><i class='bx bx-bar-chart'></i> <span>Reports</span></a></li>
+        <li><a href="<?= URLROOT ?>/public?url=admin/ad_settings"><i class='bx bx-cog'></i> <span>Settings</span></a></li>
 
       </ul>
     </div>
+
+    <a href="<?= URLROOT ?>/public?url=admin/ad_settings"
+       class="sidebar-rail-footer"
+       title="<?= htmlspecialchars($sbDisplay) ?> — Settings"
+       aria-label="<?= htmlspecialchars($sbDisplay) ?>, open account settings">
+      <span class="sidebar-rail-avatar" aria-hidden="true"><?= htmlspecialchars($sbInitials) ?></span>
+    </a>
   </aside>
 
   <!-- Overlay (for mobile) -->
   <div class="sidebar-overlay"></div>
 
   <!-- Mobile Toggle Script -->
+  <script defer src="<?= URLROOT ?>/public/js/admin/admin-table-details.js"></script>
   <script src="<?= URLROOT ?>/public/js/sidebar-toggle.js"></script>
 
   <script>
@@ -150,7 +156,3 @@ $badgeCounts = getSidebarBadgeCounts();
       });
     });
   </script>
-
-</body>
-
-</html>

@@ -21,7 +21,7 @@
             <thead>
                 <tr>
                     <th>Client</th>
-                    <th>Caretaker</th>
+                    <th>Caregiver</th>
                     <th>Service</th>
                     <th>Rating</th>
                     <th>Comments</th>

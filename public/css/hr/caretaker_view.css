@@ -183,6 +183,22 @@ body {
   background-color: #545b62;
 }
 
+.caretaker-view-back {
+  margin: 28px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.caretaker-view-back a {
+  color: #1e88e5;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.caretaker-view-back a:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 768px) {
   .profile-section {
     flex-direction: column;
@@ -192,10 +208,6 @@ body {
   .info-grid,
   .details-grid {
     grid-template-columns: 1fr;
-  }
-
-  .action-buttons {
-    flex-direction: column;
   }
 
   .btn {

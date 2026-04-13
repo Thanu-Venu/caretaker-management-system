@@ -772,6 +772,29 @@ public function getResolvedComplaintsByCaretaker($caretaker_id)
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
+    /**
+     * Caregiver counts by status (admin dashboard).
+     *
+     * @return array{labels: string[], values: int[]}
+     */
+    public function getCaretakerStatusDistribution(): array
+    {
+        $res = $this->conn->query(
+            "SELECT COALESCE(NULLIF(TRIM(status), ''), 'Unknown') AS st, COUNT(*) AS cnt FROM caretakers GROUP BY st ORDER BY cnt DESC"
+        );
+        if (!$res) {
+            return ['labels' => [], 'values' => []];
+        }
+        $labels = [];
+        $values = [];
+        while ($row = $res->fetch_assoc()) {
+            $labels[] = (string) $row['st'];
+            $values[] = (int) $row['cnt'];
+        }
+
+        return ['labels' => $labels, 'values' => $values];
+    }
+
     public function countCaretakers(string $search = ''): int
     {
         if ($search !== '') {
@@ -821,7 +844,7 @@ public function getResolvedComplaintsByCaretaker($caretaker_id)
 
     public function getCaretakersFiltered(array $filters, int $limit, int $offset): array
     {
-        $sql = "SELECT id, name, service_type, status, location, email, phone, experience
+        $sql = "SELECT id, name, service_type, status, location, email, phone, experience, qualifications, profile_image, created_at
             FROM caretakers
             WHERE 1=1";
         $types = "";

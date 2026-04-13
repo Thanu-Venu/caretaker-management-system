@@ -1,70 +1,43 @@
+/* Admin notification page — align with admin-ui tokens */
 body {
-    font-family: 'Poppins', Arial, sans-serif;
-    background: #f4f7fb;
+    font-family: var(--admin-font, "Inter", system-ui, sans-serif);
+    background: var(--admin-bg-gradient, #f1f5f9);
     margin: 0;
+    color: var(--admin-text, #0f172a);
 }
 
 .notif-page {
     max-width: 800px;
-    margin: 90px auto 50px; /* leave space for sticky header */
-    padding: 20px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin: calc(var(--admin-header-height, 60px) + 24px) auto 40px;
+    padding: 24px 28px;
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    box-shadow: var(--admin-shadow, 0 4px 24px rgba(15, 23, 42, 0.06));
 }
 
 .notif-page h2 {
-    margin-bottom: 20px;
-    color: #1E88E5;
-    font-weight: 600;
-}
-
-.notif-container {
-    display: flex;
-    flex-direction: column;
-}
-
-.notif-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+    margin: 0 0 20px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--admin-text, #0f172a);
+    padding-left: 14px;
+    border-left: 4px solid transparent;
+    border-image: linear-gradient(180deg, #1e88e5, #00bfa5) 1;
+    border-image-slice: 1;
 }
 
 .notif-item {
-    border-bottom: 1px solid #eee;
-    padding: 15px;
-    transition: background 0.2s;
-}
-
-.notif-item a {
-    text-decoration: none;
-    color: #111;
-    display: flex;
-    flex-direction: column;
-}
-
-.notif-item.unread {
-    background: #e3f2fd; /* light blue for unread */
-    font-weight: bold;
+    border-bottom: 1px solid var(--admin-border, #e2e8f0);
+    padding: 16px 4px;
+    transition: background 0.2s ease;
 }
 
 .notif-item:hover {
-    background: #f1f5f9;
+    background: var(--admin-primary-soft, rgba(30, 136, 229, 0.08));
 }
 
-.notif-item span {
-    font-size: 14px;
-    margin-top: 5px;
-}
-
-.notif-item small {
-    font-size: 12px;
-    color: #555;
-    margin-top: 5px;
-}
-
-.no-notifs {
-    text-align: center;
-    color: #888;
-    font-size: 16px;
+.notif-item a {
+    color: var(--admin-primary, #1e88e5);
+    font-weight: 600;
 }

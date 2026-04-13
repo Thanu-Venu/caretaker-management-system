@@ -65,12 +65,12 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
                 <input type="text" id="experience" name="experience"
                   value="<?= htmlspecialchars($user['experience'] ?? ''); ?>"
                   <?= $isProfileRequestPending ? 'readonly' : '' ?>>
-              </label>
+              </label><br>
               <label>Location
                 <input type="text" id="location" name="location"
                   value="<?= htmlspecialchars($user['location'] ?? ''); ?>"
                   <?= $isProfileRequestPending ? 'readonly' : '' ?>>
-              </label>
+              </label><br>
 
               <label>Qualifications
                 <input type="text" id="qualifications" name="qualifications"
@@ -94,13 +94,13 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
 
           <label>Current Password
             <input type="password" name="current-password" placeholder="Current password" required>
-          </label>
+          </label><br>
           <label>New Password
             <input type="password" name="new-password" placeholder="New password" required>
-          </label>
+          </label><br>
           <label>Confirm New Password
             <input type="password" name="confirm-password" placeholder="Confirm password" required>
-          </label>
+          </label><br>
           <button type="submit" class="btn-save">Update Password</button>
         </form>
       </section>

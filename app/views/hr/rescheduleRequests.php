@@ -118,7 +118,7 @@
                                     <span class="history-field-value"><?= htmlspecialchars($req['service_type']) ?></span>
                                 </div>
                                 <div class="history-field">
-                                    <span class="history-field-label">Caretaker</span>
+                                    <span class="history-field-label">Caregiver</span>
                                     <span class="history-field-value"><?= htmlspecialchars($req['caretaker_name']) ?></span>
                                 </div>
                                 <div class="history-field">
