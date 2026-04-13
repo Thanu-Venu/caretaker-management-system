@@ -40,8 +40,9 @@ function moneyLKR($amount)
 <main class="main-content admin-dashboard-page client-dashboard-page">
 
     <?php if (!empty($_SESSION['flash_message'])): ?>
-      <div class="alert success"><?php echo $_SESSION['flash_message'];
-        unset($_SESSION['flash_message']); ?>
+      <?php $flashType = $_SESSION['flash_type'] ?? 'success'; ?>
+      <div class="alert <?= htmlspecialchars((string) $flashType, ENT_QUOTES, 'UTF-8') ?>"><?php echo $_SESSION['flash_message'];
+        unset($_SESSION['flash_message'], $_SESSION['flash_type']); ?>
       </div>
     <?php endif; ?>
 
@@ -54,6 +55,7 @@ function moneyLKR($amount)
         <p>Submit your emergency request</p>
 
         <form method="POST" action="">
+          <input type="hidden" name="emergency_submit" value="1">
           
           <div class="form-group">
             <label>Emergency Type</label>
@@ -79,9 +81,12 @@ function moneyLKR($amount)
           <button type="submit" class="submit-btn">Send Alert 🚨</button>
         </form>
 
-        <div class="quick-call">
-          <a href="tel:1990">🚑 Ambulance</a>
-          <a href="tel:119">🚓 Police</a>
+
+
+        <div class="emergency-hotlines" role="note" aria-label="Emergency hotline information">
+          <p><strong>Police Emergency (Hotline):</strong> 119 / 118</p>
+          <p><strong>Ambulance / Medical Emergency (Suwa Seriya):</strong> 1990</p>
+          <p><strong>Ambulance / Fire &amp; Rescue (General):</strong> 110</p>
         </div>
 
       </div>
