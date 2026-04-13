@@ -59,7 +59,8 @@ function moneyLKR($amount)
         <h2>🚨 Emergency Support</h2>
         <p>Submit your emergency request</p>
 
-        <form method="POST" action="">
+        <form id="emergencyForm" method="POST" action="<?= URLROOT; ?>/client/c_dashboard">
+          <input type="hidden" name="emergency_submit" value="1">
           
           <div class="form-group">
             <label>Emergency Type</label>
@@ -86,8 +87,8 @@ function moneyLKR($amount)
         </form>
 
         <div class="quick-call">
-          <a href="tel:1990">🚑 Ambulance</a>
-          <a href="tel:119">🚓 Police</a>
+          <a href="tel:110">🚑 Ambulance / Fire &amp; Rescue (110)</a>
+          <a href="tel:118">🚓 Police Emergency Hotline (118/119)</a>
         </div>
 
       </div>
