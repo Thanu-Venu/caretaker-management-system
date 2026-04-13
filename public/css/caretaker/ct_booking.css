@@ -153,7 +153,6 @@ td[colspan] {
 
 @media (max-width: 1024px) {
   .content {
-    margin-left: 0;
     padding: 16px;
   }
 }

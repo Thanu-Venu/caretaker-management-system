@@ -81,7 +81,6 @@ td:nth-child(2) {
 
 @media (max-width: 1024px) {
     .main-content {
-        margin-left: 0;
         padding: 16px;
     }
 }
