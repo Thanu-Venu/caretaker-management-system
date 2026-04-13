@@ -83,6 +83,7 @@ class ClientController extends Controller
 
             if ($type === '' || $description === '' || $phone === '') {
                 $_SESSION['flash_message'] = "Please fill all emergency fields before sending the alert.";
+                $_SESSION['flash_type'] = 'warning';
                 header("Location: " . URLROOT . "/client/c_dashboard");
                 exit;
             }
@@ -112,9 +113,11 @@ class ClientController extends Controller
             }
 
             if ($sentCount > 0) {
-                $_SESSION['flash_message'] = "Emergency alert sent to HR team successfully.";
+                $_SESSION['flash_message'] = "Emergency alert sent successfully to HR notifications.";
+                $_SESSION['flash_type'] = 'success';
             } else {
                 $_SESSION['flash_message'] = "Emergency alert could not be sent right now. Please call emergency hotlines.";
+                $_SESSION['flash_type'] = 'error';
             }
 
             header("Location: " . URLROOT . "/client/c_dashboard");
