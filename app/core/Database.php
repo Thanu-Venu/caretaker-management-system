@@ -5,7 +5,7 @@ class Database {
     public function __construct() {
         $host = "localhost";
         $user = "root";
-        $pass = ""; // Default XAMPP password is an empty string
+        $pass = "Thanuvenu"; // Default XAMPP password is an empty string
         $dbname = "smartcare";
 
         $this->conn = new mysqli($host, $user, $pass, $dbname);
