@@ -68,10 +68,17 @@
 /* ===================== Cards Base ===================== */
 /* ===================== Stats Cards ===================== */
 .stats-cards {
-  display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 18px;
+    --stats-card-min-width: 190px;
+    display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--stats-card-min-width)), 1fr));
+        gap: clamp(12px, 1.2vw, 18px);
   margin-bottom: 50px;
+}
+
+@media (min-width: 1400px) {
+        .stats-cards {
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
 }
 
 .stats-cards h2 {
@@ -133,11 +140,6 @@
         margin-top: var(--admin-header-height, 60px);
         padding-top: 18px;
     }
-
-    .stats-cards {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-    }
 }
 
 @media (max-width: 900px) {
@@ -146,11 +148,6 @@
         margin-right: calc(16px + var(--admin-main-extra-left, 16px));
         margin-bottom: 16px;
         padding-top: 14px;
-    }
-
-    .stats-cards {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
     }
 }
 
@@ -161,8 +158,7 @@
     }
 
     .stats-cards {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+        --stats-card-min-width: 165px;
     }
 }
 
@@ -1095,7 +1091,7 @@
     }
 
     .stats-cards {
-        grid-template-columns: 1fr;
+        --stats-card-min-width: 150px;
     }
 }
 
@@ -1118,6 +1114,10 @@
     }
 
     .modifier-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-cards {
         grid-template-columns: 1fr;
     }
 }
