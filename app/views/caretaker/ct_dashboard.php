@@ -173,9 +173,9 @@
             <h3 class="card-title">Upcoming Bookings</h3>
             <p class="dashboard-chart-card__sub">Your next appointments</p>
           </div>
-          <div class="card-body dashboard-chart-card__body">
+          <div class="card-body" style="display: block; padding-top: 16px;">
             <div class="table-container">
-              <table>
+              <table class="table">
                 <thead>
                   <tr>
                     <th>Client</th>
@@ -210,13 +210,29 @@
             <h3 class="card-title">Leave & availability</h3>
             <p class="dashboard-chart-card__sub">Leave status and schedule</p>
           </div>
-          <div class="card-body dashboard-chart-card__body">
-            <p><strong><?= $availabilityLabel ?></strong></p>
-            <p>Completed bookings: <?= $completedBookings ?></p>
-            <p>Pending leave requests: <?= $pendingLeaveCount ?></p>
-            <div class="button-cont" style="margin-top: 18px;">
-              <a class="btn-small" href="<?= URLROOT ?>/public?url=caretaker/ct_leave">Request leave</a>
-              <a class="btn-small" href="<?= URLROOT ?>/public?url=caretaker/ct_schedule" style="margin-left: 12px;">View schedule</a>
+          <div class="card-body" style="display: block; padding-top: 16px;">
+            <div class="table-container" style="margin-bottom: 20px;">
+              <table class="table">
+                  <tbody>
+                      <tr>
+                          <td style="font-weight: 500;">Status</td>
+                          <td><strong><?= $availabilityLabel ?></strong></td>
+                      </tr>
+                      <tr>
+                          <td style="font-weight: 500;">Completed Bookings</td>
+                          <td><?= $completedBookings ?></td>
+                      </tr>
+                      <tr>
+                          <td style="font-weight: 500;">Pending Leave</td>
+                          <td><?= $pendingLeaveCount ?> requests</td>
+                      </tr>
+                  </tbody>
+              </table>
+            </div>
+            
+            <div class="card-actions">
+              <a class="btn btn-sm btn-primary" href="<?= URLROOT ?>/public?url=caretaker/ct_leave"><i class="bx bx-calendar-x"></i> Request leave</a>
+              <a class="btn btn-sm secondary" href="<?= URLROOT ?>/public?url=caretaker/ct_schedule"><i class="bx bx-calendar"></i> View schedule</a>
             </div>
           </div>
         </div>
