@@ -137,7 +137,7 @@
 /* ===== SEARCH ===== */
 .filter-panel-top-actions {
     display: flex;
-    justify-content: flex-end; /* move to right */
+    justify-content: space-between;
     align-items: flex-end;
     gap: 8px;
     margin-top: -72px;
@@ -147,7 +147,13 @@
 
 
 .filter-field--search-top {
-    max-width: 180px; /* further reduced width */
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+}
+
+.filter-field--search-top input {
+    width: 100%;
 }
 
 /* ===== TABS ===== */
@@ -303,6 +309,11 @@ tr.full-payment:hover {
 
     .filter-panel-top-actions {
         flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-field--search-top {
+        width: 100%;
     }
 
     .payment-row-actions {

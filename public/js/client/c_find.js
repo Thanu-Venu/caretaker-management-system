@@ -158,7 +158,7 @@ window.onload = function () {
   const today = new Date();
 
   const minDate = new Date(today);
-  minDate.setDate(today.getDate() + 1); // +1 day
+  minDate.setDate(today.getDate() + 4); // +4 days
 
   const formatDate = (d) => {
     let month = "" + (d.getMonth() + 1);

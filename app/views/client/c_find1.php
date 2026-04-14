@@ -62,8 +62,9 @@ $caretakersToShow = $data['allCaretakers'] ?? [];
         </div>
 
         <div class="popup-actions">
-            <button type="button" id="cancelPopupBtn" class="btn secondary">Cancel</button>
             <button type="submit" class="btn">Search</button>
+            <button type="button" id="cancelPopupBtn" class="btn secondary">Cancel</button>
+            
         </div>
     </form>
 </div>
