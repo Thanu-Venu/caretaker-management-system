@@ -36,12 +36,12 @@ class PaymentHelper
                     $html .= '<p class="text-muted">No recurring payments needed.</p>';
                 } else {
                     $dailyRate = $totalPayment / $duration;
-                    $advance = $dailyRate * 15;
+                    $advance = $dailyRate * 10;
                     $remaining = $totalPayment - $advance;
 
-                    $html .= '<p><strong>Advance (15 days):</strong> Rs. ' . number_format($advance, 2) . '</p>';
-                    $html .= '<p><strong>Remaining:</strong> Rs. ' . number_format($remaining, 2) . ' due before day 16</p>';
-                    $html .= '<p class="text-warning">⚠️ Second payment must be completed by day 16 to continue service.</p>';
+                    $html .= '<p><strong>Advance (10 days):</strong> Rs. ' . number_format($advance, 2) . '</p>';
+                    $html .= '<p><strong>Remaining:</strong> Rs. ' . number_format($remaining, 2) . ' due before booking end date</p>';
+                    $html .= '<p class="text-warning">⚠️ Remaining payment must be completed before the booking is finished.</p>';
                 }
                 break;
 
