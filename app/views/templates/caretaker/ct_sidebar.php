@@ -3,19 +3,18 @@
 require_once APPROOT . '/core/SidebarBadgeHelper.php';
 // Get badge counts once for this sidebar
 $badgeCounts = getSidebarBadgeCounts();
+$userDisplay = $_SESSION['user']['name'] ?? $_SESSION['user']['username'] ?? 'Caretaker';
+$userInitials = strtoupper(substr($userDisplay, 0, 2));
 ?>
   <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar menu">
     <i class='bx bx-menu'></i>
   </button>
 
-  <div class="sidebar">
-    <div class="logo-details">
-      <img src="<?= URLROOT ?>/public/images/logo.jpg" alt="SmartCare" class="logo-sidebar">
-      <span class="logo_name">SmartCare</span>
-    </div>
-    <ul class="nav-links">
+  <aside class="sidebar">
+    <div class="menu-scroll">
+      <ul class="sidebar-menu nav-links">
 
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_dashboard"><i class='bx bxs-dashboard'></i><span class="link_name">Dashboard</span></a></li>
+        <li><a href="http://localhost/CMA/public?url=caretaker/ct_dashboard"><i class='bx bxs-dashboard'></i><span class="link_name">Dashboard</span></a></li>
       <li><a href="http://localhost/CMA/public?url=caretaker/ct_schedule"><i class='bx bxs-calendar'></i><span class="link_name">My Schedule</span></a></li>
       <li>
         <a href="http://localhost/CMA/public?url=caretaker/ct_booking">
@@ -42,9 +41,13 @@ $badgeCounts = getSidebarBadgeCounts();
       <li><a href="http://localhost/CMA/public?url=caretaker/ct_reports"><i class='bx bxs-report'></i><span class="link_name">Reports</span></a></li>
       <li><a href="http://localhost/CMA/public?url=caretaker/ct_announcement"><i class='bx bxs-megaphone'></i><span class="link_name">Announcements</span></a></li>
       <li><a href="http://localhost/CMA/public?url=caretaker/ct_settings"><i class='bx bxs-cog'></i><span class="link_name">Settings</span></a></li>
+      </ul>
+    </div>
 
-    </ul>
-  </div>
+    <a href="<?= URLROOT ?>/public?url=caretaker/ct_settings" class="sidebar-rail-footer" title="<?= htmlspecialchars($userDisplay) ?> — Settings" aria-label="<?= htmlspecialchars($userDisplay) ?>, open account settings">
+      <span class="sidebar-rail-avatar" aria-hidden="true"><?= htmlspecialchars($userInitials) ?></span>
+    </a>
+  </aside>
 
   <div class="sidebar-overlay"></div>
   <script src="<?= URLROOT ?>/public/js/sidebar-toggle.js"></script>
