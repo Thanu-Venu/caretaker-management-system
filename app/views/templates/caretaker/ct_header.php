@@ -17,6 +17,17 @@ $user_display = $_SESSION['user']['name'] ?? $_SESSION['user']['username'];
 $profilePic = $_SESSION['user']['profile_image'] ?? 'default.jpg';
 ?>
 
+<!-- Restore collapsed rail before paint (avoids full-width flash; must run before layout CSS paints) -->
+<script>
+(function () {
+    try {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('adminSidebarCollapsed') === '1') {
+            document.body.classList.add('admin-sidebar-collapsed');
+        }
+    } catch (e) { /* private mode / blocked storage */ }
+})();
+</script>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -81,20 +92,24 @@ $profilePic = $_SESSION['user']['profile_image'] ?? 'default.jpg';
                 </div>
             </div>
 
-            <div class="header-logout">
-                <a href="<?= URLROOT ?>/index.php?url=auth/logout" class="logout-btn" title="Logout">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Logout</span>
-                </a>
-            </div>
-
-            <!-- Profile -->
             <div class="profile-wrapper">
-                <a href="http://localhost/CMA/public?url=caretaker/ct_settings" class="profile-link">
+                <button type="button" id="profileMenuBtn" class="profile-menu-trigger" aria-expanded="false"
+                    aria-haspopup="true" aria-controls="caretakerProfileDropdown" title="Account menu">
                     <img src="<?= URLROOT ?>/public/uploads/<?= htmlspecialchars($profilePic) ?>" class="profile-img"
-                        alt="Profile">
-                    <span><?= htmlspecialchars($user_display) ?></span>
-                </a>
+                        alt="">
+                    <span class="profile-menu-name"><?= htmlspecialchars($user_display) ?></span>
+                    <i class="fa-solid fa-chevron-down profile-menu-chevron" aria-hidden="true"></i>
+                </button>
+                <div id="caretakerProfileDropdown" class="profile-dropdown" role="menu">
+                    <a href="<?= URLROOT ?>/public?url=caretaker/ct_settings" class="profile-menu-item" role="menuitem">
+                        <i class="fa-solid fa-user" aria-hidden="true"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="<?= URLROOT ?>/index.php?url=auth/logout" class="profile-menu-item profile-menu-item--logout" role="menuitem">
+                        <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
             </div>
         </div>
     </header>
