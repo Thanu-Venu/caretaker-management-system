@@ -396,3 +396,32 @@ h1 {
   font-weight: 700;
   /* make it bold */
 }
+
+/* =====================
+   Responsive Design & Table Fixes
+===================== */
+.table-container {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  min-width: 600px;
+}
+
+@media (max-width: 1024px) {
+  .content, .main-content {
+    padding: 16px;
+    width: calc(100% - 255px);
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 768px) {
+  .content, .main-content {
+    margin-left: 0 !important;
+    padding: 16px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
