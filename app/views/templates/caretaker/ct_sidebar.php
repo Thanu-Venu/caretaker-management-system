@@ -12,35 +12,35 @@ $userInitials = strtoupper(substr($userDisplay, 0, 2));
 
   <aside class="sidebar">
     <div class="menu-scroll">
-      <ul class="sidebar-menu nav-links">
+      <ul class="sidebar-menu">
 
-        <li><a href="http://localhost/CMA/public?url=caretaker/ct_dashboard"><i class='bx bxs-dashboard'></i><span class="link_name">Dashboard</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_schedule"><i class='bx bxs-calendar'></i><span class="link_name">My Schedule</span></a></li>
-      <li>
-        <a href="http://localhost/CMA/public?url=caretaker/ct_booking">
-          <span class="menu-item-content">
-            <span class="menu-left">
-              <i class='bx bx-book-alt'></i><span class="link_name">Bookings</span>
+        <li><a href="http://localhost/CMA/public?url=caretaker/ct_dashboard"><i class='bx bxs-dashboard'></i> <span>Dashboard</span></a></li>
+        <li><a href="http://localhost/CMA/public?url=caretaker/ct_schedule"><i class='bx bxs-calendar'></i> <span>My Schedule</span></a></li>
+        <li>
+          <a href="http://localhost/CMA/public?url=caretaker/ct_booking">
+            <span class="menu-item-content">
+              <span class="menu-left">
+                <i class='bx bx-book-alt'></i> <span>Bookings</span>
+              </span>
+              <?php echo renderBadge('bookings', $badgeCounts); ?>
             </span>
-            <?php echo renderBadge('bookings', $badgeCounts); ?>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a href="http://localhost/CMA/public?url=caretaker/ct_leave">
-          <span class="menu-item-content">
-            <span class="menu-left">
-              <i class='bx bxs-calendar-check'></i><span class="link_name">Leave Request</span>
+          </a>
+        </li>
+        <li>
+          <a href="http://localhost/CMA/public?url=caretaker/ct_leave">
+            <span class="menu-item-content">
+              <span class="menu-left">
+                <i class='bx bxs-calendar-check'></i> <span>Leave Request</span>
+              </span>
+              <?php echo renderBadge('leave_requests', $badgeCounts); ?>
             </span>
-            <?php echo renderBadge('leave_requests', $badgeCounts); ?>
-          </span>
-        </a>
-      </li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_complaints"><i class='bx bxs-error'></i><span class="link_name">Complaints</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_reviews"><i class='bx bxs-message-dots'></i><span class="link_name">Reviews</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_reports"><i class='bx bxs-report'></i><span class="link_name">Reports</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_announcement"><i class='bx bxs-megaphone'></i><span class="link_name">Announcements</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_settings"><i class='bx bxs-cog'></i><span class="link_name">Settings</span></a></li>
+          </a>
+        </li>
+        <li><a href="http://localhost/CMA/public?url=caretaker/ct_complaints"><i class='bx bxs-error'></i> <span>Complaints</span></a></li>
+        <li><a href="http://localhost/CMA/public?url=caretaker/ct_reviews"><i class='bx bxs-message-dots'></i> <span>Reviews</span></a></li>
+        <li><a href="http://localhost/CMA/public?url=caretaker/ct_reports"><i class='bx bxs-report'></i> <span>Reports</span></a></li>
+        <li><a href="http://localhost/CMA/public?url=caretaker/ct_announcement"><i class='bx bxs-megaphone'></i> <span>Announcements</span></a></li>
+        <li><a href="http://localhost/CMA/public?url=caretaker/ct_settings"><i class='bx bxs-cog'></i> <span>Settings</span></a></li>
       </ul>
     </div>
 
