@@ -1,3 +1,4 @@
+/* General Layout */
 body {
   background: linear-gradient(180deg, #f4f7fb, #f9fcff);
 }
@@ -5,160 +6,298 @@ body {
 .main-content {
   flex: 1;
   padding: 20px 40px;
-  margin-left: 300px;
+  margin-left: 255px; /* from dashboard */
   font-family: 'Poppins', Arial, sans-serif;
-}
-
-h1 {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  color: #1e88e5;
-  font-size: 28px;
-}
-
-.settings-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 30px;
-}
-
-.card {
-    background: white;
-    padding: 30px;
-    width: 95%;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    margin-bottom: 24px;
-    transition: box-shadow 0.3s ease;
-}
-
-.card:hover {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-}
-
-.card h3 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #055eac;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.profile-body {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 30px;
-  width: 100%;
-  align-items: start;
-}
-
-.profile-body img {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #1E88E5;
-}
-
-form label {
-  display: flex;
-  flex-direction: column;
-  font-size: 16px;
-  font-weight: 600;
-  text-transform: uppercase;
-  margin-bottom: 15px;
-  color: #2a313a;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="file"] {
-  padding: 10px 20px;
-  width : 100%;
-  margin-top: 5px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-.btn-save {
-  background-color: #1E88E5;
-  color: #fff;
-  font-weight: 500;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.btn-save:hover {
-  background-color: #1565c0;
-}
-
-.notif-option {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  font-size: 14px;
-}
-
-.pro-section input {
-  width: 100%;
   box-sizing: border-box;
 }
 
-.profile-info {
-  padding: 20px;
-}
-
-.info-group {
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-}
-
-.info-group label {
-  font-weight: bold;
-  width: 150px;
-  display: inline-block;
-}
-
-.info-group span {
-  color: #333;
-}
-
-/* =====================
-   Responsive Design & Table Fixes
-===================== */
-.table-container {
-  overflow-x: auto !important;
-  -webkit-overflow-scrolling: touch;
-}
-
-table {
-  min-width: 600px;
-}
-
 @media (max-width: 1024px) {
-  .content, .main-content {
+  .main-content {
     padding: 16px;
     width: calc(100% - 255px);
-    box-sizing: border-box;
   }
 }
 
 @media (max-width: 768px) {
-  .content, .main-content {
+  .main-content {
     margin-left: 0 !important;
     padding: 16px;
     width: 100%;
-    box-sizing: border-box;
   }
 }
+
+/* Settings — premium glass cards & balanced form actions */
+.main-content .page-header.settings-page-header {
+    max-width: 1200px;
+}
+
+.settings-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 1200px;
+    align-items: stretch;
+}
+
+@media (max-width: 960px) {
+    .settings-container {
+        grid-template-columns: 1fr;
+        max-width: 880px;
+    }
+    .main-content .page-header.settings-page-header {
+        max-width: 880px;
+    }
+}
+
+.settings-container section.card {
+    position: relative;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 26px 28px 28px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    background: linear-gradient(
+        155deg,
+        rgba(255, 255, 255, 0.94) 0%,
+        rgba(248, 250, 252, 0.88) 45%,
+        rgba(240, 253, 250, 0.35) 100%
+    );
+    box-shadow:
+        0 1px 2px rgba(15, 23, 42, 0.04),
+        0 8px 32px rgba(15, 23, 42, 0.07),
+        0 0 0 1px rgba(30, 136, 229, 0.06) inset;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    overflow: hidden;
+}
+
+.settings-container section.card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: 16px 0 0 16px;
+    background: linear-gradient(180deg, #1e88e5 0%, #00bfa5 100%);
+    opacity: 0.85;
+}
+
+.settings-container section.card > h3 {
+    position: relative;
+    flex-shrink: 0;
+    margin: 0 0 20px;
+    padding: 0 0 14px 12px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #0f172a;
+}
+
+.settings-container section.card.profile > h3 {
+    padding-left: 12px;
+}
+
+.profile-body {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    grid-template-rows: minmax(0, 1fr);
+    gap: 28px 32px;
+    align-items: stretch;
+}
+
+.settings-container section.card.profile .profile-body form {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+}
+
+.settings-container section.card.profile .pro-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.settings-container section.card.profile .pro-section .form-actions {
+    margin-top: auto;
+}
+
+.settings-container section.card:not(.profile) form {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-container section.card:not(.profile) .form-actions {
+    margin-top: auto;
+}
+
+.profile-body img {
+    align-self: start;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.95);
+    box-shadow:
+        0 4px 20px rgba(30, 136, 229, 0.25),
+        0 0 0 1px rgba(30, 136, 229, 0.12),
+        0 12px 40px rgba(15, 23, 42, 0.08);
+}
+
+.main-content .card form .field {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content .card form .field:last-of-type {
+    margin-bottom: 0;
+}
+
+.settings-container .field label {
+    margin-bottom: 8px;
+    letter-spacing: 0.01em;
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.settings-container .field input:not([type="file"]),
+.settings-container .field select,
+.settings-container .field textarea {
+    border-radius: 10px;
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow:
+        0 1px 2px rgba(255, 255, 255, 0.8) inset,
+        0 1px 3px rgba(15, 23, 42, 0.05);
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+    padding: 10px 14px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.settings-container .field input:not([type="file"]):hover,
+.settings-container .field select:hover,
+.settings-container .field textarea:hover {
+    border-color: rgba(30, 136, 229, 0.28);
+    background: rgba(255, 255, 255, 0.88);
+}
+
+.settings-container .field input:not([type="file"]):focus,
+.settings-container .field select:focus,
+.settings-container .field textarea:focus {
+    outline: none;
+    border-color: #1e88e5;
+    background: #fff;
+    box-shadow:
+        0 0 0 3px rgba(30, 136, 229, 0.18),
+        0 1px 2px rgba(255, 255, 255, 0.9) inset;
+}
+
+.settings-container .field input[type="file"] {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px dashed rgba(30, 136, 229, 0.35);
+    background: rgba(30, 136, 229, 0.04);
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.settings-container .field input[type="file"]:hover {
+    border-color: rgba(30, 136, 229, 0.55);
+    background: rgba(30, 136, 229, 0.07);
+}
+
+.settings-container input[readonly] {
+    background: rgba(241, 245, 249, 0.85) !important;
+    color: #475569;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.settings-container .form-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(15, 23, 42, 0.07);
+    align-items: stretch;
+}
+
+.settings-container .form-actions .btn-save,
+.settings-container .form-actions button[type="submit"] {
+    width: 100%;
+    min-height: 46px;
+    margin: 0;
+    box-sizing: border-box;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #1e88e5;
+    color: #fff;
+    box-shadow:
+        0 2px 8px rgba(30, 136, 229, 0.28),
+        0 1px 0 rgba(255, 255, 255, 0.2) inset;
+    transition: box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.settings-container .form-actions .btn-save:hover,
+.settings-container .form-actions button[type="submit"]:hover {
+    background-color: #1565c0;
+    box-shadow:
+        0 6px 22px rgba(30, 136, 229, 0.32),
+        0 1px 0 rgba(255, 255, 255, 0.25) inset;
+}
+
+.settings-container .form-actions .btn-save:disabled,
+.settings-container .form-actions button[type="submit"]:disabled {
+    background: rgba(241, 245, 249, 0.85) !important;
+    color: #94a3b8 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}
+
+.main-content > .flash-message {
+    max-width: 1200px;
+    margin-bottom: 24px;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
+    padding: 12px 20px;
+    font-weight: 500;
+}
+
+@media (max-width: 960px) {
+    .main-content > .flash-message {
+        max-width: 880px;
+    }
+}
+
+@media (max-width: 640px) {
+    .profile-body {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+    }
+}
+
