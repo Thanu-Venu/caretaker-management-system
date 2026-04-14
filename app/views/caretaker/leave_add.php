@@ -16,6 +16,7 @@ $impact = $data['impact'] ?? [];
   <title>Request Leave</title>
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/leave_add.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">

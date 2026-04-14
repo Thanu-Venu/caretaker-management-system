@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SmartCare Dashboard</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_complaints.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">

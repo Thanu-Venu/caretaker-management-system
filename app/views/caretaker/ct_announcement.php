@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Announcements</title>
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_announcement.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">

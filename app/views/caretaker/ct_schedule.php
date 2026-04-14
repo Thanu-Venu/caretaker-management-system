@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Caretaker Schedule</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_schedule.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
