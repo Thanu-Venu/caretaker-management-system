@@ -7,6 +7,8 @@ body {
   flex: 1;
   padding: 20px 40px;
   margin-left: 255px;
+  width: calc(100% - 255px);
+  box-sizing: border-box;
   font-family: 'Poppins', Arial, sans-serif;
   transition: all 0.2s ease;
 }
@@ -268,21 +270,23 @@ body {
 }
 
 .submit-btn {
-    background: #1e88e5;
+    background: linear-gradient(135deg, #2196f3, #1565c0);
     color: #ffffff;
     border: none;
-    border-radius: 8px;
+    border-radius: 50px;
     cursor: pointer;
     padding: 12px 24px;
     font-weight: 600;
     font-size: 16px;
-    box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
-    transition: all 0.2s ease;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(30, 136, 229, 0.3);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .submit-btn:hover {
-    background: #1565c0;
+    background: linear-gradient(135deg, #1e88e5, #0d47a1);
     transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(30, 136, 229, 0.45);
 }
 
 .submit-btn:active {
@@ -294,23 +298,25 @@ body {
   text-decoration: none;
   display: inline-block;
   color: #ffffff;
-  background: #78909c;
+  background: linear-gradient(135deg, #ef5350, #c62828);
   font-weight: 600;
   padding: 12px 24px;
-  border-radius: 8px;
+  border-radius: 50px;
   font-size: 16px;
-  box-shadow: 0 4px 12px rgba(120, 144, 156, 0.3);
-  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 10px rgba(229, 57, 53, 0.3);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .cancel-btn:hover {
-    background: #607d8b;
+    background: linear-gradient(135deg, #e53935, #b71c1c);
     transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(229, 57, 53, 0.45);
 }
 
 .cancel-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(120, 144, 156, 0.2);
+    box-shadow: 0 2px 6px rgba(229, 57, 53, 0.2);
 }
 
 /* Small helper text */
@@ -334,8 +340,10 @@ small {
 /* RESPONSIVE DESIGN */
 @media (max-width: 1100px) {
   .main-content {
-    margin-left: 0;
     padding: 24px;
+    margin-left: 255px;
+    width: calc(100% - 255px);
+    box-sizing: border-box;
   }
   
   .leave-layout {
@@ -359,6 +367,9 @@ small {
 
 @media (max-width: 768px) {
   .main-content {
+    margin-left: 0 !important;
+    width: 100%;
+    box-sizing: border-box;
     padding: 16px;
   }
   

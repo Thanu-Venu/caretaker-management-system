@@ -107,32 +107,48 @@ body {
 .btn-small,
 .butn,
 .btn-le {
-  background: #1e88e5;
+  background: linear-gradient(135deg, #2196f3, #1565c0);
   color: #fff;
-  padding: 8px 16px;
+  padding: 10px 20px;
   border: none;
-  border-radius: 8px;
+  border-radius: 50px;
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.2s ease;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 10px rgba(30, 136, 229, 0.3);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn:hover,
 .btn-small:hover,
 .butn:hover,
 .btn-le:hover {
-  background: #1565c0;
+  background: linear-gradient(135deg, #1e88e5, #0d47a1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(30, 136, 229, 0.45);
 }
 
 .btn-verify {
-  background: #00bfa5;
+  background: linear-gradient(135deg, #26a69a, #00897b);
   color: #fff;
-  padding: 4px 10px;
-  border-radius: 6px;
+  padding: 6px 14px;
+  border-radius: 50px;
   font-size: 12px;
   margin-left: 10px;
-  font-weight: 600;
+  font-weight: 700;
   border: none;
+  box-shadow: 0 3px 8px rgba(0, 191, 165, 0.3);
+  transition: all 0.2s ease;
+}
+
+.btn-verify:hover {
+  background: linear-gradient(135deg, #00897b, #00695c);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 191, 165, 0.4);
 }
 
 /* Switch (availability) */
@@ -193,11 +209,16 @@ table {
   overflow: hidden;
 }
 
+thead {
+  background: #1e88e5;
+}
+
 th {
-  background: #f1f6fb;
+  background: #1e88e5;
   text-align: left;
   padding: 12px;
-  color: #1565c0;
+  color: #ffffff;
+  border: 1px solid #1e88e5;
 }
 
 th,
@@ -228,21 +249,25 @@ tbody tr:hover {
   font-weight: 600;
 }
 
-.status.approved {
-  background: #d1f2dd;
-  color: #1f6f3f;
+.status.approved,
+.status.approve {
+  background: #e6f4ea;
+  color: #137333;
   padding: 4px 14px;
 }
 
-.status.rejected {
-  background: #fde2e2;
-  color: #8a2430;
+.status.rejected,
+.status.cancelled,
+.status.cancel,
+.status.canceled {
+  background: #fce8e6;
+  color: #c5221f;
   padding: 4px 16px;
 }
 
 .status.pending {
-  background: #fff3cd;
-  color: #7a5a00;
+  background: #fff3e0;
+  color: #e65100;
   padding: 4px 18px;
 }
 
@@ -456,35 +481,7 @@ body {
   box-shadow: 0 2px 6px rgba(30, 136, 229, 0.15);
 }
 
-/* =====================
-   Buttons – More Feedback
-===================== */
-.btn,
-.btn-small,
-.butn,
-.btn-le {
-  box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
-  transition: all 0.2s ease;
-}
-
-.btn:hover,
-.btn-small:hover,
-.butn:hover,
-.btn-le:hover {
-  background: #1565c0;
-  box-shadow: 0 6px 16px rgba(30, 136, 229, 0.4);
-}
-
-.btn:active,
-.btn-small:active,
-.butn:active,
-.btn-le:active {
-  box-shadow: 0 2px 6px rgba(30, 136, 229, 0.2);
-}
-
-.btn-verify {
-  box-shadow: 0 3px 10px rgba(0, 191, 165, 0.4);
-}
+/* Removed redundant button styles to preserve new neat pill-bottons */
 
 /* =====================
    Switch – Cleaner Look
