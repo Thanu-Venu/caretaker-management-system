@@ -1701,7 +1701,16 @@ class ClientController extends Controller
         $paymentId = $this->clientModel->savePayment($paymentData);
 
         if ($paymentId) {
+            if ($paymentType === 'advance') {
+                // Client has submitted advance payment; keep booking out of pending-payment-request state.
+                $this->clientModel->updateBookingStatus((int)$bookingId, 'Advance_Paid');
+                $this->clientModel->updateBookingAdvancePaidDate((int)$bookingId);
+            }
+
             if (!PayHereHelper::isConfigured()) {
+                if ($paymentType === 'advance') {
+                    $this->clientModel->updateBookingStatus((int)$bookingId, 'Payment_Requested');
+                }
                 $_SESSION['error'] = "PayHere sandbox configuration is missing";
                 header("Location: " . URLROOT . "/client/c_makePayment?booking_id=" . $bookingId);
                 exit;
@@ -1720,6 +1729,9 @@ class ClientController extends Controller
             $gatewayUrl = defined('PAYHERE_API_URL') ? PAYHERE_API_URL : '';
 
             if ($merchantId === '' || $merchantSecret === '' || $returnUrl === '' || $cancelUrl === '' || $notifyUrl === '' || $gatewayUrl === '') {
+                if ($paymentType === 'advance') {
+                    $this->clientModel->updateBookingStatus((int)$bookingId, 'Payment_Requested');
+                }
                 $_SESSION['error'] = "PayHere configuration is incomplete";
                 header("Location: " . URLROOT . "/client/c_makePayment?booking_id=" . $bookingId);
                 exit;
