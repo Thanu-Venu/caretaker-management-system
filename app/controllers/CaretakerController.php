@@ -43,6 +43,11 @@ class CaretakerController extends Controller
         // Get caretaker details
         $caretakerModel = $this->model('CaretakerModel');
         $caretaker = $caretakerModel->getCaretakerById($userId);
+        
+        $avgRating = $caretakerModel->getAverageRating($userId);
+        if ($caretaker) {
+            $caretaker['rating'] = $avgRating;
+        }
 
         // Leaves
         $leaves = $this->leaveModel->getLeavesByUser($userId);
@@ -510,9 +515,11 @@ public function saveComplaint()
 
         $caretakerModel = $this->model('CaretakerModel');
         $feedbacks = $caretakerModel->getCaretakerFeedbacks($caretakerId);
+        $avgRating = $caretakerModel->getAverageRating($caretakerId);
 
         $this->view("caretaker/ct_reviews", [
-            'feedbacks' => $feedbacks
+            'feedbacks' => $feedbacks,
+            'avgRating' => $avgRating
         ]);
     }
 

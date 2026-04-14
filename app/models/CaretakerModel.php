@@ -775,6 +775,15 @@ public function getResolvedComplaintsByCaretaker($caretaker_id)
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function getAverageRating($caretakerId)
+    {
+        $stmt = $this->conn->prepare("SELECT AVG(rating) as avg_rating FROM feedbacks WHERE caretaker_id = ?");
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        $res = $stmt->get_result()->fetch_assoc();
+        return $res && $res['avg_rating'] !== null ? (float)$res['avg_rating'] : 0.0;
+    }
+
     /**
      * Caregiver counts by status (admin dashboard).
      *
