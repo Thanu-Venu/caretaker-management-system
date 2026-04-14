@@ -1,9 +1,27 @@
 /* Client dashboard — layout only; tokens from admin-ui.css */
 
+.main-content.admin-dashboard-page.client-dashboard-page {
+    margin-left: 300px;
+    margin-right: 30px;
+    margin-top: var(--admin-header-height, 60px);
+    margin-bottom: 24px;
+    padding-top: 24px;
+    min-width: 0;
+    overflow-x: clip;
+}
+
+.client-dashboard-page .alert.success {
+    background: #e8f7ec;
+    border: 1px solid #9ad9ab;
+    color: #1f6b2d;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+}
+
 .client-dashboard {
-  margin-left: 270px;
-  margin-right: 20px;
-  padding: 25px 30px;
+    margin: 0;
+    padding: 0;
   flex: 1;
   background-color: transparent; /* so the page bg shows nicely */
   display: flex;
@@ -37,8 +55,8 @@
 /* ===================== Stats Cards ===================== */
 .stats-cards {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 18px;
   margin-bottom: 50px;
 }
 
@@ -52,7 +70,8 @@
 
 .stats-cards .card {
   background: #fff;
-  padding: 28px;
+    padding: 22px 16px;
+    min-width: 0;
   border-radius: 18px;
   text-align: center;
   cursor: pointer;
@@ -66,21 +85,24 @@
 }
 
 .stats-cards h3 {
-  font-size: 28px;
+    font-size: 24px;
   font-weight: 700;
-  margin: 12px 0 6px;
+    margin: 10px 0 4px;
   color: #111;
+    line-height: 1.2;
+    word-break: break-word;
 }
 
 .stats-cards p {
-  font-size: 15px;
+    font-size: 13px;
   color: #777;
   margin: 0;
+    line-height: 1.35;
 }
 
 .action1 i {
-  font-size: 40px;
-  padding: 16px;
+        font-size: 22px;
+        padding: 10px;
   border-radius: 14px;
   background: #e3f2fd;
   color: #0d89ec;
@@ -88,6 +110,33 @@
 }
 .action1 i:hover {
   transform: scale(1.1);
+}
+
+@media (max-width: 1023px) {
+    .main-content.admin-dashboard-page.client-dashboard-page {
+        margin-left: 16px;
+        margin-right: 16px;
+        margin-top: var(--admin-header-height, 60px);
+        padding-top: 18px;
+    }
+
+    .stats-cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+}
+
+@media (max-width: 767px) {
+    .main-content.admin-dashboard-page.client-dashboard-page {
+        margin-left: 12px;
+        margin-right: 12px;
+        padding-top: 14px;
+    }
+
+    .stats-cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
 }
 
 /* ===================== Price Overview ===================== */
@@ -671,7 +720,7 @@
 
 .quick-actions .actions {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 16px;
 }
 
@@ -679,9 +728,16 @@
     background: var(--admin-surface-glass);
     border: 1px solid var(--admin-border);
     border-radius: var(--admin-radius);
+    min-width: 100px;
+    min-height: 180px;
     box-shadow: var(--admin-shadow);
-    padding: 18px 20px;
-    text-align: left;
+    padding: 16px 14px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 24px;
     transition:
         box-shadow var(--admin-transition),
         border-color var(--admin-transition),
@@ -695,34 +751,67 @@
 }
 
 .quick-actions .action > i {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     color: var(--admin-primary);
-    margin-bottom: 10px;
+    margin: 0;
     display: block;
 }
 
 .quick-actions .action h3 {
-    margin: 0 0 8px;
-    font-size: 1rem;
+    margin: 0;
+    font-size: 0.95rem;
     font-weight: 600;
+    line-height: 1.35;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .quick-actions .action p {
     margin: 0;
-    font-size: 13px;
+    font-size: 12px;
+    line-height: 1.45;
     color: var(--admin-muted);
+    min-height: 34px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
 }
 
 .quick-actions .action .btn {
     width: 100%;
-    margin-top: 4px;
+    margin-top: 8px;
+}
+
+.quick-actions .action .main-btn {
+    width: 100%;
+    max-width: 190px;
+    min-height: 40px;
+    padding: 8px 10px;
+    font-size: 13px;
+    line-height: 1.25;
+    text-align: center;
+    white-space: normal;
+    background: #1e88e5;
+    color: #fff;
+    border: 1px solid #1e88e5;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.quick-actions .action .main-btn:hover {
+    background: #1565c0;
+    border-color: #1565c0;
+    transform: translateY(-1px);
 }
 
 .client-dashboard-recent .booking {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 16px 18px;
+    gap: 12px;
+    padding: 12px 14px;
     margin-bottom: 12px;
     background: var(--admin-surface-glass);
     border: 1px solid var(--admin-border);
@@ -734,8 +823,8 @@
 }
 
 .client-dashboard-recent .booking img {
-    width: 52px;
-    height: 52px;
+    width: 40px;
+    height: 40px;
     border-radius: var(--admin-radius-sm);
     object-fit: cover;
     border: 1px solid var(--admin-border);
@@ -744,20 +833,50 @@
 
 .client-dashboard-recent .booking h3 {
     margin: 0 0 6px;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: var(--admin-text);
 }
 
 .client-dashboard-recent .booking p {
     margin: 0;
-    font-size: 13px;
+    font-size: 12px;
     color: var(--admin-muted);
 }
 
 .client-dashboard-recent .booking .status {
     margin-left: auto;
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    border: 1px solid transparent;
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.client-dashboard-recent .booking .status.payment-requested {
+    background: #fff4e5;
+    color: #9a5b00;
+    border-color: #ffd8a8;
+}
+
+.client-dashboard-recent .booking .status.accepted {
+    background: #eaf7ef;
+    color: #1f7a3f;
+    border-color: #b8e5c8;
+}
+
+.client-dashboard-recent .booking .status.cancelled {
+    background: #fdecec;
+    color: #b42318;
+    border-color: #f9c5c3;
 }
 
 .advance-modal-list {
@@ -811,6 +930,25 @@
     border-color: var(--admin-primary);
 }
 
+.modal-content .emergency-hotlines {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(30, 136, 229, 0.06);
+    border: 1px solid rgba(30, 136, 229, 0.18);
+}
+
+.modal-content .emergency-hotlines p {
+    margin: 0 0 6px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--admin-text-secondary);
+}
+
+.modal-content .emergency-hotlines p:last-child {
+    margin-bottom: 0;
+}
+
 .modal-content .field {
     margin-bottom: 14px;
 }
@@ -821,6 +959,30 @@
     font-weight: 600;
     font-size: 13px;
     color: var(--admin-text-secondary);
+}
+
+.modal-content form .form-group {
+    width: 100%;
+}
+
+.modal-content form .form-group textarea,
+.modal-content form .form-group input,
+.modal-content form .form-group select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal-content form .submit-btn {
+    display: block;
+    margin: 10px 0 0 auto;
+    min-width: 170px;
+}
+
+.modal-content  .submit-btn{
+    color: black;
+    background-color: blue;
+    border: none;
+    align-items: center;
 }
 
 /* ---------- Mobile / small tablet (client dashboard only) ---------- */
@@ -852,6 +1014,10 @@
     .client-dashboard-hero .dashboard-breadcrumb__list {
         flex-wrap: wrap;
         row-gap: 4px;
+    }
+
+    .quick-actions .actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -900,6 +1066,10 @@
     .quick-actions .actions {
         grid-template-columns: 1fr;
     }
+
+    .stats-cards {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 479px) {
@@ -938,8 +1108,8 @@
     }
 
     .client-dashboard-recent .booking img {
-        width: 48px;
-        height: 48px;
+        width: 38px;
+        height: 38px;
     }
 }
 

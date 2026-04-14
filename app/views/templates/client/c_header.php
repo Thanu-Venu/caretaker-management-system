@@ -1,4 +1,5 @@
 <?php
+
 require_once APPROOT . "/models/NotificationModel.php";
 
 AuthSession::requireLogin();

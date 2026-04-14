@@ -18,7 +18,7 @@ $caretakersToShow = $data['allCaretakers'] ?? [];
         <div class="field">
             <label for="popupServiceFilter">Service type</label>
             <select name="service_type" id="popupServiceFilter" required>
-                <option value="">Select service</option>
+               <option value="">Select service</option>
                 <option value="Elder Care">Elder Care</option>
                 <option value="Babysitter">Babysitter</option>
                 <option value="Maid">Maid</option>
@@ -81,17 +81,17 @@ $caretakersToShow = $data['allCaretakers'] ?? [];
         </header>
 
         <div id="resultsSection" class="client-find-results">
-            <div class="filter-bar client-find-filters">
-                <div class="filters-inline client-find-filters__row">
-                    <div class="filter-group client-find-filters__group">
-                        <label for="serviceFilter">Service type</label>
-                        <select id="serviceFilter" class="client-find-select">
-                            <option value="">All services</option>
-                            <option value="Elder Care">Elder Care</option>
-                            <option value="Babysitter">Babysitter</option>
-                            <option value="Maid">Maid</option>
-                        </select>
-                    </div>
+         <div class="filter-bar client-find-filters">
+            <div class="filters-inline client-find-filters__row">
+                <div class="filter-group client-find-filters__group">
+                <label for="serviceFilter">Service type</label>
+                 <select id="serviceFilter" class="client-find-select">
+                  <option value="">All services</option>
+                <option value="Elder Care">Elder Care</option>
+                  <option value="Babysitter">Babysitter</option>
+                <option value="Maid">Maid</option>
+              </select>
+                </div>
                     <div class="filter-group client-find-filters__group">
                         <label for="locationFilter">Location</label>
                         <select id="locationFilter" class="client-find-select">
@@ -103,6 +103,8 @@ $caretakersToShow = $data['allCaretakers'] ?? [];
                             <option value="Matara">Matara</option>
                         </select>
                     </div>
+
+
                     <div class="filter-group client-find-filters__group">
                         <label for="ratingFilter">Minimum rating</label>
                         <select id="ratingFilter" class="client-find-select">
@@ -135,6 +137,7 @@ $caretakersToShow = $data['allCaretakers'] ?? [];
                             <article class="card card-hover caretaker-card"
                                 data-service="<?= htmlspecialchars((string) ($ct['service_type'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
                                 data-location="<?= htmlspecialchars((string) ($ct['location'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+                                data-experience="<?= (int) ($ct['experience'] ?? 0) ?>"
                                 data-rating="<?= htmlspecialchars($ratingDataAttr, ENT_QUOTES, 'UTF-8') ?>">
                                 <div class="card-body caretaker-card__body">
                                     <div class="caretaker-card__media">
@@ -157,30 +160,36 @@ $caretakersToShow = $data['allCaretakers'] ?? [];
                                         <div class="caretaker-card__details">
                                             <span class="caretaker-card__details-title">Care details</span>
                                             <?php if ($skillParts !== []): ?>
-                                                <ul class="caretaker-card__skills">
-                                                    <?php foreach ($skillParts as $skill): ?>
-                                                        <li><?= htmlspecialchars($skill, ENT_QUOTES, 'UTF-8') ?></li>
-                                                    <?php endforeach; ?>
-                                                </ul>
-                                            <?php else: ?>
-                                                <p class="caretaker-card__details-empty text-muted">No care details listed yet.</p>
-                                            <?php endif; ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <p class="empty">No caregivers found.</p>
-                    <?php endif; ?>
-                </div>
+                                              <ul class="caretaker-card__skills">
+                                      <?php foreach ($skillParts as $skill): ?>
+                                      <li><?= htmlspecialchars($skill, ENT_QUOTES, 'UTF-8') ?></li>
+                                     <?php endforeach; ?>
+                                     </ul>
+                              <?php else: ?>
+                                 <p class="caretaker-card__details-empty text-muted">No care details listed yet.</p>
+                                <?php endif; ?>
+                            </div>
+                          </div>
+                         </div>
+                     </article>
+                <?php endforeach; ?>
+                 <?php else: ?>
+                  <p class="empty">No caregivers found.</p>
+                <?php endif; ?>
+             </div>
 
-                <div id="noCaretakerMessage" class="no-results-message hidden">
-                    No caregivers match the selected filters.
-                </div>
-            </section>
-        </div>
+            <div id="noCaretakerMessage" class="no-results-message hidden">
+                  No caregivers match the selected filters.
+            </div>
+
+            <div id="caretakerPagination" class="caretaker-pagination hidden" aria-label="Caretaker pagination">
+                <button type="button" id="caretakerPrevBtn" class="btn secondary">Previous</button>
+                <span id="caretakerPageInfo" class="caretaker-pagination__info">Page 1 of 1</span>
+                <button type="button" id="caretakerNextBtn" class="btn secondary">Next</button>
+            </div>
+        </section>
     </div>
+ </div>
 </main>
 
 <script src="<?= URLROOT ?>/public/js/client/c_find.js"></script>

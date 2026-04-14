@@ -128,7 +128,7 @@ function updateDurationLimits(basis) {
   let max = "";
 
   if (basis === "Hourly") {
-    max = 23;
+    max = 15;
   } else if (basis === "Daily") {
     max = 30;
   } else if (basis === "Monthly") {
@@ -158,7 +158,7 @@ window.onload = function () {
   const today = new Date();
 
   const minDate = new Date(today);
-  minDate.setDate(today.getDate() + 4); // +4 days
+  minDate.setDate(today.getDate() + 1); // +1 day
 
   const formatDate = (d) => {
     let month = "" + (d.getMonth() + 1);
@@ -248,62 +248,188 @@ if (cancelBtn && popup && overlay) {
   });
 }
 
+function ratingInSelectedRange(cardRating, selectedRating) {
+  if (isNaN(selectedRating) || selectedRating <= 0) {
+    return true;
+  }
+
+  const key = selectedRating.toFixed(1);
+  if (key === "3.5") {
+    return cardRating >= 3.5 && cardRating < 4.0;
+  }
+  if (key === "4.0") {
+    return cardRating >= 4.0 && cardRating < 4.5;
+  }
+  if (key === "4.5") {
+    return cardRating >= 4.5 && cardRating <= 5.0;
+  }
+
+  return cardRating >= selectedRating;
+}
+
+function experienceInSelectedRange(cardExp, selectedExp) {
+  if (isNaN(selectedExp) || selectedExp <= 0) {
+    return true;
+  }
+  const key = String(selectedExp);
+  if (key === "1") {
+    return cardExp >= 1;
+  }
+  if (key === "2") {
+    return cardExp >= 2;
+  }
+  if (key === "3") {
+    return cardExp >= 3;
+  }
+
+  return cardExp >= selectedExp;
+}
+
+
 function applyFilters() {
   const serviceEl = document.getElementById("serviceFilter");
   const locationEl = document.getElementById("locationFilter");
+  const expEl = document.getElementById("expFilter");
   const ratingEl = document.getElementById("ratingFilter");
 
   const service = serviceEl ? serviceEl.value.trim().toLowerCase() : "";
   const location = locationEl ? locationEl.value.trim().toLowerCase() : "";
+  const minExperience = expEl ? parseInt(expEl.value) : 0;
   const minRating = ratingEl ? parseFloat(ratingEl.value) : NaN;
 
-    const cards = document.querySelectorAll("#caretakersList .caretaker-card");
-    const noCaretakerMessage = document.getElementById("noCaretakerMessage");
-    let visibleCount = 0;
+  const cards = Array.from(document.querySelectorAll("#caretakersList .caretaker-card"));
+  const matchedCards = [];
 
   cards.forEach((card) => {
     const cardService = (card.dataset.service || "").trim().toLowerCase();
     const cardLocation = (card.dataset.location || "").trim().toLowerCase();
+    const cardExperience = parseInt(card.dataset.experience) || 0;
     const cardRating = parseFloat(card.dataset.rating) || 0;
 
     const serviceMatch = service === "" || cardService === service;
     const locationMatch = location === "" || cardLocation === location;
-    const ratingMatch = isNaN(minRating) || cardRating >= minRating;
+    const experienceMatch = experienceInSelectedRange(cardExperience, minExperience);
+    const ratingMatch = ratingInSelectedRange(cardRating, minRating);
 
-    if (serviceMatch && locationMatch && ratingMatch) {
-      card.style.display = "block";
-      visibleCount++;
-    } else {
-      card.style.display = "none";
+    if (serviceMatch && locationMatch && experienceMatch && ratingMatch) {
+      matchedCards.push(card);
     }
   });
 
-    if (noCaretakerMessage) {
-        if (cards.length > 0 && visibleCount === 0) {
-            noCaretakerMessage.classList.remove("hidden");
-        } else {
-            noCaretakerMessage.classList.add("hidden");
-        }
+  renderCaretakerPagination(cards, matchedCards, true);
+}
+
+let caretakerCurrentPage = 1;
+const caretakerPageSize = 6;
+
+function renderCaretakerPagination(allCards, matchedCards, resetPage = false) {
+  const noCaretakerMessage = document.getElementById("noCaretakerMessage");
+  const paginationWrap = document.getElementById("caretakerPagination");
+  const prevBtn = document.getElementById("caretakerPrevBtn");
+  const nextBtn = document.getElementById("caretakerNextBtn");
+  const pageInfo = document.getElementById("caretakerPageInfo");
+
+  if (resetPage) {
+    caretakerCurrentPage = 1;
+  }
+
+  const totalItems = matchedCards.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / caretakerPageSize));
+  if (caretakerCurrentPage > totalPages) {
+    caretakerCurrentPage = totalPages;
+  }
+
+  const start = (caretakerCurrentPage - 1) * caretakerPageSize;
+  const end = start + caretakerPageSize;
+
+  allCards.forEach((card) => {
+    card.style.display = "none";
+  });
+
+  matchedCards.slice(start, end).forEach((card) => {
+    card.style.display = "block";
+  });
+
+  if (noCaretakerMessage) {
+    if (allCards.length > 0 && totalItems === 0) {
+      noCaretakerMessage.classList.remove("hidden");
+    } else {
+      noCaretakerMessage.classList.add("hidden");
     }
+  }
+
+  if (paginationWrap) {
+    if (totalItems > caretakerPageSize) {
+      paginationWrap.classList.remove("hidden");
+    } else {
+      paginationWrap.classList.add("hidden");
+    }
+  }
+
+  if (pageInfo) {
+    pageInfo.textContent = `Page ${caretakerCurrentPage} of ${totalPages}`;
+  }
+
+  if (prevBtn) {
+    prevBtn.disabled = caretakerCurrentPage <= 1;
+  }
+
+  if (nextBtn) {
+    nextBtn.disabled = caretakerCurrentPage >= totalPages;
+  }
+}
+
+function changeCaretakerPage(direction) {
+  const allCards = Array.from(document.querySelectorAll("#caretakersList .caretaker-card"));
+  const visibleFilteredCards = allCards.filter((card) => {
+    const serviceEl = document.getElementById("serviceFilter");
+    const locationEl = document.getElementById("locationFilter");
+    const expEl = document.getElementById("expFilter");
+    const ratingEl = document.getElementById("ratingFilter");
+
+    const service = serviceEl ? serviceEl.value.trim().toLowerCase() : "";
+    const location = locationEl ? locationEl.value.trim().toLowerCase() : "";
+    const minExperience = expEl ? parseInt(expEl.value) : 0;
+    const minRating = ratingEl ? parseFloat(ratingEl.value) : NaN;
+
+    const cardService = (card.dataset.service || "").trim().toLowerCase();
+    const cardLocation = (card.dataset.location || "").trim().toLowerCase();
+    const cardExperience = parseInt(card.dataset.experience) || 0;
+    const cardRating = parseFloat(card.dataset.rating) || 0;
+
+    const serviceMatch = service === "" || cardService === service;
+    const locationMatch = location === "" || cardLocation === location;
+    const experienceMatch = experienceInSelectedRange(cardExperience, minExperience);
+    const ratingMatch = ratingInSelectedRange(cardRating, minRating);
+
+    return serviceMatch && locationMatch && experienceMatch && ratingMatch;
+  });
+
+  caretakerCurrentPage += direction;
+  renderCaretakerPagination(allCards, visibleFilteredCards, false);
 }
 
 function clearFilters() {
   const serviceEl = document.getElementById("serviceFilter");
   const locationEl = document.getElementById("locationFilter");
+  const expEl = document.getElementById("expFilter");
   const ratingEl = document.getElementById("ratingFilter");
 
   if (serviceEl) serviceEl.value = "";
   if (locationEl) locationEl.value = "";
+  if (expEl) expEl.value = "0";
   if (ratingEl) ratingEl.value = "0";
   applyFilters();
 }
 
 const serviceFilter = document.getElementById("serviceFilter");
 const locationFilter = document.getElementById("locationFilter");
+const expFilter = document.getElementById("expFilter");
 const ratingFilter = document.getElementById("ratingFilter");
 
 if (serviceFilter) serviceFilter.addEventListener("change", applyFilters);
 if (locationFilter) locationFilter.addEventListener("change", applyFilters);
+if (expFilter) expFilter.addEventListener("change", applyFilters);
 if (ratingFilter) ratingFilter.addEventListener("change", applyFilters);
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -344,4 +470,21 @@ document.addEventListener("DOMContentLoaded", function () {
       if (popup) popup.style.display = "none";
     });
   }
+
+  const prevBtn = document.getElementById("caretakerPrevBtn");
+  const nextBtn = document.getElementById("caretakerNextBtn");
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", function () {
+      changeCaretakerPage(-1);
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", function () {
+      changeCaretakerPage(1);
+    });
+  }
+
+  applyFilters();
 });

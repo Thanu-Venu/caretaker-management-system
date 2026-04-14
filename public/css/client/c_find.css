@@ -1,312 +1,231 @@
-/* Browse caregivers — aligned with admin-ui + ad_dashboard section rhythm */
+/* =========================
+   PAGE HEADER
+========================= */
+.main-content.client-find-page .dashboard-layout {
+    width: 100%; 
+    margin: 0 auto;
+}
 
 .client-find-page__header {
-    margin-bottom: var(--admin-section-gap);
+    margin-bottom: 20px; /* reduced gap */
 }
 
 .client-find-page__header .page-title {
-    font-family: var(--admin-font, "Inter", system-ui, sans-serif);
-    color: var(--admin-page-heading-color, #0f3555);
+    font-family: inherit;
+    color: #0f3555;
 }
 
 .client-find-page__lead {
-    max-width: 46rem;
-    margin: 0.35rem 0 0;
-    font-size: 0.9375rem;
-    line-height: 1.55;
+    max-width: 700px;
+    margin-top: 5px;
+    font-size: 15px;
+    line-height: 1.5;
 }
 
-.client-find-results {
-    min-width: 0;
-}
-
-/* filter-bar + filters-inline come from admin-ui; tune spacing for this page */
+/* =========================
+   FILTER SECTION
+========================= */
 .client-find-filters.filter-bar {
-    margin-bottom: var(--admin-section-gap);
+    margin-bottom: 20px;
 }
 
 .client-find-filters__row {
     align-items: flex-end;
+    gap: 10px;
+}
+
+.client-find-page--results .client-find-filters__row {
+    justify-content: flex-start;
 }
 
 .client-find-filters__group {
+    display: flex;
     flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
-    min-width: min(100%, 200px);
+    gap: 5px;
+    min-width: 160px;
 }
 
 .client-find-filters__group--action {
-    min-width: auto;
     align-self: flex-end;
 }
 
-.client-find-filters__action-label {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.2;
-    color: transparent;
-    user-select: none;
+.client-find-page--results .client-find-filters__group--action {
+    margin-left: 0;
 }
 
 .client-find-select {
-    min-width: 11rem;
     width: 100%;
-    max-width: 16rem;
-    font-family: var(--admin-font, inherit);
+    max-width: 220px;
+    padding: 8px;
     font-size: 14px;
-    padding: 8px 10px;
-    border-radius: var(--admin-radius-sm, 8px);
-    border: 1px solid var(--admin-border-strong);
-    background: var(--admin-surface);
-    color: var(--admin-text);
+    border: 1px solid #ccc;
+    border-radius: 6px;
 }
 
-.client-find-list-section {
-    margin-top: 0;
-}
-
-.client-find-list-section__hint {
-    margin: -0.25rem 0 var(--admin-section-gap);
-    font-size: 0.875rem;
-    max-width: 48rem;
-}
-
-/* Grid — wider gaps between caregiver cards */
+/* =========================
+   GRID (IMPORTANT FIX)
+========================= */
 #caretakersList.client-find-grid.caretakers {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
-    gap: 28px 26px;
-    margin-bottom: var(--admin-section-gap);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px; /* 🔥 reduced from 28px 26px */
 }
 
+/* =========================
+   CARD
+========================= */
 .caretaker-card.card {
-    padding: 0;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    font-family: var(--admin-font, inherit);
-}
-
-.caretaker-card__body.card-body {
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    height: 100%;
 }
 
-.caretaker-card__media {
-    line-height: 0;
-}
-
+/* IMAGE */
 .caretaker-card__media img {
     width: 100%;
-    height: 172px;
+    height: 260px; /* slightly reduced */
     object-fit: cover;
-    border-bottom: 1px solid var(--admin-border);
+    object-position: center;
 }
 
+/* CONTENT */
 .caretaker-card__content {
-    padding: 1rem 1.15rem 1.25rem;
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-    flex: 1;
+    gap: 5px;
 }
 
 .caretaker-card__name {
     margin: 0;
-    font-size: 1.0625rem;
-    font-weight: 700;
-    line-height: 1.25;
-    color: var(--admin-page-heading-color, #0f3555);
+    font-size: 16px;
+    font-weight: 600;
 }
 
 .caretaker-card__service {
-    margin: 0 0 0.15rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--admin-text-secondary);
+    font-size: 13px;
+    margin: 0;
+    color: #666;
 }
 
+/* META */
 .caretaker-card__meta {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem 1.1rem;
-    margin-top: 0.35rem;
-    font-size: 0.8125rem;
-    color: var(--admin-muted);
+    gap: 10px;
+    font-size: 13px;
+    color: #777;
 }
 
-.caretaker-card__meta span {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-}
-
-.caretaker-card__meta i {
-    font-size: 1rem;
-    color: var(--admin-primary);
-    opacity: 0.92;
-}
-
+/* RATING */
 .caretaker-card__rating {
     display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    margin: 0.45rem 0 0.1rem;
-    font-size: 0.875rem;
+    gap: 5px;
+    font-size: 13px;
     font-weight: 600;
-    color: var(--admin-text-secondary);
 }
 
-.caretaker-card__rating i {
-    color: #d97706;
-    font-size: 1.05rem;
-}
-
-.caretaker-card__rating[data-has-rating="0"] {
-    color: var(--admin-muted);
-}
-
-.caretaker-card__rating[data-has-rating="0"] i {
-    opacity: 0.4;
-}
-
-/* Care details — clearly separated from meta/rating */
+/* DETAILS */
 .caretaker-card__details {
-    margin-top: 0.5rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--admin-border);
-}
-
-.caretaker-card__details-title {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-size: 0.6875rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--admin-muted);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #ddd;
 }
 
 .caretaker-card__skills {
     list-style: none;
-    margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
+    margin: 0;
 }
 
 .caretaker-card__skills li {
+    font-size: 13px;
+    padding-left: 12px;
     position: relative;
-    padding-left: 0.95rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    font-weight: 500;
-    color: var(--admin-text);
 }
 
 .caretaker-card__skills li::before {
-    content: "";
+    content: "•";
     position: absolute;
     left: 0;
-    top: 0.55em;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: linear-gradient(180deg, var(--admin-primary, #1e88e5), var(--admin-accent-teal, #00bfa5));
 }
 
-.caretaker-card__details-empty {
-    margin: 0;
-    font-size: 0.875rem;
-    line-height: 1.5;
-}
-
+/* ACTIONS */
 .caretaker-card__actions {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem;
-    margin-top: auto;
-    padding-top: 0.9rem;
-    border-top: 1px solid var(--admin-border);
+    gap: 8px;
+    margin-top: 10px;
 }
 
-.caretaker-card__actions .btn {
-    flex: 1 1 auto;
-    min-width: min(100%, 8rem);
-    justify-content: center;
-}
-
-.client-find-empty {
-    grid-column: 1 / -1;
-    margin: 0;
-    padding: 1.25rem 1.5rem;
-    border-radius: var(--admin-radius);
-    border: 1px dashed var(--admin-border);
-    background: var(--admin-surface);
-    font-size: 0.9375rem;
-    color: var(--admin-muted);
-}
-
+/* EMPTY */
 .no-results-message {
-    padding: 20px;
     text-align: center;
-    color: var(--admin-muted);
-    border: 1px dashed var(--admin-border);
-    border-radius: var(--admin-radius);
-    background: var(--admin-surface);
-    font-family: var(--admin-font, inherit);
+    padding: 15px;
+    border: 1px dashed #ccc;
+    color: #777;
 }
 
-.no-results-message.hidden {
-    display: none;
+.hidden {
+    display: none !important;
 }
 
-/* Popup (unchanged structure) */
+.caretaker-pagination {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.caretaker-pagination__info {
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    min-width: 110px;
+    text-align: center;
+}
+
+.caretaker-pagination .btn[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* POPUP */
 #popupOverlay {
     display: none;
     position: fixed;
     inset: 0;
-    z-index: 1990;
     background: rgba(15, 23, 42, 0.45);
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1990;
 }
 
 #searchPopup {
     display: none;
     position: fixed;
-    z-index: 2000;
-    left: 50%;
     top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    width: min(480px, calc(100vw - 32px));
-    max-height: min(90vh, 640px);
-    overflow: auto;
-    background: var(--admin-surface);
-    border: 1px solid var(--admin-border);
-    border-radius: var(--admin-radius);
-    box-shadow: var(--admin-shadow-hover);
-    padding: 24px;
-    font-family: var(--admin-font, inherit);
-}
-
-#searchPopup h3 {
-    margin: 0 0 18px;
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: var(--admin-text);
+    width: min(640px, 92vw);
+    max-width: 640px;
+    max-height: 108vh;
+    overflow-y: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 18px 48px rgba(15, 23, 42, 0.28);
+    z-index: 2000;
 }
 
 #searchPopup .popup-actions {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 20px;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+#searchPopup .popup-actions .btn {
+    min-width: 130px;
 }

@@ -12,10 +12,7 @@ $statusClass = preg_replace('/[^a-z0-9_-]/', '', $statusClass);
 <main class="main-content client-booking-confirm-page">
     <div class="dashboard-layout">
         <header class="page-header client-booking-confirm-page__header">
-            <div>
-                <h1 class="page-title">Booking submitted</h1>
-                <p class="text-muted">Your request is saved. You can track it from upcoming bookings.</p>
-            </div>
+            
         </header>
 
         <article class="card client-booking-confirm-card" aria-labelledby="booking-confirm-title">
@@ -98,7 +95,7 @@ $statusClass = preg_replace('/[^a-z0-9_-]/', '', $statusClass);
 
             <div class="client-booking-confirm-actions">
                 <button type="button" class="btn" id="bookingConfirmUpcoming">View upcoming bookings</button>
-                <button type="button" class="btn secondary" id="bookingConfirmHome">Back to dashboard</button>
+                <button type="button" class="btn-secondary" id="bookingConfirmHome">Back to dashboard</button>
             </div>
         </article>
     </div>
