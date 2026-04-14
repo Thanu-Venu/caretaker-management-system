@@ -134,25 +134,25 @@
 }
 
 .admin-sidebar-collapsed .sidebar {
-  width: 84px;
+  width: 260px;
 }
 
 .admin-sidebar-collapsed .nav-links li a {
-  padding: 10px;
-  justify-content: center;
+  padding: 10px 12px;
+  justify-content: flex-start;
 }
 
 .admin-sidebar-collapsed .nav-links li a i {
-  margin-right: 0;
+  margin-right: 10px;
 }
 
 .admin-sidebar-collapsed .nav-links li a .link_name,
 .admin-sidebar-collapsed .nav-links li a .menu-left span {
-  display: none;
+  display: block;
 }
 
 .admin-sidebar-collapsed .nav-links li a .menu-item-content {
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .admin-sidebar-collapsed .main-content,
@@ -164,7 +164,7 @@
 .admin-sidebar-collapsed .client-container,
 .admin-sidebar-collapsed .payment-container,
 .admin-sidebar-collapsed .user-container {
-  margin-left: 100px !important;
+  margin-left: 280px !important;
 }
 
 @media (max-width: 767px) {
