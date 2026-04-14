@@ -165,9 +165,16 @@
       </div>
     </div>
 
+    <style>
+      @media (min-width: 1101px) {
+        .ct-overview-grid {
+          grid-template-columns: 2fr 1fr !important;
+        }
+      }
+    </style>
     <section class="dashboard-overview-charts" aria-label="Caretaker overview">
       <h2 class="dashboard-overview-charts__heading">Overview</h2>
-      <div class="dashboard-overview-charts__grid">
+      <div class="dashboard-overview-charts__grid ct-overview-grid">
         <div class="card dashboard-chart-card">
           <div class="card-header">
             <h3 class="card-title">Upcoming Bookings</h3>
