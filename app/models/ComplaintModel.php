@@ -3,16 +3,10 @@ class ComplaintModel
 {
     private $db;
 
-<<<<<<< HEAD
-    public function __construct() {
-        $this->db = new mysqli("localhost", "root", "Thanuvenu", "smartcare");
-        if($this->db->connect_errno){
-=======
     public function __construct()
     {
         $this->db = new mysqli("localhost", "root", "", "smartcare");
         if ($this->db->connect_errno) {
->>>>>>> 62de69af75adfb5fba34de87af93d9cd9d508008
             die("Failed to connect to MySQL: " . $this->db->connect_error);
         }
     }
