@@ -1,13 +1,27 @@
 /* Client dashboard — layout only; tokens from admin-ui.css */
 
 .main-content.admin-dashboard-page.client-dashboard-page {
-    margin-left: 300px;
-    margin-right: 30px;
+    margin-left: calc(
+        var(--admin-sidebar-width, 260px) + var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px)
+    );
+    margin-right: calc(var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px));
     margin-top: var(--admin-header-height, 60px);
     margin-bottom: 24px;
     padding-top: 24px;
     min-width: 0;
     overflow-x: clip;
+}
+
+@media (min-width: 1024px) {
+    body.admin-sidebar-collapsed > .main-content.admin-dashboard-page.client-dashboard-page,
+    body.admin-sidebar-collapsed > header.main-header ~ .main-content.admin-dashboard-page.client-dashboard-page {
+        margin-left: calc(
+            var(--admin-sidebar-rail-width, 72px) * 2 + var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px)
+        );
+        margin-right: calc(
+            var(--admin-sidebar-rail-width, 72px) + var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px)
+        );
+    }
 }
 
 .client-dashboard-page .alert.success {
@@ -114,8 +128,8 @@
 
 @media (max-width: 1023px) {
     .main-content.admin-dashboard-page.client-dashboard-page {
-        margin-left: 16px;
-        margin-right: 16px;
+        margin-left: calc(var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px));
+        margin-right: calc(var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px));
         margin-top: var(--admin-header-height, 60px);
         padding-top: 18px;
     }
@@ -126,11 +140,24 @@
     }
 }
 
+@media (max-width: 900px) {
+    .main-content.admin-dashboard-page.client-dashboard-page {
+        margin-left: calc(16px + var(--admin-main-extra-left, 16px));
+        margin-right: calc(16px + var(--admin-main-extra-left, 16px));
+        margin-bottom: 16px;
+        padding-top: 14px;
+    }
+
+    .stats-cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+}
+
 @media (max-width: 767px) {
     .main-content.admin-dashboard-page.client-dashboard-page {
         margin-left: 12px;
         margin-right: 12px;
-        padding-top: 14px;
     }
 
     .stats-cards {
