@@ -1122,13 +1122,13 @@ class HrController extends Controller
         // Update payment status to rejected
         $clientModel->updatePaymentStatus($paymentId, 'rejected');
 
-        // Revert only advance-payment bookings back to Requested.
+        // Revert only advance-payment bookings back to payment requested stage.
         $bookingStatus = strtolower(trim((string)($payment['booking_status'] ?? '')));
         if (
             $payment['payment_type'] === 'advance'
             && !in_array($bookingStatus, ['cancelled', 'rejected', 'completed'], true)
         ) {
-            $clientModel->updateBookingStatus($payment['booking_id'], 'Requested');
+            $clientModel->updateBookingStatus($payment['booking_id'], 'Payment_Requested');
         }
 
         // Send notification to client
