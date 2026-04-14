@@ -253,7 +253,8 @@ $hasPendingAdvance  = !empty($pendingAdvanceList);
             <div class="price-lines">
               <div class="line"><span>Hourly</span><strong>Full payment required</strong></div>
               <div class="line"><span>Daily (lead time)</span><strong>Within 15 days: full payment</strong></div>
-              <div class="line"><span>Daily</span><strong>15+ days: 50% advance</strong></div>
+              <div class="line"><span>Daily</span><strong>15-30 days: 10 days advance</strong></div>
+              <div class="line"><span>Daily balance</span><strong>Remaining due before booking end</strong></div>
               <div class="line"><span>Monthly</span><strong>1 month advance for &lt; 6 months; otherwise 3 months</strong></div>
               <div class="line"><span>Yearly</span><strong>&lt; 1 year: 3 months; 1+ year: 6 months</strong></div>
             </div>
