@@ -9,7 +9,10 @@ $badgeCounts = getSidebarBadgeCounts();
   </button>
 
   <div class="sidebar">
-    <br><br><br>
+    <div class="logo-details">
+      <img src="<?= URLROOT ?>/public/images/logo.jpg" alt="SmartCare" class="logo-sidebar">
+      <span class="logo_name">SmartCare</span>
+    </div>
     <ul class="nav-links">
 
       <li><a href="http://localhost/CMA/public?url=caretaker/ct_dashboard"><i class='bx bxs-dashboard'></i><span class="link_name">Dashboard</span></a></li>
