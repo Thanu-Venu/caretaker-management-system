@@ -1053,7 +1053,8 @@ class ClientModel
             FROM bookings b
             JOIN caretakers c ON c.id = b.caretaker_id
             WHERE b.client_id = ?
-              AND b.status = 'Payment_Requested'
+                            AND LOWER(TRIM(b.status)) = 'payment_requested'
+                            AND LOWER(TRIM(b.status)) NOT IN ('cancelled', 'rejected', 'completed')
             ORDER BY due_date ASC"
         );
         $stmt->bind_param("i", $clientId);
@@ -1097,6 +1098,7 @@ class ClientModel
             JOIN caretakers c ON c.id = b.caretaker_id
             WHERE rp.client_id = ?
               AND rp.status IN ('pending', 'overdue')
+                            AND LOWER(TRIM(b.status)) NOT IN ('cancelled', 'rejected', 'completed')
             ORDER BY
               CASE WHEN rp.status = 'overdue' THEN 1 ELSE 2 END,
               rp.due_date ASC"
@@ -1119,7 +1121,7 @@ class ClientModel
             }
 
             $canPayNow = false;
-            if ($row['booking_status'] !== 'Cancelled') {
+            if (strtolower(trim((string)$row['booking_status'])) !== 'cancelled') {
                 if ($row['status'] === 'overdue') {
                     $canPayNow = $withinGrace;
                 } else {
@@ -1207,6 +1209,7 @@ class ClientModel
                     COALESCE(p.approved_at, p.paid_date, p.created_at) AS paid_at,
                     b.service_type,
                     b.basis,
+                    b.total_payment,
                     ct.name AS caretaker_name
                 FROM payments p
                 JOIN bookings b ON b.id = p.booking_id

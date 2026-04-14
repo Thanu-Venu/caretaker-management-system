@@ -1,107 +1,158 @@
 body {
-    background: #f4f7fb;
+    background: linear-gradient(180deg, #f4f7fb, #f9fcff);
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', Arial, sans-serif;
 }
 
-.announcement-container {
-  flex: 1;
-  padding: 20px 40px;
-  margin-left: 255px;
-  font-family: 'Poppins', Arial, sans-serif;
+.main-content {
+    flex: 1;
+    padding: 20px 40px;
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    box-sizing: border-box;
 }
 
-.page-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  color: #1e88e5;
-  font-size: 28px;
+h2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    color: #1e88e5;
+    margin-top: 0;
+    font-size: 28px;
+}
+
+.table-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 15px;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    overflow: hidden;
+}
+
+thead {
+    background-color: #1E88E5;
+    color: white;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    font-weight: 700;
+    color: white;
+    font-size: 18px;
+}
+
+tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+td:nth-child(2) {
+    max-width: 300px;
+    word-wrap: break-word;
 }
 
 .no-announcement {
     text-align: center;
     padding: 45px;
-    background: linear-gradient(135deg, #e3f2fd, #f1f7ff);
-    border-radius: 14px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     color: #6c757d;
-    font-size: 15px;
-}
-
-.announcement-card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 22px 26px;
-    margin-bottom: 22px;
-    border-left: 5px solid #1e88e5;
-    box-shadow: 0 8px 22px rgba(30, 136, 229, 0.12);
-    transition: all 0.25s ease;
-}
-
-.announcement-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 28px rgba(30, 136, 229, 0.18);
-}
-
-h2{
-      color: #1e88e5;
-  font-size: 28px;
-}
-
-.announcement-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.announcement-header h3 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 600;
-    color: #1a3a76;
-}
-
-.announcement-date {
-    font-size: 14px;
-    color: #0a72cc;
-    background: #e3f2fd;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-weight: 550;
-}
-
-.announcement-body {
-    margin-top: 14px;
     font-size: 16px;
-    color: #3f3f3f;
-    line-height: 1.7;
-}
-
-.announcement-footer {
-    margin-top: 18px;
-    display: flex;
-    justify-content: flex-end;
 }
 
 .role-tag {
-    background: linear-gradient(135deg, #1e88e5, #1565c0);
-    color: #ffffff;
-    padding: 6px 14px;
-    font-size: 14px;
-    border-radius: 20px;
+    color: #1e88e5;
     font-weight: 600;
-    letter-spacing: 0.3px;
 }
 
-@media (max-width: 600px) {
-    .announcement-container {
-        margin-left: 0;
-        padding: 12px;
-    }
-
-    .announcement-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
+@media (max-width: 1024px) {
+    .main-content {
+        padding: 16px;
     }
 }
+/* Announcement Layout - Stacked Vertical Layout */
+.announcement-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
 
+/* Announcement Details Section - Full Width */
+.announcement-card {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 8px 20px rgba(26, 42, 71, 0.08);
+  border: 1px solid #e9edf4;
+  padding: 20px 32px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.announcement-card h1 {
+  margin: 0 0 4px 0;
+  color: #1e88e5;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.announcement-card .subtitle {
+  color: #333e50;
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  border-left: 3px solid #2a7de6;
+  padding-left: 12px;
+}
+
+/* Update internal container to fit seamlessly inside the card */
+.table-container {
+  box-shadow: none !important;
+  border: 1px solid #e9edf4;
+  margin-top: 20px;
+}
+
+
+/* =====================
+   Responsive Design & Table Fixes
+===================== */
+.table-container {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  min-width: 600px;
+}
+
+@media (max-width: 1024px) {
+  .content, .main-content {
+    padding: 16px;
+    width: calc(100% - 255px);
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 768px) {
+  .content, .main-content {
+    margin-left: 0 !important;
+    padding: 16px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

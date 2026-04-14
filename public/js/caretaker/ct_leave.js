@@ -54,10 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function getMinAdvanceDate() {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        
+
         const leaveType = leaveTypeInput ? leaveTypeInput.value : '';
         const notice = (leaveType === 'Sick Leave') ? 0 : Number(policy.advanceNoticeDays);
-        
+
         today.setDate(today.getDate() + notice);
         return today;
     }
@@ -65,20 +65,56 @@ document.addEventListener('DOMContentLoaded', () => {
     function syncDateHints() {
         const minAdvance = getMinAdvanceDate();
         const minAdvanceIso = minAdvance.toISOString().slice(0, 10);
-        
+
         const leaveType = leaveTypeInput ? leaveTypeInput.value : '';
         if (leaveType === 'Sick Leave') {
             startHint.textContent = `Sick leave can be requested starting from today.`;
+            startInput.min = new Date().toISOString().slice(0, 10);
         } else {
             startHint.textContent = `Leave must be requested at least ${policy.advanceNoticeDays} days in advance. Earliest start: ${formatDate(minAdvanceIso)}.`;
+            startInput.min = minAdvanceIso;
+        }
+
+        // Auto-correct invalid start dates
+        if (startInput.value && startInput.value < startInput.min && document.activeElement !== startInput) {
+            startInput.value = startInput.min;
         }
 
         if (startInput.value) {
+            const startDateObj = parseDate(startInput.value);
+
+            // Check if start month is current month
+            const isCurrentMonth = startDateObj.getMonth() === new Date().getMonth() && startDateObj.getFullYear() === new Date().getFullYear();
+
+            let allowedDays = 5;
+            if (isCurrentMonth && typeof policy.remainingThisMonth !== 'undefined') {
+                allowedDays = Math.min(5, policy.remainingThisMonth);
+            }
+            if (allowedDays < 1) allowedDays = 0;
+
+            const maxEndDateObj = new Date(startDateObj);
+            if (allowedDays > 0) {
+                maxEndDateObj.setDate(maxEndDateObj.getDate() + (allowedDays - 1));
+            }
+            const maxEndIso = maxEndDateObj.toISOString().slice(0, 10);
+
             endInput.min = startInput.value;
-            endHint.textContent = `End date must be on or after ${formatDate(startInput.value)}.`;
+            endInput.max = maxEndIso;
+            endHint.textContent = allowedDays > 0 ? `End date must be between ${formatDate(startInput.value)} and ${formatDate(maxEndIso)} (Max ${allowedDays} days remaining).` : 'You have no leave days remaining this month.';
+
+            // Auto-correct end date if it violates max
+            if (endInput.value && endInput.value > maxEndIso && document.activeElement !== endInput) {
+                endInput.value = maxEndIso;
+            }
         } else {
-            endInput.min = minAdvanceIso;
+            endInput.min = startInput.min;
+            endInput.max = '';
             endHint.textContent = '';
+        }
+
+        // Auto-correct invalid end dates (min bound)
+        if (endInput.value && endInput.value < endInput.min && document.activeElement !== endInput) {
+            endInput.value = endInput.min;
         }
     }
 
@@ -106,6 +142,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const days = getInclusiveDays(startInput.value, endInput.value);
         if (days > 0) {
+            if (startInput.value) {
+                const startObj = parseDate(startInput.value);
+                const isCurrentMonth = startObj.getMonth() === new Date().getMonth() && startObj.getFullYear() === new Date().getFullYear();
+                if (isCurrentMonth && typeof policy.remainingThisMonth !== 'undefined') {
+                    if (days > policy.remainingThisMonth) {
+                        errors.push(`You only have ${policy.remainingThisMonth} remaining leave days but requested ${days}.`);
+                    }
+                }
+            }
+
             if (leaveType === 'Sick Leave') {
                 if (days > 5) {
                     errors.push('Sick leave cannot exceed 5 days.');

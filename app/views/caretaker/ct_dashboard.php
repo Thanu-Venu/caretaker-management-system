@@ -57,7 +57,9 @@
               <?php if (!empty($data['latestProfileChangeRequest'])): ?>
                 <p class="profile-request-status">
                   Latest profile update request status:
-                  <strong><?= htmlspecialchars($data['latestProfileChangeRequest']['status']) ?></strong>
+                  <span class="status <?= strtolower(htmlspecialchars($data['latestProfileChangeRequest']['status'])) ?>">
+                    <?= htmlspecialchars($data['latestProfileChangeRequest']['status']) ?>
+                  </span>
                 </p>
               <?php endif; ?>
 
@@ -131,7 +133,7 @@
         <!-- Schedule -->
         <section class="card schedule">
           <h3>Schedule</h3>
-          <div class="calendar">
+          <div class="calendar" onclick="window.location.href='<?= URLROOT ?>/caretaker/ct_schedule'" style="cursor: pointer;" title="Click to view full schedule">
             <p id="calendarMonthLabel">-</p>
             <div class="days">
               <span>Su</span><span>Mo</span><span>Tu</span><span>We</span>
@@ -156,9 +158,8 @@
             <small><?= htmlspecialchars($leaveSummary['label']) ?></small>
           </div>
           <div class="button-container">
-            <!-- Button to open modal -->
-            <button id="openLeaveModal" class="btn-le">Request Leave</button>
-
+            <!-- Link to open leave add page -->
+            <a href="<?= URLROOT ?>/LeaveCRUD/add" class="btn-le" style="text-decoration:none; display:inline-block; text-align:center; padding-top: 10px;">Request Leave</a>
           </div>
           <table>
             <thead>
@@ -209,42 +210,7 @@
 
 
 
-  <!-- Modal -->
-  <div id="leaveModal" class="le-modal">
-    <div class="le-modal-content">
-      <span id="closeLeaveModal" class="close">&times;</span>
-      <h2>Request Leave</h2>
-      <p class="subtext">Submit a new leave request</p>
 
-      <form id="leaveForm" method="POST" action="<?= URLROOT ?>/LeaveCRUD/add">
-        <label>Leave Type
-          <select name="leave_type" required>
-            <option value="">Select</option>
-            <option value="Vacation">Vacation</option>
-            <option value="Sick Leave">Sick Leave</option>
-            <option value="Personal Leave">Personal Leave</option>
-            <option value="Maternity Leave">Maternity Leave</option>
-          </select>
-        </label>
-
-        <div class="row">
-          <label>Start Date <input type="date" name="start_date" required></label>
-          <label>End Date <input type="date" name="end_date" required></label>
-        </div>
-
-        <div class="row">
-          <label>Start Time <input type="time" name="start_time" value="09:00" required></label>
-          <label>End Time <input type="time" name="end_time" value="17:00" required></label>
-        </div>
-
-        <label>Reason
-          <textarea name="reason" placeholder="Please provide a reason for your leave request..." required></textarea>
-        </label>
-
-        <button type="submit" class="submit-btn">Submit Request</button>
-      </form>
-    </div>
-  </div>
 
 
 

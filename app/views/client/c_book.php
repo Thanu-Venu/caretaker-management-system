@@ -67,20 +67,20 @@ $timeOptions = [
                 <input type="hidden" name="total_payment" id="total_payment" value="<?= htmlspecialchars((string) $total_payment, ENT_QUOTES) ?>">
 
                 <div class="form-grid">
-                    <div class="field">
-                        <label for="basis">Basis <span class="required-mark" aria-hidden="true">*</span></label>
-                        <select id="basis" required disabled>
-                            <option value="">— Select —</option>
-                            <?php if (!empty($bases)): ?>
-                                <?php foreach ($bases as $basis): ?>
-                                    <option value="<?= htmlspecialchars($basis, ENT_QUOTES) ?>"
-                                        <?= (($prefill['basis'] ?? '') === $basis) ? 'selected' : '' ?>>
-                                        <?= htmlspecialchars($basis) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <option value="">No basis options available</option>
-                            <?php endif; ?>
+                 <div class="field">
+                  <label for="basis">Basis <span class="required-mark" aria-hidden="true">*</span></label>
+                    <select id="basis" required disabled>
+                      <option value="">— Select —</option>
+                        <?php if (!empty($bases)): ?>
+                          <?php foreach ($bases as $basis): ?>
+                            <option value="<?= htmlspecialchars($basis, ENT_QUOTES) ?>"
+                              <?= (($prefill['basis'] ?? '') === $basis) ? 'selected' : '' ?>>
+                               <?= htmlspecialchars($basis) ?>
+                            </option>
+                          <?php endforeach; ?>
+                         <?php else: ?>
+                          <option value="">No basis options available</option>
+                         <?php endif; ?>
                         </select>
                         <input type="hidden" name="basis" id="basis_hidden" value="<?= htmlspecialchars($prefill['basis'] ?? '', ENT_QUOTES) ?>">
                     </div>
@@ -141,11 +141,10 @@ $timeOptions = [
 
                     <div class="field full">
                         <label for="customization_hours">Customization (extra hours)</label>
-                        <input type="text" value="For every booking unit (duration)" readonly style="margin-bottom:8px;">
                         <input type="hidden" id="customization_apply" name="customization_apply" value="per_unit">
                         <input type="number" id="customization_hours" name="customization_hours" min="0" max="8"
                             value="<?= htmlspecialchars((string) ($prefill['customization_hours'] ?? 0), ENT_QUOTES) ?>">
-                        <small>Extra hours are charged at LKR 300 per hour (full duration).</small>
+                        <small>Extra hours are charged at LKR 100 per hour (full duration).</small>
                     </div>
                     <div class="field full">
                         <label for="customization">Customization notes</label>

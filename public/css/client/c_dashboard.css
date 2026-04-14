@@ -1,50 +1,345 @@
 /* Client dashboard — layout only; tokens from admin-ui.css */
 
-.client-dashboard {
-    display: flex;
-    flex-direction: column;
-    gap: var(--dash-section-gap, var(--admin-section-gap));
+.main-content.admin-dashboard-page.client-dashboard-page {
+    margin-left: 300px;
+    margin-right: 30px;
+    margin-top: var(--admin-header-height, 60px);
+    margin-bottom: 24px;
+    padding-top: 24px;
     min-width: 0;
+    overflow-x: clip;
 }
 
-.client-dashboard-flash {
-    margin-bottom: var(--dash-s-2, 16px);
+.client-dashboard-page .alert.success {
+    background: #e8f7ec;
+    border: 1px solid #9ad9ab;
+    color: #1f6b2d;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
 }
 
-/* Hero overlay — same palette as .main-header (90deg) and mid stop from .sidebar (ad_sidebar) */
-.client-dashboard-hero {
-    position: relative;
-    overflow: hidden;
-    border-radius: var(--dash-radius-lg, 14px);
-    min-height: clamp(220px, 36vw, 320px);
-    margin-bottom: 0;
-    box-shadow: var(--dash-glass-shadow, var(--admin-shadow));
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background-color: var(--admin-primary, #1e88e5);
-    /* Lighter than before so the hero photo reads; stronger tint on the left for type contrast */
-    background-image:
-        linear-gradient(
-            105deg,
-            rgba(30, 136, 229, 0.72) 0%,
-            rgba(21, 144, 216, 0.48) 48%,
-            rgba(0, 191, 165, 0.32) 100%
-        ),
-        var(--client-dashboard-hero-img, none);
-    background-size: cover, cover;
-    background-position: center, center 30%;
-    background-repeat: no-repeat;
+.client-dashboard {
+    margin: 0;
+    padding: 0;
+  flex: 1;
+  background-color: transparent; /* so the page bg shows nicely */
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }
 
-.client-dashboard-hero__content {
-    position: relative;
-    z-index: 1;
-    padding: clamp(1.35rem, 4vw, 2.6rem);
-    max-width: none;
-    width: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+/* ===================== Welcome Section ===================== */
+.welcome {
+  padding: 18px 20px;
+  border-radius: 18px;
+
+}
+
+.welcome h1 {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1e88e5;
+  margin: 0 0 6px;
+}
+
+.welcome p {
+  color: #6c757d;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+
+}
+
+/* ===================== Cards Base ===================== */
+/* ===================== Stats Cards ===================== */
+.stats-cards {
+  display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 18px;
+  margin-bottom: 50px;
+}
+
+.stats-cards h2 {
+  grid-column: 1 / -1;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.stats-cards .card {
+  background: #fff;
+    padding: 22px 16px;
+    min-width: 0;
+  border-radius: 18px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  transition: all 0.35s ease;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+.stats-cards .card:hover {
+  transform: translateY(-10px) scale(1.02);
+  background: linear-gradient(145deg, #e3f2fd, #ffffff);
+}
+
+.stats-cards h3 {
+    font-size: 24px;
+  font-weight: 700;
+    margin: 10px 0 4px;
+  color: #111;
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.stats-cards p {
+    font-size: 13px;
+  color: #777;
+  margin: 0;
+    line-height: 1.35;
+}
+
+.action1 i {
+        font-size: 22px;
+        padding: 10px;
+  border-radius: 14px;
+  background: #e3f2fd;
+  color: #0d89ec;
+  transition: transform 0.3s;
+}
+.action1 i:hover {
+  transform: scale(1.1);
+}
+
+@media (max-width: 1023px) {
+    .main-content.admin-dashboard-page.client-dashboard-page {
+        margin-left: 16px;
+        margin-right: 16px;
+        margin-top: var(--admin-header-height, 60px);
+        padding-top: 18px;
+    }
+
+    .stats-cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+}
+
+@media (max-width: 767px) {
+    .main-content.admin-dashboard-page.client-dashboard-page {
+        margin-left: 12px;
+        margin-right: 12px;
+        padding-top: 14px;
+    }
+
+    .stats-cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+}
+
+/* ===================== Price Overview ===================== */
+.price-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 50px;
+}
+
+.price-overview .section-head {
+  margin-bottom: 20px;
+}
+
+.price-overview .section-head h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
+  margin: 0 0 6px;
+}
+
+.price-overview .section-head p {
+  font-size: 14px;
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Price grid for all services */
+.price-overview .price-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+/* Individual price card */
+.price-card {
+  background: #fff;
+  padding: 18px 16px;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.price-card:hover {
+  transform: translateY(-6px);
+  background: linear-gradient(145deg, #f7fbff, #ffffff);
+  box-shadow: 0 16px 34px rgba(0,0,0,0.12);
+}
+
+/* Header inside price card */
+.price-card .price-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.price-card .price-head .badge {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(30,136,229,0.1);
+  color: #1e88e5;
+  font-size: 22px;
+}
+
+.price-card .price-head h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111;
+}
+
+.price-card .price-head p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: #6c757d;
+}
+
+/* Lines for prices */
+.price-card .price-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex: 1;
+}
+
+.price-card .price-lines .line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.04);
+}
+
+.price-card .price-lines .line span {
+  font-size: 13px;
+  color: #495057;
+}
+
+.price-card .price-lines .line strong {
+  font-size: 14px;
+  color: #111;
+}
+
+/* Ghost Button */
+.price-card .ghost-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: auto;
+  border-radius: 14px;
+  padding: 10px 12px;
+  text-decoration: none;
+  border: 1px solid rgba(30,136,229,0.25);
+  background: rgba(30,136,229,0.08);
+  color: #1e88e5;
+  font-weight: 700;
+  transition: all 0.25s ease;
+}
+
+.price-card .ghost-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(30,136,229,0.12);
+}
+
+/* ===================== Time Modifier Card ===================== */
+.modifier-card {
+  background: #fff;
+  padding: 18px 16px;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+  margin-top: 10px;
+}
+
+.advance-card {
+  background: #fff;
+  padding: 18px 16px;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.advance-card .price-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.advance-card .line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.04);
+}
+
+.advance-card .line span {
+  font-size: 13px;
+  color: #495057;
+}
+
+.advance-card .line strong {
+  font-size: 13px;
+  color: #111;
+}
+
+.modifier-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.modifier-head i {
+  font-size: 22px;
+  padding: 10px;
+  border-radius: 14px;
+  background: rgba(30,136,229,0.1);
+  color: #1e88e5;
+}
+
+.modifier-head h3 {
+  font-size: 16px;
+  font-weight: 800;
+  margin: 0;
+  color: #111;
+}
+
+.modifier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
 }
 
 .client-dashboard-hero__intro {
@@ -425,7 +720,7 @@
 
 .quick-actions .actions {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 16px;
 }
 
@@ -433,9 +728,16 @@
     background: var(--admin-surface-glass);
     border: 1px solid var(--admin-border);
     border-radius: var(--admin-radius);
+    min-width: 100px;
+    min-height: 180px;
     box-shadow: var(--admin-shadow);
-    padding: 18px 20px;
-    text-align: left;
+    padding: 16px 14px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 24px;
     transition:
         box-shadow var(--admin-transition),
         border-color var(--admin-transition),
@@ -449,34 +751,67 @@
 }
 
 .quick-actions .action > i {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     color: var(--admin-primary);
-    margin-bottom: 10px;
+    margin: 0;
     display: block;
 }
 
 .quick-actions .action h3 {
-    margin: 0 0 8px;
-    font-size: 1rem;
+    margin: 0;
+    font-size: 0.95rem;
     font-weight: 600;
+    line-height: 1.35;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .quick-actions .action p {
     margin: 0;
-    font-size: 13px;
+    font-size: 12px;
+    line-height: 1.45;
     color: var(--admin-muted);
+    min-height: 34px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
 }
 
 .quick-actions .action .btn {
     width: 100%;
-    margin-top: 4px;
+    margin-top: 8px;
+}
+
+.quick-actions .action .main-btn {
+    width: 100%;
+    max-width: 190px;
+    min-height: 40px;
+    padding: 8px 10px;
+    font-size: 13px;
+    line-height: 1.25;
+    text-align: center;
+    white-space: normal;
+    background: #1e88e5;
+    color: #fff;
+    border: 1px solid #1e88e5;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.quick-actions .action .main-btn:hover {
+    background: #1565c0;
+    border-color: #1565c0;
+    transform: translateY(-1px);
 }
 
 .client-dashboard-recent .booking {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 16px 18px;
+    gap: 12px;
+    padding: 12px 14px;
     margin-bottom: 12px;
     background: var(--admin-surface-glass);
     border: 1px solid var(--admin-border);
@@ -488,8 +823,8 @@
 }
 
 .client-dashboard-recent .booking img {
-    width: 52px;
-    height: 52px;
+    width: 40px;
+    height: 40px;
     border-radius: var(--admin-radius-sm);
     object-fit: cover;
     border: 1px solid var(--admin-border);
@@ -498,20 +833,50 @@
 
 .client-dashboard-recent .booking h3 {
     margin: 0 0 6px;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: var(--admin-text);
 }
 
 .client-dashboard-recent .booking p {
     margin: 0;
-    font-size: 13px;
+    font-size: 12px;
     color: var(--admin-muted);
 }
 
 .client-dashboard-recent .booking .status {
     margin-left: auto;
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    border: 1px solid transparent;
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.client-dashboard-recent .booking .status.payment-requested {
+    background: #fff4e5;
+    color: #9a5b00;
+    border-color: #ffd8a8;
+}
+
+.client-dashboard-recent .booking .status.accepted {
+    background: #eaf7ef;
+    color: #1f7a3f;
+    border-color: #b8e5c8;
+}
+
+.client-dashboard-recent .booking .status.cancelled {
+    background: #fdecec;
+    color: #b42318;
+    border-color: #f9c5c3;
 }
 
 .advance-modal-list {
@@ -565,6 +930,25 @@
     border-color: var(--admin-primary);
 }
 
+.modal-content .emergency-hotlines {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(30, 136, 229, 0.06);
+    border: 1px solid rgba(30, 136, 229, 0.18);
+}
+
+.modal-content .emergency-hotlines p {
+    margin: 0 0 6px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--admin-text-secondary);
+}
+
+.modal-content .emergency-hotlines p:last-child {
+    margin-bottom: 0;
+}
+
 .modal-content .field {
     margin-bottom: 14px;
 }
@@ -575,6 +959,30 @@
     font-weight: 600;
     font-size: 13px;
     color: var(--admin-text-secondary);
+}
+
+.modal-content form .form-group {
+    width: 100%;
+}
+
+.modal-content form .form-group textarea,
+.modal-content form .form-group input,
+.modal-content form .form-group select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal-content form .submit-btn {
+    display: block;
+    margin: 10px 0 0 auto;
+    min-width: 170px;
+}
+
+.modal-content  .submit-btn{
+    color: black;
+    background-color: blue;
+    border: none;
+    align-items: center;
 }
 
 /* ---------- Mobile / small tablet (client dashboard only) ---------- */
@@ -606,6 +1014,10 @@
     .client-dashboard-hero .dashboard-breadcrumb__list {
         flex-wrap: wrap;
         row-gap: 4px;
+    }
+
+    .quick-actions .actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -654,6 +1066,10 @@
     .quick-actions .actions {
         grid-template-columns: 1fr;
     }
+
+    .stats-cards {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 479px) {
@@ -692,8 +1108,8 @@
     }
 
     .client-dashboard-recent .booking img {
-        width: 48px;
-        height: 48px;
+        width: 38px;
+        height: 38px;
     }
 }
 

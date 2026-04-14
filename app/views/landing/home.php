@@ -164,10 +164,6 @@ $mheroSlides = [
             <span id="mheroPagerCur">01</span> <span class="mhero-pager-sep">/</span> <span id="mheroPagerTot"><?php echo str_pad((string) count($mheroSlides), 2, '0', STR_PAD_LEFT); ?></span>
           </span>
           <div class="mhero-pager-track" aria-hidden="true"><span class="mhero-pager-fill" id="mheroPagerFill"></span></div>
-          <div class="mhero-pager-arrows">
-            <button type="button" class="mhero-pager-btn" id="mheroPrev" aria-label="Previous hero image"><i class="bx bx-chevron-left" aria-hidden="true"></i></button>
-            <button type="button" class="mhero-pager-btn" id="mheroNext" aria-label="Next hero image"><i class="bx bx-chevron-right" aria-hidden="true"></i></button>
-          </div>
         </div>
       </div>
     </section>
@@ -424,7 +420,7 @@ $mheroSlides = [
           <div class="step-body">
             <i class='bx bx-edit'></i>
             <div>
-              <b>1) Choose a service</b>
+              <b>Choose a service</b>
               <p>Select elder care, babysitting, or home support based on your needs.</p>
             </div>
           </div>
@@ -437,7 +433,7 @@ $mheroSlides = [
           <div class="step-body">
             <i class='bx bx-search-alt'></i>
             <div>
-              <b>2) We assign your caregiver</b>
+              <b>We assign your caregiver</b>
               <p>Our office matches you with vetted staff for your service, schedule, and preferences—no browsing freelance listings.</p>
             </div>
           </div>
@@ -450,7 +446,7 @@ $mheroSlides = [
           <div class="step-body">
             <i class='bx bx-calendar-check'></i>
             <div>
-              <b>3) Visits &amp; ongoing support</b>
+              <b>Visits &amp; ongoing support</b>
               <p>We confirm visits with you and stay reachable for changes, feedback, or billing questions.</p>
             </div>
           </div>
@@ -799,11 +795,9 @@ $mheroSlides = [
       const curEl = document.getElementById("mheroPagerCur");
       const totEl = document.getElementById("mheroPagerTot");
       const fill = document.getElementById("mheroPagerFill");
-      const prev = document.getElementById("mheroPrev");
-      const next = document.getElementById("mheroNext");
       const pager = document.getElementById("mheroPager");
 
-      if (!slides.length || !img || !curEl || !totEl || !fill || !prev || !next) return;
+      if (!slides.length || !img || !curEl || !totEl || !fill) return;
 
       const pad = (n) => String(n).padStart(2, "0");
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -831,6 +825,14 @@ $mheroSlides = [
           applySlide(cur + 1);
         }, MHERO_AUTO_MS);
       }
+
+      let autoSlide = null;
+
+function startAutoSlide() {
+  autoSlide = setInterval(() => {
+    applySlide(cur + 1);
+  }, 4000); // change speed here (4000ms = 4s)
+}
 
       function applySlide(index, opts = {}) {
         const initial = Boolean(opts.initial);
