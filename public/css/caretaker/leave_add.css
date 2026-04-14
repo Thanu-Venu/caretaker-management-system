@@ -5,12 +5,12 @@ body {
 /* Main Content - Full Screen Layout */
 .main-content {
   flex: 1;
-  padding: 20px 40px;
-  margin-left: 255px;
-  width: calc(100% - 255px);
+  padding: 24px 40px;
+  margin-left: 260px;
+  width: calc(100% - 260px);
   box-sizing: border-box;
   font-family: 'Poppins', Arial, sans-serif;
-  transition: all 0.2s ease;
+  min-height: 100vh;
 }
 
 /* LEAVE LAYOUT - STACKED VERTICAL LAYOUT */
@@ -25,33 +25,18 @@ body {
 /* LEAVE DETAILS SECTION - Full Width, Compact Height */
 .leave-summary-card {
   width: 100%;
-  background: #ffffff;
-  border-radius: 24px;
-  box-shadow: 0 8px 22px rgba(30, 136, 229, 0.08);
-  border: 1px solid #eef3f8;
-  padding: 20px 32px;
-  transition: all 0.2s ease;
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.94) 0%, rgba(248, 250, 252, 0.88) 45%, rgba(240, 253, 250, 0.35) 100%);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05); /* Match card */
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 30px 32px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .leave-summary-card:hover {
-  box-shadow: 0 14px 30px rgba(30, 136, 229, 0.15);
-}
-
-/* Compact Layout for Details - Horizontal/Card Style */
-.leave-summary-card h1 {
-  margin: 0 0 4px 0;
-  color: #1e88e5;
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-}
-
-.leave-summary-card .subtitle {
-  color: #333e50;
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  border-left: 3px solid #2a7de6;
-  padding-left: 12px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
 }
 
 /* Summary Grid - Horizontal Layout for Compactness */

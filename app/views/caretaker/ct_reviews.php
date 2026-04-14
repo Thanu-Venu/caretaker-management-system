@@ -1,6 +1,3 @@
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,21 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Caretaker Feedback</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_reviews.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
 
 <body>
-<div class="main-content">
-  <h2>
-    Client Feedback & Ratings
-    <?php if (isset($data['avgRating']) && $data['avgRating'] > 0): ?>
-        <span style="font-size: 20px; color: #f39c12; margin-left: 15px;">
-            Average: ⭐ <?= number_format($data['avgRating'], 1) ?>
-        </span>
-    <?php endif; ?>
-  </h2>  
+<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
+<div class="main-content reviews-container">
+  <header class="page-header" style="margin-bottom: 24px;">
+    <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">
+        Client Feedback & Ratings
+        <?php if (isset($data['avgRating']) && $data['avgRating'] > 0): ?>
+            <span style="font-size: 20px; color: #f39c12; margin-left: 15px;">
+                Average: ⭐ <?= number_format($data['avgRating'], 1) ?>
+            </span>
+        <?php endif; ?>
+    </h1>
+  </header>  
   <div class="card">
 
-    <div class="feedback-table-container">
+    <div class="table-container">
       <table id="feedbackTable">
         <thead>
           <tr>

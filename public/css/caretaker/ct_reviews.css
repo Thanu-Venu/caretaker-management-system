@@ -4,57 +4,65 @@ body {
 
 .main-content {
   flex: 1;
-  padding: 20px 40px;
+  padding: 24px 40px;
   margin-left: 260px;
   width: calc(100% - 260px);
   box-sizing: border-box;
   font-family: 'Poppins', Arial, sans-serif;
+  min-height: 100vh;
 }
 
-h2 {
-    display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  color: #1e88e5;
-  margin-top: 0;
-  font-size: 28px;
+.card {
+  position: relative;
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.94) 0%, rgba(248, 250, 252, 0.88) 45%, rgba(240, 253, 250, 0.35) 100%);
+  border-radius: 16px;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05); /* Match card */
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  margin-bottom: 30px;
 }
 
-.feedback-table-container {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  padding: 15px;
+/* Table Layout */
+.table-container {
   overflow-x: auto;
+  border: 1px solid #d8e6f4;
+  border-radius: 12px;
+  margin-top: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    overflow: hidden;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  overflow: hidden;
+  min-width: 600px;
 }
 
-thead {
-    background-color: #1E88E5;
-    color: white;
+thead th {
+  background-color: #1e88e5;
+  color: #ffffff;
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 15px;
+  border: none;
 }
 
-th, td {
-    padding: 14px;
-    text-align: left;
-      border-bottom: 1px solid #eee;
+tbody td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #edf3f9;
+  color: #17324d;
 }
 
-th {
-    font-weight: 700;
-    color: white;
-    font-size: 18px;
+tbody tr {
+  transition: background-color 0.2s ease;
 }
 
 tbody tr:hover {
-  background-color: #f9f9f9;
+  background-color: #eef7ff;
 }
 
 td:last-child {

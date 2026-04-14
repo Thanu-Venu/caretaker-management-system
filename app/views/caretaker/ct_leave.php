@@ -1,6 +1,3 @@
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-
 <?php
 $summary = $data['monthlySummary'] ?? ['limit' => 5, 'used' => 0, 'remaining' => 5, 'percentage' => 0, 'label' => '0 / 5 days used'];
 $success = $data['success'] ?? '';
@@ -20,12 +17,20 @@ $warning = $data['warning'] ?? '';
 
 
 
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
 
 <body>
+<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
     <main class="content">
-        <div class="header-row">
-        <h2>Leave Requests</h2>
+        <header class="page-header" style="margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">Leave Requests</h1>
 
         <?php if ((int)$summary['remaining'] <= 0): ?>
             <button class="add-btn" onclick="alert('Your leave is finished for this month! You cannot request more leaves this month.');">
@@ -37,7 +42,8 @@ $warning = $data['warning'] ?? '';
                 Request Leave
             </button>
         <?php endif; ?>
-        </div>
+            </div>
+        </header>
         <div class="booking">
 
             <div class="card">

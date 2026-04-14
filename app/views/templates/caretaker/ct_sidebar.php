@@ -4,19 +4,6 @@ require_once APPROOT . '/core/SidebarBadgeHelper.php';
 // Get badge counts once for this sidebar
 $badgeCounts = getSidebarBadgeCounts();
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caretaker Sidebar</title>
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_sidebar.css">
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/common/sidebar-badges.css">
-</head>
-
-<body>
   <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar menu">
     <i class='bx bx-menu'></i>
   </button>
@@ -85,6 +72,3 @@ $badgeCounts = getSidebarBadgeCounts();
       }
     });
   </script>
-</body>
-
-</html>

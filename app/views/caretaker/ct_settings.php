@@ -1,5 +1,3 @@
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
 <?php
 if (isset($data['user'])) {
   $user = $data['user'];
@@ -16,9 +14,16 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Caretaker Settings & Profile</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_settings.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
 
 <body>
+<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
   <div class="main-content">
     <section class="page-header settings-page-header">
       <h1 class="page-title" style="color: #1e88e5; font-size: 28px; font-weight: 600; margin-bottom: 20px;">Profile &amp; Settings</h1>

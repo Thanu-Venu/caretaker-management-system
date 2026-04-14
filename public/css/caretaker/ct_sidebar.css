@@ -1,7 +1,7 @@
 /* Sidebar Base */
 .sidebar {
   position: fixed;
-  top: 0;
+  top: var(--admin-header-height, 52px);
   bottom: 0;
   left: 0;
   width: 260px;
@@ -114,7 +114,7 @@
 
 .sidebar-overlay {
   position: fixed;
-  top: 60px;
+  top: var(--admin-header-height, 52px);
   left: 0;
   right: 0;
   bottom: 0;
@@ -169,6 +169,7 @@
 
 @media (max-width: 767px) {
   .sidebar {
+    top: var(--admin-header-height, 52px);
     transform: translateX(-100%);
     width: 280px;
     box-shadow: 0 0 22px rgba(0, 0, 0, 0.18);
