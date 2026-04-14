@@ -16,7 +16,7 @@
 <body>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-<div class="main-content">
+<main class="content leavehistory-container">
   <h1>Leave History</h1>
 
   <table class="leave-history-table">

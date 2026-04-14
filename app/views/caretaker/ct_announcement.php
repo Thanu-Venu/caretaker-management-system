@@ -18,7 +18,7 @@
 
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-<div class="main-content announcement-container">
+<main class="content announcement-container">
     <div class="card">
         <h1 class="page-title">Announcements</h1>
         <p style="color: #5b7288; margin-bottom: 20px; font-size: 14px;">Updates published for caretakers and general audiences.</p>

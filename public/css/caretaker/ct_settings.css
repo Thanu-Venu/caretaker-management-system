@@ -3,10 +3,9 @@ body {
   background: linear-gradient(180deg, #f4f7fb, #f9fcff);
 }
 
-.main-content {
+.content.settings-container {
   flex: 1;
   padding: 20px 40px;
-  margin-left: 255px; /* from dashboard */
   font-family: 'Poppins', Arial, sans-serif;
   box-sizing: border-box;
 }

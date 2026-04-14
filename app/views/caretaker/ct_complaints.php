@@ -15,7 +15,7 @@
 <body>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-    <div class="main-content complaint-container">
+  <main class="content complaint-container">
       <header class="page-header" style="margin-bottom: 24px;">
         <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">Register a Complaint</h1>
       </header>

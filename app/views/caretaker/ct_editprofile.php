@@ -20,7 +20,7 @@
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
   <div id="dashboard">
     <!-- Welcome -->
-    <div class="content">
+    <main class="content editprofile-container">
       <!-- Welcome -->
       <section class="welcome">
         <h2>Welcome back, Sarah!</h2>

@@ -17,9 +17,7 @@ body {
 }
 
 
-.content {
-  margin-left: 255px;
-  width: calc(100% - 255px);
+.content.editprofile-container {
   box-sizing: border-box;
   flex: 1;
   padding: 20px;

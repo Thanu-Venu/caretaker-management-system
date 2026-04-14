@@ -14,11 +14,9 @@ body {
   background: linear-gradient(180deg, #f4f7fb, #f9fcff);
 }
 
-.main-content {
+.content.complaint-container {
   flex: 1;
   padding: 24px 40px;
-  margin-left: 260px;
-  width: calc(100% - 260px);
   box-sizing: border-box;
   font-family: 'Poppins', Arial, sans-serif;
   min-height: 100vh;

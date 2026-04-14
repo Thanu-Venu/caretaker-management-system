@@ -17,8 +17,7 @@ body {
     font-family: 'Poppins', Arial, sans-serif;
 }
 
-.announcement-container {
-  margin-left: 255px; /* From caretaker dashboard */
+.content.announcement-container {
   padding: 24px 40px;
   min-height: 100vh;
   box-sizing: border-box;
