@@ -17,6 +17,10 @@ $badgeCounts = getSidebarBadgeCounts();
 </head>
 
 <body>
+  <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar menu">
+    <i class='bx bx-menu'></i>
+  </button>
+
   <div class="sidebar">
     <br><br><br>
     <ul class="nav-links">
@@ -52,6 +56,8 @@ $badgeCounts = getSidebarBadgeCounts();
     </ul>
   </div>
 
+  <div class="sidebar-overlay"></div>
+  <script src="<?= URLROOT ?>/public/js/sidebar-toggle.js"></script>
   <script>
     // Select all links that have a submenu (contain .arrow)
     let dropdownLinks = document.querySelectorAll(".nav-links li > a .arrow");
