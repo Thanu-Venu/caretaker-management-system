@@ -1,104 +1,108 @@
+/* Bookings — filters and tables from admin-ui.css */
 
-
-body {
-  background: #f4f7fb;
+/* Status pills: slug from DB status (see ad_bookings.php) */
+.booking-table .booking-status-pill,
+#bookingTable .booking-status-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--smartcare-status-badge-width, 8.5rem);
+    min-width: var(--smartcare-status-badge-width, 8.5rem);
+    max-width: var(--smartcare-status-badge-width, 8.5rem);
+    padding: 5px 12px;
+    border-radius: var(--admin-radius-full, 9999px);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    border: 1px solid transparent;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.main-content {
-  margin-left: 270px;
-  padding: 20px;
+/* Default / unknown */
+.booking-table .booking-status-pill--unknown,
+#bookingTable .booking-status-pill--unknown {
+    background: #f1f5f9;
+    color: #475569;
+    border-color: #e2e8f0;
 }
 
-.booking-header h1 {
-  font-size: 28px;
-  color: #1e88e5;;
-  font-weight: 700;
-  margin-bottom: 40px;
+/* Waiting on client / initial */
+.booking-table .booking-status-pill--requested,
+.booking-table .booking-status-pill--pending,
+#bookingTable .booking-status-pill--requested,
+#bookingTable .booking-status-pill--pending {
+    background: var(--admin-warning-bg, #fef3c7);
+    color: var(--admin-warning-text, #b45309);
+    border-color: rgba(217, 119, 6, 0.28);
 }
 
-.filter-section {
-  display: flex;
-  gap: 35px;
-  margin-bottom: 30px;
+/* Payment step */
+.booking-table .booking-status-pill--payment_requested,
+.booking-table .booking-status-pill--awaitingpayment,
+.booking-table .booking-status-pill--payment_pending,
+#bookingTable .booking-status-pill--payment_requested,
+#bookingTable .booking-status-pill--awaitingpayment,
+#bookingTable .booking-status-pill--payment_pending {
+    background: #ffedd5;
+    color: #c2410c;
+    border-color: rgba(234, 88, 12, 0.28);
 }
 
-.filter-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+/* Paid / confirmed flow */
+.booking-table .booking-status-pill--advance_paid,
+#bookingTable .booking-status-pill--advance_paid {
+    background: var(--admin-teal-soft, rgba(0, 191, 165, 0.14));
+    color: #0f766e;
+    border-color: rgba(0, 191, 165, 0.35);
 }
 
-.filter-group label {
-  font-size: 18px;
-  color: #555;
-  font-weight: 700;
+.booking-table .booking-status-pill--accepted,
+#bookingTable .booking-status-pill--accepted {
+    background: var(--admin-success-bg, #d1fae5);
+    color: var(--admin-success-text, #047857);
+    border-color: rgba(5, 150, 105, 0.28);
 }
 
-.filter-group select {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: white;
-  font-size: 14px;
-  color: #333;
-  cursor: pointer;
+/* Client/caretaker change flows */
+.booking-table .booking-status-pill--reschedule_requested,
+.booking-table .booking-status-pill--change_requested,
+#bookingTable .booking-status-pill--reschedule_requested,
+#bookingTable .booking-status-pill--change_requested {
+    background: var(--admin-info-bg, #dbeafe);
+    color: var(--admin-info-text, #1d4ed8);
+    border-color: rgba(29, 78, 216, 0.22);
 }
 
-.table-container {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  padding: 15px;
-  overflow-x: auto;
+/* Terminal / negative */
+.booking-table .booking-status-pill--completed,
+#bookingTable .booking-status-pill--completed {
+    background: #ecfdf5;
+    color: #047857;
+    border-color: rgba(16, 185, 129, 0.35);
 }
 
-.booking-table {
-  width: 100%;
-  border-collapse: collapse;
+.booking-table .booking-status-pill--rejected,
+.booking-table .booking-status-pill--cancelled,
+.booking-table .booking-status-pill--canceled,
+#bookingTable .booking-status-pill--rejected,
+#bookingTable .booking-status-pill--cancelled,
+#bookingTable .booking-status-pill--canceled {
+    background: var(--admin-danger-bg, #fee2e2);
+    color: var(--admin-danger-text, #b91c1c);
+    border-color: rgba(220, 38, 38, 0.22);
 }
 
-.booking-table thead th {
-  background-color:  #1e88e5;
-  font-weight: 700;
-  color: #fff;
-  font-size: 18px;
-  padding: 12px 15px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-}
-
-.booking-table tbody td {
-  padding: 12px 15px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-  color: black;
-  font-size: 16px;
-}
-
-.booking-table tbody tr:hover {
-  background-color: #f9f9f9;
-}
-
-.status {
-  border-radius: 12px;
-  font-size: 16px;
-  text-transform: capitalize;
-}
-
-.status.pending {
-  background-color: #deb752;
-  color: white;
-  padding: 4px 18px;
-}
-
-.status.ongoing {
-  background-color: #0f89fc;
-  color: white;
-  padding: 4px 17px;
-}
-
-.status.completed {
-  background-color: #00bfa5;;
-  color: white;
-  padding: 4px 9px;
+/* Refund / admin edge cases */
+.booking-table .booking-status-pill--refunded,
+.booking-table .booking-status-pill--refund_pending,
+#bookingTable .booking-status-pill--refunded,
+#bookingTable .booking-status-pill--refund_pending {
+    background: #f3e8ff;
+    color: #6b21a8;
+    border-color: rgba(124, 58, 237, 0.22);
 }

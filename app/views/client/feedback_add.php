@@ -1,39 +1,39 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
+<?php
+$clientPageTitle = 'Add feedback — SmartCare';
+$clientExtraCss  = ['client/c_feedback_form.css'];
+require_once APPROOT . '/views/templates/client/client_layout_head.php';
+require_once APPROOT . '/views/templates/client/c_header.php';
+require_once APPROOT . '/views/templates/client/c_sidebar.php';
+?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Feedback</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_feedback_form.css">
-</head>
-<body>
+<main class="main-content">
+    <section class="form-section form-section--wide">
+        <header class="page-header">
+            <h1 class="page-title">Give feedback</h1>
+        </header>
+        <form action="<?= URLROOT ?>/index.php?url=feedback/store" method="POST" class="feedback-form">
+            <div class="field">
+                <label for="caretaker_id">Caregiver ID</label>
+                <input id="caretaker_id" type="number" name="caretaker_id" required>
+            </div>
+            <div class="field">
+                <label for="rating">Rating</label>
+                <select id="rating" name="rating" required>
+                    <option value="">Select</option>
+                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                        <option value="<?= $i ?>"><?= $i ?></option>
+                    <?php endfor; ?>
+                </select>
+            </div>
+            <div class="field">
+                <label for="comment">Comment</label>
+                <textarea id="comment" name="comment" required></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">Submit</button>
+            </div>
+        </form>
+    </section>
+</main>
 
-<div class="main-content">
-    <h2>Give Feedback</h2>
-
-    <form action="index.php?url=feedback/store" method="POST" class="feedback-form">
-
-        <label>Caretaker ID</label>
-        <input type="number" name="caretaker_id" required>
-
-        <label>Rating</label>
-        <select name="rating" required>
-            <option value="">Select</option>
-            <?php for($i=1; $i<=5; $i++): ?>
-                <option value="<?= $i ?>"><?= $i ?></option>
-            <?php endfor; ?>
-        </select>
-
-        <label>Comment</label>
-        <textarea name="comment" required></textarea>
-
-        <button class="submit-btn">Submit</button>
-    </form>
-</div>
-
-</body>
-</html>
-
+<?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

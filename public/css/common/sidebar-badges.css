@@ -1,0 +1,324 @@
+/**
+ * Sidebar Badge Styles
+ *
+ * Modern notification badge styles for sidebar menu items
+ * Compatible with all role-based sidebars (Admin, HR, Client, Caretaker)
+ *
+ * Usage: Add class "sidebar-badge" to any span element to display as a notification badge
+ */
+
+/* ==================== Badge Container & Layout ==================== */
+
+/* Menu item content wrapper - enables flexbox layout */
+.menu-item-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+}
+
+/* Left side content (icon + text) */
+.menu-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+/* ==================== Badge Styling ==================== */
+
+/* Main badge styles */
+.sidebar-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+
+    /* Modern red notification badge */
+    background: white;
+    color: black;
+
+    /* Typography */
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.3px;
+
+    /* Rounded appearance */
+    border-radius: 10px;
+
+    /* Visual enhancements */
+    box-shadow: 0 2px 4px rgba(255, 71, 87, 0.3);
+
+    /* Smooth transitions */
+    transition: all 0.3s ease;
+
+    /* Prevent text wrapping */
+    white-space: nowrap;
+
+    /* Positioning */
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* Hover effect - slightly larger and brighter */
+a:hover .sidebar-badge {
+    transform: scale(1.1);
+    box-shadow: 0 3px 6px rgba(255, 71, 87, 0.4);
+    background:white;
+}
+
+/* Active menu item badge */
+.active .sidebar-badge,
+li.active .sidebar-badge {
+    background:white;
+    box-shadow: 0 2px 6px rgba(255, 71, 87, 0.4);
+}
+
+/* ==================== Badge Size Variations ==================== */
+
+/* Small badge (for compact sidebars) */
+.sidebar-badge.badge-sm {
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 10px;
+    border-radius: 9px;
+}
+
+/* Large badge (for prominent notifications) */
+.sidebar-badge.badge-lg {
+    min-width: 24px;
+    height: 24px;
+    padding: 0 8px;
+    font-size: 12px;
+    border-radius: 12px;
+}
+
+/* ==================== Badge Color Variations ==================== */
+
+/* Warning badge (orange) */
+.sidebar-badge.badge-warning {
+    background: linear-gradient(135deg, #ffa502 0%, #ff6348 100%);
+    box-shadow: 0 2px 4px rgba(255, 165, 2, 0.3);
+}
+
+/* Info badge (blue) */
+.sidebar-badge.badge-info {
+    background: linear-gradient(135deg, #3867d6 0%, #2f54c7 100%);
+    box-shadow: 0 2px 4px rgba(56, 103, 214, 0.3);
+}
+
+/* Success badge (green) */
+.sidebar-badge.badge-success {
+    background: linear-gradient(135deg, #26de81 0%, #20bf6b 100%);
+    box-shadow: 0 2px 4px rgba(38, 222, 129, 0.3);
+}
+
+/* ==================== Responsive Adjustments ==================== */
+
+/* For tablets and smaller screens */
+@media (max-width: 768px) {
+    .sidebar-badge {
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        font-size: 10px;
+        border-radius: 9px;
+    }
+
+    .menu-item-content {
+        gap: 6px;
+    }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+    .sidebar-badge {
+        min-width: 16px;
+        height: 16px;
+        padding: 0 4px;
+        font-size: 9px;
+        border-radius: 8px;
+    }
+
+    .menu-item-content {
+        gap: 4px;
+    }
+}
+
+/* ==================== Sidebar-Specific Adjustments ==================== */
+
+/* Admin Sidebar - Ensure proper flex layout */
+.sidebar-menu li a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* HR Sidebar - Adjust for existing menu structure */
+.menu li a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* Client Sidebar - Dropdown compatibility */
+.submenu .dropdown-btn .menu-item-content {
+    pointer-events: none;
+    /* Let clicks pass through to button */
+}
+
+.submenu .dropdown-btn .menu-item-content>* {
+    pointer-events: auto;
+}
+
+.submenu .dropdown-btn {
+    display: block;
+    width: 100%;
+}
+
+/* Ensure arrow icon stays at the end for dropdowns */
+.submenu .dropdown-btn .arrow {
+    margin-left: 4px;
+}
+
+/* Caretaker Sidebar - nav-links structure */
+.nav-links li a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* ==================== Animation Effects ==================== */
+
+/* Fade in animation for badges */
+@keyframes badgeFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.sidebar-badge {
+    animation: badgeFadeIn 0.3s ease-out;
+}
+
+/* Pulse animation for new badges (optional - can be added via JS) */
+@keyframes badgePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 2px 4px rgba(255, 71, 87, 0.3);
+    }
+
+    50% {
+        transform: scale(1.15);
+        box-shadow: 0 3px 8px rgba(255, 71, 87, 0.5);
+    }
+}
+
+.sidebar-badge.pulse {
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+/* ==================== Print Styles ==================== */
+
+@media print {
+    .sidebar-badge {
+        display: none;
+    }
+}
+
+/* ==================== Accessibility ==================== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .sidebar-badge {
+        border: 2px solid currentColor;
+        font-weight: 700;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+
+    .sidebar-badge,
+    a:hover .sidebar-badge {
+        transition: none;
+        animation: none;
+    }
+}
+
+/* Admin sidebar (blue rail): calmer count badges */
+.sidebar .sidebar-badge {
+    background: rgba(255, 255, 255, 0.94);
+    color: #9a3412;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+}
+
+.sidebar a:hover .sidebar-badge,
+.sidebar li.active .sidebar-badge {
+    background: #fff;
+    color: #c2410c;
+}
+
+/* ==================== Table status pills — uniform width (all shells using this file) ==================== */
+
+:root {
+    /* Fixed width so status chips align in table columns (admin, HR, client, caretaker) */
+    --smartcare-status-badge-width: 8.5rem;
+}
+
+/* HR pending: span.status-* ; admin: .status, .booking-status-pill */
+table td .status,
+table td .booking-status-pill,
+table td span[class^="status-"] {
+    width: var(--smartcare-status-badge-width);
+    min-width: var(--smartcare-status-badge-width);
+    max-width: var(--smartcare-status-badge-width);
+    box-sizing: border-box;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* HR uses inline-block on .status-* — normalize to flex for centering */
+table td span[class^="status-"] {
+    display: inline-flex;
+    align-items: center;
+}
+
+@media (max-width: 520px) {
+    :root {
+        --smartcare-status-badge-width: 7rem;
+    }
+}
+
+/* ==================== Dark Mode Support (Optional) ==================== */
+
+/* If your application supports dark mode, uncomment these styles */
+/*
+@media (prefers-color-scheme: dark) {
+  .sidebar-badge {
+    background: linear-gradient(135deg, #ff6b81 0%, #ff4757 100%);
+    box-shadow: 0 2px 6px rgba(255, 71, 87, 0.5);
+  }
+
+  a:hover .sidebar-badge {
+    background: linear-gradient(135deg, #ff8fa3 0%, #ff6b81 100%);
+    box-shadow: 0 3px 8px rgba(255, 71, 87, 0.6);
+  }
+}
+*/

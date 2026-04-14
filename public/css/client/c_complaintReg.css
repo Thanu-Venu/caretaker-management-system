@@ -1,113 +1,129 @@
 * {
-    font-family: Arial, Helvetica, sans-serif;
     box-sizing: border-box;
 }
 
-/* ===== PAGE WRAPPER (SIDEBAR OFFSET) ===== */
-.page-wrapper {
-    min-height: 100vh;
-    padding-left: 260px;   /* ✅ sidebar space */
-    padding-right: 30px;
-    padding-top: 30px;
-    background-color: #f4f6f9;
+/* ===== PAGE WRAPPER ===== */
+.complaint-page {
+    max-width: 980px;
 }
 
-/* ===== MAIN CONTAINER ===== */
-.complaint-container {
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-/* ===== SECTIONS ===== */
-.complaint-section {
-    background: #ffffff;
-    padding: 25px 30px;
-    border-radius: 10px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
-
-.page-wrapper h2 {
-    color: #1e88e5;
+.complaint-page .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
     margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: 700;
 }
 
-/* ===== FORM ===== */
-.page-wrapper label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 600;
-}
-
-.page-wrapper input,
-.page-wrapper select,
-.page-wrapper textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 14px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-}
-
-.page-wrapper textarea {
-    resize: vertical;
-}
-
-.page-wrapper button {
-    background: #1e88e5;
-    color: white;
-    border: none;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: 700;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.page-wrapper button:hover {
-    background: #1a76c7;
-}
-
-/* ===== TABLE ===== */
-.page-wrapper table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.page-wrapper th, .page-wrapper td {
-    padding: 12px 14px;
-    border-bottom: 1px solid #e0e0e0;
-    text-align: left;
-}
-
-.page-wrapper th {
-    background-color: #1e88e5;
-    color: white;
-    font-weight: 600;
-}
-
-.page-wrapper tr:hover {
-    background-color: #f1f1f1;
-}
-
-/* ===== LINKS ===== */
-.page-wrapper a {
+.link-btn {
     color: #1e88e5;
     font-weight: 600;
     text-decoration: none;
 }
 
-.page-wrapper a:hover {
+.link-btn:hover {
     text-decoration: underline;
 }
 
-.page-wrapper em {
-    color: #888;
+/* ===== SECTIONS ===== */
+.complaint-section {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 14px;
+    border: 1px solid #eef2f7;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    margin-bottom: 30px;
 }
 
-.page-wrapper p {
-    color: #555;
+/* ===== FORM ===== */
+.complaint-page label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.complaint-page input,
+.complaint-page select,
+.complaint-page textarea {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 24px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     font-size: 15px;
+}
+
+.complaint-page textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.complaint-page form {
+    display: flex;
+    flex-direction: column;
+}
+
+.complaint-page button {
+    width: auto;
+    background: #1e88e5;
+    color: white;
+    border: none;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.complaint-page button:hover {
+    background: #1a76c7;
+}
+
+.complaint-page .form-actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.complaint-page .form-actions button,
+.complaint-page .form-actions .btn-cancel {
+    width: 200px;
+    height: 52px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    font-size: 16px;
+}
+
+.complaint-page .btn-cancel {
+    display: inline-block;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #334155;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.complaint-page .btn-cancel:hover {
+    background: #f8fafc;
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .complaint-page .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .complaint-page .form-actions {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
 }

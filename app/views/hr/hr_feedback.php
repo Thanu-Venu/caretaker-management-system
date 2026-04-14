@@ -1,69 +1,59 @@
-<?php include_once APPROOT . "/views/templates/hr/hr_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; ?>
+<?php
+$feedbacks = $feedbacks ?? [];
+$hrPageTitle = 'Client Feedback — HR';
+$hrExtraCss  = ['hr/hr_feedback.css'];
+include_once APPROOT . '/views/templates/hr/hr_layout_head.php';
+include_once APPROOT . '/views/templates/hr/hr_header.php';
+include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
+?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client Feedback</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_feedback.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
+<main class="main-content">
+  <header class="feedback-header page-header">
+    <h1 class="page-title">Client feedback</h1>
+  </header>
 
-<body>
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Client</th>
+          <th>Caregiver</th>
+          <th>Service</th>
+          <th>Rating</th>
+          <th>Comments</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if (!empty($feedbacks)): ?>
+          <?php foreach ($feedbacks as $fb): ?>
+            <tr>
+              <td><?= htmlspecialchars((string) ($fb['client_name'] ?? '')) ?></td>
+              <td><?= htmlspecialchars((string) ($fb['caretaker_name'] ?? '')) ?></td>
+              <td><?= htmlspecialchars((string) ($fb['service'] ?? 'N/A')) ?></td>
+              <td>
+                <span class="feedback-stars" aria-label="Rating <?= (int) ($fb['rating'] ?? 0) ?> of 5">
+                  <?php for ($i = 1; $i <= 5; $i++): ?>
+                    <?php if ($i <= (int) ($fb['rating'] ?? 0)): ?>
+                      <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <?php else: ?>
+                      <i class="fa-regular fa-star feedback-star--off" aria-hidden="true"></i>
+                    <?php endif; ?>
+                  <?php endfor; ?>
+                </span>
+              </td>
+              <td><?= htmlspecialchars((string) ($fb['comment'] ?? $fb['feedback'] ?? '')) ?></td>
+              <td><?= htmlspecialchars((string) ($fb['created_at'] ?? '')) ?></td>
+            </tr>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <tr>
+            <td colspan="6" class="empty">No feedback available</td>
+          </tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
+  </div>
+</main>
 
-<div class="main-content">
-    <h1>Client Feedback</h1>
-
-    <div class="table-container">
-        <table class="feedback-table">
-            <thead>
-                <tr>
-                    <th>Client</th>
-                    <th>Caretaker</th>
-                    <th>Service</th>
-                    <th>Rating</th>
-                    <th>Comments</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <?php if (!empty($feedbacks)): ?>
-                    <?php foreach ($feedbacks as $fb): ?>
-                        <tr>
-                            <td><?= $fb['client_name'] ?></td>
-                            <td><?= $fb['caretaker_name'] ?></td>
-                            <td><?= $fb['service'] ?? 'N/A' ?></td>
-
-                            <!-- Star Rendering -->
-                            <td>
-                                <?php for ($i = 1; $i <= 5; $i++): ?>
-                                    <?php if ($i <= $fb['rating']): ?>
-                                        <i class="fa-solid fa-star" style="color:#f4c542;"></i>
-                                    <?php else: ?>
-                                        <i class="fa-regular fa-star" style="color:#ccc;"></i>
-                                    <?php endif; ?>
-                                <?php endfor; ?>
-                            </td>
-
-                            <td><?= $fb['comment'] ?></td>
-                            <td><?= $fb['created_at'] ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="6" style="text-align:center; color:#999;">No feedback available</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-
-        </table>
-    </div>
-</div>
-
-<script src="<?php echo URLROOT; ?>/public/js/hr/hr_feedback.js"></script>
-
-</body>
-</html>
+<?php include_once APPROOT . '/views/templates/hr/hr_layout_close.php'; ?>

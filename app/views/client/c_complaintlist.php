@@ -1,51 +1,66 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirm Booking</title>
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_complaintlist.css">
-</head>
-<body>
-<h2>My Complaints</h2>
+<?php
+$clientPageTitle = 'Complaints — SmartCare';
+$clientExtraCss  = ['client/c_complaintlist.css'];
+require_once APPROOT . '/views/templates/client/client_layout_head.php';
+require_once APPROOT . '/views/templates/client/c_header.php';
+require_once APPROOT . '/views/templates/client/c_sidebar.php';
 
-<?php if (!empty($complaints)): ?>
-    <div class="main-content">
-        <h1>Registered Complaints</h1>
-<table border="1" cellpadding="10" cellspacing="0">
-    <tr>
-        <th>ID</th>
-        <th>Caretaker</th>
-        <th>Category</th>
-        <th>Details</th>
-        <th>Status</th>
-        <th>Date</th>
-        <th>Actions</th>
-    </tr>
-    <?php foreach ($complaints as $complaint): ?>
-    <tr>
-        <td><?= htmlspecialchars($complaint['Id']) ?></td>
-        <td><?= htmlspecialchars($complaint['caretaker_name']) ?></td>
-        <td><?= htmlspecialchars($complaint['category']) ?></td>
-        <td><?= htmlspecialchars($complaint['details']) ?></td>
-        <td><?= htmlspecialchars($complaint['status']) ?></td>
-        <td><?= htmlspecialchars($complaint['complaint_date']) ?></td>
-        <td>
-            <?php if ($complaint['status'] != 'Resolved' && $complaint['status'] != 'Closed'): ?>
-                <a href="<?= URLROOT ?>/index.php?url=Complaint/clientEdit/<?= $complaint['Id'] ?>">Edit</a>
-|
-                <a href="<?= URLROOT ?>/index.php?url=Complaint/clientDelete/<?= $complaint['Id'] ?>" onclick="return confirm('Delete this complaint?')">Delete</a>
-            <?php else: ?>
-                <em>Locked</em>
-            <?php endif; ?>
-        </td>
-    </tr>
-    <?php endforeach; ?>
-</table>
-</div>
-<?php else: ?>
-<p>No complaints found.</p>
-<?php endif; ?>
+$complaintsList = $data['complaints'] ?? ($complaints ?? []);
+?>
 
+<main class="main-content">
+    <?php if (isset($_SESSION['flash_message'])): ?>
+        <div class="flash success"><?= htmlspecialchars((string) $_SESSION['flash_message'], ENT_QUOTES, 'UTF-8') ?></div>
+        <?php unset($_SESSION['flash_message']); ?>
+    <?php endif; ?>
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Registered complaints</h1>
+            <p class="text-muted">Your submitted complaints and categories.</p>
+        </div>
+        <div class="header-actions">
+            <a class="btn" href="<?= URLROOT ?>/public/index.php?url=Complaint/complaintReg">Register complaint</a>
+        </div>
+    </header>
+
+    <div class="table-container">
+        <table class="client-table">
+            <thead>
+                <tr>
+                    <th>Client name</th>
+                    <th>Caretaker</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Registered</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (!empty($complaintsList)): ?>
+                    <?php foreach ($complaintsList as $complaint): ?>
+                        <tr>
+                            <td><?= htmlspecialchars((string) ($complaint['client_name'] ?? '')) ?></td>
+                            <td><?= htmlspecialchars((string) ($complaint['caretaker_name'] ?? '')) ?></td>
+                            <td><?= htmlspecialchars((string) ($complaint['category'] ?? '')) ?></td>
+                            <td><?= htmlspecialchars((string) ($complaint['details'] ?? '')) ?></td>
+                            <td>
+                                <?php $registeredAt = strtotime((string) ($complaint['complaint_date'] ?? '')); ?>
+                                <?php if ($registeredAt !== false): ?>
+                                    <span class="complaint-date"><?= date('Y-m-d', $registeredAt) ?></span>
+                                    <span class="complaint-time text-muted"><?= date('h:i A', $registeredAt) ?></span>
+                                <?php else: ?>
+                                    <?= htmlspecialchars((string) ($complaint['complaint_date'] ?? '')) ?>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="5" class="empty">No complaints registered.</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

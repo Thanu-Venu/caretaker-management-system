@@ -1,10 +1,8 @@
 RewriteEngine On
 
-# Redirect everything to public folder
+# Don't process POST/PUT/DELETE requests that are not files/directories
+# Internally rewrite to public folder instead of redirecting (preserves POST data)
 RewriteCond %{REQUEST_URI} !^/public/
-RewriteRule ^(.*)$ public/$1 [L]
-
-# Optional: hide public in URLs
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.+)$ public/index.php?url=$1 [QSA,L]
+RewriteRule ^(.*)$ public/index.php?url=$1 [QSA,L]

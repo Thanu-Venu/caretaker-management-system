@@ -1,114 +1,193 @@
-<?php include_once APPROOT . "/views/templates/hr/hr_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/hr/hr_sidebar.php"; ?>
+<?php
+$hrPageTitle = 'Leave management — HR';
+$hrExtraCss  = ['hr/hr_leave.css'];
+include_once APPROOT . '/views/templates/hr/hr_layout_head.php';
+include_once APPROOT . '/views/templates/hr/hr_header.php';
+include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
 
-<!DOCTYPE html>
-<html lang="en">
+$leaves = $data['leaves'] ?? [];
+$page = (int) ($data['page'] ?? 1);
+$totalPages = (int) ($data['totalPages'] ?? 1);
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leave Management</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/hr/hr_leave.css">
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+function hr_leave_page_url(int $p): string
+{
+    return URLROOT . '/HrLeave/index?' . http_build_query(['page' => max(1, $p)]);
+}
+?>
 
-</head>
+<main class="main-content">
+    <header class="page-header">
+        <h1 class="page-title">Leave management</h1>
+    </header>
 
-<body>
-  <main class="content">
-    <section>
-      <h1>Leave Management</h1>
+    <?php if (!empty($_SESSION['success'])): ?>
+        <div class="success-message" role="status"><?= htmlspecialchars((string) $_SESSION['success'], ENT_QUOTES, 'UTF-8') ?></div>
+        <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+    <?php if (!empty($_SESSION['error'])): ?>
+        <div class="error-message" role="alert"><?= htmlspecialchars((string) $_SESSION['error'], ENT_QUOTES, 'UTF-8') ?></div>
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
 
-      <!-- Filter Section -->
-      <div class="filter-section">
-        <div class="filter-group">
-          <label for="type">Type</label>
-          <select id="type" onchange="filterTable()">
-            <option value="All">All</option>
-            <option value="Vacation">Vacation</option>
-            <option value="Sick Leave">Sick Leave</option>
-            <option value="Personal Leave">Personal Leave</option>
-            <option value="Maternity Leave">Maternity Leave</option>
-          </select>
+    <div id="hr-leave-endpoints"
+        data-reject-url="<?= htmlspecialchars(URLROOT . '/HrLeave/reject_submit', ENT_QUOTES, 'UTF-8') ?>"
+        hidden></div>
+
+    <div class="hr-request-status-filter hr-leave-filters">
+        <div class="hr-leave-filters__group">
+            <label for="leave-type-filter">Type</label>
+            <select id="leave-type-filter" class="form-input" onchange="window.hrLeaveFilterTable && window.hrLeaveFilterTable()">
+                <option value="All">All</option>
+                <option value="Vacation">Vacation</option>
+                <option value="Sick Leave">Sick Leave</option>
+                <option value="Personal Leave">Personal Leave</option>
+                <option value="Maternity Leave">Maternity Leave</option>
+            </select>
         </div>
-        <div class="filter-group">
-          <label for="status">Status</label>
-          <select id="status" onchange="filterTable()">
-            <option value="All">All</option>
-            <option value="Pending">Pending</option>
-            <option value="Approved">Approved</option>
-            <option value="Rejected">Rejected</option>
-          </select>
+        <div class="hr-leave-filters__group">
+            <label for="leave-status-filter">Status</label>
+            <select id="leave-status-filter" class="form-input" onchange="window.hrLeaveFilterTable && window.hrLeaveFilterTable()">
+                <option value="All">All</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+            </select>
         </div>
-      </div>
+    </div>
 
-      <!-- Leave Requests Table -->
-      <div class="table-container">
-        <table class="leave-table" id="leaveTable">
-          <thead>
-            <tr>
-              <th>Caregiver Name</th>
-              <th>Leave Type</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php if (!empty($data['leaves'])): ?>
-              <?php foreach ($data['leaves'] as $leave): ?>
+    <div class="table-container">
+        <table class="table booking-table leave-table" id="leaveTable" data-table-collapse="off">
+            <thead>
                 <tr>
-                  <td><?= htmlspecialchars($leave['caretaker_name']) ?></td>
-                  <td><?= htmlspecialchars($leave['leave_type']) ?></td>
-                  <td><?= htmlspecialchars($leave['start_date']) ?></td>
-                  <td><?= htmlspecialchars($leave['end_date']) ?></td>
-                  <td><span
-                      class="status <?= strtolower($leave['status']) ?>"><?= htmlspecialchars($leave['status']) ?></span>
-                  </td>
-                  <td>
-                    <?php if ($leave['status'] == 'Pending'): ?>
-                      <a href="<?= URLROOT ?>/HrLeave/approve_form/<?= $leave['id'] ?>"
-   class="approve-btn">
-   <i class='bx bx-check-circle' style="color:green;"></i>
-</a>
-
-<a href="<?= URLROOT ?>/HrLeave/reject/<?= $leave['id'] ?>"
-   onclick="return confirm('Reject this leave?')"
-   class="reject-btn">
-   <i class='bx bx-x-circle' style="color:red;"></i>
-</a>
-
-                    <?php endif; ?>
-                  </td>
+                    <th>Caregiver name</th>
+                    <th>Leave type</th>
+                    <th>Start date</th>
+                    <th>End date</th>
+                    <th>Replacement</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
-              <?php endforeach; ?>
-            <?php else: ?>
-              <tr>
-                <td colspan="6">No leave requests found.</td>
-              </tr>
-            <?php endif; ?>
-          </tbody>
+            </thead>
+            <tbody>
+                <?php if (!empty($leaves)): ?>
+                    <?php foreach ($leaves as $leave): ?>
+                        <?php
+                        $st = strtolower((string) ($leave['status'] ?? ''));
+                        $pendingActions = (($leave['status'] ?? '') === 'Pending');
+                        ?>
+                        <tr class="<?= !empty($leave['replacement_required']) ? 'row-impact' : '' ?>">
+                            <td><?= htmlspecialchars((string) ($leave['caretaker_name'] ?? ''), ENT_QUOTES, 'UTF-8') ?></td>
+                            <td><?= htmlspecialchars((string) ($leave['leave_type'] ?? ''), ENT_QUOTES, 'UTF-8') ?></td>
+                            <td><?= htmlspecialchars((string) ($leave['start_date'] ?? ''), ENT_QUOTES, 'UTF-8') ?></td>
+                            <td><?= htmlspecialchars((string) ($leave['end_date'] ?? ''), ENT_QUOTES, 'UTF-8') ?></td>
+                            <td>
+                                <?php if (!empty($leave['replacement_required'])): ?>
+                                    <span class="leave-replacement-pill leave-replacement-pill--required">Required</span>
+                                <?php else: ?>
+                                    <span class="leave-replacement-pill leave-replacement-pill--na">Not required</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <span class="status-pill" data-leave-status="<?= htmlspecialchars($st, ENT_QUOTES, 'UTF-8') ?>">
+                                    <?= htmlspecialchars((string) ($leave['status'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
+                                </span>
+                            </td>
+                            <td class="actions leave-row-actions">
+                                <button type="button"
+                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-leave-detail"
+                                    data-leave-row="<?= htmlspecialchars(json_encode($leave, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT), ENT_QUOTES, 'UTF-8') ?>"
+                                    title="View details"
+                                    aria-label="View leave details">
+                                    <i class="bx bx-show" aria-hidden="true"></i>
+                                </button>
+                                <?php if ($pendingActions): ?>
+                                    <a href="<?= htmlspecialchars(URLROOT . '/HrLeave/approve_form/' . (int) ($leave['id'] ?? 0), ENT_QUOTES, 'UTF-8') ?>"
+                                        class="btn secondary btn-sm action-view-btn action-view-btn--icon"
+                                        title="Approve (assign replacement if needed)"
+                                        aria-label="Approve leave request">
+                                        <i class="bx bx-check" aria-hidden="true"></i>
+                                    </a>
+                                <?php else: ?>
+                                    <span class="btn secondary btn-sm action-view-btn action-view-btn--icon leave-action-placeholder" title="Already processed" aria-disabled="true">
+                                        <i class="bx bx-check" aria-hidden="true"></i>
+                                    </span>
+                                <?php endif; ?>
+                                <button type="button"
+                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-leave-reject"
+                                    data-leave-id="<?= (int) ($leave['id'] ?? 0) ?>"
+                                    title="Reject leave"
+                                    aria-label="Reject leave request"
+                                    <?= $pendingActions ? '' : 'disabled' ?>>
+                                    <i class="bx bx-x" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="7" class="leave-table-empty">No leave requests found.</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
         </table>
-      </div>
-    </section>
-  </main>
 
-  <script>
-    function filterTable() {
-      const typeFilter = document.getElementById('type').value.toLowerCase();
-      const statusFilter = document.getElementById('status').value.toLowerCase();
+        <?php if ($totalPages > 1): ?>
+            <nav class="leave-pagination" aria-label="Leave list pages">
+                <a href="<?= $page <= 1 ? '#' : htmlspecialchars(hr_leave_page_url($page - 1), ENT_QUOTES, 'UTF-8') ?>"
+                    class="<?= $page <= 1 ? 'disabled' : '' ?>">Prev</a>
+                <?php
+                $start = max(1, $page - 2);
+                $end = min($totalPages, $page + 2);
+                if ($start > 1) {
+                    echo '<a href="' . htmlspecialchars(hr_leave_page_url(1), ENT_QUOTES, 'UTF-8') . '">1</a>';
+                    if ($start > 2) {
+                        echo '<span class="pagination-ellipsis">…</span>';
+                    }
+                }
+                for ($i = $start; $i <= $end; $i++) {
+                    $active = ($i === $page) ? 'active' : '';
+                    echo '<a class="' . $active . '" href="' . htmlspecialchars(hr_leave_page_url($i), ENT_QUOTES, 'UTF-8') . '">' . $i . '</a>';
+                }
+                if ($end < $totalPages) {
+                    if ($end < $totalPages - 1) {
+                        echo '<span class="pagination-ellipsis">…</span>';
+                    }
+                    echo '<a href="' . htmlspecialchars(hr_leave_page_url($totalPages), ENT_QUOTES, 'UTF-8') . '">' . $totalPages . '</a>';
+                }
+                ?>
+                <a href="<?= $page >= $totalPages ? '#' : htmlspecialchars(hr_leave_page_url($page + 1), ENT_QUOTES, 'UTF-8') ?>"
+                    class="<?= $page >= $totalPages ? 'disabled' : '' ?>">Next</a>
+            </nav>
+        <?php endif; ?>
+    </div>
+</main>
 
-      document.querySelectorAll('#leaveTable tbody tr').forEach(row => {
-        const type = row.cells[1].innerText.toLowerCase();
-        const status = row.cells[4].innerText.toLowerCase();
+<div id="leaveDetailModal" class="modal admin-row-detail-modal" aria-hidden="true">
+    <div class="modal-content admin-row-detail-modal__content leave-detail-modal__content" role="dialog" aria-modal="true"
+        aria-labelledby="leaveDetailTitle">
+        <button type="button" class="modal-close admin-row-detail-modal__close" data-close-leave-detail aria-label="Close">
+            <i class="bx bx-x" aria-hidden="true"></i>
+        </button>
+        <header class="admin-row-detail-modal__header">
+            <span class="admin-row-detail-modal__header-icon" aria-hidden="true"><i class="bx bx-calendar-x"></i></span>
+            <h3 id="leaveDetailTitle" class="admin-row-detail-modal__title">Leave request</h3>
+        </header>
+        <dl class="admin-row-detail-modal__dl" id="leaveDetailDl"></dl>
+    </div>
+</div>
 
-        const typeMatch = typeFilter === 'all' || type === typeFilter;
-        const statusMatch = statusFilter === 'all' || status === statusFilter;
+<div id="leaveRejectModal" class="modal" aria-hidden="true">
+    <div class="modal-content leave-reject-modal__content" role="dialog" aria-modal="true" aria-labelledby="leaveRejectTitle">
+        <h3 id="leaveRejectTitle">Reject leave</h3>
+        <p class="leave-reject-intro">The caregiver will be notified. Please enter a short reason.</p>
+        <label class="leave-reject-label" for="leaveRejectNote">Reason <span class="required-mark">*</span></label>
+        <textarea id="leaveRejectNote" class="leave-reject-textarea" rows="4" required placeholder="Required…"></textarea>
+        <div class="modal-buttons">
+            <button type="button" class="btn ghost" id="leaveRejectCancel">Cancel</button>
+            <button type="button" class="btn primary" id="leaveRejectSubmit">Reject</button>
+        </div>
+    </div>
+</div>
 
-        row.style.display = (typeMatch && statusMatch) ? '' : 'none';
-      });
-    }
-  </script>
-</body>
-
-</html>
+<script src="<?= URLROOT ?>/public/js/hr/hr_leave.js"></script>
+<?php include_once APPROOT . '/views/templates/hr/hr_layout_close.php'; ?>

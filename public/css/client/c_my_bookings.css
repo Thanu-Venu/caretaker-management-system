@@ -1,0 +1,36 @@
+/* My bookings — filter + table (avoid td.action-cell flex from admin-ui on table cells) */
+
+.my-bookings-filter {
+    margin-bottom: var(--admin-section-gap, 20px);
+}
+
+.my-bookings-filter .filter-group {
+    margin: 0;
+}
+
+.my-bookings-status-select {
+    min-width: 14rem;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: var(--admin-font, inherit);
+    color: var(--admin-text, #0f172a);
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius-sm, 8px);
+}
+
+.admin-dashboard-page .my-bookings-table td.booking-actions-cell {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.my-bookings-table .booking-actions-toolbar {
+    justify-content: flex-start;
+}
+
+#myBookingsEmptyFilter td {
+    text-align: center;
+    color: var(--admin-muted, #64748b);
+    font-size: 14px;
+    padding: 20px 16px;
+}

@@ -1,51 +1,19 @@
-function confirmDelete(id) {
-  if (!id) return;
-  if (confirm("Delete complaint #" + id + "? This action cannot be undone.")) {
-    window.location.href = "<?php echo URLROOT; ?>" + "/public/index.php?url=ComplaintController/delete&id=" + id;
-  }
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-  var form = document.getElementById('complaintForm');
-  if (form) {
-    form.addEventListener('submit', function (e) {
-      var client = document.getElementById('client_name').value.trim();
-      var caretaker = document.getElementById('caretaker_name').value.trim();
-      var category = document.getElementById('category').value;
-      if (!client || !caretaker || !category) {
-        e.preventDefault();
-        alert('Client name, caretaker name, and category are required.');
-      }
+/**
+ * HR complaints — tab switch (client vs caregiver).
+ */
+function switchComplaintTab(tabId, event) {
+    document.querySelectorAll('.complaint-tab-panel').forEach(function (tab) {
+        tab.classList.remove('active');
     });
-  }
-
-  var editForm = document.getElementById('complaintEditForm');
-  if (editForm) {
-    editForm.addEventListener('submit', function (e) {
-      var details = document.getElementById('details').value.trim();
-      if (!details) {
-        e.preventDefault();
-        alert('Details cannot be empty.');
-      }
+    document.querySelectorAll('.complaint-tab-btn').forEach(function (btn) {
+        btn.classList.remove('active');
     });
-  }
-});
 
-
-function showTab(tabId, event) {
-  // Hide all tabs
-  document.querySelectorAll(".tab-content").forEach(tab => {
-    tab.classList.remove("active");
-  });
-
-  // Remove active class from buttons
-  document.querySelectorAll(".top button").forEach(btn => {
-    btn.classList.remove("active");
-  });
-
-  // Show selected tab
-  document.getElementById(tabId).classList.add("active");
-
-  // Activate clicked button
-  event.target.classList.add("active");
+    var pane = document.getElementById(tabId);
+    if (pane) {
+        pane.classList.add('active');
+    }
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
 }

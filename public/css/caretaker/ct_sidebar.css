@@ -7,10 +7,25 @@
   width: 240px;
   background: linear-gradient(180deg, #1E88E5, #00BFA5);
   padding: 20px 0;
-  font-family: Arial, sans-serif;
+  font-family: var(--font-primary);
   transition: all 0.3s ease;
   overflow-y: auto;  /* enables vertical scrolling */
   overflow-x: hidden;
+  z-index: 1000;
+}
+
+/* Shared page content spacing beside fixed sidebar */
+.main-content,
+.content,
+.payments-page,
+.reports-container,
+.booking-container,
+.caretaker-container,
+.client-container,
+.payment-container,
+.user-container {
+  margin-left: 270px !important;
+  margin-right: 20px !important;
 }
 .sidebar::-webkit-scrollbar {
   display: none;
@@ -106,6 +121,21 @@
 
 .sidebar ul .sub-menu li a:hover {
   opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .main-content,
+  .content,
+  .payments-page,
+  .reports-container,
+  .booking-container,
+  .caretaker-container,
+  .client-container,
+  .payment-container,
+  .user-container {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
 }
 
 /* Logout at bottom 

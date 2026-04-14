@@ -1,350 +1,231 @@
-* {
-  font-family:Arial, Helvetica, sans-serif;
-  
+/* =========================
+   PAGE HEADER
+========================= */
+.main-content.client-find-page .dashboard-layout {
+    width: 100%; 
+    margin: 0 auto;
 }
 
-.content{
-   flex:1;
-   padding: 20px;
-   margin-left: 270px;
+.client-find-page__header {
+    margin-bottom: 20px; /* reduced gap */
 }
 
-h1 {
-  margin-bottom: 10px;
-  font-size: 28px;
-  color: #1e88e5;
-  
+.client-find-page__header .page-title {
+    font-family: inherit;
+    color: #0f3555;
 }
 
-.content p {
-  color: #252424;
+.client-find-page__lead {
+    max-width: 700px;
+    margin-top: 5px;
+    font-size: 15px;
+    line-height: 1.5;
 }
 
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2px;
-  margin-bottom: 10px;
-}
-
-.page-header.header-left-cta {
-  justify-content: flex-start;
-  gap: 500px;
-}
-
-.page-header.header-left-cta .book-btn {
-  margin-left: 10px;
-}
-
-.page-header h1 {
-  margin-bottom: 10px;
-}
-
-
-.filters {
-  background: white;
-  padding: 15px;
-  padding-bottom: 40px;
-  border-radius: 12px;
-  max-width: 1000px;
-  margin-left: 50px;
-}
-
-.filter-box {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  margin-top: 10px;
-  margin-bottom: 20px;
-}
-
-.filter-row {
-  display: flex;
-  flex-direction: row;
-  gap: 50px;
-  
-}
-
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  
-}
-
-.filter-group label {
-  font-weight: 700;
-  margin-bottom: 5px;
-  gap: 10px;
-}
-
-.filter-box select,
-.filter-box button {
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-
-}
-
-.filter-box select:disabled {
-  color: #252424;
-  opacity: 1;
-}
-
-.filter-box button {
-  background: #1e88e5;
-  color: white;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-}
-
-
-.filter-box button:hover {
-  background: #1b7ed3;
-  
-}
-
-h2 {
-  font-size: 18px;
-  font-weight: 600;
-  color: black;
-}
-
-p.hint {
-  font-size: 14px;
-  color: #555;
-  margin-left: 50px;
-  margin-bottom: 20px;
-}
-.two{
-  margin-bottom: 40px;
-  font-size: 22px;
-  font-weight: 600;
-  color: black;
-}
-
-/* ----------- EXISTING GLOBAL & FILTER CSS UNCHANGED ----------- */
-
-.caretakers {
-  margin-left: 50px;
-  margin-right: 300px;
-
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* EXACT 3 CARDS PER ROW */
-  gap: 40px; /* better spacing, not too wide */
-}
-
-/* Card Container */
-.card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  padding: 15px;
-  border: 1px solid #CCC;
-  
-  width: 85%; 
-  display: flex;
-  flex-direction: column;
-}
-
-/* Card Image — NO FACE CUT, CLEAN FIT */
-.card img {
-  width: 100%;
-  height: 220px;              /* taller image area */
-  object-fit: cover;          /* crop slightly but fits naturally */
-  object-position: top;       /* SHOW FACE PROPERLY */
-  border-radius: 10px;
-  display: block;
-  margin-bottom: 10px;
-}
-
-
-/* Card Title */
-.card h3 {
-  margin: 5px 0;
-  font-weight: 700;
-  font-size: 18px;
-  color: black;
-}
-
-/* Rating */
-.rating {
-  color: #f39c12;
-  font-weight: bold;
-}
-
-.card h3 {
-  margin-bottom: 8px;
-}
-
-.exp-loc {
-  margin-top: 6px;
-  margin-bottom: 10px;   /* GAP BELOW Experience + Location */
-}
-
-.rating {
-  margin-bottom: 10px;    /* GAP below rating */
-}
-
-.card p {
-  margin-bottom: 10px;    /* Qualifications spacing */
-}
-
-/* Experience + Location */
-.exp-loc {
-  display: flex;
-  justify-content: space-between;
-  font-weight: 700;
-  font-size: 15px;
-  margin-top: 5px;
-}
-
-/* Buttons */
-.card-buttons {
-  margin-top: auto;
-  display: flex;
-  justify-content: space-between;
-}
-
-.view-btn, .book-btn {
-  padding: 8px 14px;
-  border-radius: 10px;
-  font-size: 14px;
-  text-align: center;
-  font-weight: 600;
-  text-decoration: none;
-  display: inline-block;
-  border: none;
-  outline: none;
-}
-
-.view-btn {
-  background-color: #1e88e5;
-  color: white;
-}
-
-.book-btn {
-  background-color: #00bfa5;
-  color: white;
-  cursor: pointer;
-}
-/* --------- Overlay (background blur) --------- */
-.overlay {
-    display: none; 
-    position: fixed;
-    top:0; left:0;
-    width:100%; 
-    height:100%;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(5px); /* blur background */
-    z-index: 900;
-}
-
-
-/* --------- Popup Form Container --------- */
-.popup {
-    display: none;           /* Hidden initially */
-    position: fixed;
-    top: 50%;                /* vertically center */
-    left: 470px;             /* start after sidebar width */
-    width: calc(100% - 270px); /* full width minus sidebar */
-    max-width: 1000px;       /* optional max width */
-    background: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    z-index: 1000;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;        /* scroll if content too long */
-    transform: translateY(-50%); /* vertically center */
-}
-
-/* Popup Form Title */
-.popup h3 {
-    text-align: center;
+/* =========================
+   FILTER SECTION
+========================= */
+.client-find-filters.filter-bar {
     margin-bottom: 20px;
-    color: #1e88e5;
-    font-size: 22px;
-    font-weight: 700;
 }
 
-/* Form Labels */
-.popup label {
-    font-weight: 600;
-    margin-bottom: 5px;
-    display: block;
-    color: #333;
+.client-find-filters__row {
+    align-items: flex-end;
+    gap: 10px;
 }
 
-/* Input Fields & Selects */
-.popup input[type="number"],
-.popup input[type="date"],
-.popup select {
+.client-find-page--results .client-find-filters__row {
+    justify-content: flex-start;
+}
+
+.client-find-filters__group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 160px;
+}
+
+.client-find-filters__group--action {
+    align-self: flex-end;
+}
+
+.client-find-page--results .client-find-filters__group--action {
+    margin-left: 0;
+}
+
+.client-find-select {
     width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 18px;
-    border-radius: 10px;
+    max-width: 220px;
+    padding: 8px;
+    font-size: 14px;
     border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* =========================
+   GRID (IMPORTANT FIX)
+========================= */
+#caretakersList.client-find-grid.caretakers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px; /* 🔥 reduced from 28px 26px */
+}
+
+/* =========================
+   CARD
+========================= */
+.caretaker-card.card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0;
+}
+
+/* IMAGE */
+.caretaker-card__media img {
+    width: 100%;
+    height: 260px; /* slightly reduced */
+    object-fit: cover;
+    object-position: center;
+}
+
+/* CONTENT */
+.caretaker-card__content {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.caretaker-card__name {
+    margin: 0;
     font-size: 16px;
-    background-color: #fff;
-}
-
-/* Scrollable preferred time dropdown */
-#preferredTimeSelect {
-    max-height: 120px;  /* max height for scroll */
-    overflow-y: auto;
-}
-
-/* Popup Button */
-.popup button[type="submit"] {
-  width: auto;
-  padding: 12px 84px;
-    border: none;
-    background-color: #1e88e5;
-    color: white;
     font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-  font-size: 17px;
-    transition: 0.3s;
 }
 
-.popup button[type="submit"]:hover {
-    background-color: #1565c0;
+.caretaker-card__service {
+    font-size: 13px;
+    margin: 0;
+    color: #666;
 }
 
-.popup-actions {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
+/* META */
+.caretaker-card__meta {
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+    color: #777;
 }
 
-.popup-actions .cancel-btn {
-  background-color: #e74c3c;
-  color: #fff;
-  border: none;
-  padding: 12px 84px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 17px;
+/* RATING */
+.caretaker-card__rating {
+    display: flex;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 600;
 }
 
-.popup-actions .cancel-btn:hover {
-  background-color: #c0392b;
+/* DETAILS */
+.caretaker-card__details {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #ddd;
 }
 
-/* Optional: Small screens */
-@media (max-width: 480px) {
-    .popup {
-        width: 95%;
-        padding: 20px 15px;
-    }
+.caretaker-card__skills {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.caretaker-card__skills li {
+    font-size: 13px;
+    padding-left: 12px;
+    position: relative;
+}
+
+.caretaker-card__skills li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+}
+
+/* ACTIONS */
+.caretaker-card__actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* EMPTY */
+.no-results-message {
+    text-align: center;
+    padding: 15px;
+    border: 1px dashed #ccc;
+    color: #777;
 }
 
 .hidden {
     display: none !important;
 }
 
+.caretaker-pagination {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.caretaker-pagination__info {
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    min-width: 110px;
+    text-align: center;
+}
+
+.caretaker-pagination .btn[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* POPUP */
+#popupOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1990;
+}
+
+#searchPopup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(640px, 92vw);
+    max-width: 640px;
+    max-height: 108vh;
+    overflow-y: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 18px 48px rgba(15, 23, 42, 0.28);
+    z-index: 2000;
+}
+
+#searchPopup .popup-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+#searchPopup .popup-actions .btn {
+    min-width: 130px;
+}

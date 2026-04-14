@@ -1,0 +1,46 @@
+/* Client feedback table — complements admin-ui */
+
+.client-feedback-hint-box {
+    margin-bottom: var(--admin-section-gap);
+    padding: 14px 16px;
+    border-radius: var(--admin-radius-sm);
+    border: 1px solid rgba(29, 78, 216, 0.2);
+    background: var(--admin-info-bg);
+    color: var(--admin-info-text);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.client-feedback-hint-box a {
+    font-weight: 600;
+    color: var(--admin-primary);
+    text-decoration: none;
+}
+
+.client-feedback-hint-box a:hover {
+    text-decoration: underline;
+}
+
+.rating-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.star-filled {
+    color: #f59e0b;
+    font-size: 16px;
+}
+
+.star-empty {
+    color: var(--admin-border-strong);
+    font-size: 16px;
+}
+
+.rating-text {
+    color: var(--admin-muted);
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 4px;
+}

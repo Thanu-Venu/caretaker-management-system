@@ -1,60 +1,199 @@
-/* Target main content area */
-.main-content {
-    padding: 20px;
-    background-color: #f9f9f9;
-    min-height: 100vh;
-    margin-left: 250px; /* adjust if sidebar width differs */
+/* Base layout mirrored from upcoming bookings page */
+.content {
+  margin-left: 250px;
+  padding: 28px;
+  font-family: "Poppins", sans-serif;
+  background: #f6f8fc;
+  min-height: 100vh;
 }
 
-/* Page heading */
-.main-content h1 {
-    color: #1e88e5;
-    
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
-/* Table styling */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+.content h1 {
+  font-size: 28px;
+  color: #1e88e5;
+  font-weight: 700;
+  margin: 0;
 }
 
-th, td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+.register-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  text-decoration: none;
+  background: #1e88e5;
+  color: #fff;
+  transition: all 0.2s ease;
 }
 
-th {
-    background-color: #1e88e5;
-    color: white;
-    font-weight: 600;
+.register-btn:hover {
+  background: #1565c0;
+  transform: translateY(-1px);
 }
 
-tr:hover {
-    background-color: #f1f1f1;
+.no-bookings {
+  font-size: 15px;
+  color: #6b7280;
+  background: #ffffff;
+  border: 1px solid #eef2f7;
+  padding: 14px 16px;
+  border-radius: 12px;
+  display: inline-block;
 }
 
-/* Actions links */
-a {
-    text-decoration: none;
-    color: #2196F3;
-    font-weight: 500;
+.table-wrapper {
+  overflow-x: auto;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #eef2f7;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
-a:hover {
-    text-decoration: underline;
+.bookings-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 850px;
 }
 
-em {
-    color: #999;
-    font-style: italic;
+.bookings-table thead th {
+  background: #1e88e5;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 14px;
+  text-align: left;
 }
 
-p {
-    color: #555;
-    font-size: 16px;
+.bookings-table tbody td {
+  padding: 14px;
+  font-size: 14px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: top;
+  text-align: left;
+}
+
+.bookings-table tbody tr:hover {
+  background: #fafcff;
+}
+
+.bookings-table tbody td:nth-child(4) {
+  max-width: 360px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.bookings-table tbody td.empty-row {
+  text-align: center;
+  color: #6b7280;
+  font-weight: 500;
+  padding: 18px 14px;
+}
+
+.complaint-date {
+  display: block;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.complaint-time {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+    padding: 18px;
+  }
+
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bookings-table {
+    min-width: 700px;
+  }
+}
+
+.modal-content input[readonly] {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #475569;
+}
+
+.modal-content input:focus,
+.modal-content select:focus,
+.modal-content textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+/* submit button */
+.modal-content button[type="submit"] {
+  width: 100%;
+  margin-top: 18px;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 10px 22px rgba(22, 163, 74, 0.22);
+}
+
+.modal-content button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 26px rgba(22, 163, 74, 0.28);
+}
+
+.modal-content button[type="submit"]:active {
+  transform: scale(0.98);
+  opacity: 0.95;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 16px;
+  }
+
+  .main-content h1 {
+    font-size: 18px;
+  }
+
+  .register-btn {
+    padding: 9px 14px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+
+  .modal-content {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .complaints-table {
+    min-width: 800px;
+    /* still scrollable */
+  }
 }

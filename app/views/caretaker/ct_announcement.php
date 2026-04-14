@@ -13,35 +13,35 @@
 
 <body>
 
-<div class="announcement-container">
-
-    <h2 class="page-title">📢 Announcements</h2>
-
-    <?php if (empty($data)): ?>
+<div class="main-content">
+        <h2>Announcements</h2>
+        <?php if (empty($data)): ?>
         <div class="no-announcement">
             <p>No announcements available at the moment.</p>
         </div>
-    <?php else: ?>
-        <?php foreach ($data as $announcement): ?>
-            <div class="announcement-card">
-
-                <div class="announcement-header">
-                    <h3><?= htmlspecialchars($announcement['title']); ?></h3>
-                    <span class="announcement-date">
-                        <?= date('M d, Y', strtotime($announcement['created_at'])); ?>
-                    </span>
-                </div>
-
-                <div class="announcement-body">
-                    <p><?= nl2br(htmlspecialchars($announcement['message'])); ?></p>
-                </div>
-
-                <div class="announcement-footer">
-                    <span class="role-tag">For Caretakers</span>
-                </div>
-
-            </div>
-        <?php endforeach; ?>
+        <?php else: ?>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Message</th>
+                        <th>Date Published</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($data as $announcement): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($announcement['title']); ?></td>
+                            <td><?= nl2br(htmlspecialchars($announcement['message'])); ?></td>
+                            <td><?= date('Y-m-d', strtotime($announcement['created_at'])); ?></td>
+                            <td><span class="role-tag">Caregiver</span></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     <?php endif; ?>
 
 </div>

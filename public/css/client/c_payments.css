@@ -1,0 +1,322 @@
+/* ===== PAGE ===== */
+.client-payments-header {
+    margin-bottom: 5px; /* reduce space below header */
+}
+
+.client-payments-header .page-title {
+    margin-bottom: 2px; /* reduce space between title and subtitle */
+}
+
+.client-payments-header .page-subtitle {
+    margin: 0; /* remove extra spacing */
+}
+
+.client-payments-lead {
+    margin-top: 5px;  /* reduce space above this line */
+    margin-bottom: 15px; /* optional: control space below */
+}
+
+.client-payments-page .payments-page {
+    margin-left: 0;
+    padding: 0;
+    background: transparent;
+    min-height: 0;
+}
+
+/* ===== HEADER ===== */
+.client-payments-header .page-title {
+    margin-bottom: 5px;
+}
+
+.client-payments-header .page-subtitle {
+    font-size: 14px;
+}
+
+/* ===== INFO BOX ===== */
+.client-payments-lead {
+    margin-bottom: 20px;
+    padding: 12px;
+    font-size: 14px;
+    background: #eef6ff;
+    border: 1px solid #cfe2ff;
+    border-radius: 8px;
+}
+
+/* ===== SUMMARY ===== */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.summary-card {
+    position: relative;
+    border-radius: 12px;
+    padding: 24px 24px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.58);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    
+    /* Glassmorphism effect */
+    background: linear-gradient(150deg, rgba(232, 243, 252, 0.82) 0%, rgba(255, 255, 255, 0.36) 100%);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 16px rgba(15, 23, 42, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(16px) saturate(1.15);
+    -webkit-backdrop-filter: blur(16px) saturate(1.15);
+}
+
+.summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(20, 29, 49, 0.08), 0 12px 40px rgba(15, 23, 42, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    border-color: rgba(255, 255, 255, 0.78);
+}
+
+.summary-card h3 {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #475569;
+    margin: 0 0 8px 0;
+    letter-spacing: 0.01em;
+}
+
+.summary-card p {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    letter-spacing: -0.03em;
+}
+
+/* ===== FILTER ===== */
+.filter-panel {
+    margin-top: var(--admin-section-gap, 20px);
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px 14px;
+    align-items: end;
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    padding: 16px;
+    box-shadow: var(--admin-shadow-xs, 0 1px 2px rgba(15, 23, 42, 0.05));
+    width: fit-content;
+}
+
+.filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.filter-field label {
+    font-size: 12px;
+    color: gray;
+}
+
+.filter-panel input,
+.filter-panel select {
+    padding: 6px 8px;   /* smaller inputs */
+    font-size: 13px;
+}
+
+.filter-field--actions .reset-btn {
+    background: white;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.filter-field--actions .reset-btn:hover {
+    background: #f9f9f9;
+}
+
+/* ===== SEARCH ===== */
+.filter-panel-top-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 8px;
+    margin-top: -72px;
+    margin-bottom: 20px;
+}
+
+
+
+.filter-field--search-top {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+}
+
+.filter-field--search-top input {
+    width: 100%;
+}
+
+/* ===== TABS ===== */
+.tabs-wrap {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+}
+
+.tab-link {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 13px;
+    background: white;
+    color: #333;
+}
+
+.tab-link.active {
+    background: #1e88e5;
+    color: white;
+}
+
+/* ===== SECTION ===== */
+.section-card {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: white;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.section-header h2 {
+    font-size: 18px;
+}
+
+.section-sub {
+    font-size: 13px;
+    color: gray;
+}
+
+/* ===== TABLE ===== */
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #1e88e5;
+    color: white;
+    font-size: 12px;
+    padding: 10px;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+tr:hover {
+    background: #f5faff;
+}
+
+/* ===== FULL PAYMENT ROW ===== */
+tr.full-payment {
+    background: #e8f5e9;
+    border-left: 4px solid #4caf50;
+}
+
+tr.full-payment:hover {
+    background: #c8e6c9;
+}
+
+/* ===== STATUS ===== */
+.pill {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-paid {
+    background: #d4edda;
+    color: green;
+}
+
+.status-upcoming {
+    background: #dbeafe;
+    color: blue;
+}
+
+.status-due-soon {
+    background: #fff3cd;
+    color: orange;
+}
+
+.status-overdue {
+    background: #f8d7da;
+    color: red;
+}
+
+.status-cancelled {
+    background: #eee;
+    color: gray;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.payment-row-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.action-btn.pay {
+    background: #1e88e5;
+    color: white;
+}
+
+.action-btn.details {
+    background: white;
+    border: 1px solid #ccc;
+}
+
+.action-btn.disabled {
+    background: #eee;
+    color: gray;
+    cursor: not-allowed;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+    .filter-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-panel-top-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-field--search-top {
+        width: 100%;
+    }
+
+    .payment-row-actions {
+        flex-direction: column;
+    }
+}

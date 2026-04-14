@@ -1,55 +1,60 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
+<?php
+$clientPageTitle = 'Feedback — SmartCare';
+$clientExtraCss  = ['client/c_feedback_table.css'];
+require_once APPROOT . '/views/templates/client/client_layout_head.php';
+require_once APPROOT . '/views/templates/client/c_header.php';
+require_once APPROOT . '/views/templates/client/c_sidebar.php';
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Feedback</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_feedback_table.css">
-</head>
-<body>
+$feedbacks = $data['feedbacks'] ?? [];
+?>
 
-<div class="main-content">
+<main class="main-content">
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">My feedback</h1>
+            <p class="text-muted">Ratings and comments you submitted after completed services.</p>
+        </div>
+    </header>
 
-    <h2>My Feedback</h2>
+    <div class="client-feedback-hint-box" role="note">
+        To give feedback, open <a href="<?= URLROOT ?>/public?url=client/c_pastBookings">Past bookings</a> and use <strong>Give feedback</strong> on a completed visit.
+    </div>
 
-    <a href="index.php?url=feedback/create" class="btn-add">+ Add Feedback</a>
+    <div class="table-container">
+        <table class="client-table">
+            <thead>
+                <tr>
+                    <th>Caregiver</th>
+                    <th>Rating</th>
+                    <th>Feedback</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($feedbacks)): ?>
+                    <tr>
+                        <td colspan="4" class="empty">No feedback submitted yet.</td>
+                    </tr>
+                <?php else: ?>
+                    <?php foreach ($feedbacks as $fb): ?>
+                        <tr>
+                            <td><?= htmlspecialchars((string) ($fb['caretaker_name'] ?? '')) ?></td>
+                            <td>
+                                <div class="rating-display">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <span class="<?= $i <= (int) ($fb['rating'] ?? 0) ? 'star-filled' : 'star-empty' ?>">★</span>
+                                    <?php endfor; ?>
+                                    <span class="rating-text">(<?= (int) ($fb['rating'] ?? 0) ?>/5)</span>
+                                </div>
+                            </td>
+                            <td><?= htmlspecialchars((string) ($fb['feedback'] ?? '')) ?></td>
+                            <td><?= htmlspecialchars(date('M j, Y', strtotime((string) ($fb['created_at'] ?? 'now')))) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</main>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Caretaker</th>
-                <th>Rating</th>
-                <th>Comment</th>
-                <th>Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            <?php foreach($feedbacks as $fb): ?>
-            <tr>
-                <td><?= $fb['caretaker_name'] ?></td>
-                <td><?= $fb['rating'] ?>/5</td>
-                <td><?= $fb['comment'] ?></td>
-                <td><?= $fb['created_at'] ?></td>
-
-                <td>
-                    <a href="index.php?url=feedback/edit/<?= $fb['id'] ?>" class="btn-edit">Edit</a>
-                    <a href="index.php?url=feedback/delete/<?= $fb['id'] ?>" class="btn-delete"
-                        onclick="return confirm('Delete this feedback?')">
-                        Delete
-                    </a>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-
-    </table>
-
-</div>
-
-</body>
-</html>
+<?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

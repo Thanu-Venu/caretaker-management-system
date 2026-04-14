@@ -2,24 +2,49 @@
 require_once "../app/models/ComplaintModel.php";
 require_once "../app/models/NotificationModel.php";
 require_once "../app/models/ClientModel.php";
+require_once "../app/models/HRLogsModel.php";
 
 class ComplaintController
 {
     private $complaintModel;
     private $clientModel;
     private $notificationModel;
+    private $hrLogsModel;
     public function __construct()
     {
         $this->complaintModel = new ComplaintModel();
         $this->clientModel = new ClientModel();
         $this->notificationModel = new NotificationModel();
+        $this->hrLogsModel = new HRLogsModel();
+    }
 
+    private function logManagerAction($action, $section)
+    {
+        $userId = (int)AuthSession::profileId();
+        if ($userId <= 0) {
+            return;
+        }
+
+        $username = $_SESSION['user']['username'] ?? ($_SESSION['user']['name'] ?? 'unknown');
+
+        $this->hrLogsModel->log([
+            'user_id' => $userId,
+            'username' => $username,
+            'role' => 'Manager',
+            'action' => $action,
+            'section' => $section
+        ]);
     }
 
     // Show the complaint form
     public function create()
     {
-        include_once "../app/views/client/c_complaintReg.php";
+        $caretakers = [];
+        if (AuthSession::hasRole('client')) {
+            $clientId = AuthSession::profileId();
+            $caretakers = $this->clientModel->getBookedCaretakersByClient($clientId);
+        }
+        require_once APPROOT . "/views/client/c_complaintReg.php";
     }
 
     // Store complaint in DB
@@ -54,47 +79,37 @@ class ComplaintController
         window.location.href='" . URLROOT . "/public/index.php?url=Complaint/complaintlist';
     </script>";
                 exit;
-
             } else {
                 echo "<script>alert('Error submitting complaint.'); window.history.back();</script>";
                 exit;
             }
-
         }
     }
 
-public function complaintReg()
-{
-    // Ensure client is logged in
-    if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
-        echo "<script>alert('Please login first'); window.location.href='/CMA/public/index.php?url=auth/login';</script>";
-        exit;
+    public function complaintReg()
+    {
+        // Ensure client is logged in
+        if (!AuthSession::hasRole('client')) {
+            echo "<script>alert('Please login first'); window.location.href='/CMA/public/index.php?url=auth/login';</script>";
+            exit;
+        }
+
+        $clientId = AuthSession::profileId();
+        $caretakers = $this->clientModel->getBookedCaretakersByClient($clientId);
+
+        require_once APPROOT . "/views/client/c_complaintReg.php";
     }
-
-    $client_name = $_SESSION['user']['name'];
-
-    // Fetch complaints for this client
-    $complaints = $this->complaintModel->getComplaintsByClient($client_name);
-
-    // Load the view with complaints
-    include_once APPROOT . "/views/templates/client/c_header.php";
-    include_once APPROOT . "/views/templates/client/c_sidebar.php";
-    include_once APPROOT . "/views/client/c_complaintReg.php";
-}
 
 
 
     public function index()
     {
-         $complaintModel = new ComplaintModel();
-        $complaints = $this->complaintModel->getAllComplaints();
-            $data['ct_complaints'] = $complaintModel->getCaretakerComplaints();
+        $complaints    = $this->complaintModel->getAllComplaints();
+        $ct_complaints = $this->complaintModel->getCaretakerComplaints();
 
-        include_once "../app/views/hr/hr_complaint.php";
-    
-
+        include_once APPROOT . '/views/hr/hr_complaint.php';
     }
-    
+
 
 
 
@@ -178,7 +193,7 @@ public function complaintReg()
     {
 
 
-        if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
+        if (!AuthSession::hasRole('client')) {
             echo "<script>alert('Please login first.'); window.location.href='/CMA/public/index.php?url=auth/login';</script>";
             exit;
         }
@@ -186,11 +201,8 @@ public function complaintReg()
         $client_name = $_SESSION['user']['name'];
         $complaints = $this->complaintModel->getComplaintsByClient($client_name);
 
-        include_once APPROOT . "/views/templates/client/c_header.php";
-        include_once APPROOT . "/views/templates/client/c_sidebar.php";
-
-        // Then include main complaint list
-        include_once APPROOT . "/views/client/c_complaintlist.php";
+        $data = ['complaints' => $complaints];
+        require_once APPROOT . "/views/client/c_complaintlist.php";
     }
 
 
@@ -247,10 +259,8 @@ public function complaintReg()
     {
         $client_name = $_SESSION['user']['name'];
         $complaints = $this->complaintModel->getComplaintsByClient($client_name);
-
-        include_once APPROOT . "/views/templates/client/c_header.php";
-        include_once APPROOT . "/views/templates/client/c_sidebar.php";
-        include_once APPROOT . "/views/client/c_complaintlist.php";
+        $data = ['complaints' => $complaints];
+        require_once APPROOT . "/views/client/c_complaintlist.php";
     }
 
 
@@ -258,7 +268,7 @@ public function complaintReg()
 
     public function updateStatus()
     {
-        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Manager') {
+        if (!AuthSession::hasRole('manager')) {
             echo "<script>alert('Unauthorized');</script>";
             exit;
         }
@@ -272,7 +282,7 @@ public function complaintReg()
         }
 
         // Update status
-        $this->complaintModel->updateComplaintStatus($id, $status);
+        $updated = $this->complaintModel->updateComplaintStatus($id, $status);
 
         // Get complaint to notify client
         $complaint = $this->complaintModel->getComplaintById($id);
@@ -297,38 +307,38 @@ public function complaintReg()
             URLROOT . "/admin/ad_feedback"
         );
 
+        if ($updated) {
+            $this->logManagerAction("Updated client complaint status to {$status} (Complaint ID: {$id})", 'Complaints');
+        }
+
 
         header("Location: " . URLROOT . "/public/index.php?url=Complaint/index");
         exit;
     }
 
     public function updateCaretakerComplaintStatus()
-{
-    if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Manager') {
-        echo "<script>alert('Unauthorized');</script>";
+    {
+        if (!AuthSession::hasRole('manager')) {
+            echo "<script>alert('Unauthorized');</script>";
+            exit;
+        }
+
+        $complaint_id = (int)$_POST['complaint_id'];
+        $status = $_POST['action']; // Pending / In Progress / Resolved
+
+        if (!$complaint_id || !$status) {
+            echo "<script>alert('Invalid data');</script>";
+            exit;
+        }
+
+        $updated = $this->complaintModel->updateCaretakerComplaintStatus($complaint_id, $status);
+
+        if ($updated) {
+            $this->logManagerAction("Updated caretaker complaint status to {$status} (Complaint ID: {$complaint_id})", 'Complaints');
+        }
+
+        // Redirect back to HR complaints page
+        header("Location: " . URLROOT . "/public/index.php?url=Complaint/index");
         exit;
     }
-
-    $complaint_id = (int)$_POST['complaint_id'];
-    $status = $_POST['action']; // Pending / In Progress / Resolved
-
-    if (!$complaint_id || !$status) {
-        echo "<script>alert('Invalid data');</script>";
-        exit;
-    }
-
-    $this->complaintModel->updateCaretakerComplaintStatus($complaint_id, $status);
-
-    // Redirect back to HR complaints page
-    header("Location: " . URLROOT . "/public/index.php?url=Complaint/index");
-    exit;
 }
-
-
-
-
-
-
-}
-
-?>

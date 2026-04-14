@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif, sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 .sidebar {
@@ -126,4 +126,57 @@ body {
 }
 .arrow.rotate {
   transform: rotate(180deg);
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .menu li {
+    flex: 1 1 220px;
+  }
+
+  .menu li.logout {
+    flex-basis: 100%;
+  }
+
+  .menu a {
+    padding: 12px 14px;
+    border-radius: 10px;
+  }
+
+  .menu a:hover,
+  .menu a.active,
+  .sidebar a:hover,
+  .sidebar li.active > a,
+  .sidebar .menu li a.active {
+    margin: 0;
+  }
+
+  .dropdown-container li a {
+    padding: 10px 14px 10px 30px;
+  }
+}
+
+@media (max-width: 600px) {
+  .menu {
+    display: block;
+    padding: 8px;
+  }
+
+  .menu li {
+    flex: unset;
+  }
 }

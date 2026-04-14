@@ -1,0 +1,334 @@
+/* ================================================
+   PAGE LAYOUT FIXES - STANDARDIZATION
+   Ensures consistent styling across all admin pages
+   ================================================ */
+
+/* ===== STANDARDIZE ALL PAGE HEADERS ===== */
+.page-header,
+.booking-header,
+.client-header,
+.caretaker-header,
+.payment-header,
+.user-header,
+.feedback-header,
+.announcement-header,
+.history-header,
+.leave-header,
+.report-header {
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-4);
+    border-bottom: 2px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+/* Standardize all page titles */
+.page-header h1,
+.booking-header h1,
+.client-header h1,
+.caretaker-header h1,
+.payment-header h1,
+.user-header h1,
+.feedback-header h1,
+.announcement-header h1,
+.history-header h1,
+.leave-header h1,
+.report-header h1,
+.admin-dashboard h1 {
+    font-size: var(--text-3xl) !important;
+    font-weight: var(--font-bold) !important;
+    color: var(--primary-600) !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
+}
+
+/* ===== STANDARDIZE FILTER SECTIONS ===== */
+.filter-section,
+.filter-bar {
+    background: var(--background-secondary);
+    padding: var(--space-5);
+    border-radius: var(--radius-xl);
+    margin-bottom: var(--space-6);
+    border: 1px solid var(--border-light);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    align-items: flex-end;
+}
+
+.filter-group,
+.filter-section>div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    flex: 1;
+    min-width: 160px;
+}
+
+.filter-group label,
+.filter-section label {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-secondary);
+}
+
+.filter-group select,
+.filter-group input,
+.filter-section select,
+.filter-section input,
+.filter-bar select,
+.filter-bar input[type="text"],
+.filter-bar input[type="date"] {
+    height: 44px;
+    padding: 0 var(--space-4);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-base);
+    background: white;
+    transition: all var(--transition-fast);
+}
+
+.filter-group select:focus,
+.filter-group input:focus,
+.filter-section select:focus,
+.filter-section input:focus,
+.filter-bar select:focus,
+.filter-bar input:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px var(--primary-100);
+}
+
+/* ===== STANDARDIZE BUTTONS IN HEADERS ===== */
+.add-btn,
+.btn-add,
+.submit-btn,
+button.add-caretaker,
+button.add-user {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    height: 44px;
+    padding: 0 var(--space-5);
+    background: var(--gradient-primary);
+    color: var(--text-inverse);
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+}
+
+.add-btn:hover,
+.btn-add:hover,
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== STANDARDIZE ACTION BUTTONS ===== */
+.action-btn,
+.edit-btn,
+.view-btn,
+.approve-btn,
+.reject-btn,
+.delete-btn,
+.enable-btn,
+.disable-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: var(--text-lg);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+}
+
+.view-btn {
+    background: var(--info-100);
+    color: var(--info-700);
+}
+
+.view-btn:hover {
+    background: var(--info-200);
+}
+
+.edit-btn {
+    background: var(--warning-100);
+    color: var(--warning-700);
+}
+
+.edit-btn:hover {
+    background: var(--warning-200);
+}
+
+.approve-btn {
+    background: var(--success-100);
+    color: var(--success-700);
+}
+
+.approve-btn:hover {
+    background: var(--success-200);
+}
+
+.reject-btn,
+.delete-btn {
+    background: var(--danger-100);
+    color: var(--danger-700);
+}
+
+.reject-btn:hover,
+.delete-btn:hover {
+    background: var(--danger-200);
+}
+
+.enable-btn,
+.disable-btn {
+    background: var(--gray-100);
+    color: var(--gray-700);
+}
+
+.enable-btn:hover,
+.disable-btn:hover {
+    background: var(--gray-200);
+}
+
+/* ===== STANDARDIZE TABLE CONTAINERS ===== */
+.table-wrapper,
+.table-section,
+.table-box {
+    background: white;
+    padding: var(--space-5);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-light);
+    margin-bottom: var(--space-6);
+    overflow-x: auto;
+}
+
+/* ===== STANDARDIZE EMPTY STATES ===== */
+.no-data,
+.empty-state,
+td[colspan] {
+    text-align: center !important;
+    padding: var(--space-8) !important;
+    color: var(--text-muted) !important;
+    font-size: var(--text-base) !important;
+}
+
+/* ===== STANDARDIZE SEARCH BARS ===== */
+.search-bar,
+.search-box {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+}
+
+.search-bar input,
+.search-box input {
+    width: 100%;
+    height: 44px;
+    padding-left: var(--space-10);
+    padding-right: var(--space-4);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-base);
+    background: white;
+    transition: all var(--transition-fast);
+}
+
+.search-bar input:focus,
+.search-box input:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px var(--primary-100);
+}
+
+.search-bar i,
+.search-box i {
+    position: absolute;
+    left: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: var(--text-lg);
+    pointer-events: none;
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 767px) {
+
+    /* Stack page headers vertically */
+    .page-header,
+    .booking-header,
+    .client-header,
+    .caretaker-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* Full width buttons on mobile */
+    .add-btn,
+    .btn-add,
+    .submit-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Stack filters vertically */
+    .filter-section,
+    .filter-bar {
+        flex-direction: column;
+    }
+
+    .filter-group {
+        width: 100%;
+        min-width: unset;
+    }
+
+    /* Make search bar full width */
+    .search-bar,
+    .search-box {
+        max-width: 100%;
+    }
+
+    /* Reduce title size on mobile */
+    .page-header h1,
+    .booking-header h1,
+    .client-header h1,
+    .caretaker-header h1,
+    .admin-dashboard h1 {
+        font-size: var(--text-2xl) !important;
+    }
+}
+
+/* ===== TABLET ADJUSTMENTS ===== */
+@media (max-width: 1023px) and (min-width: 768px) {
+
+    /* Adjust content margin for narrower sidebar */
+    .main-content,
+    .content,
+    .admin-dashboard,
+    .booking-container {
+        margin-left: var(--sidebar-width-tablet);
+    }
+}
+
+/* ===== ENSURE PROPER SPACING ===== */
+/* Add consistent spacing between major sections */
+.main-content>*:not(:last-child),
+.content>*:not(:last-child),
+.admin-dashboard>*:not(:last-child),
+.booking-container>*:not(:last-child) {
+    margin-bottom: var(--space-6);
+}

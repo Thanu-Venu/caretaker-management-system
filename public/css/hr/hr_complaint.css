@@ -1,87 +1,172 @@
-/* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  font-family: 'Poppins', Arial, sans-serif;
+/* HR complaints — match leave / change-request HR pages */
+
+body {
+    background: #f4f7fb;
 }
 
-.main-content {
-  margin-left: 270px;
-  padding: 20px;
+.hr-complaints-page {
+    padding: 20px 25px;
+    min-width: 0;
 }
 
-h1 {
-  font-size: 28px;
-  color: #1e88e5;
-  margin-bottom: 15px;
+.page-header {
+    margin-bottom: 16px;
 }
 
-/* Buttons */
-.top {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
+.page-header .page-title {
+    margin: 0;
+    color: var(--admin-page-heading-color, #0f3555);
 }
 
-.top button {
-  border: none;
-  padding: 10px 22px;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 12px;
-  background: white;
-  color: black;
+.complaint-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 16px;
+    padding: 4px;
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius-sm, 8px);
+    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
 }
 
-.top button.active {
-  background: #1e88e5;
-  color: #fff;
+.complaint-tab-btn {
+    appearance: none;
+    margin: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: var(--admin-font, "Inter", system-ui, sans-serif);
+    color: var(--admin-muted, #64748b);
+    border-radius: var(--admin-radius-sm, 8px);
+    transition: color 0.2s ease, background 0.2s ease;
 }
 
-/* Card */
-.card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.complaint-tab-btn:hover {
+    color: var(--admin-text, #0f172a);
+    background: rgba(15, 23, 42, 0.04);
 }
 
-/* Tabs */
-.tab-content {
-  display: none;
+.complaint-tab-btn.active {
+    color: var(--admin-primary, #1e88e5);
+    background: var(--admin-primary-soft, rgba(30, 136, 229, 0.09));
+    box-shadow: inset 0 -3px 0 var(--admin-primary, #1e88e5);
 }
 
-.tab-content.active {
-  display: block;
+.complaint-tab-panel {
+    display: none;
 }
 
-/* Table */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 15px;
+.complaint-tab-panel.active {
+    display: block;
 }
 
-th, td {
-  padding: 15px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
+.complaint-table-wrap {
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    padding: 12px;
+    overflow-x: auto;
+    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
 }
 
-th {
-  background: #f5f7fa;
+.complaint-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
 }
 
-tr:hover {
-  background: #f1faff;
+.complaint-table th,
+.complaint-table td {
+    padding: 11px 10px;
+    text-align: left;
+    border-bottom: 1px solid #eef2f7;
+    font-size: 14px;
+    vertical-align: middle;
 }
 
-/* Update button */
-.btn-update {
-  background: #1e88e5;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
+.complaint-table thead th {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.complaint-details-cell {
+    max-width: 220px;
+    word-break: break-word;
+}
+
+.complaint-status-cell {
+    min-width: 200px;
+}
+
+.complaint-status-form,
+.complaint-ct-form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.complaint-status-select {
+    min-width: 130px;
+    flex: 1;
+    max-width: 200px;
+}
+
+.complaint-update-btn {
+    flex-shrink: 0;
+}
+
+.complaint-actions-cell {
+    white-space: nowrap;
+    width: 1%;
+}
+
+.complaint-empty {
+    text-align: center;
+    padding: 28px 12px;
+    color: var(--admin-muted, #64748b);
+}
+
+.status-pill.complaint-status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.complaint-status-pill--open {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.complaint-status-pill--in-progress {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.complaint-status-pill--resolved {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.complaint-status-pill--pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+@media (max-width: 900px) {
+    .complaint-status-form,
+    .complaint-ct-form {
+        flex-wrap: wrap;
+    }
 }

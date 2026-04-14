@@ -1,128 +1,108 @@
-* {
-  margin: 0;
-  padding: 0;
-  font-family: 'Poppins', Arial, sans-serif;
+/* HR announcements — table + date filters (aligned with other HR request pages) */
+
+body {
+    background: #f4f7fb;
 }
 
-/* =====================
-   Container
-===================== */
-.announcement-container {
-    margin-left: 270px;
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 15px;
+.hr-announcements-page {
+    padding: 20px 25px;
+    min-width: 0;
 }
 
-/* =====================
-   Page Title
-===================== */
-.page-title {
+.hr-announcements-page .page-header .page-title {
+    margin-bottom: 4px;
+}
+
+.hr-announcements-page .page-subtitle {
+    margin: 0 0 16px;
+    font-size: 14px;
+    color: var(--admin-muted, #64748b);
+}
+
+.hr-announcement-filters {
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.hr-announcement-filters .filter-group--grow {
+    flex: 1 1 200px;
+    min-width: 160px;
+}
+
+.hr-announcement-filters .filter-group--grow .form-input {
+    width: 100%;
+    min-width: 0;
+}
+
+.no-data {
     text-align: center;
-    margin-bottom: 30px;
-    font-size: 26px;
+    padding: 36px 16px;
+    color: var(--admin-muted, #64748b);
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+.hr-announcements-table-wrap {
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    padding: 12px;
+    overflow-x: auto;
+    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+.hr-announcements-table {
+    min-width: 720px;
+}
+
+.hr-announcements-date {
+    white-space: nowrap;
+    width: 1%;
+}
+
+.hr-announcements-title {
+    min-width: 140px;
+    max-width: 220px;
+}
+
+.hr-announcements-title-text {
+    display: block;
     font-weight: 600;
-    color: #1565c0;
+    color: var(--admin-text, #0f172a);
 }
 
-/* =====================
-   No Announcement
-===================== */
-.no-announcement {
-    text-align: center;
-    padding: 45px;
-    background: linear-gradient(135deg, #e3f2fd, #f1f7ff);
-    border-radius: 14px;
-    color: #6c757d;
-    font-size: 15px;
+.hr-announcements-by {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--admin-muted, #64748b);
 }
 
-/* =====================
-   Announcement Card
-===================== */
-.announcement-card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 22px 26px;
-    margin-bottom: 22px;
-    border-left: 5px solid #1e88e5;
-    box-shadow: 0 8px 22px rgba(30, 136, 229, 0.12);
-    transition: all 0.25s ease;
+.hr-announcements-msg {
+    max-width: 360px;
+    word-break: break-word;
+    color: var(--admin-text-secondary, #475569);
+    font-size: 14px;
 }
 
-.announcement-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 28px rgba(30, 136, 229, 0.18);
+.hr-announcements-audience {
+    font-size: 11px;
+    font-weight: 600;
 }
 
-/* =====================
-   Header
-===================== */
-.announcement-header {
+.hr-announcements-pagination {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
     align-items: center;
+    gap: 12px;
+    margin-top: 16px;
 }
 
-.announcement-header h3 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #2c3e50;
-}
-
-/* Date Badge */
-.announcement-date {
-    font-size: 12px;
-    color: #1e88e5;
-    background: #e3f2fd;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-weight: 500;
-}
-
-/* =====================
-   Body
-===================== */
-.announcement-body {
-    margin-top: 14px;
-    font-size: 15px;
-    color: #555;
-    line-height: 1.7;
-}
-
-/* =====================
-   Footer
-===================== */
-.announcement-footer {
-    margin-top: 18px;
-    display: flex;
-    justify-content: flex-end;
-}
-
-/* Role Tag */
-.role-tag {
-    background: linear-gradient(135deg, #1e88e5, #1565c0);
-    color: #ffffff;
-    padding: 6px 14px;
-    font-size: 12px;
-    border-radius: 20px;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-}
-
-/* =====================
-   Responsive
-===================== */
-@media (max-width: 600px) {
-    .announcement-container {
-        margin-left: 0;
-        padding: 12px;
-    }
-
-    .announcement-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-    }
+.hr-announcements-page-meta {
+    font-size: 14px;
+    color: var(--admin-muted, #64748b);
 }

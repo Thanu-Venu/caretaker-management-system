@@ -1,165 +1,197 @@
 <?php
-include_once APPROOT . "/views/templates/client/c_header.php";
-include_once APPROOT . "/views/templates/client/c_sidebar.php";
+require_once APPROOT . '/views/client/partials/caretaker_skills.php';
+$clientPageTitle = 'Browse caregivers — SmartCare';
+$clientExtraCss  = ['admin/ad_dashboard.css', 'client/c_find.css'];
+require_once APPROOT . '/views/templates/client/client_layout_head.php';
+require_once APPROOT . '/views/templates/client/c_header.php';
+require_once APPROOT . '/views/templates/client/c_sidebar.php';
+
+$caretakersToShow = $data['allCaretakers'] ?? [];
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<div id="popupOverlay"></div>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caretaker Finder</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_find.css">
-</head>
-
-<body>
-
-  <!-- ================= POPUP OVERLAY ================= -->
-  <div id="popupOverlay" class="overlay"></div>
-
-  <!-- ================= POPUP FORM ================= -->
-  <div id="searchPopup" class="popup">
+<div id="searchPopup">
     <form id="popupForm" method="POST" action="<?= URLROOT ?>/client/c_find">
+        <h3>Search caregivers</h3>
 
-      <h3>Search Caretakers</h3>
-
-      <label>Service Type</label>
-      <select name="service_type" id="popupServiceFilter" required>
-        <option value="">Select Service</option>
-        <option value="Elder Care">Elder Care</option>
-        <option value="Babysitter">Babysitter</option>
-        <option value="Maid">Maid</option>
-        <option value="Disability Support">Disability Support</option>
-      </select>
-
-      <label>Duration Basis</label>
-      <select name="basis" id="basisFilter" required>
-        <option value="">Select Basis</option>
-      </select>
-
-      <label>Duration</label>
-      <input type="number" name="duration" id="durationInput" min="1" required>
-
-      <label>Start Date</label>
-      <input type="date" name="start_date" id="startDate" required>
-
-      <label>Preferred Time</label>
-      <select name="preferred_time" id="preferredTimeSelect" required>
-        <option value="">Select Time</option>
-      </select>
-
-      <div class="popup-actions">
-      <button type="button" id="cancelPopupBtn" class="cancel-btn">Cancel</button>
-      <button type="submit" class="book-btn">Search</button>
-    </div>
-
-    </form>
-  </div>
-
-  <?php
-  $caretakersToShow = $data['allCaretakers'] ?? [];
-  ?>
-
-  <main class="content">
-
-    <div class="page-header header-left-cta">
-      <div>
-        <h1>Find the Perfect Caretaker</h1>
-        <p>Browse all active caretakers and filter by service, location, and rating</p>
-      </div>
-      <button id="openPopupBtn" class="book-btn" type="button">Book Caretaker</button>
-    </div>
-
-    <div id="resultsSection">
-
-      <section class="filters">
-        <div class="filter-box">
-
-          <div class="filter-row">
-            <div class="filter-group">
-              <label>Service Type</label>
-              <select id="serviceFilter">
-                <option value="">All Services</option>
+        <div class="field">
+            <label for="popupServiceFilter">Service type</label>
+            <select name="service_type" id="popupServiceFilter" required>
+               <option value="">Select service</option>
                 <option value="Elder Care">Elder Care</option>
                 <option value="Babysitter">Babysitter</option>
                 <option value="Maid">Maid</option>
-              </select>
-            </div>
-
-            <div class="filter-group">
-              <label>Location</label>
-              <select id="locationFilter">
-                <option value="">All Locations</option>
-                <option value="Jaffna">Jaffna</option>
+            </select>
+        </div>
+        <script>
+            window.serviceLocations = <?= json_encode($data['serviceLocations'] ?? []) ?>;
+        </script>
+        <div class="field">
+            <label for="popupLocationFilter">Location</label>
+            <select name="location" id="popupLocationFilter" required>
+                <option value="">Select location</option>
                 <option value="Colombo">Colombo</option>
                 <option value="Kandy">Kandy</option>
                 <option value="Matara">Matara</option>
-              </select>
-            </div>
-
-            <div class="filter-group">
-              <label>Minimum Rating</label>
-              <select id="ratingFilter">
-                <option value="0">Any Rating</option>
-                <option value="3.5">3.5+</option>
-                <option value="4">4+</option>
-                <option value="4.5">4.5+</option>
-              </select>
-            </div>
-
-            <div class="filter-group">
-              <label>&nbsp;</label>
-              <button type="button" onclick="clearFilters()">Clear Filters</button>
-            </div>
-
-          </div>
+                <option value="Vavuniya">Vavuniya</option>
+                <option value="Jaffna">Jaffna</option>
+            </select>
         </div>
-      </section>
+        <div class="field">
+            <label for="basisFilter">Duration basis</label>
+            <select name="basis" id="basisFilter" required>
+                <option value="">Select basis</option>
+            </select>
+        </div>
+        <div class="field">
+            <label for="durationInput">Duration</label>
+            <input type="number" name="duration" id="durationInput" min="1" required>
+        </div>
+        <div class="field">
+            <label for="startDate">Start date</label>
+            <input type="date" name="start_date" id="startDate" required>
+        </div>
+        <div class="field">
+            <label id="preferredTimeLabel" for="preferredTimeSelect">Preferred time</label>
+            <div id="timeContainer">
+                <select name="preferred_time" id="preferredTimeSelect" required>
+                    <option value="">Select time</option>
+                </select>
+            </div>
+        </div>
 
-      <section>
-        <h2 class="two">All Caretakers</h2>
+        <div class="popup-actions">
+            <button type="submit" class="btn">Search</button>
+            <button type="button" id="cancelPopupBtn" class="btn secondary">Cancel</button>
+            
+        </div>
+    </form>
+</div>
 
-        <div id="caretakersList" class="caretakers">
+<main class="main-content client-find-page">
+    <div class="dashboard-layout">
+        <header class="page-header client-find-page__header">
+            <div>
+                <h1 class="page-title">Browse caregivers</h1>
+                <p class="text-muted client-find-page__lead">Filter by service, location, and rating. Use <strong>Book a service</strong> to check availability for a specific date.</p>
+            </div>
+            <div class="header-actions">
+                <button id="openPopupBtn" class="btn" type="button">Book a service</button>
+            </div>
+        </header>
 
-          <?php if (!empty($caretakersToShow)): ?>
-            <?php foreach ($caretakersToShow as $ct): ?>
-
-              <div class="card" data-service="<?= htmlspecialchars($ct['service_type']) ?>"
-                data-location="<?= htmlspecialchars($ct['location']) ?>"
-                data-rating="<?= htmlspecialchars($ct['rating'] ?? 0) ?>">
-
-                <h3><?= htmlspecialchars($ct['name']) ?></h3>
-                <p><?= htmlspecialchars($ct['service_type']) ?> Specialist</p>
-
-                <img src="<?= URLROOT ?>/uploads/<?= htmlspecialchars($ct['profile_image']) ?>"
-                  onerror="this.src='<?= URLROOT ?>/uploads/default.png';">
-
-                <div class="exp-loc">
-                  <p>Exp: <?= htmlspecialchars($ct['experience']) ?></p>
-                  <p><?= htmlspecialchars($ct['location']) ?></p>
+        <div id="resultsSection" class="client-find-results">
+         <div class="filter-bar client-find-filters">
+            <div class="filters-inline client-find-filters__row">
+                <div class="filter-group client-find-filters__group">
+                <label for="serviceFilter">Service type</label>
+                 <select id="serviceFilter" class="client-find-select">
+                  <option value="">All services</option>
+                <option value="Elder Care">Elder Care</option>
+                  <option value="Babysitter">Babysitter</option>
+                <option value="Maid">Maid</option>
+              </select>
                 </div>
+                    <div class="filter-group client-find-filters__group">
+                        <label for="locationFilter">Location</label>
+                        <select id="locationFilter" class="client-find-select">
+                            <option value="">All locations</option>
+                            <option value="Colombo">Colombo</option>
+                            <option value="Kandy">Kandy</option>
+                            <option value="Vavuniya">Vavuniya</option>
+                            <option value="Jaffna">Jaffna</option>
+                            <option value="Matara">Matara</option>
+                        </select>
+                    </div>
 
-                <p class="rating">⭐ <?= htmlspecialchars($ct['rating'] ?? 'N/A') ?></p>
-                <p><?= htmlspecialchars($ct['qualifications']) ?></p>
 
+                    <div class="filter-group client-find-filters__group">
+                        <label for="ratingFilter">Minimum rating</label>
+                        <select id="ratingFilter" class="client-find-select">
+                            <option value="0">Any rating</option>
+                            <option value="3.5">3.5+</option>
+                            <option value="4">4+</option>
+                            <option value="4.5">4.5+</option>
+                        </select>
+                    </div>
+                    <div class="filter-group client-find-filters__group client-find-filters__group--action">
+                        <label class="client-find-filters__action-label" aria-hidden="true">&#160;</label>
+                        <button type="button" class="btn secondary" onclick="clearFilters()">Clear filters</button>
+                    </div>
+                </div>
+            </div>
 
-              </div>
+            <section class="client-find-list-section" aria-label="Caregiver list">
+                <h2 class="dashboard-overview-charts__heading">All caregivers</h2>
 
-            <?php endforeach; ?>
-          <?php else: ?>
-            <p>No caretakers found.</p>
-          <?php endif; ?>
+                <div id="caretakersList" class="caretakers client-find-grid">
+                    <?php if (!empty($caretakersToShow)): ?>
+                        <?php foreach ($caretakersToShow as $ct): ?>
+                            <?php
+                            $ratingRaw = $ct['rating'] ?? null;
+                            $ratingNum = ($ratingRaw !== null && $ratingRaw !== '') ? (float) $ratingRaw : null;
+                            $ratingDataAttr = $ratingNum !== null ? (string) $ratingNum : '0';
+                            $ratingLabel = $ratingNum !== null ? number_format($ratingNum, 1) . ' / 5' : 'Not yet rated';
+                            $skillParts = client_caretaker_skill_parts((string) ($ct['qualifications'] ?? ''));
+                            ?>
+                            <article class="card card-hover caretaker-card"
+                                data-service="<?= htmlspecialchars((string) ($ct['service_type'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+                                data-location="<?= htmlspecialchars((string) ($ct['location'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+                                data-experience="<?= (int) ($ct['experience'] ?? 0) ?>"
+                                data-rating="<?= htmlspecialchars($ratingDataAttr, ENT_QUOTES, 'UTF-8') ?>">
+                                <div class="card-body caretaker-card__body">
+                                    <div class="caretaker-card__media">
+                                        <img src="<?= URLROOT ?>/public/uploads/<?= htmlspecialchars(trim((string) ($ct['profile_image'] ?? '')), ENT_QUOTES, 'UTF-8') ?>"
+                                            alt=""
+                                            loading="lazy"
+                                            onerror="this.src='<?= URLROOT ?>/public/uploads/default.jpg';">
+                                    </div>
+                                    <div class="caretaker-card__content">
+                                        <h3 class="caretaker-card__name"><?= htmlspecialchars((string) ($ct['name'] ?? ''), ENT_QUOTES, 'UTF-8') ?></h3>
+                                        <p class="caretaker-card__service"><?= htmlspecialchars((string) ($ct['service_type'] ?? ''), ENT_QUOTES, 'UTF-8') ?> specialist</p>
+                                        <div class="caretaker-card__meta">
+                                            <span><i class="bx bx-time-five" aria-hidden="true"></i> <?= htmlspecialchars((string) ($ct['experience'] ?? ''), ENT_QUOTES, 'UTF-8') ?></span>
+                                            <span><i class="bx bx-map" aria-hidden="true"></i> <?= htmlspecialchars((string) ($ct['location'] ?? ''), ENT_QUOTES, 'UTF-8') ?></span>
+                                        </div>
+                                        <div class="caretaker-card__rating" data-has-rating="<?= $ratingNum !== null ? '1' : '0' ?>">
+                                            <i class="bx bxs-star" aria-hidden="true"></i>
+                                            <span class="caretaker-card__rating-label"><?= htmlspecialchars($ratingLabel, ENT_QUOTES, 'UTF-8') ?></span>
+                                        </div>
+                                        <div class="caretaker-card__details">
+                                            <span class="caretaker-card__details-title">Care details</span>
+                                            <?php if ($skillParts !== []): ?>
+                                              <ul class="caretaker-card__skills">
+                                      <?php foreach ($skillParts as $skill): ?>
+                                      <li><?= htmlspecialchars($skill, ENT_QUOTES, 'UTF-8') ?></li>
+                                     <?php endforeach; ?>
+                                     </ul>
+                              <?php else: ?>
+                                 <p class="caretaker-card__details-empty text-muted">No care details listed yet.</p>
+                                <?php endif; ?>
+                            </div>
+                          </div>
+                         </div>
+                     </article>
+                <?php endforeach; ?>
+                 <?php else: ?>
+                  <p class="empty">No caregivers found.</p>
+                <?php endif; ?>
+             </div>
 
-        </div>
-      </section>
+            <div id="noCaretakerMessage" class="no-results-message hidden">
+                  No caregivers match the selected filters.
+            </div>
 
+            <div id="caretakerPagination" class="caretaker-pagination hidden" aria-label="Caretaker pagination">
+                <button type="button" id="caretakerPrevBtn" class="btn secondary">Previous</button>
+                <span id="caretakerPageInfo" class="caretaker-pagination__info">Page 1 of 1</span>
+                <button type="button" id="caretakerNextBtn" class="btn secondary">Next</button>
+            </div>
+        </section>
     </div>
-  </main>
+ </div>
+</main>
 
-  <!-- ================= JS ================= -->
-  <script src="<?php echo URLROOT; ?>/public/js/client/c_find.js"></script>
-
-</body>
-
-</html>
+<script src="<?= URLROOT ?>/public/js/client/c_find.js"></script>
+<?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

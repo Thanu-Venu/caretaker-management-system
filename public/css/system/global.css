@@ -1,0 +1,163 @@
+/* ================================================
+   SMARTCARE - GLOBAL BASE STYLES
+   Core body, html, and foundational styles
+   ================================================ */
+
+html {
+    font-size: 16px;
+    /* Base font size - 1rem = 16px */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-primary);
+    font-size: var(--text-base);
+    font-weight: var(--font-normal);
+    line-height: var(--leading-normal);
+    color: var(--text-primary);
+    background: var(--gradient-bg);
+    min-height: 100vh;
+}
+
+/* ===== SELECTION STYLING ===== */
+::selection {
+    background-color: var(--primary-200);
+    color: var(--text-primary);
+}
+
+::-moz-selection {
+    background-color: var(--primary-200);
+    color: var(--text-primary);
+}
+
+/* ===== LINK DEFAULTS ===== */
+a {
+    color: var(--text-link);
+    text-decoration: none;
+    transition: color var(--transition-base);
+}
+
+a:hover {
+    color: var(--text-link-hover);
+}
+
+a:focus-visible {
+    outline: 2px solid var(--primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* ===== CODE & PRE ===== */
+code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background-color: var(--gray-100);
+    padding: 0.2em 0.4em;
+    border-radius: var(--radius-sm);
+    color: var(--danger-600);
+}
+
+pre {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    background-color: var(--gray-900);
+    color: var(--gray-50);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    overflow-x: auto;
+    line-height: 1.6;
+}
+
+pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+}
+
+/* ===== HR DIVIDERS ===== */
+hr {
+    border: none;
+    border-top: 1px solid var(--border-light);
+    margin: var(--space-6) 0;
+}
+
+/* ===== BLOCKQUOTES ===== */
+blockquote {
+    border-left: 4px solid var(--primary-500);
+    padding-left: var(--space-4);
+    margin: var(--space-6) 0;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* ===== LISTS ===== */
+ul,
+ol {
+    padding-left: var(--space-6);
+    margin: var(--space-4) 0;
+}
+
+li {
+    margin: var(--space-2) 0;
+}
+
+/* ===== FORM ELEMENT DEFAULTS ===== */
+input,
+textarea,
+select,
+button {
+    font-family: var(--font-primary);
+}
+
+/* ===== DISABLED STATE ===== */
+[disabled],
+.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* ===== HIDDEN & UTILITY ===== */
+.hidden {
+    display: none !important;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ===== SMOOTH SCROLL ANCHOR LINKS ===== */
+html {
+    scroll-padding-top: calc(var(--header-height) + var(--space-4));
+}
+
+/* ===== FOCUS VISIBLE IMPROVEMENTS ===== */
+.focus-ring:focus-visible {
+    outline: 2px solid var(--primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+    body {
+        background: white;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+}

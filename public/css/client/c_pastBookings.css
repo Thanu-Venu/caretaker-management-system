@@ -1,237 +1,38 @@
-.content {
-    margin-left: 270px;
-    padding: 30px;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #f9fafc;
-    min-height: 100vh;
+/* Past bookings — stars + feedback snippet (tables use admin-ui) */
+
+.rating-stars {
+    font-size: 1rem;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
 }
 
-.content h1 {
-    font-size: 26px;
-    margin-bottom: 20px;
-    color: #1e88e5;
+.star-filled {
+    color: #f59e0b;
 }
 
-
-
-/* Bookings List */
-.bookings-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
+.star-empty {
+    color: var(--admin-border-strong);
 }
 
-/* Booking Card */
-.booking-card {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+.feedback-mini {
+    font-size: 13px;
+    max-width: 220px;
 }
 
-.booking-card h2 {
-    margin-bottom: 8px;
-    font-size: 20px;
-    color: #333;
-}
-
-.booking-card p {
-    margin: 6px 0;
-    font-size: 14px;
-    color: #555;
-}
-
-/* Status Labels */
-.status {
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 8px;
+.feedback-done-label {
     font-size: 13px;
 }
 
-.status.completed {
-    background: #d4edda;
-    color: #155724;
-}
-
-.status.cancelled {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-/* Feedback Button */
-.feedback-btn {
-    margin-top: 12px;
-    padding: 8px 14px;
-    border: none;
-    border-radius: 8px;
-    background: #4a90e2;
-    color: #fff;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.feedback-btn:hover {
-    background: #357abd;
-}
-
-.feedback-btn a {
-    color: white;
-    text-decoration: none;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .content {
-        margin-left: 0;
-    }
-}
-
-/* Modal background */
-.modal {
-  display: none; 
-  position: fixed; 
-  z-index: 1000; 
-  left: 0; 
-  top: 0;
-  width: 100%; 
-  height: 100%; 
-  background: rgba(0,0,0,0.6);
-  justify-content: center;
-  align-items: center;
-}
-
-
-/* Modal content box */
-.modal-content {
-  background: #ffffff;
-  padding: 25px 30px;
-  width: 400px;
-  border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-  position: relative;
-  animation: slideDown 0.3s ease;
-  font-family: "Poppins", sans-serif;
-}
-
-/* Close button */
-.close.feedback-close {
-  position: absolute;
-  top: 12px;
-  right: 15px;
-  font-size: 22px;
-  cursor: pointer;
-  color: #555;
-  transition: color 0.2s;
-}
-.close.feedback-close:hover {
-    color: #e74c3c;
-}
-
-/* Form groups */
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #333;
-}
-
-/* Star rating */
-.stars {
-  display: flex;
-  gap: 8px;
-}
-
 .stars span {
-  font-size: 28px;
-  cursor: pointer;
-  color: #ccc;
-  transition: color 0.2s;
+    cursor: pointer;
+    color: var(--admin-border-strong);
+    font-size: 1.5rem;
+    margin-right: 4px;
+    transition: color 0.15s ease;
 }
 
-.stars span.active {
-  color: #f5b301; /* gold */
-}
-
-#ratingText {
-  margin-top: 6px;
-  font-size: 14px;
-  color: #555;
-}
-
-/* Textarea */
-#feedback {
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  resize: vertical;
-  font-family: "Poppins", sans-serif;
-}
-
-/* Buttons */
-.save-btn {
-  background: #4a90e2;
-  color: #fff;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.3s;
-}
-
-.save-btn:hover {
-  background: #357abd;
-}
-
-.cancel-btn-secondary {
-  background: #e74c3c;
-  color: #fff;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.3s;
-  margin-left: 10px;
-}
-
-.cancel-btn-secondary:hover {
-  background: #c0392b;
-}
-
-/* Form actions container */
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 15px;
-}
-
-.no-bookings {
-    text-align: center;
-    font-size: 18px;
-    color: #888;
-    margin-top: 50px;
-    margin-left: 270px; /* only if your layout requires it */
-    display: none; /* hide by default, show via PHP if no bookings */
-}
-
-
-/* Animation for modal */
-@keyframes slideDown {
-  from { transform: translateY(-50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.star-filled { color: gold; font-size: 18px; }
-.star-empty { color: #ccc; font-size: 18px; }
-.feedback-text {
-    background: #f9f9f9;
-    padding: 8px;
-    border-radius: 6px;
+.stars span:hover,
+.stars span:focus {
+    color: #f59e0b;
+    outline: none;
 }

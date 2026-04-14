@@ -1,128 +1,118 @@
+:root {
+  --announcement-bg-1: #f8fbff;
+  --announcement-bg-2: #eef6ff;
+  --announcement-card: #ffffff;
+  --announcement-text: #17324d;
+  --announcement-muted: #5b7288;
+  --announcement-accent: #1e88e5;
+  --announcement-accent-strong: #166fc1;
+  --announcement-border: #d8e6f4;
+  --announcement-hover: #eef7ff;
+}
+
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
   font-family: 'Poppins', Arial, sans-serif;
 }
 
-/* =====================
-   Container
-===================== */
 .announcement-container {
-    margin-left: 270px;
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 15px;
+  margin-left: 270px;
+  padding: 24px;
+  min-height: 100vh;
+  background-color: var(--announcement-bg-1);
 }
 
-/* =====================
-   Page Title
-===================== */
+.card {
+  background: var(--announcement-card);
+  padding: 22px;
+  border-radius: 16px;
+  border: 1px solid var(--announcement-border);
+  box-shadow: 0 10px 28px rgba(26, 42, 71, 0.12);
+  margin-bottom: 30px;
+}
+
 .page-title {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 26px;
-    font-weight: 600;
-    color: #1565c0;
+  font-size: 30px;
+  color: #1e88e5;
+  letter-spacing: 0.2px;
+  margin: 0 0 20px 0;
 }
 
-/* =====================
-   No Announcement
-===================== */
-.no-announcement {
-    text-align: center;
-    padding: 45px;
-    background: linear-gradient(135deg, #e3f2fd, #f1f7ff);
-    border-radius: 14px;
-    color: #6c757d;
-    font-size: 15px;
+.table-container {
+  overflow-x: auto;
 }
 
-/* =====================
-   Announcement Card
-===================== */
-.announcement-card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 22px 26px;
-    margin-bottom: 22px;
-    border-left: 5px solid #1e88e5;
-    box-shadow: 0 8px 22px rgba(30, 136, 229, 0.12);
-    transition: all 0.25s ease;
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  overflow: hidden;
+  border-radius: 12px;
 }
 
-.announcement-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 28px rgba(30, 136, 229, 0.18);
+thead th {
+  background-color: #1e88e5;
+  color: #ffffff;
 }
 
-/* =====================
-   Header
-===================== */
-.announcement-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+th,
+td {
+  padding: 14px 15px;
+  border-bottom: 1px solid #edf3f9;
+  text-align: left;
 }
 
-.announcement-header h3 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #2c3e50;
+th {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+td {
+  color: #2a3e5f;
+}
+
+tbody tr:hover {
+  background-color: var(--announcement-hover);
 }
 
 /* Date Badge */
 .announcement-date {
-    font-size: 12px;
-    color: #1e88e5;
-    background: #e3f2fd;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-weight: 500;
-}
-
-/* =====================
-   Body
-===================== */
-.announcement-body {
-    margin-top: 14px;
-    font-size: 15px;
-    color: #555;
-    line-height: 1.7;
-}
-
-/* =====================
-   Footer
-===================== */
-.announcement-footer {
-    margin-top: 18px;
-    display: flex;
-    justify-content: flex-end;
+  font-size: 12px;
+  color: #1e88e5;
+  background: #e3f2fd;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 /* Role Tag */
 .role-tag {
-    background: linear-gradient(135deg, #1e88e5, #1565c0);
-    color: #ffffff;
-    padding: 6px 14px;
-    font-size: 12px;
-    border-radius: 20px;
-    font-weight: 500;
-    letter-spacing: 0.3px;
+  background: linear-gradient(135deg, #1e88e5, #1565c0);
+  color: #ffffff;
+  padding: 6px 14px;
+  font-size: 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
-/* =====================
-   Responsive
-===================== */
-@media (max-width: 600px) {
-    .announcement-container {
-        margin-left: 0;
-        padding: 12px;
-    }
+@media (max-width: 1024px) {
+  .announcement-container {
+    margin-left: 0;
+    padding: 16px;
+  }
+}
 
-    .announcement-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-    }
+@media (max-width: 760px) {
+  .page-title {
+    font-size: 24px;
+  }
+
+  .card {
+    padding: 15px;
+  }
 }

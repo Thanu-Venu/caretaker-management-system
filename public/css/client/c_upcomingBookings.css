@@ -1,355 +1,167 @@
-.content {
-    margin-left: 250px; /* leave space for sidebar */
-    padding: 30px;
-    font-family: "Poppins", sans-serif;
-    background-color: #f9fafc;
-    min-height: 100vh;
-}
+/* Upcoming bookings — small additions on top of admin-ui tables */
 
-.content h1 {
-    font-size: 28px;
-    margin-bottom: 20px;
-    color: #1e88e5;
-}
-
-/* No bookings text */
-.no-bookings {
-    font-size: 16px;
-    color: #666;
-    display: none; /* Hidden by default, shown via JS if no bookings */
-}
-
-/* Bookings List */
-.bookings-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-/* Booking Card */
-.booking-card {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s ease;
-    
-}
-
-.booking-card:hover {
-    transform: translateY(-3px);
-}
-
-.booking-card h2 {
-    margin-bottom: 8px;
-    font-size: 20px;
-    color: #333;
-}
-
-.booking-card p {
-    margin: 6px 0;
-    font-size: 14px;
-    color: #555;
-}
-
-/* Status Labels */
-.status {
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 8px;
-    font-size: 13px;
-}
-
-.status.pending {
-    background: #fff3cd;
-    color: #856404;
-}
-
-.status.confirmed {
-    background: #d4edda;
-    color: #155724;
-}
-
-.status.cancelled {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-.card-actions {
-    display: flex;         /* make buttons side by side */
-    gap: 10px;             /* space between buttons */
-    margin-top: 12px;
-    flex-wrap: wrap;       /* wrap to next line if screen is too small */
-}
-
-
-/* Cancel Button *
-.cancel-btn {
-  background: #e74c3c;
-  color: #fff;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s;
-  display: flex;
-}
-
-.cancel-btn:hover {
-  background: #c0392b;
-}
-
-.reschedule-btn {
-  background: #4a90e2;
-  color: #fff;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s;
-}
-
-.reschedule-btn:hover {
-  background: #357abd;
-}
-
-.payment-btn {
-  background: #f39c12;
-  color: #fff;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s;
-}*/
-
-.cancel-btn, .reschedule-btn, .payment-btn {
-  flex: 1;               /* all buttons equal width */
-  text-align: center;
-  display: inline-block;  /* override block */
-  padding: 10px 15px;    /* adjust padding as needed */
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600px;
-  transition: background 0.3s;
-  outline: none;
-  border: none;
-}
-
-.cancel-btn { background: #e74c3c; color: #fff; }
-.cancel-btn:hover { background: #c0392b; }
-
-.reschedule-btn { background: #4a90e2; color: #fff; }
-.reschedule-btn:hover { background: #357abd; }
-
-.payment-btn { background: #f39c12; color: #fff; }
-.payment-btn:hover { background: #e67e22; }
-
-
-/* Responsive */
-@media (max-width: 768px) {
-    .content {
-        margin-left: 0;
-    }
-}
-
-.card-actions {
+.client-page-note {
     display: flex;
+    align-items: flex-start;
     gap: 10px;
-    margin-top: 12px;
+    padding: 12px 14px;
+    margin-bottom: var(--admin-section-gap, 20px);
+    border-radius: var(--admin-radius-sm, 8px);
+    border: 1px solid rgba(30, 136, 229, 0.22);
+    background: rgba(30, 136, 229, 0.06);
+    color: var(--admin-text-secondary, #334155);
+    font-size: 14px;
+    line-height: 1.5;
 }
 
-/* Modal background */
-.modal {
-  display: none; 
-  position: fixed; 
-  z-index: 1000; 
-  left: 0; 
-  top: 0;
-  width: 100%; 
-  height: 100%; 
-  background: rgba(0,0,0,0.6);
-  justify-content: center;
-  align-items: center;
+.client-page-note .bx {
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-size: 1.25rem;
+    color: var(--admin-primary, #1e88e5);
 }
 
-/* Modal content box */
-.modal-content {
-  background: #fff;
-  padding: 20px;
-  width: 400px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  position: relative;
-  animation: slideDown 0.3s ease;
+.bookings-status-filter {
+    margin-bottom: var(--admin-section-gap, 20px);
 }
 
-/* Close button */
-.close {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 20px;
-  cursor: pointer;
-  color: #333;
+.bookings-status-filter .filter-group {
+    margin: 0;
 }
 
-.form-group {
-  margin-bottom: 15px;
+.bookings-status-filter-select {
+    min-width: 14rem;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: var(--admin-font, inherit);
+    color: var(--admin-text, #0f172a);
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius-sm, 8px);
 }
 
-.form-group label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 5px;
+.main-content .bookings-data-table td.booking-actions-cell {
+    display: table-cell;
+    vertical-align: middle;
 }
 
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+#upcomingBookingsEmptyFilter td,
+#ongoingBookingsEmptyFilter td {
+    text-align: center;
+    color: var(--admin-muted, #64748b);
+    font-size: 14px;
+    padding: 20px 16px;
 }
 
-.save-btn {
-  background: #4CAF50;
-  color: #fff;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
+.booking-actions-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
 }
 
-.save-btn:hover {
-  background: #45a049;
+.reschedule-warning {
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    border-radius: var(--admin-radius-sm);
+    border: 1px solid rgba(217, 119, 6, 0.25);
+    background: var(--admin-warning-bg);
+    color: var(--admin-warning-text);
+    font-size: 14px;
 }
 
-@keyframes slideDown {
-  from { transform: translateY(-50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+.reschedule-warning ul {
+    margin: 8px 0 0 18px;
+    padding: 0;
 }
 
-.payment-warning {
-  background: #fff3cd;
-  color: #856404;
-  padding: 10px;
-  border: 1px solid #ffeeba;
-  border-radius: 6px;
-  font-size: 14px;
-  margin-bottom: 15px;
+/* —— Upcoming / ongoing: toolbar + detail modal (shared) —— */
+.booking-actions-cell {
+    vertical-align: top;
+    min-width: 11rem;
 }
 
-/* Reuse modal styles */
-.modal-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 15px;
+.booking-actions-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
 }
 
-.cancel1-btn {
-  background: #e74c3c;
-  color: #fff;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
+.booking-actions-toolbar .btn.tiny {
+    white-space: nowrap;
 }
 
-.cancel1-btn:hover {
-  background: #c0392b;
+.btn.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: var(--admin-radius-sm, 8px);
 }
 
-.cancel1-btn-secondary {
-  background: #bdc3c7;
-  color: #333;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
+.btn.btn-icon i {
+    font-size: 1.25rem;
+    line-height: 1;
 }
 
-.cancel1-btn-secondary:hover {
-  background: #95a5a6;
+.booking-row-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin: 10px 0 0;
+    padding: 0;
+    max-width: 24rem;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--admin-muted, #64748b);
 }
 
-#cancelReason{
-    width: 100%;
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+.booking-row-hint .bx {
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-size: 1rem;
+    opacity: 0.85;
 }
 
-
-/* Modal container */
-.modal {
-  display: none; 
-  position: fixed; 
-  z-index: 1000; 
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5);
-  justify-content: center; 
-  align-items: center;
+/* Client booking detail modal — same shell as admin row detail (see admin-ui .admin-row-detail-modal) */
+.booking-detail-modal__content {
+    max-width: min(720px, 100%);
+    max-height: min(88vh, 860px);
 }
 
-/* Modal content box */
-.modal-content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+.booking-detail-modal__content .booking-detail-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 20px 20px;
+    margin-top: 0;
 }
 
-/* Close button */
-.modal-content .close {
-  float: right;
-  font-size: 24px;
-  cursor: pointer;
+.booking-detail-modal__content .admin-row-detail-modal__dl {
+    margin: 0;
+    padding: 0;
 }
 
-/* Form elements */
-.modal-content input, 
-.modal-content textarea, 
-.modal-content select {
-  width: 100%;
-  padding: 8px;
-  margin: 8px 0;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+.booking-detail-panel {
+    padding: 4px 0 0;
 }
 
-/* Ensure date picker icon is visible in reschedule modal */
-.modal-content input[type="date"] {
-  appearance: auto;
-  -webkit-appearance: auto;
-  background-color: #fff;
+.admin-row-detail-modal__dl dd.booking-detail-dd--multiline {
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
 }
 
-.modal-content input[type="date"]::-webkit-calendar-picker-indicator {
-  opacity: 1;
-  cursor: pointer;
+.booking-detail-money {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
 }
 
-/* Buttons */
-.cancel1-btn, .reschedule-btn {
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  padding: 10px;
-  width: 100%;
-  border-radius: 4px;
-  cursor: pointer;
+.booking-detail-footnote {
+    margin: 16px 0 0;
+    font-size: 12px;
+    line-height: 1.45;
 }
-.cancel1-btn:hover, .reschedule-btn:hover {
-  background-color: #0056b3;
-}
-

@@ -1,70 +1,101 @@
+/* Admin notification page — align with admin-ui tokens */
 body {
-    font-family: 'Poppins', Arial, sans-serif;
-    background: #f4f7fb;
+    font-family: var(--admin-font, "Inter", system-ui, sans-serif);
+    background: var(--admin-bg-gradient, #f1f5f9);
     margin: 0;
+    color: var(--admin-text, #0f172a);
 }
 
 .notif-page {
     max-width: 800px;
-    margin: 90px auto 50px; /* leave space for sticky header */
-    padding: 20px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin: calc(var(--admin-header-height, 60px) + 24px) auto 40px;
+    padding: 24px 28px;
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    box-shadow: var(--admin-shadow, 0 4px 24px rgba(15, 23, 42, 0.06));
 }
 
 .notif-page h2 {
-    margin-bottom: 20px;
-    color: #1E88E5;
-    font-weight: 600;
-}
-
-.notif-container {
-    display: flex;
-    flex-direction: column;
+    margin: 0 0 20px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--admin-text, #0f172a);
+    padding-left: 14px;
+    border-left: 4px solid transparent;
+    border-image: linear-gradient(180deg, #1e88e5, #00bfa5) 1;
+    border-image-slice: 1;
 }
 
 .notif-list {
     list-style: none;
+    margin: 30px;
     padding: 0;
-    margin: 0;
 }
 
 .notif-item {
-    border-bottom: 1px solid #eee;
-    padding: 15px;
-    transition: background 0.2s;
+    border-bottom: 1px solid var(--admin-border, #e2e8f0);
+    padding: 16px 4px;
+    transition: background 0.2s ease;
 }
 
-.notif-item a {
-    text-decoration: none;
-    color: #111;
-    display: flex;
-    flex-direction: column;
-}
-
-.notif-item.unread {
-    background: #e3f2fd; /* light blue for unread */
-    font-weight: bold;
+.notif-item:last-child {
+    border-bottom: none;
 }
 
 .notif-item:hover {
-    background: #f1f5f9;
+    background: rgba(15, 23, 42, 0.04);
 }
 
-.notif-item span {
-    font-size: 14px;
-    margin-top: 5px;
+/* Whole row is clickable — read like content, not a default browser link */
+.notif-item a {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    text-decoration: none;
+    color: var(--admin-text-secondary, #64748b);
+    font-weight: 400;
 }
 
-.notif-item small {
-    font-size: 12px;
-    color: #555;
-    margin-top: 5px;
+.notif-item a:visited {
+    color: var(--admin-text-secondary, #64748b);
 }
 
-.no-notifs {
-    text-align: center;
-    color: #888;
-    font-size: 16px;
+.notif-item a strong {
+    font-weight: 600;
+    font-size: 1.0625rem;
+    color: var(--admin-text, #0f172a);
+    letter-spacing: -0.01em;
+}
+
+.notif-item a small {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--admin-text-muted, #94a3b8);
+}
+
+.notif-item a:hover strong {
+    color: #0d4d47;
+}
+
+.notif-item.unread a strong {
+    font-weight: 700;
+}
+
+.notif-item.unread {
+    border-left: 3px solid #0d9488;
+    padding-left: 12px;
+    margin-left: -2px;
+}
+
+.notif-item a:focus-visible {
+    outline: 2px solid #0d9488;
+    outline-offset: 3px;
+    border-radius: 6px;
+}
+
+/* App shell (client/HR/admin) already offsets `main.main-content` under the fixed header — do not add a second top margin here */
+main.main-content.notif-page {
+    margin-top: 0;
 }

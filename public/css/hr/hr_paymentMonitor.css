@@ -1,0 +1,261 @@
+/* HR Payment Monitor — aligned with admin / other HR list pages */
+
+body {
+    background: #f4f7fb;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px 25px;
+    margin-left: 270px;
+}
+
+.page-header .page-title {
+    margin-bottom: 6px;
+}
+
+.page-subtitle {
+    margin: 0 0 18px;
+    color: var(--admin-muted, #64748b);
+    font-size: 15px;
+    line-height: 1.45;
+    max-width: 52rem;
+}
+
+/* Filters — match admin filter rhythm */
+.filter-bar {
+    margin-bottom: 12px;
+}
+
+.filter-bar__form {
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    padding: 14px 16px;
+    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+.filter-bar__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px 14px;
+    align-items: end;
+}
+
+.filter-bar .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--admin-text-secondary, #475569);
+    margin-bottom: 6px;
+}
+
+.filter-bar .field input,
+.filter-bar .field select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius-sm, 8px);
+    font-size: 14px;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.filter-bar__actions-label {
+    visibility: hidden;
+}
+
+.filter-bar__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.result-count {
+    margin: 0 0 14px;
+    font-size: 13px;
+    color: var(--admin-muted, #64748b);
+}
+
+/* KPI cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.stat-card {
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    padding: 14px 16px;
+    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.stat-card:hover {
+    box-shadow: var(--admin-shadow-hover, 0 8px 24px rgba(15, 23, 42, 0.08));
+    border-color: rgba(30, 136, 229, 0.25);
+}
+
+.stat-card h3 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--admin-text-secondary, #475569);
+    text-transform: none;
+    letter-spacing: 0.01em;
+}
+
+.stat-card .value {
+    margin: 8px 0 4px;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--admin-primary, #1e88e5);
+    line-height: 1.1;
+}
+
+.stat-card small {
+    display: block;
+    font-size: 12px;
+    color: var(--admin-muted, #64748b);
+    line-height: 1.35;
+}
+
+.stat-card--warning {
+    border-color: rgba(245, 158, 11, 0.45);
+    background: linear-gradient(165deg, #fffbeb 0%, #fff 55%);
+}
+
+.stat-card--success {
+    border-color: rgba(16, 185, 129, 0.35);
+    background: linear-gradient(165deg, #ecfdf5 0%, #fff 55%);
+}
+
+/* Sections + tables */
+.monitor-section {
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+.monitor-section__title {
+    margin: 0 0 10px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--admin-text, #0f172a);
+}
+
+.table-container {
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    padding: 12px;
+    overflow-x: auto;
+    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+.monitor-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
+}
+
+.monitor-table th,
+.monitor-table td {
+    padding: 11px 10px;
+    text-align: left;
+    border-bottom: 1px solid #eef2f7;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.monitor-table thead th {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.monitor-table td.actions,
+.monitor-table th:last-child {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.monitor-row-actions {
+    display: inline-flex;
+    justify-content: center;
+}
+
+.amount-cell {
+    font-weight: 600;
+    color: var(--admin-text, #0f172a);
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-pill[data-row-status='pending'] {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-pill[data-row-status='paid'],
+.status-pill[data-row-status='approved'] {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-pill[data-row-status='overdue'],
+.status-pill[data-row-status='rejected'],
+.status-pill[data-row-status='cancelled'] {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.empty {
+    text-align: center;
+    color: #64748b;
+    padding: 22px 12px;
+}
+
+/* Detail modal */
+.monitor-detail-modal__content {
+    max-width: min(720px, 100%);
+    max-height: min(88vh, 860px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+.monitor-detail-modal__content .admin-row-detail-modal__dl {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 20px 20px;
+}
+
+.admin-row-detail-modal__dl dd.monitor-detail-dd--multiline {
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+    .main-content {
+        padding: 16px;
+    }
+}

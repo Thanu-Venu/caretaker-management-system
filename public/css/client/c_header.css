@@ -1,6 +1,6 @@
 /* RESET */
 * {
-      font-family: 'Poppins', Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
 
     margin: 0;
     padding: 0;
@@ -12,7 +12,8 @@
 .main-header {
     height: 60px;
     width: 100%;
-    background: linear-gradient(90deg, #1E88E5, #00BFA5);;
+    background: linear-gradient(90deg, #1E88E5, #00BFA5);
+    ;
     border-bottom: 1px solid #e5e7eb;
     display: flex;
     justify-content: space-between;
@@ -100,7 +101,7 @@
     width: 320px;
     background: #fff;
     border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     overflow: hidden;
 }
 
@@ -136,9 +137,7 @@
 
 /* ---------------- PROFILE ---------------- */
 .profile-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    position: relative;
 }
 
 .profile-link {
@@ -146,7 +145,23 @@
     align-items: center;
     gap: 8px;
     text-decoration: none;
-    color: inherit;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+    padding: 4px 10px 4px 4px;
+}
+
+.profile-toggle {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.profile-toggle i.fa-chevron-down {
+    font-size: 12px;
+    margin-left: 2px;
+    transition: transform 0.2s ease;
 }
 
 .profile-img {
@@ -156,6 +171,41 @@
     object-fit: cover;
     border: 2px solid #ddd;
     cursor: pointer;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 50px;
+    min-width: 180px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.profile-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    color: #1f2937;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.profile-menu-item:hover {
+    background: #f3f4f6;
+}
+
+.profile-wrapper.active .profile-dropdown {
+    display: block;
+}
+
+.profile-wrapper.active .profile-toggle i.fa-chevron-down {
+    transform: rotate(180deg);
 }
 
 /* SHOW DROPDOWN */

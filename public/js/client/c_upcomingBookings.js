@@ -1,10 +1,12 @@
 function openCancelModal(id) {
     document.getElementById('cancelBookingId').value = id;
-    document.getElementById('cancelModal').style.display = 'flex';
+    var m = document.getElementById('cancelModal');
+    if (m) m.classList.add('show');
 }
 
 function closeCancelModal() {
-    document.getElementById('cancelModal').style.display = 'none';
+    var m = document.getElementById('cancelModal');
+    if (m) m.classList.remove('show');
 }
 
 function openRescheduleModal(id) {
@@ -12,15 +14,25 @@ function openRescheduleModal(id) {
     const dateInput = document.querySelector('#rescheduleModal input[name="new_date"]');
     if (dateInput) {
         const today = new Date();
-        today.setDate(today.getDate() + 4);
+        today.setDate(today.getDate() + 5);
         const yyyy = today.getFullYear();
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
         dateInput.min = `${yyyy}-${mm}-${dd}`;
+        dateInput.value = '';
     }
-    document.getElementById('rescheduleModal').style.display = 'flex';
+    var m = document.getElementById('rescheduleModal');
+    if (m) m.classList.add('show');
 }
 
 function closeRescheduleModal() {
-    document.getElementById('rescheduleModal').style.display = 'none';
+    var m = document.getElementById('rescheduleModal');
+    if (m) m.classList.remove('show');
 }
+
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+        closeCancelModal();
+        closeRescheduleModal();
+    }
+});
