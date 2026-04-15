@@ -453,6 +453,26 @@ AND NOT EXISTS (
 
         $sql .= ")";
 
+                // Also block caretakers who are currently occupied today in any active booking.
+                // This prevents other clients from seeing caregivers who are already working now.
+                $sql .= "
+AND NOT EXISTS (
+        SELECT 1 FROM bookings b2
+        WHERE b2.caretaker_id = c.id
+            AND LOWER(b2.status) IN (
+                'requested','payment_requested','advance_paid',
+                'accepted','approved','change_requested','reschedule_requested'
+            )
+            AND CURDATE() BETWEEN b2.booking_date AND (
+                CASE
+                        WHEN LOWER(b2.basis) = 'hourly' THEN b2.booking_date
+                        WHEN LOWER(b2.basis) = 'monthly' THEN DATE_SUB(DATE_ADD(b2.booking_date, INTERVAL GREATEST(b2.duration, 1) MONTH), INTERVAL 1 DAY)
+                        WHEN LOWER(b2.basis) = 'yearly' THEN DATE_SUB(DATE_ADD(b2.booking_date, INTERVAL GREATEST(b2.duration, 1) YEAR), INTERVAL 1 DAY)
+                        ELSE DATE_SUB(DATE_ADD(b2.booking_date, INTERVAL GREATEST(b2.duration, 1) DAY), INTERVAL 1 DAY)
+                END
+            )
+)";
+
         // prepare statement
         $stmt = $this->conn->prepare($sql);
 
