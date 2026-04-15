@@ -1,5 +1,4 @@
-.main-content {
-  margin-left: 270px; /* adjust based on sidebar */
+.content.leavehistory-container {
   padding: 20px;
   font-family: var(--font-primary);
   margin-right: 20px;
