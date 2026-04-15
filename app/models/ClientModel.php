@@ -141,6 +141,18 @@ class ClientModel
         return $stmt->get_result()->fetch_assoc();
     }
 
+    /** Password hash only — for verifying current password on settings change. */
+    public function getClientPasswordHashById(int $id): ?string
+    {
+        $stmt = $this->conn->prepare('SELECT password FROM clients WHERE id = ? LIMIT 1');
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        return isset($row['password']) ? (string) $row['password'] : null;
+    }
+
     // Used by CaretakerController AJAX sometimes
     public function getClientDetails($id)
     {
@@ -165,7 +177,7 @@ class ClientModel
         $name  = $data['name'] ?? '';
         $email = $data['email'] ?? '';
         $phone = $data['phone'] ?? '';
-        $img   = $data['profile_image'] ?? 'default.png';
+        $img   = $data['profile_image'] ?? 'default.jpg';
 
         $stmt->bind_param("ssssi", $name, $email, $phone, $img, $id);
         $ok = $stmt->execute();
@@ -449,11 +461,13 @@ class ClientModel
                     b.client_id,
                     b.caretaker_id,
                     b.booking_date,
+                    b.service_start_date,
                     b.preferred_time,
                     b.basis,
                     b.duration,
                     b.service_type,
                     b.total_payment,
+                    b.advance_amount,
                     b.created_at,
                     b.customization,
                     b.customization_hours,
@@ -548,6 +562,10 @@ class ClientModel
                     b.service_type,
                     b.status,
                     b.customization,
+                    b.total_payment,
+                    b.advance_amount,
+                    b.service_start_date,
+                    b.district,
                     c.name AS caretaker_name
                 FROM bookings b
                 JOIN caretakers c ON b.caretaker_id = c.id
@@ -620,6 +638,10 @@ class ClientModel
                 b.status,
                 b.customization,
                 b.caretaker_changed_once,
+                b.total_payment,
+                b.advance_amount,
+                b.service_start_date,
+                b.district,
                 ct.name AS caretaker_name
             FROM bookings b
             JOIN caretakers ct ON b.caretaker_id = ct.id
@@ -690,6 +712,7 @@ class ClientModel
         $sql = "SELECT
                 b.id AS booking_id,
                 b.booking_date,
+                b.service_start_date,
                 b.preferred_time,
                 b.duration,
                 b.basis,
@@ -703,6 +726,59 @@ class ClientModel
             WHERE b.client_id = ?
               AND LOWER(TRIM(b.status)) = 'cancelled'
             ORDER BY b.cancelled_at DESC, b.booking_date DESC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    /**
+     * All bookings for the client (newest first) — unified “My bookings” table.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function getAllBookingsForClientOverview($clientId, $limit = 200)
+    {
+        $limit = max(1, min(500, (int) $limit));
+        $sql = "SELECT
+                    b.id AS booking_id,
+                    b.booking_date,
+                    b.preferred_time,
+                    b.duration,
+                    b.basis,
+                    b.service_type,
+                    b.status,
+                    b.customization,
+                    b.total_payment,
+                    b.advance_amount,
+                    b.service_start_date,
+                    b.service_location,
+                    b.district,
+                    b.street,
+                    b.address_line1,
+                    b.address_line2,
+                    b.postal_code,
+                    b.created_at,
+                    b.advance_paid_date,
+                    b.advance_months,
+                    b.total_months,
+                    b.advance_balance,
+                    b.customization_hours,
+                    b.customization_price,
+                    b.caretaker_changed_once,
+                    b.refund_status,
+                    b.service_days_used,
+                    b.cancellation_reason,
+                    b.cancelled_at,
+                    ct.name AS caretaker_name,
+                    ct.email AS caretaker_email,
+                    ct.phone AS caretaker_phone
+                FROM bookings b
+                JOIN caretakers ct ON b.caretaker_id = ct.id
+                WHERE b.client_id = ?
+                ORDER BY b.booking_date DESC, b.id DESC
+                LIMIT " . $limit;
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $clientId);
@@ -977,7 +1053,8 @@ class ClientModel
             FROM bookings b
             JOIN caretakers c ON c.id = b.caretaker_id
             WHERE b.client_id = ?
-              AND b.status = 'Payment_Requested'
+                            AND LOWER(TRIM(b.status)) = 'payment_requested'
+                            AND LOWER(TRIM(b.status)) NOT IN ('cancelled', 'rejected', 'completed')
             ORDER BY due_date ASC"
         );
         $stmt->bind_param("i", $clientId);
@@ -1021,6 +1098,7 @@ class ClientModel
             JOIN caretakers c ON c.id = b.caretaker_id
             WHERE rp.client_id = ?
               AND rp.status IN ('pending', 'overdue')
+                            AND LOWER(TRIM(b.status)) NOT IN ('cancelled', 'rejected', 'completed')
             ORDER BY
               CASE WHEN rp.status = 'overdue' THEN 1 ELSE 2 END,
               rp.due_date ASC"
@@ -1043,7 +1121,7 @@ class ClientModel
             }
 
             $canPayNow = false;
-            if ($row['booking_status'] !== 'Cancelled') {
+            if (strtolower(trim((string)$row['booking_status'])) !== 'cancelled') {
                 if ($row['status'] === 'overdue') {
                     $canPayNow = $withinGrace;
                 } else {
@@ -1131,6 +1209,7 @@ class ClientModel
                     COALESCE(p.approved_at, p.paid_date, p.created_at) AS paid_at,
                     b.service_type,
                     b.basis,
+                    b.total_payment,
                     ct.name AS caretaker_name
                 FROM payments p
                 JOIN bookings b ON b.id = p.booking_id
@@ -1935,11 +2014,23 @@ class ClientModel
 
     public function getAdvancePaymentPendingBookings($clientId)
     {
-        $sql = "SELECT id AS booking_id,booking_date, preferred_time, duration, basis, service_type
-            FROM bookings
-            WHERE client_id = ?
-              AND status = 'Payment_Requested'
-            ORDER BY booking_date ASC";
+        $sql = "SELECT
+                    b.id AS booking_id,
+                    b.booking_date,
+                    b.preferred_time,
+                    b.duration,
+                    b.basis,
+                    b.service_type,
+                    b.district,
+                    b.total_payment,
+                    b.advance_amount,
+                    b.service_start_date,
+                    ct.name AS caretaker_name
+                FROM bookings b
+                JOIN caretakers ct ON b.caretaker_id = ct.id
+                WHERE b.client_id = ?
+                  AND b.status = 'Payment_Requested'
+                ORDER BY b.booking_date ASC";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $clientId);
         $stmt->execute();

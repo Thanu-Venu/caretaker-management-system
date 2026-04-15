@@ -62,7 +62,7 @@ class HRCaretakerCRUDController extends Controller
                 exit;
             }
 
-            $data['profile_image'] = 'default.png';
+            $data['profile_image'] = 'default.jpg';
 
             // ✅ upload folder
             $uploadDir = APPROOT . '/../public/uploads/';

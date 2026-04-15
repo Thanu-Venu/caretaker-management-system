@@ -76,6 +76,54 @@ class ClientController extends Controller
     {
         $clientId = AuthSession::profileId();
 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['emergency_submit'])) {
+            $type = trim((string)($_POST['type'] ?? ''));
+            $description = trim((string)($_POST['description'] ?? ''));
+            $phone = trim((string)($_POST['phone'] ?? ''));
+
+            if ($type === '' || $description === '' || $phone === '') {
+                $_SESSION['flash_message'] = "Please fill all emergency fields before sending the alert.";
+                $_SESSION['flash_type'] = 'warning';
+                header("Location: " . URLROOT . "/client/c_dashboard");
+                exit;
+            }
+
+            require_once APPROOT . '/models/NotificationModel.php';
+            $notifModel = new NotificationModel();
+            $hrUsers = $notifModel->getHRUsers();
+
+            $clientName = (string)($_SESSION['user']['name'] ?? $_SESSION['user']['username'] ?? ('Client #' . $clientId));
+            $title = 'Emergency Alert from Client';
+            $message = "Emergency Type: {$type}\n"
+                . "Client: {$clientName} (ID: {$clientId})\n"
+                . "Contact: {$phone}\n"
+                . "Description: {$description}";
+
+            $sentCount = 0;
+            foreach ($hrUsers as $hr) {
+                if ($notifModel->addNotification(
+                    (int)$hr['id'],
+                    'Manager',
+                    $title,
+                    $message,
+                    URLROOT . '/notification/index'
+                )) {
+                    $sentCount++;
+                }
+            }
+
+            if ($sentCount > 0) {
+                $_SESSION['flash_message'] = "Emergency alert sent successfully to HR notifications.";
+                $_SESSION['flash_type'] = 'success';
+            } else {
+                $_SESSION['flash_message'] = "Emergency alert could not be sent right now. Please call emergency hotlines.";
+                $_SESSION['flash_type'] = 'error';
+            }
+
+            header("Location: " . URLROOT . "/client/c_dashboard");
+            exit;
+        }
+
         $data = [
             'activeBookings' => $this->clientModel->getActiveBookingsCount($clientId),
             'caretakers'     => $this->clientModel->getAssignedCaretakersCount($clientId),
@@ -145,6 +193,24 @@ class ClientController extends Controller
                 $_POST['duration'],
                 $location
             );
+            usort($caretakers, static function (array $a, array $b): int {
+                $ra = isset($a['rating']) && $a['rating'] !== '' && $a['rating'] !== null ? (float) $a['rating'] : null;
+                $rb = isset($b['rating']) && $b['rating'] !== '' && $b['rating'] !== null ? (float) $b['rating'] : null;
+                if ($ra === null && $rb === null) {
+                    return strcasecmp((string) ($a['name'] ?? ''), (string) ($b['name'] ?? ''));
+                }
+                if ($ra === null) {
+                    return 1;
+                }
+                if ($rb === null) {
+                    return -1;
+                }
+                if ((int) ($ra * 10) !== (int) ($rb * 10)) {
+                    return $rb <=> $ra;
+                }
+
+                return strcasecmp((string) ($a['name'] ?? ''), (string) ($b['name'] ?? ''));
+            });
         }
 
         $this->view("client/c_find", [
@@ -282,7 +348,7 @@ class ClientController extends Controller
             exit;
         }
 
-        $allowedTabs = ['all', 'due_now', 'upcoming', 'overdue', 'paid_history', 'by_booking'];
+        $allowedTabs = ['all', 'due_now', 'upcoming', 'overdue', 'paid_history'];
         $tab = $_GET['tab'] ?? 'all';
         if (!in_array($tab, $allowedTabs, true)) {
             $tab = 'all';
@@ -304,9 +370,8 @@ class ClientController extends Controller
         $history = $this->clientModel->getClientPaymentHistoryDetailed((int)$clientId);
 
         $todayTs = strtotime(date('Y-m-d'));
-        $upcomingWindowTs = strtotime('+30 days', $todayTs);
 
-        $filteredAction = array_values(array_filter($actionItems, function ($item) use ($filters, $todayTs, $upcomingWindowTs) {
+        $filteredAction = array_values(array_filter($actionItems, function ($item) use ($filters, $todayTs) {
             $search = strtolower($filters['search']);
             if ($search !== '') {
                 $haystack = strtolower(
@@ -339,19 +404,52 @@ class ClientController extends Controller
                 return false;
             }
 
+            $paymentStatus = strtolower((string)($item['payment_status'] ?? ''));
+            $daysDelta = (int)($item['days_delta'] ?? 99);
+            $isCompleted = in_array($paymentStatus, ['approved', 'paid'], true);
+
+            if ($isCompleted) {
+                return false;
+            }
+
             if ($filters['tab'] === 'due_now') {
-                return (string)$item['payment_status'] === 'overdue' || ((int)$item['days_delta'] <= 0 && (string)$item['payment_status'] !== 'advance_required');
+                if ($paymentStatus === 'overdue') {
+                    return true;
+                }
+                if (in_array($paymentStatus, ['pending', 'advance_required'], true)) {
+                    if ($daysDelta <= 0) {
+                        return true;
+                    }
+                    if ($dueTs !== null && $dueTs <= $todayTs) {
+                        return true;
+                    }
+                }
+                return false;
             }
 
             if ($filters['tab'] === 'upcoming') {
-                if ($dueTs === null) {
+                if (!in_array($paymentStatus, ['pending', 'advance_required'], true)) {
                     return false;
                 }
-                return ((string)$item['payment_status'] === 'pending') && $dueTs > $todayTs && $dueTs <= $upcomingWindowTs;
+                if ($dueTs !== null) {
+                    return $dueTs > $todayTs;
+                }
+                return $daysDelta > 0;
             }
 
             if ($filters['tab'] === 'overdue') {
-                return (string)$item['payment_status'] === 'overdue';
+                if ($paymentStatus === 'overdue') {
+                    return true;
+                }
+                if (in_array($paymentStatus, ['pending', 'advance_required'], true)) {
+                    if ($daysDelta < 0) {
+                        return true;
+                    }
+                    if ($dueTs !== null && $dueTs < $todayTs) {
+                        return true;
+                    }
+                }
+                return false;
             }
 
             if ($filters['tab'] === 'paid_history') {
@@ -414,8 +512,12 @@ class ClientController extends Controller
                 return false;
             }
 
+            if ($filters['tab'] === 'due_now' || $filters['tab'] === 'upcoming' || $filters['tab'] === 'overdue') {
+                return false;
+            }
+
             if ($filters['tab'] === 'paid_history') {
-                return strtolower((string)$item['status']) === 'approved';
+                return in_array(strtolower((string)$item['status']), ['approved', 'paid', 'completed'], true);
             }
 
             return true;
@@ -581,6 +683,18 @@ class ClientController extends Controller
         ]);
     }
 
+    public function c_myBookings()
+    {
+        $clientId = AuthSession::profileId();
+        $bookings = $this->clientModel->getAllBookingsForClientOverview($clientId);
+        $pendingAdvance = $this->clientModel->getAdvancePaymentPendingBookings($clientId);
+
+        $this->view('client/c_my_bookings', [
+            'bookings' => $bookings,
+            'pendingAdvance' => $pendingAdvance,
+        ]);
+    }
+
     // New ongoing bookings page for client
     public function c_ongoingBookings()
     {
@@ -594,7 +708,7 @@ class ClientController extends Controller
     public function requestCaretakerChange()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: " . URLROOT . "/client/myBookings");
+            header("Location: " . URLROOT . "/public?url=client/c_myBookings");
             exit;
         }
 
@@ -605,7 +719,7 @@ class ClientController extends Controller
 
         if ($bookingId <= 0 || $newCaretakerId <= 0 || $clientId <= 0 || $reason === '') {
             $_SESSION['error'] = "Missing details.";
-            header("Location: " . URLROOT . "/client/myBookings");
+            header("Location: " . URLROOT . "/public?url=client/c_myBookings");
             exit;
         }
 
@@ -757,7 +871,7 @@ class ClientController extends Controller
                 'rating_count' => (int)($c['rating_count'] ?? 0),
                 'experience_years' => (int)($c['experience'] ?? 0),
                 'qualification' => $c['qualifications'] ?? '',
-                'profile_image' => $c['profile_image'] ?? 'default.png'
+                'profile_image' => $c['profile_image'] ?? 'default.jpg'
             ];
         }, $list));
         error_reporting($prev);
@@ -1466,7 +1580,7 @@ class ClientController extends Controller
     public function c_ctprofileview()
     {
         if (!isset($_GET['id'])) {
-            header("Location: index.php?url=client/c_find1");
+            header('Location: ' . URLROOT . '/public?url=client/c_find1');
             exit;
         }
 
@@ -1477,8 +1591,21 @@ class ClientController extends Controller
             die("Caretaker not found");
         }
 
+        $allowedBookingKeys = ['service_type', 'basis', 'duration', 'date', 'time', 'customization_hours', 'customization_apply'];
+        $bookingContext = [];
+        foreach ($allowedBookingKeys as $key) {
+            if (!isset($_GET[$key])) {
+                continue;
+            }
+            $val = is_string($_GET[$key]) ? trim($_GET[$key]) : (string) $_GET[$key];
+            if ($val !== '') {
+                $bookingContext[$key] = $val;
+            }
+        }
+
         $this->view("client/c_ctprofileview", [
-            'caretaker' => $caretaker
+            'caretaker' => $caretaker,
+            'bookingContext' => $bookingContext,
         ]);
     }
 
@@ -1658,7 +1785,7 @@ class ClientController extends Controller
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            $profileImage = $user['profile_image'] ?? 'default.png';
+            $profileImage = $user['profile_image'] ?? 'default.jpg';
 
             if (!empty($_FILES['profile_image']['name'])) {
 
@@ -1695,17 +1822,34 @@ class ClientController extends Controller
         $user = $_SESSION['user'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if ($_POST['new-password'] !== $_POST['confirm-password']) {
-                die("Error: Passwords do not match.");
+            $current = (string) ($_POST['current_password'] ?? '');
+            $new     = (string) ($_POST['new_password'] ?? '');
+            $confirm = (string) ($_POST['confirm_password'] ?? '');
+
+            $hash = $this->clientModel->getClientPasswordHashById((int) $user['id']);
+            if ($hash === null || $hash === '' || !password_verify($current, $hash)) {
+                $_SESSION['error'] = 'Current password is incorrect.';
+                header('Location: ' . URLROOT . '/client/c_settings');
+                exit();
             }
 
-            $_POST['password'] = password_hash($_POST['new-password'], PASSWORD_DEFAULT);
+            if ($new !== $confirm) {
+                $_SESSION['error'] = 'New passwords do not match.';
+                header('Location: ' . URLROOT . '/client/c_settings');
+                exit();
+            }
 
-            $this->clientModel->updateClientPassword($user['id'], $_POST['password']);
+            if (strlen($new) < 8) {
+                $_SESSION['error'] = 'New password must be at least 8 characters.';
+                header('Location: ' . URLROOT . '/client/c_settings');
+                exit();
+            }
 
+            $hashed = password_hash($new, PASSWORD_DEFAULT);
+            $this->clientModel->updateClientPassword($user['id'], $hashed);
 
-            $_SESSION['success'] = "Password updated successfully!";
-            header("Location: " . URLROOT . "/client/c_settings");
+            $_SESSION['success'] = 'Password updated successfully!';
+            header('Location: ' . URLROOT . '/client/c_settings');
             exit();
         }
     }
@@ -1782,8 +1926,27 @@ class ClientController extends Controller
     public function c_announcement()
     {
         $announcementModel = $this->model('AnnouncementModel');
-        $announcements = $announcementModel->getClientAnnouncements();
+        $perPage     = 15;
+        $currentPage = max(1, (int) ($_GET['page'] ?? 1));
+        $filters     = [
+            'for_client_portal' => true,
+            'date_from'        => trim((string) ($_GET['date_from'] ?? '')),
+            'date_to'          => trim((string) ($_GET['date_to'] ?? '')),
+            'q'                => trim((string) ($_GET['q'] ?? '')),
+        ];
+        $totalRecords = $announcementModel->countAnnouncementsFiltered($filters);
+        $totalPages   = $totalRecords > 0 ? (int) ceil($totalRecords / $perPage) : 1;
+        $currentPage  = max(1, min($currentPage, $totalPages));
+        $offset       = ($currentPage - 1) * $perPage;
+        $announcements = $announcementModel->getAnnouncementsFilteredPaged($filters, $perPage, $offset);
 
-        $this->view("client/c_announcement", $announcements);
+        $this->view('client/c_announcement', [
+            'announcements' => $announcements,
+            'filters'       => $filters,
+            'currentPage'   => $currentPage,
+            'totalPages'    => $totalPages,
+            'totalRecords'  => $totalRecords,
+            'perPage'       => $perPage,
+        ]);
     }
 }

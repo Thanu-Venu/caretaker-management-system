@@ -1,0 +1,360 @@
+/**
+ * Client module — loaded after legacy per-page client stylesheets.
+ * Reuse admin tokens only; do not redefine the global design system here.
+ */
+
+/* Client booking rows / list rows: same glass card as HR history */
+body:has(aside.sidebar) .client-dashboard .booking,
+body:has(aside.sidebar) .recent-bookings .booking {
+    background: var(--admin-surface-glass);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    box-shadow: var(--admin-shadow);
+}
+
+body:has(aside.sidebar) .client-dashboard .booking:hover,
+body:has(aside.sidebar) .recent-bookings .booking:hover {
+    box-shadow: var(--admin-shadow-hover);
+    border-color: var(--admin-primary-muted, rgba(30, 136, 229, 0.2));
+}
+
+/* Modal close control — align with admin-ui modal chrome */
+body:has(aside.sidebar) .modal .close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--admin-muted);
+    background: rgba(248, 250, 252, 0.9);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-sm, 8px);
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+body:has(aside.sidebar) .modal .close:hover {
+    color: var(--admin-text);
+    background: #fff;
+    border-color: var(--admin-primary-muted);
+}
+
+.advance-modal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.advance-modal-item {
+    padding: 14px 16px;
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-sm);
+    background: rgba(248, 250, 252, 0.65);
+    font-size: 14px;
+}
+
+.advance-modal-item .btn {
+    margin-top: 0;
+}
+
+.advance-modal-item__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.advance-modal-item__line {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 6px 16px;
+    font-size: 14px;
+}
+
+.advance-modal-item__k {
+    color: var(--admin-muted, #64748b);
+    font-weight: 600;
+}
+
+.advance-modal-item__v {
+    text-align: right;
+    color: var(--admin-text, #0f172a);
+    max-width: 62%;
+    word-break: break-word;
+}
+
+.advance-modal-item__money {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.advance-modal-item__pay {
+    margin-top: 12px;
+    width: 100%;
+    justify-content: center;
+}
+
+/* Client sidebar: submenu links with icons (same rhythm as top-level items) */
+.sidebar .submenu-list li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar .submenu-list li a > i {
+    font-size: 1.0625rem;
+    width: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    opacity: 0.95;
+}
+
+/*
+ * Bookings submenu (expanded + drawer): grid matches other rail rows — fixed icon column (1.25rem + gap),
+ * label flexes, badge + chevron sit on the right. Avoids absolute chevron pulling the glyph left.
+ */
+body:has(aside.sidebar) .sidebar .submenu-parent .menu-item-content {
+    position: relative;
+    min-height: 36px;
+    display: grid;
+    grid-template-columns: 1.25rem minmax(0, 1fr) auto max-content;
+    column-gap: 10px;
+    align-items: center;
+    width: 100%;
+    padding-right: 0;
+    box-sizing: border-box;
+}
+
+/* Flatten icon + label into the first two grid columns (same rhythm as .sidebar-menu a > i + span) */
+body:has(aside.sidebar) .sidebar .submenu-parent .menu-left {
+    display: contents;
+}
+
+body:has(aside.sidebar) .sidebar .submenu-parent .menu-left > i {
+    justify-self: center;
+    align-self: center;
+    width: 1.25rem;
+    font-size: 1.125rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    opacity: 0.95;
+}
+
+body:has(aside.sidebar) .sidebar .submenu-parent .menu-left > span {
+    min-width: 0;
+}
+
+body:has(aside.sidebar) .sidebar .submenu-parent .sidebar-badge {
+    margin-left: 0;
+    justify-self: end;
+}
+
+body:has(aside.sidebar) .sidebar .submenu-parent .submenu-chevron {
+    position: static;
+    transform: none;
+    margin: 0 !important;
+    flex-shrink: 0;
+    font-size: 1rem;
+    line-height: 1;
+    width: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.9;
+    pointer-events: none;
+    transition: transform 0.22s ease;
+    justify-self: end;
+}
+
+body:has(aside.sidebar) .sidebar .submenu.active .submenu-parent .submenu-chevron {
+    transform: rotate(180deg);
+}
+
+@media (min-width: 1024px) {
+    /* Flyout is position:absolute inside aside.sidebar; overflow must not clip it */
+    body.admin-sidebar-collapsed .sidebar.sidebar--submenu-flyout {
+        overflow: visible;
+    }
+
+    body.admin-sidebar-collapsed .sidebar.sidebar--submenu-flyout .menu-scroll {
+        overflow: visible;
+    }
+
+    /* Collapsed rail: small chevron under the icon; submenu opens as an absolute flyout (JS positions vs sidebar) */
+    body.admin-sidebar-collapsed .sidebar .submenu-parent .menu-item-content {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding-right: 0;
+        min-height: 44px;
+        padding-bottom: 10px;
+        width: 100%;
+    }
+
+    body.admin-sidebar-collapsed .sidebar .submenu-parent .menu-left {
+        display: flex !important;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 100%;
+        gap: 0;
+    }
+
+    body.admin-sidebar-collapsed .sidebar .submenu-parent .submenu-chevron {
+        position: absolute;
+        right: 50%;
+        left: auto;
+        top: auto;
+        bottom: 4px;
+        transform: translateX(50%);
+        width: auto;
+        font-size: 9px;
+        opacity: 0.85;
+    }
+
+    body.admin-sidebar-collapsed .sidebar .submenu.active .submenu-parent .submenu-chevron {
+        transform: translateX(50%) rotate(180deg);
+    }
+
+    /* Bookings badge: use same top-right corner as Payments (do not center on icon — avoids overlap). */
+
+    body.admin-sidebar-collapsed .sidebar .submenu-list.submenu-list--flyout {
+        padding: 4px 0;
+        margin: 0;
+        min-width: 232px;
+        max-width: min(92vw, 288px);
+        max-height: min(70vh, 380px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        text-align: left;
+        background: #fff;
+        color: var(--admin-text, #0f172a);
+        border: 1px solid var(--admin-border, rgba(15, 23, 42, 0.1));
+        border-radius: var(--admin-radius-sm, 10px);
+        box-shadow:
+            0 4px 6px -1px rgba(15, 23, 42, 0.08),
+            0 12px 28px -4px rgba(15, 23, 42, 0.14);
+        list-style: none;
+    }
+
+    body.admin-sidebar-collapsed .sidebar .submenu-list.submenu-list--flyout li {
+        margin: 0;
+    }
+
+    /* Icon column + label column: strict left edge and vertical rhythm */
+    body.admin-sidebar-collapsed .sidebar .submenu-list.submenu-list--flyout li a {
+        display: grid;
+        grid-template-columns: 1.5rem minmax(0, 1fr);
+        column-gap: 12px;
+        align-items: center;
+        justify-items: start;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+        color: var(--admin-text, #0f172a);
+        padding: 11px 14px 11px 12px;
+        border-radius: 8px;
+        text-align: left;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.25;
+    }
+
+    body.admin-sidebar-collapsed .sidebar .submenu-list.submenu-list--flyout li a > i {
+        grid-column: 1;
+        width: 1.5rem;
+        min-width: 1.5rem;
+        margin: 0;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        justify-self: center;
+        font-size: 1.125rem;
+        line-height: 1;
+        opacity: 0.92;
+    }
+
+    body.admin-sidebar-collapsed .sidebar .submenu-list.submenu-list--flyout li a > span {
+        grid-column: 2;
+        justify-self: stretch;
+        text-align: left;
+        margin: 0;
+        padding: 0;
+        min-width: 0;
+    }
+
+    body.admin-sidebar-collapsed .sidebar .submenu-list.submenu-list--flyout li a:hover {
+        background: rgba(30, 136, 229, 0.09);
+        color: var(--admin-text, #0f172a);
+    }
+
+    body.admin-sidebar-collapsed .sidebar .submenu-list.submenu-list--flyout li a.active {
+        background: rgba(30, 136, 229, 0.14);
+        font-weight: 600;
+    }
+
+    /* Flyout: show link labels (rail mode sr-only-hides direct `a > span`) */
+    body.admin-sidebar-collapsed .sidebar .submenu-list.submenu-list--flyout a > span {
+        position: static !important;
+        width: auto !important;
+        height: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        clip: auto !important;
+        white-space: nowrap !important;
+        border: 0 !important;
+    }
+}
+
+/* ---------- Client booking status pills (aligned with admin-ui .status rhythm) ---------- */
+body:has(aside.sidebar) .status.pbs-requested {
+    background: #e0f2fe;
+    color: #075985;
+    border-color: rgba(14, 165, 233, 0.28);
+}
+
+body:has(aside.sidebar) .status.pbs-payment-requested {
+    background: var(--admin-warning-bg, #fef3c7);
+    color: var(--admin-warning-text, #b45309);
+    border-color: rgba(217, 119, 6, 0.3);
+}
+
+body:has(aside.sidebar) .status.pbs-advance-paid {
+    background: rgba(0, 191, 165, 0.14);
+    color: #00695c;
+    border-color: rgba(0, 191, 165, 0.32);
+}
+
+body:has(aside.sidebar) .status.pbs-reschedule-requested {
+    background: #ede9fe;
+    color: #5b21b6;
+    border-color: rgba(91, 33, 182, 0.22);
+}
+
+body:has(aside.sidebar) .status.pbs-change-requested {
+    background: #fce7f3;
+    color: #9d174d;
+    border-color: rgba(190, 24, 93, 0.22);
+}

@@ -1,19 +1,11 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact Your Caregiver</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_contactCT.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-
-<body>
-  <div class="main-content">
+<?php
+$clientPageTitle = 'Contact caregiver — SmartCare';
+$clientExtraCss  = ['client/c_contactCT.css'];
+require_once APPROOT . '/views/templates/client/client_layout_head.php';
+require_once APPROOT . '/views/templates/client/c_header.php';
+require_once APPROOT . '/views/templates/client/c_sidebar.php';
+?>
+  <main class="main-content">
     <div class="page-header">
       <h1><i class="fas fa-user-nurse"></i> Contact Your Caregiver</h1>
       <p class="subtitle">Get in touch with your assigned caregiver</p>
@@ -112,9 +104,7 @@
         </div>
       </div>
     <?php endif; ?>
-  </div>
+  </main>
 
   <script src="<?php echo URLROOT; ?>/public/js/client/c_contactCT.js"></script>
-</body>
-
-</html>
+<?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

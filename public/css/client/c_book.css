@@ -1,361 +1,139 @@
-/* c_book.css - enhanced (same theme/colors) */
+/* Book service — supplements admin-ui form + cards */
 
-/* ---------- Base / Layout ---------- */
-* {
-  box-sizing: border-box;
+/* Match booking panel width to caregiver summary + pricing card (full main column) */
+.book-service-page .booking-form .form-section--book-full,
+.book-service-page .booking-form .form-section.form-section--wide.form-section--book-full {
+    max-width: none;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    box-sizing: border-box;
 }
 
-.content {
-  margin-left: 270px; /* space for sidebar */
-  margin-right: 30px;
-  padding: 30px;
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: #f9fafc;
-  min-height: 100vh;
+.book-form-section-title {
+    margin: 0 0 20px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--admin-text, #0f172a);
 }
 
-/* Heading */
-.content h1 {
-  font-size: 28px;
-  margin: 0 0 18px;
-  color: #1e88e5;
-  letter-spacing: 0.2px;
+.book-address-heading {
+    margin: 8px 0 4px !important;
+    padding: 0 !important;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--admin-page-heading-color, #0f3555);
+    border-bottom: 1px solid var(--admin-border, #e2e8f0);
+    padding-bottom: 10px !important;
+    align-self: stretch;
 }
 
-/* Nice consistent section spacing */
-.caretaker-summary,
-.booking-form,
-#otherCaretakers {
-  margin-bottom: 22px;
+/* Address rows: two columns on the main form grid (drop .full on address fields) */
+@media (max-width: 899px) {
+    .book-service-page .form-grid > .field:not(.full) {
+        grid-column: 1 / -1;
+    }
 }
 
-/* ---------- Cards ---------- */
 .caretaker-summary {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-  border: 1px solid rgba(0,0,0,0.04);
+    background: var(--admin-surface-glass);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    box-shadow: var(--admin-shadow);
+    padding: 18px 20px;
+    margin-bottom: var(--admin-section-gap);
 }
 
 .caretaker-summary h2 {
-  margin: 0 0 10px;
-  font-size: 22px;
-  color: #333;
+    margin: 0 0 12px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--admin-text);
 }
 
 .caretaker-summary p {
-  margin: 6px 0;
-  font-size: 15px;
-  color: #555;
-  line-height: 1.4;
+    margin: 0 0 8px;
+    font-size: 14px;
+    color: var(--admin-text-secondary);
 }
 
-/* Make summary labels feel more “dashboard-like” */
-.caretaker-summary p strong {
-  display: inline-block;
-  min-width: 80px;
-  color: #333;
+.booking-form .form-group {
+    margin-bottom: 16px;
 }
 
-/* ---------- Base Price line ---------- */
-.form-group {
-  margin-bottom: 18px;
+.booking-form .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--admin-text-secondary);
 }
 
-.form-group .hint {
-  margin-top: 6px;
-  font-size: 13px;
-  color: #666;
-  line-height: 1.35;
+.booking-form .form-group small {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--admin-muted);
 }
 
-#basePrice {
-  display: inline-block;
-  padding: 7px 12px;
-  border-radius: 999px;
-  background: #f1f7ff;
-  border: 1px solid #d3e3ff;
-  color: #1d3557;
-  font-weight: 700;
+.book-service-page #customization {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
-/* ---------- Booking Form Container ---------- */
-.booking-form {
-  background: #ffffff;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
-  border: 1px solid rgba(0,0,0,0.04);
+.book-service-page .field.full {
+    width: 100%;
 }
 
-/* Better form rhythm */
-.form-group label {
-  display: block;
-  margin-bottom: 7px;
-  font-weight: 700;
-  font-size: 13.5px;
-  color: #333;
-  letter-spacing: 0.2px;
+.book-service-page .field.full label,
+.book-service-page .field.full textarea {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 11px 12px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  font-size: 15px;
-  background: #fff;
-  transition: border-color 0.2s, box-shadow 0.2s, transform 0.05s;
-  display: block;
-}
-
-/* Make textarea feel nicer */
-.form-group textarea {
-  min-height: 90px;
-  resize: vertical;
-  line-height: 1.4;
-}
-
-/* Keep readonly + disabled readable */
-.form-group input[readonly],
-.form-group select:disabled {
-  color: #252424;
-  opacity: 1;
-}
-
-/* Focus polish (same blue theme) */
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: #4a90e2;
-  box-shadow: 0 0 0 3px rgba(74,144,226,0.18);
-  outline: none;
-}
-
-/* Subtle “press” feel for better UX */
-.form-group input:active,
-.form-group select:active,
-.form-group textarea:active {
-  transform: translateY(0.5px);
-}
-
-/* Remove arrow styling for disabled selects (kept from you) */
-#basis,
-#preferredTime {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-image: none;
-  padding-right: 12px;
-}
-
-/* Disabled / readonly style */
-.form-group select:disabled,
-.form-group input:readonly {
-  color: #333;
-  background: #f9f9f9;
-  opacity: 1;
-}
-
-/* Make helper text readable */
-.form-group small {
-  display: block;
-  margin-top: 6px;
-  font-size: 12.5px;
-  color: #666;
-  line-height: 1.35;
-}
-
-/* ---------- Price Box ---------- */
 .price-box {
-  background: #f1f7ff;
-  border: 1px solid #d3e3ff;
-  padding: 16px;
-  border-radius: 12px;
-  margin: 6px 0 18px;
-  color: #1d3557;
-  font-weight: bold;
+    margin: 20px 0;
+    padding: 16px 18px;
+    border-radius: var(--admin-radius-sm);
+    border: 1px solid var(--admin-border);
+    background: linear-gradient(180deg, rgba(248, 250, 252, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%);
 }
 
-/* Align price rows nicely */
 .price-box p {
-  margin: 6px 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: var(--admin-text-secondary);
 }
 
-.price-box p strong {
-  min-width: 0;
-  color: #1e3a5f;
+.price-box p:last-child {
+    margin-bottom: 0;
 }
 
 .price-value {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  font-weight: 700;
+    font-weight: 700;
+    color: var(--admin-text);
 }
 
-.price-value small {
-  font-size: 12px;
-  color: #4b6683;
-  font-weight: 600;
-}
-
-/* Keep numbers aligned visually */
-.price-box span {
-  font-variant-numeric: tabular-nums;
-}
-
-/* Availability */
-#availabilityMsg {
-  display: inline-block;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: #fff5f5;
-  border: 1px solid rgba(230,57,70,0.25);
-  font-size: 14px;
-  font-weight: 600;
-  color: #e63946;
-  min-height: 18px;
-}
-
-/* ---------- Button ---------- */
-#bookBtn {
-  width: 100%;
-  padding: 13px 14px;
-  border: none;
-  border-radius: 12px;
-  background: #4a90e2;
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-  font-weight: 700;
-  transition: background 0.25s, transform 0.06s, box-shadow 0.2s;
-  box-shadow: 0 10px 18px rgba(74,144,226,0.25);
-}
-
-#bookBtn:hover:enabled {
-  background: #357abd;
-  box-shadow: 0 12px 22px rgba(74,144,226,0.28);
-}
-
-#bookBtn:active:enabled {
-  transform: translateY(1px);
-}
-
-#bookBtn:disabled {
-  background: #b0c7e6;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-/* ---------- Other Caretakers ---------- */
 #otherCaretakers {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-  border: 1px solid rgba(0,0,0,0.04);
+    margin-top: var(--admin-section-gap);
 }
 
-/* Keep hidden by default (your logic) */
-#otherCaretakers {
-  display: none;
+#otherCaretakers > h3 {
+    margin: 0 0 14px;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--admin-text);
 }
 
-#otherCaretakers h3 {
-  margin: 0 0 14px;
-  font-size: 20px;
-  color: #333;
-}
-
-/* Grid */
 .caretaker-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 18px;
-  margin-top: 12px;
-}
-
-/* Cards */
-.caretaker-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 18px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-  border: 1px solid rgba(0,0,0,0.04);
-  text-align: center;
-  width: 100%;
-  height: auto; /* allow flexible height for content */
-  min-height: 320px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.caretaker-card h4 {
-  margin: 0 0 8px;
-  font-size: 18px;
-  color: #333;
-}
-
-.caretaker-card p {
-  margin: 4px 0;
-  font-size: 14px;
-  color: #555;
-  line-height: 1.35;
-}
-
-/* Button inside card */
-.caretaker-card button {
-  margin-top: 12px;
-  padding: 10px 14px;
-  border: none;
-  border-radius: 10px;
-  background: #4a90e2;
-  color: #fff;
-  font-size: 14px;
-  cursor: pointer;
-  font-weight: 700;
-  transition: background 0.25s, transform 0.06s;
-}
-
-.caretaker-card button:hover {
-  background: #357abd;
-}
-
-.caretaker-card button:active {
-  transform: translateY(1px);
-}
-
-/* ---------- Responsive ---------- */
-@media (max-width: 768px) {
-  .content {
-    margin-left: 0;
-    margin-right: 0;
-    padding: 18px;
-  }
-
-  .booking-form {
-    padding: 18px;
-  }
-
-  #bookBtn {
-    font-size: 14px;
-  }
-
-  .price-box p {
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .price-box p strong {
-    min-width: 0;
-  }
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    gap: 14px;
 }

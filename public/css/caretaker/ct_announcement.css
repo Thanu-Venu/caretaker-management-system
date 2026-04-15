@@ -1,48 +1,139 @@
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
+:root {
+  --announcement-bg-1: #f4f7fb;
+  --announcement-bg-2: #eef6ff;
+  --announcement-card: #ffffff;
+  --announcement-text: #17324d;
+  --announcement-muted: #5b7288;
+  --announcement-accent: #1e88e5;
+  --announcement-accent-strong: #1565c0;
+  --announcement-border: #d8e6f4;
+  --announcement-hover: #eef7ff;
+}
 
-<!DOCTYPE html>
-<html lang="en">
+body {
+    background: linear-gradient(180deg, #f4f7fb, #f9fcff);
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Caretaker</title>
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_announcement.css">
-</head>
+.content.announcement-container {
+  padding: 24px 40px;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
 
-<body>
+.card {
+  background: var(--announcement-card);
+  padding: 30px 35px;
+  border-radius: 16px;
+  border: 1px solid var(--announcement-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 30px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-<div class="announcement-container">
-        <h2 class="page-title">Announcements</h2>
-        <?php if (empty($data)): ?>
-        <div class="no-announcement">
-            <p>No announcements available at the moment.</p>
-        </div>
-    <?php else: ?>
-        <?php foreach ($data as $announcement): ?>
-            <div class="announcement-card">
+.card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
 
-                <div class="announcement-header">
-                    <h3><?= htmlspecialchars($announcement['title']); ?></h3>
-                    <span class="announcement-date">
-                        <?= date('M d, Y', strtotime($announcement['created_at'])); ?>
-                    </span>
-                </div>
+.page-title {
+  font-size: 30px;
+  color: var(--announcement-accent);
+  letter-spacing: 0.2px;
+  margin: 0 0 5px 0;
+  font-weight: 700;
+}
 
-                <div class="announcement-body">
-                    <p><?= nl2br(htmlspecialchars($announcement['message'])); ?></p>
-                </div>
+.table-container {
+  overflow-x: auto;
+  border: 1px solid var(--announcement-border);
+  border-radius: 12px;
+  margin-top: 25px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+}
 
-                <div class="announcement-footer">
-                    <span class="role-tag">For Caregiver</span>
-                </div>
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  overflow: hidden;
+  min-width: 600px;
+}
 
-            </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
+thead th {
+  background-color: var(--announcement-accent);
+  color: #ffffff;
+}
 
-</div>
+th,
+td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #edf3f9;
+  text-align: left;
+}
 
-</body>
-</html>
+th {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+td {
+  color: var(--announcement-text);
+  vertical-align: middle;
+}
+
+tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+  background-color: var(--announcement-hover);
+}
+
+/* Date Badge */
+.announcement-date {
+  font-size: 13px;
+  color: var(--announcement-accent-strong);
+  background: #e3f2fd;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Role Tag */
+.role-tag {
+  background: linear-gradient(135deg, #1e88e5, #1565c0);
+  color: #ffffff;
+  padding: 6px 16px;
+  font-size: 13px;
+  border-radius: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(30, 136, 229, 0.3);
+}
+
+@media (max-width: 1024px) {
+  .announcement-container {
+    padding: 16px;
+    width: calc(100% - 255px);
+  }
+}
+
+@media (max-width: 768px) {
+  .announcement-container {
+    margin-left: 0 !important;
+    padding: 16px;
+    width: 100%;
+  }
+  
+  .page-title {
+    font-size: 26px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+}

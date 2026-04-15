@@ -136,6 +136,10 @@ public function getClientAnnouncements()
             $parts[] = "(a.target_role IN ('users', 'All'))";
         }
 
+        if (!empty($filters['for_client_portal'])) {
+            $parts[] = "(a.target_role IN ('client', 'All'))";
+        }
+
         return [$parts, $types, $params];
     }
 

@@ -1,11 +1,10 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
-
-<?php if (!empty($_SESSION['flash_message'])): ?>
-  <div class="alert success"><?php echo $_SESSION['flash_message'];
-    unset($_SESSION['flash_message']); ?>
-   </div>
-<?php endif; ?>
+<?php
+$clientPageTitle = 'Dashboard - SmartCare';
+$clientExtraCss = ['client/c_dashboard.css'];
+require_once APPROOT . '/views/templates/client/client_layout_head.php';
+require_once APPROOT . '/views/templates/client/c_header.php';
+require_once APPROOT . '/views/templates/client/c_sidebar.php';
+?>
 <?php
 $servicePriceRates = [
   "Elder Care" => [
@@ -36,20 +35,19 @@ function moneyLKR($amount)
 {
   return "LKR " . number_format((float)$amount, 0);
 }
+
+$pendingAdvanceList = $data['pendingAdvance'] ?? [];
+$hasPendingAdvance  = !empty($pendingAdvanceList);
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<main class="main-content admin-dashboard-page client-dashboard-page">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client Dashboard</title>
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/client/c_dashboard.css">
-</head>
-
-<body>
+    <?php if (!empty($_SESSION['flash_message'])): ?>
+      <?php $flashType = $_SESSION['flash_type'] ?? 'success'; ?>
+      <div class="alert <?= htmlspecialchars((string) $flashType, ENT_QUOTES, 'UTF-8') ?>"><?php echo $_SESSION['flash_message'];
+        unset($_SESSION['flash_message'], $_SESSION['flash_type']); ?>
+      </div>
+    <?php endif; ?>
 
     <div id="emergencyModal" class="modal">
       <div class="modal-content">
@@ -60,6 +58,7 @@ function moneyLKR($amount)
         <p>Submit your emergency request</p>
 
         <form method="POST" action="">
+          <input type="hidden" name="emergency_submit" value="1">
           
           <div class="form-group">
             <label>Emergency Type</label>
@@ -85,44 +84,30 @@ function moneyLKR($amount)
           <button type="submit" class="submit-btn">Send Alert 🚨</button>
         </form>
 
-        <div class="quick-call">
-          <a href="tel:1990">🚑 Ambulance</a>
-          <a href="tel:119">🚓 Police</a>
+
+
+        <div class="emergency-hotlines" role="note" aria-label="Emergency hotline information">
+          <p><strong>Police Emergency (Hotline):</strong> 119 / 118</p>
+          <p><strong>Ambulance / Medical Emergency (Suwa Seriya):</strong> 1990</p>
+          <p><strong>Ambulance / Fire &amp; Rescue (General):</strong> 110</p>
         </div>
 
       </div>
     </div>
 
 
-    <?php if (!empty($data['pendingAdvance'])): ?>
-      <div id="advanceModal" class="modal" style="display:flex;">
+    <?php if ($hasPendingAdvance): ?>
+      <div id="advanceModal" class="modal show" role="dialog" aria-modal="true" aria-labelledby="advanceModalTitle">
         <div class="modal-content" style="max-width:640px;">
-          <span class="close" onclick="document.getElementById('advanceModal').style.display='none'">&times;</span>
-          <h2 style="margin-bottom:12px; color:#1e88e5; font-family: 'Poppins', sans-serif; font-weight:700; font-size:24px;">Advance Payments Required</h2>
-          <p>You have pending advance payments for the following bookings:</p>
-
-          <?php foreach ($data['pendingAdvance'] as $p): ?>
-            <div class="advance-details" style="margin-bottom:15px;">
-              <div><b>Booking #:</b> <?= $p['booking_id'] ?></div>
-              <div><b>Service:</b> <?= htmlspecialchars($p['service_type']) ?></div>
-              <div><b>Date:</b> <?= htmlspecialchars($p['booking_date']) ?></div>
-              <div><b>Time:</b> <?= htmlspecialchars($p['preferred_time']) ?></div>
-              <div><b>Duration:</b> <?= htmlspecialchars($p['duration'] . ' ' . $p['basis']) ?></div>
-
-              <a class="modal-submit-btn"
-                style="margin-top:10px;"
-                href="<?= URLROOT ?>/client/c_makePayment?booking_id=<?= $p['booking_id'] ?>">
-                Pay Now
-              </a>
-            </div>
-          <?php endforeach; ?>
-
+          <button type="button" class="close" onclick="document.getElementById('advanceModal').classList.remove('show')" aria-label="Close">&times;</button>
+          <h3 id="advanceModalTitle">Advance payments required</h3>
+          <p class="text-muted">You have pending advance payments for the following bookings.</p>
+          <div class="advance-modal-list">
+            <?php require APPROOT . '/views/client/partials/advance_pending_booking_cards.php'; ?>
+          </div>
         </div>
       </div>
     <?php endif; ?>
-    <div class="container">
-
-
       <div class="client-dashboard">
 
         <!-- Welcome -->
@@ -166,14 +151,14 @@ function moneyLKR($amount)
             <p>Avg Rating Given</p>
           </div>
 
-          <div class="card" style="<?= !empty($data['pendingAdvance']) ? 'border-color: #e53935; box-shadow: 0 4px 12px rgba(229,57,53,0.1);' : '' ?>">
+          <div class="card">
             <div class="action1">
-              <i class='bx bx-wallet-alt' style="<?= !empty($data['pendingAdvance']) ? 'color: #e53935; background: rgba(229,57,53,0.1);' : '' ?>"></i>
+              <i class='bx bx-wallet-alt'></i>
             </div>
-            <h3 style="color: <?= !empty($data['pendingAdvance']) ? '#e53935' : '#111' ?>;">
+            <h3>
               <?= count($data['pendingAdvance'] ?? []); ?>
             </h3>
-            <p style="<?= !empty($data['pendingAdvance']) ? 'color: #e53935; font-weight: 500;' : '' ?>">Pending Advances</p>
+            <p>Pending Advances</p>
           </div>
         </div>
 
@@ -268,7 +253,8 @@ function moneyLKR($amount)
             <div class="price-lines">
               <div class="line"><span>Hourly</span><strong>Full payment required</strong></div>
               <div class="line"><span>Daily (lead time)</span><strong>Within 15 days: full payment</strong></div>
-              <div class="line"><span>Daily</span><strong>15+ days: 50% advance</strong></div>
+              <div class="line"><span>Daily</span><strong>15-30 days: 10 days advance</strong></div>
+              <div class="line"><span>Daily balance</span><strong>Remaining due before booking end</strong></div>
               <div class="line"><span>Monthly</span><strong>1 month advance for &lt; 6 months; otherwise 3 months</strong></div>
               <div class="line"><span>Yearly</span><strong>&lt; 1 year: 3 months; 1+ year: 6 months</strong></div>
             </div>
@@ -316,11 +302,15 @@ function moneyLKR($amount)
           </div>
         </section>
 
-        <section class="recent-bookings">
+        <section class="recent-bookings client-dashboard-recent">
           <h2>Recent Bookings</h2>
 
           <?php if (!empty($data['recentBookings'])): ?>
             <?php foreach ($data['recentBookings'] as $booking): ?>
+              <?php
+                $rawStatus = (string)($booking['status'] ?? '');
+                $statusClass = strtolower(trim(preg_replace('/[^a-z0-9]+/i', '-', $rawStatus), '-'));
+              ?>
               <div class="booking">
                 <img src="../public/images/find.png" alt="">
                 <div>
@@ -331,8 +321,8 @@ function moneyLKR($amount)
                     • <?= $booking['duration']; ?> hours
                   </p>
                 </div>
-                <span class="status <?= strtolower($booking['status']); ?>">
-                  <?= $booking['status']; ?>
+                <span class="status <?= htmlspecialchars($statusClass, ENT_QUOTES, 'UTF-8') ?>">
+                  <?= htmlspecialchars($rawStatus, ENT_QUOTES, 'UTF-8'); ?>
                 </span>
               </div>
             <?php endforeach; ?>
@@ -348,12 +338,8 @@ function moneyLKR($amount)
 
 
       </div>
-     
-    </div>
 
-    <script src="<?php echo URLROOT; ?>/public/js/client/c_dashboard.js"></script>
+</main>
 
-
-  </body>
-
-</html>
+<script src="<?php echo URLROOT; ?>/public/js/client/c_dashboard.js"></script>
+<?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

@@ -1,6 +1,3 @@
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-
 <?php
 $form = $data['form'] ?? [];
 $errors = $data['errors'] ?? [];
@@ -19,15 +16,25 @@ $impact = $data['impact'] ?? [];
   <title>Request Leave</title>
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/leave_add.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
 
 <body>
 
+<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
   <main class="main-content">
     <section class="leave-layout">
+      <header class="page-header" style="margin-bottom: 24px;">
+        <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">Request Leave</h1>
+        <p style="color: #5b7288; margin-top: 5px; font-size: 14px;">All requests are submitted as <strong>Pending</strong> and require HR approval.</p>
+      </header>
       <div class="leave-summary-card">
-        <h1>Request Leave</h1><br>
-        <p class="subtitle">All requests are submitted as <strong>Pending</strong> and require HR approval.</p>
 
         <div class="summary-grid">
           <div class="metric">
@@ -148,7 +155,8 @@ $impact = $data['impact'] ?? [];
     window.leavePolicy = {
       advanceNoticeDays: <?= (int)$policy['advanceNoticeDays'] ?>,
       maxPerRequest: <?= (int)$policy['maxPerRequest'] ?>,
-      monthlyLimit: <?= (int)$policy['monthlyLimit'] ?>
+      monthlyLimit: <?= (int)$policy['monthlyLimit'] ?>,
+      remainingThisMonth: <?= (int)$summary['remaining'] ?>
     };
     window.leavePreview = {
       impactUrl: '<?= htmlspecialchars($data['impactPreviewUrl'] ?? (URLROOT . '/LeaveCRUD/impactPreview')) ?>'

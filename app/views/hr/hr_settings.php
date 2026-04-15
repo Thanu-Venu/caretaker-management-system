@@ -31,7 +31,7 @@ $settingsListUrl = URLROOT . '/public?url=hr/hr_settings';
             <h3>Profile details</h3>
             <div class="profile-body">
                 <img id="profileImg"
-                    src="<?= URLROOT ?>/public/images/profiles/<?= htmlspecialchars($user['profile_pic'] ?? 'default.png', ENT_QUOTES, 'UTF-8') ?>"
+                    src="<?= URLROOT ?>/public/images/profiles/<?= htmlspecialchars($user['profile_pic'] ?? 'default.jpg', ENT_QUOTES, 'UTF-8') ?>"
                     alt="Profile">
                 <form id="hrProfileForm" method="POST" action="<?= URLROOT ?>/hrsettings/update_profile" enctype="multipart/form-data">
                     <div class="pro-section">

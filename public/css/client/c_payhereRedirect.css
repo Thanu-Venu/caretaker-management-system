@@ -1,0 +1,9 @@
+.payhere-redirect-card {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 28px 32px;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    box-shadow: var(--admin-shadow);
+}

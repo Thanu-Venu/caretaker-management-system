@@ -1,141 +1,139 @@
-<?php include_once APPROOT . "/views/templates/client/c_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/client/c_sidebar.php"; ?>
+<?php
+$clientPageTitle = 'Past bookings — SmartCare';
+$clientExtraCss  = ['client/c_pastBookings.css'];
 
-<!DOCTYPE html>
-<html lang="en">
+require_once APPROOT . '/views/templates/client/client_layout_head.php';
+require_once APPROOT . '/views/templates/client/c_header.php';
+require_once APPROOT . '/views/templates/client/c_sidebar.php';
+?>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Past Bookings</title>
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/client/c_pastBookings.css">
-</head>
+<main class="main-content">
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">Past bookings</h1>
+            <p class="text-muted">Completed services and feedback.</p>
+        </div>
+    </header>
 
-<body>
-    <main class="content">
-        <h1>My Past Bookings</h1>
+    <?php if (empty($data['bookings'])): ?>
+        <p class="empty">You do not have any past bookings yet.</p>
+    <?php else: ?>
+        <div class="table-container">
+            <table class="client-table">
+                <thead>
+                    <tr>
+                        <th>Caregiver</th>
+                        <th>Service</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                        <th>Feedback</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
 
-        <?php if (empty($data['bookings'])): ?>
-            <p class="no-bookings">You don’t have any past bookings yet.</p>
-        <?php else: ?>
+                <tbody>
+                    <?php foreach ($data['bookings'] as $b): ?>
+                        <tr
+                            data-booking-id="<?= $b['booking_id'] ?>"
+                            data-caretaker-id="<?= $b['caretaker_id'] ?? '' ?>">
 
-            <div class="table-wrapper">
-                <table class="bookings-table">
-                    <thead>
-                        <tr>
-                            <th>Caretaker</th>
-                            <th>Service</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Duration</th>
-                            <th>Status</th>
-                            <th>Feedback</th>
-                            <th>Action</th>
+                            <td><?= htmlspecialchars($b['caretaker_name'] ?? 'N/A') ?></td>
+                            <td><?= htmlspecialchars($b['service_type'] ?? 'N/A') ?></td>
+                            <td><?= !empty($b['booking_date']) ? date('Y-m-d', strtotime($b['booking_date'])) : 'N/A' ?></td>
+                            <td><?= htmlspecialchars($b['preferred_time'] ?? 'N/A') ?></td>
+                            <td>
+                                <?= (int)($b['duration'] ?? 0) . ' ' . htmlspecialchars($b['basis'] ?? '') ?>
+                            </td>
+
+                            <td>
+                                <span class="status completed">Completed</span>
+                            </td>
+
+                            <td>
+                                <?php if (!empty($b['rating'])): ?>
+                                    <div class="rating-stars">
+                                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                                            <span class="<?= $i <= (int)$b['rating'] ? 'star-filled' : 'star-empty' ?>">★</span>
+                                        <?php endfor; ?>
+                                    </div>
+                                    <div class="feedback-mini">
+                                        <?= htmlspecialchars($b['feedback'] ?? '') ?>
+                                    </div>
+                                <?php else: ?>
+                                    <span class="no-feedback">No feedback yet</span>
+                                <?php endif; ?>
+                            </td>
+
+                            <td class="actions">
+
+                                <!-- View Contact Button -->
+                                <a class="action-btn contact-btn"
+                                   href="<?= URLROOT ?>/client/c_contactCT?booking_id=<?= (int)$b['booking_id'] ?>"
+                                   style="background-color:#1e88e5;color:#fff;padding:8px 12px;text-decoration:none;display:inline-block;margin-bottom:5px;border-radius:10px;font-weight:600;">
+                                    View Contact
+                                </a>
+
+                                <?php if (empty($b['rating'])): ?>
+                                    <button type="button"
+                                        class="feedback-btn"
+                                        data-booking-id="<?= $b['booking_id'] ?>"
+                                        data-caretaker-id="<?= $b['caretaker_id'] ?? '' ?>">
+                                        Give Feedback
+                                    </button>
+                                <?php else: ?>
+                                    <span class="done-text">Submitted</span>
+                                <?php endif; ?>
+
+                            </td>
                         </tr>
-                    </thead>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
+</main>
 
-                    <tbody>
-                        <?php foreach ($data['bookings'] as $b): ?>
-                            <tr
-                                data-booking-id="<?= $b['booking_id'] ?>"
-                                data-caretaker-id="<?= $b['caretaker_id'] ?? '' ?>">
-                                <td><?= htmlspecialchars($b['caretaker_name']) ?></td>
-                                <td><?= htmlspecialchars($b['service_type']) ?></td>
-                                <td><?= date('Y-m-d', strtotime($b['booking_date'])) ?></td>
-                                <td><?= htmlspecialchars($b['preferred_time']) ?></td>
-                                <td><?= (int)$b['duration'] . ' ' . htmlspecialchars($b['basis']) ?></td>
+<!-- Feedback Modal -->
+<div id="feedbackModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="feedbackModalTitle">
+    <div class="modal-content">
+        <button type="button" class="close feedback-close" aria-label="Close">&times;</button>
 
-                                <td>
-                                    <span class="status completed">Completed</span>
-                                </td>
+        <h3 id="feedbackModalTitle">Give feedback</h3>
 
-                                <td>
-                                    <?php if ($b['rating'] !== null): ?>
-                                        <div class="rating-stars">
-                                            <?php for ($i = 1; $i <= 5; $i++): ?>
-                                                <span class="<?= $i <= (int)$b['rating'] ? 'star-filled' : 'star-empty' ?>">★</span>
-                                            <?php endfor; ?>
-                                        </div>
-                                        <div class="feedback-mini">
-                                            <?= htmlspecialchars($b['feedback']) ?>
-                                        </div>
-                                    <?php else: ?>
-                                        <span class="no-feedback">No feedback yet</span>
-                                    <?php endif; ?>
-                                </td>
+        <form method="POST" action="<?= URLROOT ?>/client/submitFeedback" id="feedbackForm">
 
-                                <td class="actions">
-                                    <!-- View Contact Button for completed bookings -->
-                                    <a class="action-btn" id="contact-btn"
-                                        href="<?= URLROOT ?>/client/c_contactCT?booking_id=<?= (int)$b['booking_id'] ?>"
-                                        style="background-color: #1e88e5; color: #fff; padding: 8px 12px; text-decoration: none; display: inline-block; margin-bottom: 5px; border-radius: 10px; font-weight: 600; border: none;">
-                                        View Contact
-                                    </a>
+            <input type="hidden" name="booking_id" id="bookingId">
+            <input type="hidden" name="caretaker_id" id="caretakerId">
+            <input type="hidden" name="rating" id="ratingInput">
 
-                                    <?php if ($b['rating'] === null): ?>
-                                        <!-- Keep the same class so your existing JS works -->
-                                        <button type="button"
-                                            class="feedback-btn"
-                                            data-booking-id="<?= $b['booking_id'] ?>"
-                                            data-caretaker-id="<?= $b['caretaker_id'] ?? '' ?>">
-                                            Give Feedback
-                                        </button>
-                                    <?php else: ?>
-                                        <span class="done-text">Submitted</span>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+            <div class="field">
+                <label>Rating</label>
+                <div class="stars" role="group" aria-label="Star rating">
+                    <span data-value="1" tabindex="0">★</span>
+                    <span data-value="2" tabindex="0">★</span>
+                    <span data-value="3" tabindex="0">★</span>
+                    <span data-value="4" tabindex="0">★</span>
+                    <span data-value="5" tabindex="0">★</span>
+                </div>
+                <small id="ratingText" class="text-muted">0 / 5</small>
             </div>
 
-        <?php endif; ?>
+            <div class="field">
+                <label for="feedback">Your feedback</label>
+                <textarea name="feedback" id="feedback" rows="4" required placeholder="Write your feedback here..."></textarea>
+            </div>
 
-    </main>
+            <div class="modal-buttons">
+                <button type="button" id="cancelFeedback" class="btn secondary">Cancel</button>
+                <button type="submit" class="btn">Submit feedback</button>
+            </div>
 
-    <!-- ================= FEEDBACK MODAL ================= -->
-    <div id="feedbackModal" class="modal">
-        <div class="modal-content">
-            <span class="close feedback-close">&times;</span>
-
-            <h2>Give Feedback</h2>
-
-            <form method="POST" action="<?= URLROOT ?>/client/submitFeedback" id="feedbackForm">
-
-                <input type="hidden" name="booking_Id" id="bookingId">
-                <input type="hidden" name="caretaker_id" id="caretakerId">
-                <input type="hidden" name="rating" id="ratingInput">
-
-                <div class="form-group">
-                    <label>Rating</label>
-                    <div class="stars">
-                        <span data-value="1">★</span>
-                        <span data-value="2">★</span>
-                        <span data-value="3">★</span>
-                        <span data-value="4">★</span>
-                        <span data-value="5">★</span>
-                    </div>
-                    <small id="ratingText">0 / 5</small>
-                </div>
-
-                <div class="form-group">
-                    <label>Your Feedback</label>
-                    <textarea name="feedback" id="feedback" rows="4" required
-                        placeholder="Write your feedback here..."></textarea>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="save-btn">Submit Feedback</button>
-                    <button type="button" id="cancelFeedback" class="cancel-btn-secondary">
-                        Cancel
-                    </button>
-                </div>
-
-            </form>
-        </div>
+        </form>
     </div>
+</div>
 
-    <script src="<?= URLROOT ?>/public/js/client/c_pastBookings.js"></script>
-</body>
+<script src="<?= URLROOT ?>/public/js/client/c_pastBookings.js"></script>
 
-</html>
+<?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

@@ -1,6 +1,6 @@
 /* General layout */
 body, html {
-  font-family: Arial,Arial, Helvetica, sans-serif ;
+  font-family: var(--font-primary);
   height: 100%;
   font-weight: 300;
 }

@@ -5,7 +5,7 @@
  *
  * Implements SmartCare payment calculation logic for all service bases:
  * - Hourly: 100% advance
- * - Daily: 100% for <15 days, 15 days advance for 15-30 days
+ * - Daily: 100% for <15 days, 10 days advance for 15-30 days
  * - Monthly: 1 month advance (<6 months), 3 months advance (>=6 months)
  * - Yearly: 4 months advance (1 year), 6 months advance (>1 year)
  */
@@ -112,7 +112,7 @@ class PaymentCalculationService
      * Daily service calculation
      * Rules:
      * - < 15 days: 100% advance
-     * - 15-30 days: 15 days advance, remaining paid before day 16
+        * - 15-30 days: 10 days advance, remaining paid before booking end
      */
     private static function calculateDailyAdvance($duration, $totalPayment, $serviceStartDate)
     {
@@ -131,9 +131,10 @@ class PaymentCalculationService
             $result['remaining_balance'] = 0.00;
             $result['description'] = "Daily service ({$duration} days): 100% payment required in advance";
         } else {
-            // 15-30 days: 15 days advance
+            // 15-30 days: 10 days advance
             $dailyRate = $totalPayment / $duration;
-            $advanceAmount = $dailyRate * 15;
+            $advanceDays = 10;
+            $advanceAmount = $dailyRate * $advanceDays;
             $remainingAmount = $totalPayment - $advanceAmount;
 
             $result['advance_amount'] = round($advanceAmount, 2);
@@ -142,14 +143,15 @@ class PaymentCalculationService
             $result['needs_recurring'] = true;
             $result['cycle_type'] = '15_day';
 
-            // Calculate day 16 payment due date
+            // Remaining payment due one day before booking end date.
             $startDate = new DateTime($serviceStartDate);
-            $startDate->modify('+15 days');
-            $result['next_payment_due'] = $startDate->format('Y-m-d');
+            $dueDate = clone $startDate;
+            $dueDate->modify('+' . max($duration - 2, 0) . ' days');
+            $result['next_payment_due'] = $dueDate->format('Y-m-d');
 
-            $result['description'] = "Daily service ({$duration} days): 15 days advance (Rs. " .
+            $result['description'] = "Daily service ({$duration} days): {$advanceDays} days advance (Rs. " .
                 number_format($advanceAmount, 2) . "), remaining Rs. " .
-                number_format($remainingAmount, 2) . " due before day 16";
+                number_format($remainingAmount, 2) . " due before booking end";
         }
 
         return $result;
@@ -272,10 +274,15 @@ class PaymentCalculationService
                 ];
             }
         } elseif ($cycleType === '15_day') {
-            // For daily bookings 15-30 days: only one payment after 15 days
-            $startDate = new DateTime($serviceStartDate);
-            $dueDate = clone $startDate;
-            $dueDate->modify('+15 days');
+            // For daily bookings 15-30 days: one remaining payment due before booking end.
+            if (!empty($bookingData['next_payment_due'])) {
+                $dueDate = new DateTime((string) $bookingData['next_payment_due']);
+            } else {
+                $durationDays = (int) ($bookingData['duration'] ?? 0);
+                $startDate = new DateTime($serviceStartDate);
+                $dueDate = clone $startDate;
+                $dueDate->modify('+' . max($durationDays - 2, 0) . ' days');
+            }
 
             $schedule[] = [
                 'cycle_number' => 1,
