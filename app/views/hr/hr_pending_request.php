@@ -97,31 +97,31 @@ function hr_booking_row_json(array $row): string
                                 </td>
                                 <td class="actions booking-row-actions">
                                     <button type="button"
-                                        class="btn secondary btn-sm action-view-btn action-view-btn--icon js-booking-detail"
+                                        class="btn secondary btn-sm iconBtn bkView"
                                         data-booking="<?= hr_booking_row_json($b) ?>"
                                         title="View details"
                                         aria-label="View full booking details">
                                         <i class="bx bx-show" aria-hidden="true"></i>
                                     </button>
-                                    <form method="post" action="<?= URLROOT ?>/hr/requestAdvancePayment" class="booking-action-form js-booking-accept-form">
+                                    <form method="post" action="<?= URLROOT ?>/hr/requestAdvancePayment" class="bkForm bkAccept">
                                         <input type="hidden" name="booking_id" value="<?= (int) ($b['booking_id'] ?? $b['id'] ?? 0) ?>">
                                         <input type="hidden" name="client_id" value="<?= (int) ($b['client_id'] ?? 0) ?>">
                                         <input type="hidden" name="return_status" value="<?= htmlspecialchars((string) ($data['status'] ?? 'All'), ENT_QUOTES, 'UTF-8') ?>">
                                         <input type="hidden" name="return_page" value="<?= (int) ($data['page'] ?? 1) ?>">
                                         <button type="submit"
-                                            class="btn secondary btn-sm action-view-btn action-view-btn--icon"
+                                            class="btn secondary btn-sm iconBtn"
                                             title="Accept and request advance payment"
                                             aria-label="Accept and request advance payment"
                                             <?= $actionsLocked ? 'disabled' : '' ?>>
                                             <i class="bx bx-check" aria-hidden="true"></i>
                                         </button>
                                     </form>
-                                    <form method="post" action="<?= URLROOT ?>/hr/rejectBookingRequest" class="booking-action-form js-booking-reject-form">
+                                    <form method="post" action="<?= URLROOT ?>/hr/rejectBookingRequest" class="bkForm bkReject">
                                         <input type="hidden" name="booking_id" value="<?= (int) ($b['booking_id'] ?? $b['id'] ?? 0) ?>">
                                         <input type="hidden" name="return_status" value="<?= htmlspecialchars((string) ($data['status'] ?? 'All'), ENT_QUOTES, 'UTF-8') ?>">
                                         <input type="hidden" name="return_page" value="<?= (int) ($data['page'] ?? 1) ?>">
                                         <button type="submit"
-                                            class="btn secondary btn-sm action-view-btn action-view-btn--icon"
+                                            class="btn secondary btn-sm iconBtn"
                                             title="Reject request"
                                             aria-label="Reject booking request"
                                             <?= $actionsLocked ? 'disabled' : '' ?>>
@@ -161,17 +161,17 @@ function hr_booking_row_json(array $row): string
     </div>
 </main>
 
-<div id="bookingDetailModal" class="modal admin-row-detail-modal" aria-hidden="true">
-    <div class="modal-content admin-row-detail-modal__content booking-detail-modal__content" role="dialog" aria-modal="true"
+<div id="bookingDetailModal" class="modal readModal" aria-hidden="true">
+    <div class="modal-content readPanel readWide" role="dialog" aria-modal="true"
         aria-labelledby="bookingDetailTitle">
-        <button type="button" class="modal-close admin-row-detail-modal__close" data-close-booking-modal aria-label="Close">
+        <button type="button" class="modal-close readClose" data-close-booking-modal aria-label="Close">
             <i class="bx bx-x" aria-hidden="true"></i>
         </button>
-        <header class="admin-row-detail-modal__header">
-            <span class="admin-row-detail-modal__header-icon" aria-hidden="true"><i class="bx bx-show"></i></span>
-            <h3 id="bookingDetailTitle" class="admin-row-detail-modal__title">Booking details</h3>
+        <header class="readHead">
+            <span class="readIcon" aria-hidden="true"><i class="bx bx-show"></i></span>
+            <h3 id="bookingDetailTitle" class="readTitle">Booking details</h3>
         </header>
-        <dl class="admin-row-detail-modal__dl" id="bookingDetailDl"></dl>
+        <dl class="pairList" id="bookingDetailDl"></dl>
     </div>
 </div>
 

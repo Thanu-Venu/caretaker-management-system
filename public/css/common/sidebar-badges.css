@@ -305,20 +305,3 @@ table td span[class^="status-"] {
         --smartcare-status-badge-width: 7rem;
     }
 }
-
-/* ==================== Dark Mode Support (Optional) ==================== */
-
-/* If your application supports dark mode, uncomment these styles */
-/*
-@media (prefers-color-scheme: dark) {
-  .sidebar-badge {
-    background: linear-gradient(135deg, #ff6b81 0%, #ff4757 100%);
-    box-shadow: 0 2px 6px rgba(255, 71, 87, 0.5);
-  }
-
-  a:hover .sidebar-badge {
-    background: linear-gradient(135deg, #ff8fa3 0%, #ff6b81 100%);
-    box-shadow: 0 3px 8px rgba(255, 71, 87, 0.6);
-  }
-}
-*/

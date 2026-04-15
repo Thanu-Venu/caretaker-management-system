@@ -51,22 +51,22 @@ $basisMap = ['Daily' => 'Day', 'Monthly' => 'Month', 'Hourly' => 'Hour', 'Weekly
         <p class="page-subtitle">Refund lifecycle: <strong>Pending</strong> (request) → <strong>Approved</strong> (HR) → <strong>Completed</strong> (payout). <strong>Declined</strong> closes the case.</p>
     </header>
 
-    <div class="refund-flow-legend" role="list">
-        <div class="refund-flow-legend__step refund-flow-legend__step--1">
-            <span class="refund-flow-legend__num">1</span>
-            <span class="refund-flow-legend__label">Request</span>
+    <div class="refundFlow" role="list">
+        <div class="refundStep">
+            <span class="refundNum">1</span>
+            <span class="refundLbl">Request</span>
             <small>Pending review</small>
         </div>
-        <span class="refund-flow-legend__arrow" aria-hidden="true">→</span>
-        <div class="refund-flow-legend__step refund-flow-legend__step--2">
-            <span class="refund-flow-legend__num">2</span>
-            <span class="refund-flow-legend__label">Approved</span>
+        <span class="refundArrow" aria-hidden="true">→</span>
+        <div class="refundStep">
+            <span class="refundNum">2</span>
+            <span class="refundLbl">Approved</span>
             <small>Ready to pay out</small>
         </div>
-        <span class="refund-flow-legend__arrow" aria-hidden="true">→</span>
-        <div class="refund-flow-legend__step refund-flow-legend__step--3">
-            <span class="refund-flow-legend__num">3</span>
-            <span class="refund-flow-legend__label">Completed</span>
+        <span class="refundArrow" aria-hidden="true">→</span>
+        <div class="refundStep">
+            <span class="refundNum">3</span>
+            <span class="refundLbl">Completed</span>
             <small>Funds recorded</small>
         </div>
     </div>
@@ -96,7 +96,7 @@ $basisMap = ['Daily' => 'Day', 'Monthly' => 'Month', 'Hourly' => 'Hour', 'Weekly
             <p class="value"><?= (int) $approvedCount ?></p>
             <small>In this filtered list</small>
         </div>
-        <div class="stat-card stat-card--accent">
+        <div class="stat-card statHot">
             <h3>Refund total (filtered)</h3>
             <p class="value">LKR <?= number_format($totalRefundAmount, 2) ?></p>
             <small>Sum of refund amounts</small>
@@ -152,16 +152,16 @@ $basisMap = ['Daily' => 'Day', 'Monthly' => 'Month', 'Hourly' => 'Hour', 'Weekly
                                     <?= htmlspecialchars(ucfirst((string) ($refund['status'] ?? '')), ENT_QUOTES, 'UTF-8') ?>
                                 </span>
                             </td>
-                            <td class="actions refund-row-actions">
+                            <td class="actions rfActions">
                                 <button type="button"
-                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-refund-detail"
+                                    class="btn secondary btn-sm iconBtn rfView"
                                     data-refund-row="<?= hr_refund_row_json($refund) ?>"
                                     title="View details"
                                     aria-label="View refund and booking details">
                                     <i class="bx bx-show" aria-hidden="true"></i>
                                 </button>
                                 <button type="button"
-                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-refund-approve"
+                                    class="btn secondary btn-sm iconBtn rfOK"
                                     data-refund-id="<?= (int) ($refund['id'] ?? 0) ?>"
                                     title="Approve refund"
                                     aria-label="Approve refund"
@@ -169,7 +169,7 @@ $basisMap = ['Daily' => 'Day', 'Monthly' => 'Month', 'Hourly' => 'Hour', 'Weekly
                                     <i class="bx bx-check" aria-hidden="true"></i>
                                 </button>
                                 <button type="button"
-                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-refund-decline"
+                                    class="btn secondary btn-sm iconBtn rfStop"
                                     data-refund-id="<?= (int) ($refund['id'] ?? 0) ?>"
                                     title="Decline refund"
                                     aria-label="Decline refund"
@@ -177,7 +177,7 @@ $basisMap = ['Daily' => 'Day', 'Monthly' => 'Month', 'Hourly' => 'Hour', 'Weekly
                                     <i class="bx bx-x" aria-hidden="true"></i>
                                 </button>
                                 <button type="button"
-                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-refund-complete"
+                                    class="btn secondary btn-sm iconBtn rfDone"
                                     data-refund-id="<?= (int) ($refund['id'] ?? 0) ?>"
                                     title="Mark completed (payout)"
                                     aria-label="Mark refund completed"
@@ -193,27 +193,27 @@ $basisMap = ['Daily' => 'Day', 'Monthly' => 'Month', 'Hourly' => 'Hour', 'Weekly
     <?php endif; ?>
 </main>
 
-<!-- Detail modal (admin row-detail style) -->
-<div id="refundDetailModal" class="modal admin-row-detail-modal" aria-hidden="true">
-    <div class="modal-content admin-row-detail-modal__content refund-detail-modal__content" role="dialog" aria-modal="true"
+<!-- Detail modal (HR row-detail style) -->
+<div id="refundDetailModal" class="modal readModal" aria-hidden="true">
+    <div class="modal-content readPanel readWide" role="dialog" aria-modal="true"
         aria-labelledby="refundDetailTitle">
-        <button type="button" class="modal-close admin-row-detail-modal__close" data-close-refund-modal aria-label="Close">
+        <button type="button" class="modal-close readClose" data-close-refund-modal aria-label="Close">
             <i class="bx bx-x" aria-hidden="true"></i>
         </button>
-        <header class="admin-row-detail-modal__header">
-            <span class="admin-row-detail-modal__header-icon" aria-hidden="true"><i class="bx bx-show"></i></span>
-            <h3 id="refundDetailTitle" class="admin-row-detail-modal__title">Refund details</h3>
+        <header class="readHead">
+            <span class="readIcon" aria-hidden="true"><i class="bx bx-show"></i></span>
+            <h3 id="refundDetailTitle" class="readTitle">Refund details</h3>
         </header>
-        <dl class="admin-row-detail-modal__dl" id="refundDetailDl"></dl>
+        <dl class="pairList" id="refundDetailDl"></dl>
     </div>
 </div>
 
 <!-- Approve / decline confirm -->
 <div id="refundProcessModal" class="modal" aria-hidden="true">
-    <div class="modal-content refund-process-modal__content" role="dialog" aria-modal="true" aria-labelledby="refundProcessTitle">
+    <div class="modal-content processBox" role="dialog" aria-modal="true" aria-labelledby="refundProcessTitle">
         <h3 id="refundProcessTitle">Confirm</h3>
         <p id="refundProcessText"></p>
-        <textarea id="refundProcessNotes" class="refund-modal-textarea" rows="3" placeholder="Notes (optional)"></textarea>
+        <textarea id="refundProcessNotes" class="noteArea" rows="3" placeholder="Notes (optional)"></textarea>
         <div class="modal-buttons">
             <button type="button" class="btn ghost" id="refundProcessCancel">Cancel</button>
             <button type="button" class="btn primary" id="refundProcessSubmit">Confirm</button>
@@ -223,9 +223,9 @@ $basisMap = ['Daily' => 'Day', 'Monthly' => 'Month', 'Hourly' => 'Hour', 'Weekly
 
 <!-- Complete refund (payout) -->
 <div id="refundCompleteModal" class="modal" aria-hidden="true">
-    <div class="modal-content refund-complete-modal__content" role="dialog" aria-modal="true" aria-labelledby="refundCompleteTitle">
+    <div class="modal-content doneBox" role="dialog" aria-modal="true" aria-labelledby="refundCompleteTitle">
         <h3 id="refundCompleteTitle">Complete refund</h3>
-        <p class="refund-complete-intro">Record how the refund was paid to the client.</p>
+        <p class="doneIntro">Record how the refund was paid to the client.</p>
         <div class="field">
             <label for="refundCompleteMethod">Refund method <span class="required-mark">*</span></label>
             <select id="refundCompleteMethod" required>
@@ -243,7 +243,7 @@ $basisMap = ['Daily' => 'Day', 'Monthly' => 'Month', 'Hourly' => 'Hour', 'Weekly
         </div>
         <div class="field">
             <label for="refundCompleteNotes">Notes</label>
-            <textarea id="refundCompleteNotes" class="refund-modal-textarea" rows="2" placeholder="Optional processing notes"></textarea>
+            <textarea id="refundCompleteNotes" class="noteArea" rows="2" placeholder="Optional processing notes"></textarea>
         </div>
         <div class="modal-buttons">
             <button type="button" class="btn ghost" id="refundCompleteCancel">Cancel</button>

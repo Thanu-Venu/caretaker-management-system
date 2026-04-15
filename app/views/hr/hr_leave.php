@@ -92,9 +92,9 @@ function hr_leave_page_url(int $p): string
                                     <?= htmlspecialchars((string) ($leave['status'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
                                 </span>
                             </td>
-                            <td class="actions leave-row-actions">
+                            <td class="actions lvActions">
                                 <button type="button"
-                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-leave-detail"
+                                    class="btn secondary btn-sm iconBtn lvView"
                                     data-leave-row="<?= htmlspecialchars(json_encode($leave, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT), ENT_QUOTES, 'UTF-8') ?>"
                                     title="View details"
                                     aria-label="View leave details">
@@ -102,18 +102,18 @@ function hr_leave_page_url(int $p): string
                                 </button>
                                 <?php if ($pendingActions): ?>
                                     <a href="<?= htmlspecialchars(URLROOT . '/HrLeave/approve_form/' . (int) ($leave['id'] ?? 0), ENT_QUOTES, 'UTF-8') ?>"
-                                        class="btn secondary btn-sm action-view-btn action-view-btn--icon"
+                                        class="btn secondary btn-sm iconBtn"
                                         title="Approve (assign replacement if needed)"
                                         aria-label="Approve leave request">
                                         <i class="bx bx-check" aria-hidden="true"></i>
                                     </a>
                                 <?php else: ?>
-                                    <span class="btn secondary btn-sm action-view-btn action-view-btn--icon leave-action-placeholder" title="Already processed" aria-disabled="true">
+                                    <span class="btn secondary btn-sm iconBtn dead" title="Already processed" aria-disabled="true">
                                         <i class="bx bx-check" aria-hidden="true"></i>
                                     </span>
                                 <?php endif; ?>
                                 <button type="button"
-                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-leave-reject"
+                                    class="btn secondary btn-sm iconBtn lvReject"
                                     data-leave-id="<?= (int) ($leave['id'] ?? 0) ?>"
                                     title="Reject leave"
                                     aria-label="Reject leave request"
@@ -162,17 +162,17 @@ function hr_leave_page_url(int $p): string
     </div>
 </main>
 
-<div id="leaveDetailModal" class="modal admin-row-detail-modal" aria-hidden="true">
-    <div class="modal-content admin-row-detail-modal__content leave-detail-modal__content" role="dialog" aria-modal="true"
+<div id="leaveDetailModal" class="modal readModal" aria-hidden="true">
+    <div class="modal-content readPanel readWide" role="dialog" aria-modal="true"
         aria-labelledby="leaveDetailTitle">
-        <button type="button" class="modal-close admin-row-detail-modal__close" data-close-leave-detail aria-label="Close">
+        <button type="button" class="modal-close readClose" data-close-leave-detail aria-label="Close">
             <i class="bx bx-x" aria-hidden="true"></i>
         </button>
-        <header class="admin-row-detail-modal__header">
-            <span class="admin-row-detail-modal__header-icon" aria-hidden="true"><i class="bx bx-calendar-x"></i></span>
-            <h3 id="leaveDetailTitle" class="admin-row-detail-modal__title">Leave request</h3>
+        <header class="readHead">
+            <span class="readIcon" aria-hidden="true"><i class="bx bx-calendar-x"></i></span>
+            <h3 id="leaveDetailTitle" class="readTitle">Leave request</h3>
         </header>
-        <dl class="admin-row-detail-modal__dl" id="leaveDetailDl"></dl>
+        <dl class="pairList" id="leaveDetailDl"></dl>
     </div>
 </div>
 
