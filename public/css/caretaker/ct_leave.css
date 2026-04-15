@@ -30,18 +30,30 @@ body {
   margin: 0 auto;
 }
 
-.header-row {
+.page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 24px;
 }
 
-.header-row h2 {
+.page-header .page-title {
   margin: 0;
   color: #1e88e5;
-  font-size: 28px;
-  margin-bottom: 30px;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.header-row {
+  width: 100%;
+}
+
+.header-row h2,
+.header-row h1 {
+  margin: 0;
 }
 
 .leave-summary-strip {

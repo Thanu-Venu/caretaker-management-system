@@ -27,19 +27,19 @@ $warning = $data['warning'] ?? '';
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
     <main class="content">
         <header class="page-header" style="margin-bottom: 24px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="header-row">
                 <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">Leave Requests</h1>
-
-        <?php if ((int)$summary['remaining'] <= 0): ?>
-            <button class="add-btn" onclick="alert('Your leave is finished for this month! You cannot request more leaves this month.');">
-                Request Leave
-            </button>
-        <?php else: ?>
-            <button class="add-btn"
-                onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">
-                Request Leave
-            </button>
-        <?php endif; ?>
+                <div class="top-right-btn">
+                    <?php if ((int)$summary['remaining'] <= 0): ?>
+                        <button class="add-btn" onclick="alert('Your leave is finished for this month! You cannot request more leaves this month.');">
+                            Request Leave
+                        </button>
+                    <?php else: ?>
+                        <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">
+                            Request Leave
+                        </button>
+                    <?php endif; ?>
+                </div>
             </div>
         </header>
         <div class="booking">
