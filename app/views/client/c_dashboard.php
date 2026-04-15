@@ -38,6 +38,7 @@ function moneyLKR($amount)
 
 $pendingAdvanceList = $data['pendingAdvance'] ?? [];
 $hasPendingAdvance  = !empty($pendingAdvanceList);
+$clientDisplayName = trim((string) ($_SESSION['user']['name'] ?? 'Client'));
 ?>
 
 <main class="main-content admin-dashboard-page client-dashboard-page">
@@ -110,15 +111,61 @@ $hasPendingAdvance  = !empty($pendingAdvanceList);
     <?php endif; ?>
       <div class="client-dashboard">
 
-        <!-- Welcome -->
-        <section class="welcome">
-          <h1>Welcome back, <?= htmlspecialchars($_SESSION['user']['name']); ?>! </h1>
-          <p>Here’s what’s happening with your care services</p>
+        <!-- Welcome hero -->
+        <section class="client-dashboard-hero" aria-labelledby="clientDashboardHeroTitle">
+          <div class="client-dashboard-hero__content">
+            <div class="client-dashboard-hero__intro">
+              <h1 id="clientDashboardHeroTitle" class="client-dashboard-hero__title">
+                <span class="client-dashboard-hero__greeting">Welcome back,</span>
+                <span class="client-dashboard-hero__name"><?= htmlspecialchars($clientDisplayName, ENT_QUOTES, 'UTF-8') ?></span>
+              </h1>
+              <p class="client-dashboard-hero__lead">Easily check your visits, payments, and caregivers.</p>
+
+              <div class="client-dashboard-hero__actions" role="group" aria-label="Primary dashboard actions">
+                <a class="btn client-dashboard-hero__btn-primary" href="<?= URLROOT; ?>/client/c_find1">
+                  <i class='bx bx-search' aria-hidden="true"></i>
+                  <span>Find a caregiver</span>
+                </a>
+                <a class="btn secondary client-dashboard-hero__btn-secondary" href="<?= URLROOT; ?>/client/c_myBookings">
+                  <i class='bx bx-calendar' aria-hidden="true"></i>
+                  <span>My bookings</span>
+                </a>
+              </div>
+
+              <div class="client-dashboard-hero__highlights" aria-label="Dashboard section shortcuts">
+                <a class="client-dashboard-hero__highlight-item client-dashboard-hero__highlight-link" href="#statsCardsSection">
+                  <i class='bx bx-calendar-check' aria-hidden="true"></i>
+                  <div>
+                    <p class="client-dashboard-hero__highlight-value">Stats Cards</p>
+                  </div>
+                </a>
+                <a class="client-dashboard-hero__highlight-item client-dashboard-hero__highlight-link" href="#servicePriceOverviewSection">
+                  <i class='bx bx-line-chart' aria-hidden="true"></i>
+                  <div>
+                    <p class="client-dashboard-hero__highlight-value">Service Price Overview</p>
+                  </div>
+                </a>
+                <a class="client-dashboard-hero__highlight-item client-dashboard-hero__highlight-link" href="#quickActionsSection">
+                  <i class='bx bx-grid-alt' aria-hidden="true"></i>
+                  <div>
+                    <p class="client-dashboard-hero__highlight-value">Quick Actions</p>
+                  </div>
+                </a>
+                <a class="client-dashboard-hero__highlight-item client-dashboard-hero__highlight-item--support client-dashboard-hero__highlight-link" href="#recentBookingsSection">
+                  <i class='bx bx-time-five' aria-hidden="true"></i>
+                  <div>
+                    <p class="client-dashboard-hero__highlight-value">Recent Bookings</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+          </div>
         </section>
 
         <!-- Stats Cards -->
-        <div class="stats-cards">
-          <h2>Stats Cards</h2>
+        <div id="statsCardsSection" class="stats-cards client-dashboard-scroll-target">
+          <h2>Status Cards</h2>
           <div class="card">
             <div class="action1">
               <i class='bx bx-book'></i>
@@ -163,7 +210,7 @@ $hasPendingAdvance  = !empty($pendingAdvanceList);
         </div>
 
         <!-- Price Overview -->
-        <section class="price-overview">
+        <section id="servicePriceOverviewSection" class="price-overview client-dashboard-scroll-target">
           <div class="section-head">
             <h2>Service Price Overview</h2>
             <p>Base rates + time modifiers (final price depends on duration and time slot)</p>
@@ -262,7 +309,7 @@ $hasPendingAdvance  = !empty($pendingAdvanceList);
         </section>
 
         <!-- Quick Actions -->
-        <section class="quick-actions">
+        <section id="quickActionsSection" class="quick-actions client-dashboard-scroll-target">
           <h2>Quick Actions</h2>
           <div class="actions">
             <div class="action">
@@ -302,7 +349,7 @@ $hasPendingAdvance  = !empty($pendingAdvanceList);
           </div>
         </section>
 
-        <section class="recent-bookings client-dashboard-recent">
+        <section id="recentBookingsSection" class="recent-bookings client-dashboard-recent client-dashboard-scroll-target">
           <h2>Recent Bookings</h2>
 
           <?php if (!empty($data['recentBookings'])): ?>
