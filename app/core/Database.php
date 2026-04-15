@@ -1,5 +1,6 @@
 <?php
-class Database {
+class Database
+{
     public $conn;
 
     public function __construct() {
@@ -14,5 +15,4 @@ class Database {
             die("DB Connection failed: " . $this->conn->connect_error);
         }
     }
-
 }

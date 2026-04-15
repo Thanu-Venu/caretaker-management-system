@@ -2,22 +2,12 @@ body {
   background: linear-gradient(180deg, #f4f7fb, #f9fcff);
 }
 
-.content {
+.content.booking-container {
   flex: 1;
-  padding: 20px 40px;
-  margin-left: 255px;
-  width: calc(100% - 255px);
+  padding: 24px 40px;
   box-sizing: border-box;
   font-family: 'Poppins', Arial, sans-serif;
-}
-
-h2 {
-  font-size: 28px;
-  color: #1e88e5;
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  min-height: 100vh;
 }
 
 /* Button */
@@ -35,23 +25,33 @@ h2 {
   filter: brightness(1.05);
 }
 
+.ct-page-filters {
+  margin: 0 0 16px;
+}
+
+.ct-page-filters .filter-group--actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
 .top {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  border-bottom: 2px solid #e0e0e0;
+  gap: 15px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #d8e6f4;
 }
 
 .top-button {
-  padding: 12px 20px;
+  padding: 12px 24px;
   background: none;
   border: none;
   border-bottom: 3px solid transparent;
   cursor: pointer;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 600;
-  color: #666;
-  transition: all 0.3s ease;
+  color: #5b7288;
+  transition: all 0.2s ease;
   position: relative;
 }
 
@@ -62,10 +62,30 @@ h2 {
 
 .top-button:hover {
   color: #1e88e5;
+  background: rgba(30, 136, 229, 0.04);
+  border-radius: 8px 8px 0 0;
+}
+
+.card {
+  position: relative;
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.94) 0%, rgba(248, 250, 252, 0.88) 45%, rgba(240, 253, 250, 0.35) 100%);
+  border-radius: 16px;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  margin-bottom: 30px;
 }
 
 .tab-content {
   display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .tab-content.active {
@@ -73,80 +93,68 @@ h2 {
 }
 
 .table-container {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  padding: 15px;
   overflow-x: auto;
+  border: 1px solid #d8e6f4;
+  border-radius: 12px;
+  margin-top: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  font-size: 14px;
   overflow: hidden;
+  min-width: 600px;
 }
 
-thead {
-  background: #1e88e5;
-}
-
-th,
-td {
-  padding: 14px;
+thead th {
+  background-color: #1e88e5;
+  color: #ffffff;
+  padding: 16px 20px;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  font-weight: 700;
+  font-size: 15px;
+  border: none;
 }
 
-th {
-  font-size: 18px;
-  font-weight: 700;
-  color: white;
-  background: #1e88e5;
-  border: 1px solid #1e88e5;
+tbody td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #edf3f9;
+  color: #17324d;
+}
+
+tbody tr {
+  transition: background-color 0.2s ease;
 }
 
 tbody tr:hover {
-  background-color: #f9f9f9;
+  background-color: #eef7ff;
 }
 
 /* Status Badges */
 .status-badge {
   display: inline-block;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
-.status-badge.status-pending {
-  background: #fff3cd;
-  color: #7a5a00;
-  padding: 4px 18px;
-}
-
-.status-badge.status-approved {
-  background: #d1f2dd;
-  color: #1f6f3f;
-  padding: 4px 14px;
-}
-
-.status-badge.status-active {
-  background: #d1f2dd;
-  color: #1f6f3f;
-  padding: 4px 14px;
-}
-
+.status-badge.status-pending,
 .status-badge.status-payment-pending {
   background: #fff3cd;
-  color: #7a5a00;
-  padding: 4px 18px;
+  color: #856404;
+  border: 1px solid #ffeaa7;
 }
 
-.status-badge.status-payment-approved {
-  background: #d1f2dd;
-  color: #1f6f3f;
-  padding: 4px 14px;
+.status-badge.status-approved,
+.status-badge.status-payment-approved,
+.status-badge.status-active {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
 }
 
 td[colspan] {
@@ -183,6 +191,10 @@ td[colspan] {
     overflow-x: auto;
   }
 
+  .ct-page-filters {
+    width: 100%;
+  }
+
   table {
     min-width: 700px;
   }
@@ -215,4 +227,12 @@ table {
     width: 100%;
     box-sizing: border-box;
   }
+}
+
+/* Caretaker table chrome: avoid double border with shared shell table container */
+.content.booking-container .table-container {
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  margin-top: 0 !important;
 }

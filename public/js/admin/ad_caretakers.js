@@ -99,7 +99,7 @@
             var dd = document.createElement('dd');
             dd.textContent = String(val);
             if (key === 'qualifications') {
-                dd.className = 'caretaker-detail-dd--multiline';
+                dd.className = 'ddBlock';
             }
             detailDl.appendChild(dt);
             detailDl.appendChild(dd);
@@ -139,6 +139,11 @@
             }
             if (field.tagName === 'TEXTAREA' || (field.tagName === 'INPUT' && field.type !== 'file')) {
                 field.value = value != null ? String(value) : '';
+                return;
+            }
+            if (field.tagName === 'SELECT') {
+                field.value = value != null ? String(value) : '';
+                field.dispatchEvent(new Event('change', { bubbles: true }));
             }
         };
         set('name', d.name);
@@ -156,7 +161,7 @@
     }
 
     function bindDetailButtons() {
-        document.querySelectorAll('.js-caretaker-detail').forEach(function (btn) {
+        document.querySelectorAll('.cgView').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -168,7 +173,7 @@
     }
 
     function bindEditButtons() {
-        document.querySelectorAll('.js-caretaker-edit').forEach(function (btn) {
+        document.querySelectorAll('.cgEdit').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();

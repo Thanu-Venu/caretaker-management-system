@@ -16,7 +16,7 @@ body {
     font-size: 14px;
     background: rgba(16, 185, 129, 0.1);
     color: #047857;
-    border-radius: var(--admin-radius-sm, 8px);
+    border-radius: var(--hr-radius-sm, 8px);
     border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
@@ -26,7 +26,7 @@ body {
     font-size: 14px;
     background: rgba(239, 68, 68, 0.08);
     color: #b91c1c;
-    border-radius: var(--admin-radius-sm, 8px);
+    border-radius: var(--hr-radius-sm, 8px);
     border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
@@ -83,13 +83,13 @@ body {
     gap: 8px;
 }
 
-.booking-action-form {
+.bkForm {
     display: inline;
     margin: 0;
     padding: 0;
 }
 
-.booking-action-form button:disabled {
+.bkForm button:disabled {
     opacity: 0.45;
     cursor: not-allowed;
 }
@@ -220,13 +220,13 @@ body {
 }
 
 .pagination a.active {
-    background: var(--admin-primary, #1e88e5);
+    background: var(--hr-primary, #1e88e5);
     color: #fff;
-    border-color: var(--admin-primary, #1e88e5);
+    border-color: var(--hr-primary, #1e88e5);
 }
 
 /* Admin-style booking detail modal (wider than default row modal) */
-.booking-detail-modal__content {
+.readPanel.readWide {
     max-width: min(720px, 100%);
     max-height: min(88vh, 860px);
     overflow: hidden;
@@ -235,14 +235,14 @@ body {
     padding: 0;
 }
 
-.booking-detail-modal__content .admin-row-detail-modal__dl {
+.readPanel.readWide .pairList {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
     padding: 0 20px 20px;
 }
 
-.admin-row-detail-modal__dl dd.booking-detail-dd--multiline {
+.pairList dd.ddBlock {
     white-space: pre-wrap;
     word-break: break-word;
     line-height: 1.5;

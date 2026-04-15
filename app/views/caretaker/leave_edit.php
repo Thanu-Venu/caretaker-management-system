@@ -1,6 +1,3 @@
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-
 <?php
 $leave = $data['leave'];
 $errors = $data['errors'] ?? [];
@@ -34,15 +31,25 @@ $adjustedRemaining = min(5, $summary['remaining'] + $refundDays);
   <title>Edit Leave Request</title>
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/leave_add.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
 
 <body>
 
+<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
   <main class="main-content">
     <section class="leave-layout">
+      <header class="page-header">
+        <h1 class="page-title">Edit Leave Request</h1>
+        <p style="color: #5b7288; margin-top: 5px; font-size: 14px;">Modifying a <strong>Pending</strong> request. Approval status will be reset.</p>
+      </header>
       <div class="leave-summary-card">
-        <h1>Edit Leave Request</h1><br>
-        <p class="subtitle">Modifying a <strong>Pending</strong> request. Approval status will be reset.</p>
 
         <div class="summary-grid">
           <div class="metric">

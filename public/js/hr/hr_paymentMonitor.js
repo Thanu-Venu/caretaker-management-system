@@ -163,7 +163,7 @@
             var dd = document.createElement('dd');
             dd.textContent = text;
             if (MULTILINE_KEYS[key]) {
-                dd.className = 'monitor-detail-dd--multiline';
+                dd.className = 'ddBlock';
             }
             dl.appendChild(dt);
             dl.appendChild(dd);
@@ -214,7 +214,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         var modal = document.getElementById('paymentMonitorDetailModal');
 
-        document.querySelectorAll('.js-monitor-detail').forEach(function (btn) {
+        document.querySelectorAll('.monView').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 fillDetailModal(parseRow(btn));

@@ -1,115 +1,309 @@
-body {
-  font-family: var(--font-primary);
-  margin: 0;
-  padding: 0;
-}
+/* Settings — premium glass cards & balanced form actions */
 
-.main-content {
-  margin-left: 270px;
-  padding: 20px;
-}
-
-h1 {
-  margin-bottom: 20px;
-  color:#1e88e5;
-  font-size: 28px; 
+/* Match other admin pages: .page-header supplies margin-bottom under title */
+.main-content .page-header.settings-page-header {
+    max-width: 1200px;
 }
 
 .settings-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--admin-section-gap, 24px);
+    max-width: 1200px;
+    align-items: stretch;
 }
 
-.card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+@media (max-width: 960px) {
+    .settings-container {
+        grid-template-columns: 1fr;
+        max-width: 880px;
+    }
+
+    .main-content .page-header.settings-page-header {
+        max-width: 880px;
+    }
 }
 
-.card h3 {
-  margin-bottom: 15px;
-  color: #1565c0;
+.settings-container section.card {
+    position: relative;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 26px 28px 28px;
+    border-radius: var(--admin-radius-lg, 16px);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    background: linear-gradient(
+        155deg,
+        rgba(255, 255, 255, 0.94) 0%,
+        rgba(248, 250, 252, 0.88) 45%,
+        rgba(240, 253, 250, 0.35) 100%
+    );
+    box-shadow:
+        0 1px 2px rgba(15, 23, 42, 0.04),
+        0 8px 32px rgba(15, 23, 42, 0.07),
+        0 0 0 1px rgba(30, 136, 229, 0.06) inset;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    overflow: hidden;
+}
+
+.settings-container section.card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: var(--admin-radius-lg, 16px) 0 0 var(--admin-radius-lg, 16px);
+    background: linear-gradient(180deg, var(--admin-primary, #1e88e5) 0%, var(--admin-accent-teal, #00bfa5) 100%);
+    opacity: 0.85;
+}
+
+.settings-container section.card > h3 {
+    position: relative;
+    flex-shrink: 0;
+    margin: 0 0 20px;
+    padding: 0 0 14px 12px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--admin-text, #0f172a);
+}
+
+.settings-container section.card.profile > h3 {
+    padding-left: 12px;
 }
 
 .profile-body {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 30px;
-  align-items: start;
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    grid-template-rows: minmax(0, 1fr);
+    gap: 28px 32px;
+    align-items: stretch;
+}
+
+.settings-container section.card.profile .profile-body form {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+}
+
+.settings-container section.card.profile .pro-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.settings-container section.card.profile .pro-section .form-actions {
+    margin-top: auto;
+}
+
+/* Password card: fill column height, pin actions to bottom */
+.settings-container section.card:not(.profile) form {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-container section.card:not(.profile) .form-actions {
+    margin-top: auto;
 }
 
 .profile-body img {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #1E88E5;
+    align-self: start;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.95);
+    box-shadow:
+        0 4px 20px rgba(30, 136, 229, 0.25),
+        0 0 0 1px rgba(30, 136, 229, 0.12),
+        0 12px 40px rgba(15, 23, 42, 0.08);
 }
 
-form label {
-  display: flex;
-  flex-direction: column;
-  font-size: 14px;
-  margin-bottom: 15px;
-  color: #333;
+/* Fields */
+.main-content .card form .field {
+    margin-bottom: 18px;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="file"] {
-  padding: 10px;
-  margin-top: 5px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+.main-content .card form .field:last-of-type {
+    margin-bottom: 0;
 }
 
-.btn-save {
-  background-color: #1E88E5;
-  color: #fff;
-  font-weight: 500;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
+.settings-container .field label {
+    margin-bottom: 8px;
+    letter-spacing: 0.01em;
 }
 
-.btn-save:hover {
-  background-color: #1565c0;
+.settings-container .field input:not([type="file"]),
+.settings-container .field select,
+.settings-container .field textarea {
+    border-radius: var(--admin-radius-sm, 10px);
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow:
+        0 1px 2px rgba(255, 255, 255, 0.8) inset,
+        0 1px 3px rgba(15, 23, 42, 0.05);
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.settings-container .field input:not([type="file"]):hover,
+.settings-container .field select:hover,
+.settings-container .field textarea:hover {
+    border-color: rgba(30, 136, 229, 0.28);
+    background: rgba(255, 255, 255, 0.88);
+}
+
+.settings-container .field input:not([type="file"]):focus,
+.settings-container .field select:focus,
+.settings-container .field textarea:focus {
+    outline: none;
+    border-color: var(--admin-primary, #1e88e5);
+    background: #fff;
+    box-shadow:
+        0 0 0 3px rgba(30, 136, 229, 0.18),
+        0 1px 2px rgba(255, 255, 255, 0.9) inset;
+}
+
+.settings-container .field input[type="file"] {
+    padding: 10px 12px;
+    border-radius: var(--admin-radius-sm, 10px);
+    border: 1px dashed rgba(30, 136, 229, 0.35);
+    background: rgba(30, 136, 229, 0.04);
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.settings-container .field input[type="file"]:hover {
+    border-color: rgba(30, 136, 229, 0.55);
+    background: rgba(30, 136, 229, 0.07);
+}
+
+.settings-container .field .field-hint {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--admin-muted, #64748b);
+    line-height: 1.4;
+}
+
+.settings-container input[readonly] {
+    background: rgba(241, 245, 249, 0.85) !important;
+    color: var(--admin-text-secondary, #475569);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.pro-section input {
+    max-width: 100%;
+}
+
+/* Equal-width primary + cancel — premium bar */
+.settings-container .form-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(15, 23, 42, 0.07);
+    align-items: stretch;
+}
+
+.settings-container .form-actions .btn-save,
+.settings-container .form-actions .btn-cancel,
+.settings-container .form-actions button[type="submit"] {
+    width: 100%;
+    min-height: 46px;
+    margin: 0;
+    box-sizing: border-box;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: var(--admin-radius-sm, 10px);
+}
+
+.settings-container .form-actions .btn-save,
+.settings-container .form-actions button[type="submit"].btn-save {
+    box-shadow:
+        0 2px 8px rgba(30, 136, 229, 0.28),
+        0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+.settings-container .form-actions .btn-save:hover,
+.settings-container .form-actions button[type="submit"].btn-save:hover {
+    box-shadow:
+        0 6px 22px rgba(30, 136, 229, 0.32),
+        0 1px 0 rgba(255, 255, 255, 0.25) inset;
+}
+
+.settings-container .form-actions a.btn-cancel {
+    width: 100%;
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    color: var(--admin-text-secondary, #334155);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+.settings-container .form-actions a.btn-cancel:hover {
+    background: rgba(30, 136, 229, 0.08);
+    border-color: rgba(30, 136, 229, 0.35);
+    color: var(--admin-primary, #1e88e5);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+}
+
+.settings-container .form-actions a.btn-cancel:active {
+    transform: translateY(0);
+}
+
+/* Flash messages — align width with cards; spacing matches section rhythm */
+.main-content > .flash-message {
+    max-width: 1200px;
+    margin-bottom: var(--admin-section-gap, 24px);
+    border-radius: var(--admin-radius-sm, 10px);
+    box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
+}
+
+@media (max-width: 960px) {
+    .main-content > .flash-message {
+        max-width: 880px;
+    }
 }
 
 .notif-option {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 14px;
+    gap: 12px;
 }
 
-.pro-section input{
-    width: 75%;
-    box-sizing: border-box;
-}
+@media (max-width: 640px) {
+    .profile-body {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+    }
 
-.profile-info {
-  padding: 20px;
-}
-
-.info-group {
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-}
-
-.info-group label {
-  font-weight: bold;
-  width: 150px;
-  display: inline-block;
-}
-
-.info-group span {
-  color: #333;
+    .settings-container .form-actions {
+        grid-template-columns: 1fr;
+    }
 }

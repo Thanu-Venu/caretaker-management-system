@@ -1,6 +1,3 @@
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,11 +6,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bookings Dashboard</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_booking.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
 
 <body>
-  <main class="content">
-    <h2>Bookings</h2>
+<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
+<?php
+$bookingFilters = (isset($filters) && is_array($filters)) ? $filters : [];
+$bookingServiceOptions = (isset($serviceTypeOptions) && is_array($serviceTypeOptions)) ? $serviceTypeOptions : [];
+$selectedBookingService = trim((string) ($bookingFilters['service_type'] ?? ''));
+$selectedBookingFrom = trim((string) ($bookingFilters['date_from'] ?? ''));
+$selectedBookingTo = trim((string) ($bookingFilters['date_to'] ?? ''));
+?>
+  <main class="content booking-container">
+    <header class="page-header">
+        <h1 class="page-title">Bookings</h1>
+    </header>
+        <form class="filter-section filters-inline ct-page-filters" method="get" action="<?= htmlspecialchars(URLROOT . '/public', ENT_QUOTES, 'UTF-8') ?>">
+          <input type="hidden" name="url" value="caretaker/ct_booking">
+          <div class="filter-group">
+            <label for="bookingServiceFilter">Service</label>
+            <select id="bookingServiceFilter" name="booking_service">
+              <option value="">All services</option>
+              <?php foreach ($bookingServiceOptions as $service): ?>
+                <option value="<?= htmlspecialchars((string) $service, ENT_QUOTES, 'UTF-8') ?>" <?= strcasecmp($selectedBookingService, (string) $service) === 0 ? 'selected' : '' ?>>
+                  <?= htmlspecialchars((string) $service, ENT_QUOTES, 'UTF-8') ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="bookingDateFromFilter">From</label>
+            <input type="date" id="bookingDateFromFilter" name="booking_from" value="<?= htmlspecialchars($selectedBookingFrom, ENT_QUOTES, 'UTF-8') ?>">
+          </div>
+          <div class="filter-group">
+            <label for="bookingDateToFilter">To</label>
+            <input type="date" id="bookingDateToFilter" name="booking_to" value="<?= htmlspecialchars($selectedBookingTo, ENT_QUOTES, 'UTF-8') ?>">
+          </div>
+          <div class="filter-group filter-group--actions">
+            <button type="submit" class="btn primary">Apply</button>
+            <a class="btn ghost" href="<?= htmlspecialchars(URLROOT . '/public?url=caretaker/ct_booking', ENT_QUOTES, 'UTF-8') ?>">Reset</a>
+          </div>
+        </form>
         <?php $selectedBookingId = isset($_GET['booking_id']) ? (int)$_GET['booking_id'] : null; ?>
         <div class="top">
           <button class="top-button active" onclick="switchTab('ongoing', event)">Ongoing Bookings</button>

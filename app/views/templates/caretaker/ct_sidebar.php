@@ -3,82 +3,99 @@
 require_once APPROOT . '/core/SidebarBadgeHelper.php';
 // Get badge counts once for this sidebar
 $badgeCounts = getSidebarBadgeCounts();
+$ctUser = $_SESSION['user'] ?? [];
+$ctDisplay = $ctUser['name'] ?? $ctUser['username'] ?? 'Caretaker';
+$ctParts = preg_split('/\s+/', trim((string) $ctDisplay));
+if (count($ctParts) >= 2) {
+    $ctLast = $ctParts[count($ctParts) - 1];
+    $ctInitials = strtoupper(substr($ctParts[0], 0, 1) . substr($ctLast, 0, 1));
+} else {
+    $ctInitials = strtoupper(substr((string) $ctDisplay, 0, min(2, strlen((string) $ctDisplay))));
+}
 ?>
-<!DOCTYPE html>
-<html lang="en">
+  <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar menu">
+    <i class='bx bx-menu'></i>
+  </button>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caretaker Sidebar</title>
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_sidebar.css">
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/common/sidebar-badges.css">
-</head>
+  <aside class="sidebar">
+    <div class="menu-scroll">
+      <ul class="sidebar-menu">
 
-<body>
-  <div class="sidebar">
-    <br><br><br>
-    <ul class="nav-links">
-
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_dashboard"><i class='bx bxs-dashboard'></i><span class="link_name">Dashboard</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_schedule"><i class='bx bxs-calendar'></i><span class="link_name">My Schedule</span></a></li>
-      <li>
-        <a href="http://localhost/CMA/public?url=caretaker/ct_booking">
-          <span class="menu-item-content">
-            <span class="menu-left">
-              <i class='bx bx-book-alt'></i><span class="link_name">Bookings</span>
+        <li><a href="<?= URLROOT ?>/public?url=caretaker/ct_dashboard"><i class='bx bxs-dashboard'></i> <span>Dashboard</span></a></li>
+        <li><a href="<?= URLROOT ?>/public?url=caretaker/ct_schedule"><i class='bx bxs-calendar'></i> <span>My Schedule</span></a></li>
+        <li>
+          <a href="<?= URLROOT ?>/public?url=caretaker/ct_booking">
+            <span class="menu-item-content">
+              <span class="menu-left">
+                <i class='bx bx-book-alt'></i> <span>Bookings</span>
+              </span>
+              <?php echo renderBadge('bookings', $badgeCounts); ?>
             </span>
-            <?php echo renderBadge('bookings', $badgeCounts); ?>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a href="http://localhost/CMA/public?url=caretaker/ct_leave">
-          <span class="menu-item-content">
-            <span class="menu-left">
-              <i class='bx bxs-calendar-check'></i><span class="link_name">Leave Request</span>
+          </a>
+        </li>
+        <li>
+          <a href="<?= URLROOT ?>/public?url=caretaker/ct_leave">
+            <span class="menu-item-content">
+              <span class="menu-left">
+                <i class='bx bxs-calendar-check'></i> <span>Leave Request</span>
+              </span>
+              <?php echo renderBadge('leave_requests', $badgeCounts); ?>
             </span>
-            <?php echo renderBadge('leave_requests', $badgeCounts); ?>
-          </span>
-        </a>
-      </li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_complaints"><i class='bx bxs-error'></i><span class="link_name">Complaints</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_reviews"><i class='bx bxs-message-dots'></i><span class="link_name">Reviews</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_reports"><i class='bx bxs-report'></i><span class="link_name">Reports</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_announcement"><i class='bx bxs-megaphone'></i><span class="link_name">Announcements</span></a></li>
-      <li><a href="http://localhost/CMA/public?url=caretaker/ct_settings"><i class='bx bxs-cog'></i><span class="link_name">Settings</span></a></li>
+          </a>
+        </li>
+        <li><a href="<?= URLROOT ?>/public?url=caretaker/ct_complaints"><i class='bx bxs-error'></i> <span>Complaints</span></a></li>
+        <li><a href="<?= URLROOT ?>/public?url=caretaker/ct_reviews"><i class='bx bxs-message-dots'></i> <span>Reviews</span></a></li>
+        <li><a href="<?= URLROOT ?>/public?url=caretaker/ct_reports"><i class='bx bxs-report'></i> <span>Reports</span></a></li>
+        <li><a href="<?= URLROOT ?>/public?url=caretaker/ct_announcement"><i class='bx bxs-megaphone'></i> <span>Announcements</span></a></li>
+        <li><a href="<?= URLROOT ?>/public?url=caretaker/ct_settings"><i class='bx bxs-cog'></i> <span>Settings</span></a></li>
+      </ul>
+    </div>
 
-    </ul>
-  </div>
+    <a href="<?= URLROOT ?>/public?url=caretaker/ct_settings" class="sidebar-rail-footer" title="<?= htmlspecialchars($ctDisplay) ?> — Settings" aria-label="<?= htmlspecialchars($ctDisplay) ?>, open account settings">
+      <span class="sidebar-rail-avatar" aria-hidden="true"><?= htmlspecialchars($ctInitials) ?></span>
+    </a>
+  </aside>
 
+  <div class="sidebar-overlay"></div>
+  <script src="<?= URLROOT ?>/public/js/sidebar-toggle.js"></script>
   <script>
-    // Select all links that have a submenu (contain .arrow)
-    let dropdownLinks = document.querySelectorAll(".nav-links li > a .arrow");
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get the current "url" parameter from the URL
+      const params = new URLSearchParams(window.location.search);
+      let currentPage = params.get('url');
 
-    dropdownLinks.forEach(arrow => {
-      let parentLink = arrow.parentElement; // the <a> containing arrow and text
-      let parentLi = parentLink.parentElement; // the <li>
+      if (!currentPage) {
+        const path = window.location.pathname;
+        const match = path.match(/\/(caretaker\/[a-z_]+)/i);
+        if (match) {
+          currentPage = match[1];
+        }
+      }
 
-      parentLink.addEventListener("click", e => {
-        e.preventDefault(); // prevent default link behavior
-        parentLi.classList.toggle("showMenu");
+      // Remove any previously active links and list items
+      document.querySelectorAll('.sidebar-menu a.active').forEach(link => {
+        link.classList.remove('active');
+      });
+      document.querySelectorAll('.sidebar-menu li.active').forEach(li => {
+        li.classList.remove('active');
+      });
+
+      // Loop through all sidebar links
+      document.querySelectorAll('.sidebar-menu a').forEach(link => {
+        // Only process links that have a "url" parameter
+        const linkURL = new URL(link.href, window.location.origin);
+        const linkPage = linkURL.searchParams.get('url');
+
+        // Compare only if linkPage exists
+        if (linkPage && linkPage === currentPage) {
+          // Add active class to the link itself
+          link.classList.add('active');
+          link.parentElement.classList.add('active'); // Also highlight <li> for nested styling
+          
+          // If the link is inside a submenu, open the parent submenu
+          const submenu = link.closest('.submenu');
+          if (submenu) submenu.classList.add('active');
+        }
       });
     });
-
-    // Highlight active page link
-    const currentURL = new URL(window.location.href);
-    const currentPath = currentURL.searchParams.get("url"); // gets "caretaker/ct_dashboard"
-
-    const menuItems = document.querySelectorAll('.nav-links li a');
-
-    menuItems.forEach(link => {
-      const linkURL = new URL(link.href).searchParams.get("url");
-      if (linkURL === currentPath) {
-        link.parentElement.classList.add('active');
-      }
-    });
   </script>
-</body>
-
-</html>

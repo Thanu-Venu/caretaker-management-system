@@ -100,7 +100,7 @@
             var dd = document.createElement('dd');
             dd.textContent = text;
             if (key === 'reason' || key === 'hr_note' || key === 'customization' || key === 'cancellation_reason') {
-                dd.className = 'reschedule-detail-dd--multiline';
+                dd.className = 'ddBlock';
             }
             dl.appendChild(dt);
             dl.appendChild(dd);
@@ -168,7 +168,7 @@
         var urls = getEndpoints();
         var activeRequestId = null;
 
-        document.querySelectorAll('.js-reschedule-detail').forEach(function (btn) {
+        document.querySelectorAll('.rsView').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 fillDetailModal(parseRow(btn));
@@ -190,7 +190,7 @@
             });
         }
 
-        document.querySelectorAll('.js-reschedule-approve').forEach(function (btn) {
+        document.querySelectorAll('.rsOK').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 if (btn.disabled) {
@@ -208,7 +208,7 @@
             });
         });
 
-        document.querySelectorAll('.js-reschedule-reject').forEach(function (btn) {
+        document.querySelectorAll('.rsStop').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 if (btn.disabled) {

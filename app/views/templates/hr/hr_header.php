@@ -44,12 +44,12 @@ if (!empty($_SESSION['user']['profile_image'])) {
     $profilePicUrl  = URLROOT . '/public/images/profiles/' . rawurlencode((string) $profilePicFile);
 }
 ?>
-<!-- Same early collapsed-rail restore as Admin (sidebar-toggle.js + admin-ui) -->
+<!-- Same early collapsed-rail restore as shell (sidebar-toggle.js + hr-ui) -->
 <script>
 (function () {
     try {
         if (typeof localStorage !== 'undefined' && localStorage.getItem('adminSidebarCollapsed') === '1') {
-            document.body.classList.add('admin-sidebar-collapsed');
+            document.body.classList.add('admin-sidebar-collapsed', 'sidebarTucked');
         }
     } catch (e) { /* private mode / blocked storage */ }
 })();
@@ -110,3 +110,4 @@ if (!empty($_SESSION['user']['profile_image'])) {
 </header>
 
 <script src="<?= URLROOT ?>/public/js/notification.js"></script>
+<script src="<?= URLROOT ?>/public/js/common/custom-select.js"></script>

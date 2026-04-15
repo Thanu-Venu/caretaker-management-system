@@ -92,3 +92,4 @@ $profilePic = $_SESSION['user']['profile_pic'] ?? 'default.jpg';
 </header>
 
 <script src="<?= URLROOT ?>/public/js/notification.js"></script>
+<script src="<?= URLROOT ?>/public/js/common/custom-select.js"></script>

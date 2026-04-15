@@ -140,19 +140,19 @@ $paginationQuery = static function (int $p) use ($filters): string {
                   </span>
                 </td>
                 <td class="actions">
-                  <button type="button" class="btn secondary btn-sm action-view-btn action-view-btn--icon js-caretaker-detail"
+                  <button type="button" class="btn secondary btn-sm iconBtn cgView"
                     data-caretaker="<?= admin_caretaker_public_json($caretaker) ?>"
                     aria-label="View caregiver details including qualifications" title="View details">
                     <i class="bx bx-show" aria-hidden="true"></i>
                   </button>
-                  <button type="button" class="btn secondary btn-sm action-view-btn action-view-btn--icon js-caretaker-edit"
+                  <button type="button" class="btn secondary btn-sm iconBtn cgEdit"
                     data-caretaker="<?= admin_caretaker_public_json($caretaker) ?>"
                     aria-label="Edit caregiver" title="Edit">
                     <i class="bx bx-edit" aria-hidden="true"></i>
                   </button>
                   <a href="<?php echo URLROOT; ?>/CaretakerCRUD/delete/<?php echo (int) $caretaker['id']; ?>"
                     onclick="return confirm('Are you sure you want to delete this caregiver?');" title="Delete"
-                    class="caretaker-action-delete"><i class="bx bx-trash" aria-hidden="true"></i></a>
+                    class="trashLink"><i class="bx bx-trash" aria-hidden="true"></i></a>
                 </td>
               </tr>
             <?php endforeach; ?>

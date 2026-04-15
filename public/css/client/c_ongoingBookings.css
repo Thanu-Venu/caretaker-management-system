@@ -35,3 +35,13 @@
     object-fit: cover;
     margin-bottom: 8px;
 }
+
+#changeModal .change-caregiver-modal-content {
+    max-width: min(760px, 96vw);
+}
+
+#changeModal #changeReason {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+}

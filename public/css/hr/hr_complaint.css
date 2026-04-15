@@ -4,7 +4,7 @@ body {
     background: #f4f7fb;
 }
 
-.hr-complaints-page {
+.issuesPage {
     padding: 20px 25px;
     min-width: 0;
 }
@@ -15,22 +15,22 @@ body {
 
 .page-header .page-title {
     margin: 0;
-    color: var(--admin-page-heading-color, #0f3555);
+    color: var(--hr-page-heading-color, #0f3555);
 }
 
-.complaint-tabs {
+.issueTabs {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
     margin-bottom: 16px;
     padding: 4px;
-    background: var(--admin-surface, #fff);
-    border: 1px solid var(--admin-border, #e2e8f0);
-    border-radius: var(--admin-radius-sm, 8px);
-    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
+    background: var(--hr-surface, #fff);
+    border: 1px solid var(--hr-border, #e2e8f0);
+    border-radius: var(--hr-radius-sm, 8px);
+    box-shadow: var(--hr-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
 }
 
-.complaint-tab-btn {
+.issueTab {
     appearance: none;
     margin: 0;
     border: none;
@@ -39,48 +39,48 @@ body {
     padding: 10px 18px;
     font-size: 14px;
     font-weight: 600;
-    font-family: var(--admin-font, "Inter", system-ui, sans-serif);
-    color: var(--admin-muted, #64748b);
-    border-radius: var(--admin-radius-sm, 8px);
+    font-family: var(--hr-font, "Inter", system-ui, sans-serif);
+    color: var(--hr-muted, #64748b);
+    border-radius: var(--hr-radius-sm, 8px);
     transition: color 0.2s ease, background 0.2s ease;
 }
 
-.complaint-tab-btn:hover {
-    color: var(--admin-text, #0f172a);
+.issueTab:hover {
+    color: var(--hr-text, #0f172a);
     background: rgba(15, 23, 42, 0.04);
 }
 
-.complaint-tab-btn.active {
-    color: var(--admin-primary, #1e88e5);
-    background: var(--admin-primary-soft, rgba(30, 136, 229, 0.09));
-    box-shadow: inset 0 -3px 0 var(--admin-primary, #1e88e5);
+.issueTab.active {
+    color: var(--hr-primary, #1e88e5);
+    background: var(--hr-primary-soft, rgba(30, 136, 229, 0.09));
+    box-shadow: inset 0 -3px 0 var(--hr-primary, #1e88e5);
 }
 
-.complaint-tab-panel {
+.issuePanel {
     display: none;
 }
 
-.complaint-tab-panel.active {
+.issuePanel.active {
     display: block;
 }
 
-.complaint-table-wrap {
-    background: var(--admin-surface, #fff);
-    border: 1px solid var(--admin-border, #e2e8f0);
-    border-radius: var(--admin-radius, 12px);
+.issueWrap {
+    background: var(--hr-surface, #fff);
+    border: 1px solid var(--hr-border, #e2e8f0);
+    border-radius: var(--hr-radius, 12px);
     padding: 12px;
     overflow-x: auto;
-    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
+    box-shadow: var(--hr-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
 }
 
-.complaint-table {
+.issueTable {
     width: 100%;
     border-collapse: collapse;
     min-width: 720px;
 }
 
-.complaint-table th,
-.complaint-table td {
+.issueTable th,
+.issueTable td {
     padding: 11px 10px;
     text-align: left;
     border-bottom: 1px solid #eef2f7;
@@ -88,24 +88,24 @@ body {
     vertical-align: middle;
 }
 
-.complaint-table thead th {
+.issueTable thead th {
     text-transform: uppercase;
     letter-spacing: 0.04em;
     font-size: 11px;
     font-weight: 700;
 }
 
-.complaint-details-cell {
+.issueDetails {
     max-width: 220px;
     word-break: break-word;
 }
 
-.complaint-status-cell {
+.issueStatus {
     min-width: 200px;
 }
 
-.complaint-status-form,
-.complaint-ct-form {
+.issueForm,
+.issueCtForm {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -114,28 +114,28 @@ body {
     margin-top: 8px;
 }
 
-.complaint-status-select {
+.issuePick {
     min-width: 130px;
     flex: 1;
     max-width: 200px;
 }
 
-.complaint-update-btn {
+.issueSave {
     flex-shrink: 0;
 }
 
-.complaint-actions-cell {
+.issueAct {
     white-space: nowrap;
     width: 1%;
 }
 
-.complaint-empty {
+.issueZero {
     text-align: center;
     padding: 28px 12px;
-    color: var(--admin-muted, #64748b);
+    color: var(--hr-muted, #64748b);
 }
 
-.status-pill.complaint-status-pill {
+.status-pill.issuePill {
     display: inline-flex;
     align-items: center;
     padding: 5px 11px;
@@ -144,29 +144,29 @@ body {
     font-weight: 600;
 }
 
-.complaint-status-pill--open {
+.issuePill.open {
     background: #fee2e2;
     color: #991b1b;
 }
 
-.complaint-status-pill--in-progress {
+.issuePill.in-progress {
     background: #dbeafe;
     color: #1d4ed8;
 }
 
-.complaint-status-pill--resolved {
+.issuePill.resolved {
     background: #d1fae5;
     color: #065f46;
 }
 
-.complaint-status-pill--pending {
+.issuePill.pending {
     background: #fff3cd;
     color: #856404;
 }
 
 @media (max-width: 900px) {
-    .complaint-status-form,
-    .complaint-ct-form {
+    .issueForm,
+    .issueCtForm {
         flex-wrap: wrap;
     }
 }
