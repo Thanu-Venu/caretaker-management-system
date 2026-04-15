@@ -1,6 +1,6 @@
 <?php
 /**
- * HR shell — opens document and loads the same core styles as Admin (single design system).
+ * HR shell — opens document and loads HR-owned core styles (see hr_core_styles.php).
  * Before including: set $hrPageTitle (string), optional $hrExtraCss (paths under public/css/),
  * and optional $hrHeadStylesheets (array of full stylesheet URLs, e.g. FullCalendar CDN).
  */
@@ -23,14 +23,13 @@ $hrBodyData = (isset($hrBodyData) && is_array($hrBodyData)) ? $hrBodyData : [];
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= htmlspecialchars((string) $hrPageTitle, ENT_QUOTES, 'UTF-8') ?></title>
-  <?php include_once APPROOT . '/views/templates/admin/ad_admin_core_styles.php'; ?>
+  <?php include_once APPROOT . '/views/templates/hr/hr_core_styles.php'; ?>
   <?php foreach ($hrHeadStylesheets as $hrHeadSheet): ?>
   <link rel="stylesheet" href="<?= htmlspecialchars((string) $hrHeadSheet, ENT_QUOTES, 'UTF-8') ?>">
   <?php endforeach; ?>
   <?php foreach ($hrExtraCss as $cssRel): ?>
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/<?= htmlspecialchars((string) $cssRel, ENT_QUOTES, 'UTF-8') ?>">
   <?php endforeach; ?>
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/hr/hr-post-admin.css">
 </head>
 <body<?php
 if ($hrBodyClass !== '') {
