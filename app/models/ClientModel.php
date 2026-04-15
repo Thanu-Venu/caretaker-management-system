@@ -492,6 +492,9 @@ class ClientModel
 
     public function getUpcomingBookings($clientId)
     {
+        // Keep booking status aligned with approved advance payments.
+        $this->syncAdvancePaidBookingStatuses((int)$clientId);
+
         // Fix NULL/empty status
         $this->conn->query("
             UPDATE bookings
@@ -2014,6 +2017,9 @@ class ClientModel
 
     public function getAdvancePaymentPendingBookings($clientId)
     {
+        // Ensure stale statuses are reconciled before showing pending alerts.
+        $this->syncAdvancePaidBookingStatuses((int)$clientId);
+
         $sql = "SELECT
                     b.id AS booking_id,
                     b.booking_date,
@@ -2035,6 +2041,33 @@ class ClientModel
         $stmt->bind_param("i", $clientId);
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    private function syncAdvancePaidBookingStatuses(int $clientId): void
+    {
+        $sql = "UPDATE bookings b
+                JOIN (
+                    SELECT
+                        booking_id,
+                        MAX(COALESCE(approved_at, paid_date, created_at)) AS latest_paid_at
+                    FROM payments
+                    WHERE status IN ('pending', 'approved')
+                      AND LOWER(TRIM(COALESCE(payment_type, 'advance'))) = 'advance'
+                    GROUP BY booking_id
+                ) ap ON ap.booking_id = b.id
+                SET b.status = 'Advance_Paid',
+                    b.advance_paid_date = COALESCE(b.advance_paid_date, ap.latest_paid_at)
+                WHERE b.client_id = ?
+                  AND b.status = 'Payment_Requested'";
+
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            return;
+        }
+
+        $stmt->bind_param("i", $clientId);
+        $stmt->execute();
+        $stmt->close();
     }
 
     public function getBookedCaretakersByClient($client_id)

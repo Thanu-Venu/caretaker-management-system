@@ -722,6 +722,7 @@ class HrController extends Controller
 
         $paymentType = strtolower(trim((string)($payment['payment_type'] ?? '')));
         $bookingStatus = (string)($payment['booking_status'] ?? '');
+        $notifModel = $this->model('NotificationModel');
         // Fallback: treat payment as advance-stage approval if booking is still in pre-accepted states.
         $isAdvanceApproval = ($paymentType === 'advance')
             || in_array($bookingStatus, ['Payment_Requested', 'Advance_Paid'], true);
@@ -740,7 +741,6 @@ class HrController extends Controller
             }
 
             // Send notification to caretaker for first approval.
-            $notifModel = $this->model('NotificationModel');
             $notifModel->addNotification(
                 $payment['caretaker_id'],
                 'caretaker',
@@ -760,9 +760,19 @@ class HrController extends Controller
             );
         }
 
+        $approvedAmount = number_format((float)($payment['amount'] ?? 0), 2);
+        $clientMessage = "HR approved your payment for booking #" . $payment['booking_id'] . ". Amount: LKR " . $approvedAmount . ".";
+        $notifModel->addNotification(
+            $payment['client_id'],
+            'client',
+            'Payment Approved',
+            $clientMessage,
+            URLROOT . '/client/payments?tab=paid_history'
+        );
+
         $this->logHrAction("Approved payment #{$paymentId} for Booking #{$payment['booking_id']}", 'Payments');
 
-        $_SESSION['success'] = "Payment approved successfully! Caretaker notified.";
+        $_SESSION['success'] = "Payment approved successfully! Client and caretaker notified.";
         header("Location: " . URLROOT . "/hr/pendingPayments");
         exit;
     }
@@ -1122,13 +1132,13 @@ class HrController extends Controller
         // Update payment status to rejected
         $clientModel->updatePaymentStatus($paymentId, 'rejected');
 
-        // Revert only advance-payment bookings back to Requested.
+        // Revert only advance-payment bookings back to payment requested stage.
         $bookingStatus = strtolower(trim((string)($payment['booking_status'] ?? '')));
         if (
             $payment['payment_type'] === 'advance'
             && !in_array($bookingStatus, ['cancelled', 'rejected', 'completed'], true)
         ) {
-            $clientModel->updateBookingStatus($payment['booking_id'], 'Requested');
+            $clientModel->updateBookingStatus($payment['booking_id'], 'Payment_Requested');
         }
 
         // Send notification to client
