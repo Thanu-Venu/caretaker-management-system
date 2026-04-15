@@ -1,4 +1,4 @@
-/* Payment success — centered card using admin tokens */
+/* Payment success — professional confirmation layout */
 
 .main-content.payment-success-page,
 .payment-success-wrap {
@@ -8,24 +8,113 @@
 }
 
 .payment-success {
-    margin-top: 8vh;
-    max-width: 480px;
-    width: 100%;
-    text-align: center;
-    padding: 40px 36px;
-    background: var(--admin-surface-glass);
-    border: 1px solid var(--admin-border);
-    border-radius: var(--admin-radius);
-    box-shadow: var(--admin-shadow);
+    margin-top: clamp(28px, 6vh, 72px);
+    max-width: 720px;
+    width: min(100%, 720px);
+    padding: clamp(24px, 3.2vw, 40px);
+    border-radius: 16px;
+    border: 1px solid var(--admin-border, #e2e8f0);
+    background:
+        radial-gradient(circle at top right, rgba(16, 185, 129, 0.13), transparent 48%),
+        radial-gradient(circle at top left, rgba(30, 136, 229, 0.11), transparent 44%),
+        var(--admin-surface, #ffffff);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
 }
 
-.payment-success .check-icon {
-    font-size: 3.5rem;
-    color: var(--admin-success);
+.payment-success__badge {
+    width: 66px;
+    height: 66px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--admin-success, #059669);
+    background: linear-gradient(160deg, rgba(5, 150, 105, 0.18), rgba(16, 185, 129, 0.08));
+    border: 1px solid rgba(5, 150, 105, 0.24);
     margin-bottom: 16px;
 }
 
+.payment-success__eyebrow {
+    margin: 0 0 8px;
+    color: #0f766e;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.payment-success__title {
+    margin: 0;
+}
+
+.payment-success__lead {
+    margin: 10px 0 0;
+    max-width: 58ch;
+}
+
+.payment-success__meta {
+    margin-top: 18px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(30, 136, 229, 0.2);
+    background: rgba(30, 136, 229, 0.07);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+}
+
+.payment-success__meta-label {
+    font-size: 12px;
+    color: var(--admin-muted, #64748b);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+}
+
+.payment-success__meta-value {
+    font-size: 15px;
+    color: var(--admin-text, #0f172a);
+}
+
+.payment-success__meta-note {
+    width: 100%;
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: var(--admin-text-secondary, #334155);
+}
+
+.payment-success__next-steps {
+    margin: 18px 0 0;
+    padding: 0 0 0 20px;
+    color: var(--admin-text-secondary, #334155);
+    line-height: 1.65;
+}
+
+.payment-success__next-steps li + li {
+    margin-top: 6px;
+}
+
 .payment-success-actions {
-    justify-content: center;
-    margin-top: 20px;
+    justify-content: flex-start;
+    margin-top: 22px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 767px) {
+    .payment-success {
+        border-radius: 12px;
+    }
+
+    .payment-success-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .payment-success-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
 }

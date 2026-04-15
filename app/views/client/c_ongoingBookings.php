@@ -178,7 +178,7 @@ $ongoingStatusFilterOptions = [
     <?php endif; ?>
 
     <div id="changeModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="changeModalTitle">
-        <div class="modal-content" style="max-width:560px;">
+        <div class="modal-content change-caregiver-modal-content">
             <button type="button" class="close" onclick="closeChangeModal()" aria-label="Close">&times;</button>
             <h3 id="changeModalTitle">Request caregiver change</h3>
             <form method="POST" action="<?= URLROOT ?>/client/requestCaretakerChange">

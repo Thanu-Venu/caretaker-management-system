@@ -207,15 +207,51 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: min(640px, 92vw);
-    max-width: 640px;
+    width: min(700px, 94vw);
+    max-width: 700px;
     max-height: 108vh;
     overflow-y: auto;
     background: #fff;
-    padding: 20px;
+    padding: 24px;
     border-radius: 10px;
     box-shadow: 0 18px 48px rgba(15, 23, 42, 0.28);
     z-index: 2000;
+}
+
+#searchPopup h3 {
+    margin: 0 0 18px;
+}
+
+#searchPopup .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+#searchPopup .field label {
+    margin: 0;
+}
+
+#searchPopup .field input,
+#searchPopup .field select,
+#searchPopup .field textarea {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: none;
+}
+
+#searchPopup .field input:focus,
+#searchPopup .field select:focus,
+#searchPopup .field textarea:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: #d1d5db;
+    background: #fff;
 }
 
 #searchPopup .popup-actions {
@@ -223,7 +259,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    margin-top: 14px;
+    margin-top: 18px;
 }
 
 #searchPopup .popup-actions .btn {
