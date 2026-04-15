@@ -163,7 +163,7 @@ $performanceColors = $data['performanceColors'] ?? json_encode([]);
  <a href="<?= URLROOT ?>/HRCaretakerCRUD/list" class="stat-card-link">Manage caregivers</a>
  </div>
  <div class="stat-card card-hover kpiTile teal">
- <div class="stat-card-icon"><i class="bx bx-bolt" aria-hidden="true"></i></div>
+ <div class="stat-card-icon"><i class="bx bxs-bolt" aria-hidden="true"></i></div>
  <div class="stat-card-label">Active services today</div>
  <div class="stat-card-value"><?= $activeServices ?></div>
  <a href="<?= URLROOT ?>/public?url=hr/hr_schedule" class="stat-card-link">View schedule</a>
@@ -175,7 +175,7 @@ $performanceColors = $data['performanceColors'] ?? json_encode([]);
  <a href="<?= URLROOT ?>/HrLeave/index" class="stat-card-link">Review leave</a>
  </div>
  <div class="stat-card card-hover kpiTile indigo">
- <div class="stat-card-icon"><i class="bx bx-inbox" aria-hidden="true"></i></div>
+ <div class="stat-card-icon"><i class="bx bxs-inbox" aria-hidden="true"></i></div>
  <div class="stat-card-label">Requested bookings</div>
  <div class="stat-card-value"><?= $pendingRequests ?></div>
  <a href="<?= URLROOT ?>/public?url=hr/hr_pending_request" class="stat-card-link">Open queue</a>
