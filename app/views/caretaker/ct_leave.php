@@ -132,7 +132,7 @@ $selectedLeaveType = trim((string) ($leaveFilters['leave_type'] ?? ''));
                                                     <i class="bx bx-edit"></i>
                                                 </a> |
                                                 <a href="<?php echo URLROOT; ?>/LeaveCRUD/delete/<?php echo $leave['id']; ?>"
-                                                    onclick="return confirm('Cancel this leave request?');">
+                                                    data-app-confirm="Cancel this leave request?">
                                                     <i class="bx bx-trash"></i>
                                                 </a>
                                             <?php else: ?>

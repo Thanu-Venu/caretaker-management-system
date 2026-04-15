@@ -228,9 +228,15 @@
                     e.preventDefault();
                     return;
                 }
-                if (!window.confirm('Request advance payment from the client for this booking?')) {
-                    e.preventDefault();
-                }
+                e.preventDefault();
+                var ask = (window.appDialog && typeof window.appDialog.confirm === 'function')
+                    ? window.appDialog.confirm('Request advance payment from the client for this booking?')
+                    : Promise.resolve(window.confirm('Request advance payment from the client for this booking?'));
+                ask.then(function (ok) {
+                    if (ok) {
+                        form.submit();
+                    }
+                });
             });
         });
 
@@ -241,9 +247,15 @@
                     e.preventDefault();
                     return;
                 }
-                if (!window.confirm('Reject this booking request? The client will be notified.')) {
-                    e.preventDefault();
-                }
+                e.preventDefault();
+                var ask = (window.appDialog && typeof window.appDialog.confirm === 'function')
+                    ? window.appDialog.confirm('Reject this booking request? The client will be notified.')
+                    : Promise.resolve(window.confirm('Reject this booking request? The client will be notified.'));
+                ask.then(function (ok) {
+                    if (ok) {
+                        form.submit();
+                    }
+                });
             });
         });
     });
