@@ -5,7 +5,7 @@ $flash_error = $_SESSION['flash_error'] ?? '';
 unset($_SESSION['flash_success'], $_SESSION['flash_error']);
 
 $hrPageTitle = 'Profile & settings — HR';
-$hrExtraCss  = ['admin/ad_settings.css'];
+$hrExtraCss  = ['hr/hr_settings.css'];
 include_once APPROOT . '/views/templates/hr/hr_layout_head.php';
 include_once APPROOT . '/views/templates/hr/hr_header.php';
 include_once APPROOT . '/views/templates/hr/hr_sidebar.php';

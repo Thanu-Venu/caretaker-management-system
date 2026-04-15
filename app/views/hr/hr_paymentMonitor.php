@@ -40,8 +40,8 @@ function hr_monitor_row_json(array $row, string $kind): string
     </header>
 
     <div class="filter-bar">
-        <form method="get" action="<?= URLROOT ?>/hr/paymentMonitor" class="filter-bar__form">
-            <div class="filter-bar__grid">
+        <form method="get" action="<?= URLROOT ?>/hr/paymentMonitor" class="filterForm">
+            <div class="filterGrid">
                 <div class="field">
                     <label for="client">Client name</label>
                     <input type="text" id="client" name="client" value="<?= $clientFilter ?>" placeholder="Search client…">
@@ -73,9 +73,9 @@ function hr_monitor_row_json(array $row, string $kind): string
                     <label for="to_date">To date</label>
                     <input type="date" id="to_date" name="to_date" value="<?= $toDateFilter ?>">
                 </div>
-                <div class="filter-bar__actions field">
-                    <label class="filter-bar__actions-label">&nbsp;</label>
-                    <div class="filter-bar__buttons">
+                <div class="filterActions field">
+                    <label class="filterSpacer">&nbsp;</label>
+                    <div class="filterBtns">
                         <button type="submit" class="btn primary">Apply</button>
                         <a class="reset-btn" href="<?= URLROOT ?>/hr/paymentMonitor">Reset</a>
                     </div>
@@ -107,20 +107,20 @@ function hr_monitor_row_json(array $row, string $kind): string
             <p class="value"><?= (int) ($summary['pending_recurring'] ?? 0) ?></p>
             <small>Awaiting due-date payment</small>
         </div>
-        <div class="stat-card stat-card--warning">
+        <div class="stat-card statWarn">
             <h3>Recurring overdue</h3>
             <p class="value"><?= (int) ($summary['overdue_recurring'] ?? 0) ?></p>
             <small>Rs. <?= number_format((float) ($summary['amount_overdue'] ?? 0), 2) ?></small>
         </div>
-        <div class="stat-card stat-card--success">
+        <div class="stat-card statGood">
             <h3>Recurring paid</h3>
             <p class="value"><?= (int) ($summary['paid_recurring'] ?? 0) ?></p>
             <small>Installments closed</small>
         </div>
     </div>
 
-    <section class="monitor-section">
-        <h2 class="monitor-section__title">Recurring payment tracker</h2>
+    <section class="paySection">
+        <h2 class="paySectionTitle">Recurring payment tracker</h2>
         <div class="table-container">
             <table class="table booking-table monitor-table" data-table-collapse="off">
                 <thead>
@@ -158,9 +158,9 @@ function hr_monitor_row_json(array $row, string $kind): string
                                         <?= htmlspecialchars(ucfirst((string) ($row['status'] ?? '')), ENT_QUOTES, 'UTF-8') ?>
                                     </span>
                                 </td>
-                                <td class="actions monitor-row-actions">
+                                <td class="actions monActions">
                                     <button type="button"
-                                        class="btn secondary btn-sm action-view-btn action-view-btn--icon js-monitor-detail"
+                                        class="btn secondary btn-sm iconBtn monView"
                                         data-monitor-row="<?= hr_monitor_row_json($row, 'recurring') ?>"
                                         title="View details"
                                         aria-label="View recurring installment details">
@@ -175,8 +175,8 @@ function hr_monitor_row_json(array $row, string $kind): string
         </div>
     </section>
 
-    <section class="monitor-section">
-        <h2 class="monitor-section__title">Recent payment timeline</h2>
+    <section class="paySection">
+        <h2 class="paySectionTitle">Recent payment timeline</h2>
         <div class="table-container">
             <table class="table booking-table monitor-table" data-table-collapse="off">
                 <thead>
@@ -214,9 +214,9 @@ function hr_monitor_row_json(array $row, string $kind): string
                                         <?= htmlspecialchars(ucfirst((string) ($row['status'] ?? '')), ENT_QUOTES, 'UTF-8') ?>
                                     </span>
                                 </td>
-                                <td class="actions monitor-row-actions">
+                                <td class="actions monActions">
                                     <button type="button"
-                                        class="btn secondary btn-sm action-view-btn action-view-btn--icon js-monitor-detail"
+                                        class="btn secondary btn-sm iconBtn monView"
                                         data-monitor-row="<?= hr_monitor_row_json($row, 'payment') ?>"
                                         title="View details"
                                         aria-label="View payment details">
@@ -232,17 +232,17 @@ function hr_monitor_row_json(array $row, string $kind): string
     </section>
 </main>
 
-<div id="paymentMonitorDetailModal" class="modal admin-row-detail-modal" aria-hidden="true">
-    <div class="modal-content admin-row-detail-modal__content monitor-detail-modal__content" role="dialog" aria-modal="true"
+<div id="paymentMonitorDetailModal" class="modal readModal" aria-hidden="true">
+    <div class="modal-content readPanel readWide" role="dialog" aria-modal="true"
         aria-labelledby="paymentMonitorDetailTitle">
-        <button type="button" class="modal-close admin-row-detail-modal__close" data-close-monitor-detail aria-label="Close">
+        <button type="button" class="modal-close readClose" data-close-monitor-detail aria-label="Close">
             <i class="bx bx-x" aria-hidden="true"></i>
         </button>
-        <header class="admin-row-detail-modal__header">
-            <span class="admin-row-detail-modal__header-icon" aria-hidden="true"><i class="bx bx-show"></i></span>
-            <h3 id="paymentMonitorDetailTitle" class="admin-row-detail-modal__title">Details</h3>
+        <header class="readHead">
+            <span class="readIcon" aria-hidden="true"><i class="bx bx-show"></i></span>
+            <h3 id="paymentMonitorDetailTitle" class="readTitle">Details</h3>
         </header>
-        <dl class="admin-row-detail-modal__dl" id="paymentMonitorDetailDl"></dl>
+        <dl class="pairList" id="paymentMonitorDetailDl"></dl>
     </div>
 </div>
 

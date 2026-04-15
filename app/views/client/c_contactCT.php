@@ -11,7 +11,9 @@ require_once APPROOT . '/views/templates/client/c_sidebar.php';
       <p class="subtitle">Get in touch with your assigned caregiver</p>
     </div>
 
-    <?php if (!empty($_SESSION['error'])): ?>
+    <?php $caretaker = $data['caretaker'] ?? null; ?>
+
+    <?php if (!$caretaker && !empty($_SESSION['error'])): ?>
       <div class="alert alert-error">
         <i class="fas fa-exclamation-circle"></i>
         <span><?php echo $_SESSION['error'];
@@ -27,7 +29,6 @@ require_once APPROOT . '/views/templates/client/c_sidebar.php';
       </div>
     <?php endif; ?>
 
-    <?php $caretaker = $data['caretaker'] ?? null; ?>
     <?php if ($caretaker): ?>
       <div class="caretaker-profile">
         <div class="profile-header">
@@ -97,7 +98,7 @@ require_once APPROOT . '/views/templates/client/c_sidebar.php';
         <div class="empty-state">
           <i class="fas fa-user-slash"></i>
           <h3>No Caregiver Details Available</h3>
-          <p>After the HR manager approves the payment, you will be able to view the caretaker details..</p>
+          <p>You can view caregiver details after the advance payment is completed for your booking.</p>
           <a href="<?= URLROOT ?>/client/c_upcomingBookings" class="btn-primary">
             <i class="fas fa-calendar-check"></i> View My Bookings
           </a>

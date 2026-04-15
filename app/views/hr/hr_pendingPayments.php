@@ -75,16 +75,16 @@ function hr_payment_row_json(array $row): string
                                     <?= htmlspecialchars($statusLabel, ENT_QUOTES, 'UTF-8') ?>
                                 </span>
                             </td>
-                            <td class="actions payment-row-actions">
+                            <td class="actions payActions">
                                 <button type="button"
-                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-payment-detail"
+                                    class="btn secondary btn-sm iconBtn payView"
                                     data-payment="<?= hr_payment_row_json($payment) ?>"
                                     title="View details"
                                     aria-label="View payment and booking details">
                                     <i class="bx bx-show" aria-hidden="true"></i>
                                 </button>
                                 <button type="button"
-                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-open-approve-modal"
+                                    class="btn secondary btn-sm iconBtn payOK"
                                     data-payment-id="<?= (int) ($payment['id'] ?? 0) ?>"
                                     title="Approve payment"
                                     aria-label="Approve payment"
@@ -92,7 +92,7 @@ function hr_payment_row_json(array $row): string
                                     <i class="bx bx-check" aria-hidden="true"></i>
                                 </button>
                                 <button type="button"
-                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-open-reject-modal"
+                                    class="btn secondary btn-sm iconBtn payNo"
                                     data-payment-id="<?= (int) ($payment['id'] ?? 0) ?>"
                                     title="Reject payment"
                                     aria-label="Reject payment"
@@ -110,27 +110,27 @@ function hr_payment_row_json(array $row): string
     <?php endif; ?>
 </main>
 
-<!-- Detail (admin-style row modal) -->
-<div id="paymentDetailModal" class="modal admin-row-detail-modal" aria-hidden="true">
-    <div class="modal-content admin-row-detail-modal__content payment-detail-modal__content" role="dialog" aria-modal="true"
+<!-- Detail (HR row modal) -->
+<div id="paymentDetailModal" class="modal readModal" aria-hidden="true">
+    <div class="modal-content readPanel readWide" role="dialog" aria-modal="true"
         aria-labelledby="paymentDetailTitle">
-        <button type="button" class="modal-close admin-row-detail-modal__close" data-close-payment-detail aria-label="Close">
+        <button type="button" class="modal-close readClose" data-close-payment-detail aria-label="Close">
             <i class="bx bx-x" aria-hidden="true"></i>
         </button>
-        <header class="admin-row-detail-modal__header">
-            <span class="admin-row-detail-modal__header-icon" aria-hidden="true"><i class="bx bx-show"></i></span>
-            <h3 id="paymentDetailTitle" class="admin-row-detail-modal__title">Payment details</h3>
+        <header class="readHead">
+            <span class="readIcon" aria-hidden="true"><i class="bx bx-show"></i></span>
+            <h3 id="paymentDetailTitle" class="readTitle">Payment details</h3>
         </header>
-        <dl class="admin-row-detail-modal__dl" id="paymentDetailDl"></dl>
+        <dl class="pairList" id="paymentDetailDl"></dl>
     </div>
 </div>
 
 <!-- Approve / reject confirm -->
 <div id="paymentConfirmModal" class="modal" aria-hidden="true">
-    <div class="modal-content payment-confirm-modal__content" role="dialog" aria-modal="true" aria-labelledby="paymentConfirmTitle">
+    <div class="modal-content confirmBox" role="dialog" aria-modal="true" aria-labelledby="paymentConfirmTitle">
         <h3 id="paymentConfirmTitle">Confirm</h3>
         <p id="paymentConfirmText"></p>
-        <textarea id="paymentRejectReason" class="payment-reject-reason" rows="3"
+        <textarea id="paymentRejectReason" class="rejectNote" rows="3"
             placeholder="Rejection reason (required)" style="display: none;"></textarea>
         <div class="modal-buttons">
             <button type="button" class="btn ghost" id="paymentConfirmCancel">Cancel</button>

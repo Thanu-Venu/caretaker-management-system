@@ -29,7 +29,6 @@ $clientBodyData = (isset($clientBodyData) && is_array($clientBodyData)) ? $clien
   <?php foreach ($clientExtraCss as $cssRel): ?>
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/<?= htmlspecialchars((string) $cssRel, ENT_QUOTES, 'UTF-8') ?>">
   <?php endforeach; ?>
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/hr/hr-post-admin.css">
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/client/client-post-admin.css">
 </head>
 <body<?php

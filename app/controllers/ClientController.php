@@ -1701,7 +1701,16 @@ class ClientController extends Controller
         $paymentId = $this->clientModel->savePayment($paymentData);
 
         if ($paymentId) {
+            if ($paymentType === 'advance') {
+                // Client has submitted advance payment; keep booking out of pending-payment-request state.
+                $this->clientModel->updateBookingStatus((int)$bookingId, 'Advance_Paid');
+                $this->clientModel->updateBookingAdvancePaidDate((int)$bookingId);
+            }
+
             if (!PayHereHelper::isConfigured()) {
+                if ($paymentType === 'advance') {
+                    $this->clientModel->updateBookingStatus((int)$bookingId, 'Payment_Requested');
+                }
                 $_SESSION['error'] = "PayHere sandbox configuration is missing";
                 header("Location: " . URLROOT . "/client/c_makePayment?booking_id=" . $bookingId);
                 exit;
@@ -1720,6 +1729,9 @@ class ClientController extends Controller
             $gatewayUrl = defined('PAYHERE_API_URL') ? PAYHERE_API_URL : '';
 
             if ($merchantId === '' || $merchantSecret === '' || $returnUrl === '' || $cancelUrl === '' || $notifyUrl === '' || $gatewayUrl === '') {
+                if ($paymentType === 'advance') {
+                    $this->clientModel->updateBookingStatus((int)$bookingId, 'Payment_Requested');
+                }
                 $_SESSION['error'] = "PayHere configuration is incomplete";
                 header("Location: " . URLROOT . "/client/c_makePayment?booking_id=" . $bookingId);
                 exit;
@@ -1862,6 +1874,7 @@ class ClientController extends Controller
         $bookingId = $_GET['booking_id'] ?? null;
         $caretakerId = null;
         $hasAccess = false;
+        $allowedContactStatuses = ['advance_paid', 'accepted', 'reschedule_requested', 'change_requested', 'completed', 'paid'];
 
         // Primary method: Get from booking (with payment verification)
         if ($bookingId) {
@@ -1870,9 +1883,9 @@ class ClientController extends Controller
             // Security Check 1: Verify booking belongs to logged-in client
             if ($booking && (int)$booking['client_id'] === (int)$clientId) {
                 // Security Check 2: Verify advance payment has been made
-                $advancePaidStatuses = ['Advance_Paid', 'Accepted', 'Reschedule_Requested', 'Change_Requested', 'Completed', 'Paid'];
+                $bookingStatus = strtolower(trim((string)($booking['status'] ?? '')));
 
-                if (in_array($booking['status'], $advancePaidStatuses)) {
+                if (in_array($bookingStatus, $allowedContactStatuses, true)) {
                     $caretakerId = $booking['caretaker_id'];
                     $hasAccess = true;
                 } else {
@@ -1887,8 +1900,8 @@ class ClientController extends Controller
         if (!$hasAccess && !$bookingId) {
             $recentBookings = $this->clientModel->getRecentBookings($clientId);
             foreach ($recentBookings as $recentBooking) {
-                $advancePaidStatuses = ['Advance_Paid', 'Accepted', 'Reschedule_Requested', 'Change_Requested', 'Completed', 'Paid'];
-                if (in_array($recentBooking['status'], $advancePaidStatuses)) {
+                $recentStatus = strtolower(trim((string)($recentBooking['status'] ?? '')));
+                if (in_array($recentStatus, $allowedContactStatuses, true)) {
                     $caretakerId = $recentBooking['caretaker_id'];
                     $hasAccess = true;
                     break;
@@ -1904,6 +1917,9 @@ class ClientController extends Controller
         if ($hasAccess && $caretakerId) {
             $caretakerModel = $this->model('CaretakerModel');
             $caretaker = $caretakerModel->getCaretakerById($caretakerId);
+            if ($caretaker) {
+                unset($_SESSION['error']);
+            }
         }
 
         $this->view("client/c_contactCT", ['caretaker' => $caretaker]);

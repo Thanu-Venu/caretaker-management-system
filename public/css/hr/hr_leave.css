@@ -15,7 +15,7 @@ body {
 
 .page-header .page-title {
     margin: 0;
-    color: var(--admin-page-heading-color, #0f3555);
+    color: var(--hr-page-heading-color, #0f3555);
 }
 
 .main-content .success-message {
@@ -24,7 +24,7 @@ body {
     font-size: 14px;
     background: rgba(16, 185, 129, 0.1);
     color: #047857;
-    border-radius: var(--admin-radius-sm, 8px);
+    border-radius: var(--hr-radius-sm, 8px);
     border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
@@ -34,7 +34,7 @@ body {
     font-size: 14px;
     background: rgba(239, 68, 68, 0.08);
     color: #b91c1c;
-    border-radius: var(--admin-radius-sm, 8px);
+    border-radius: var(--hr-radius-sm, 8px);
     border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
@@ -45,10 +45,10 @@ body {
     gap: 16px 24px;
     margin-bottom: 16px;
     padding: 12px 14px;
-    background: var(--admin-surface, #fff);
-    border: 1px solid var(--admin-border, #e2e8f0);
-    border-radius: var(--admin-radius-sm, 8px);
-    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
+    background: var(--hr-surface, #fff);
+    border: 1px solid var(--hr-border, #e2e8f0);
+    border-radius: var(--hr-radius-sm, 8px);
+    box-shadow: var(--hr-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
 }
 
 .hr-leave-filters__group {
@@ -60,7 +60,7 @@ body {
 .hr-leave-filters__group label {
     font-size: 13px;
     font-weight: 600;
-    color: var(--admin-text-secondary, #475569);
+    color: var(--hr-text-secondary, #475569);
 }
 
 .hr-leave-filters__group .form-input {
@@ -68,12 +68,12 @@ body {
 }
 
 .table-container {
-    background: var(--admin-surface, #fff);
-    border: 1px solid var(--admin-border, #e2e8f0);
-    border-radius: var(--admin-radius, 12px);
+    background: var(--hr-surface, #fff);
+    border: 1px solid var(--hr-border, #e2e8f0);
+    border-radius: var(--hr-radius, 12px);
     padding: 12px;
     overflow-x: auto;
-    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
+    box-shadow: var(--hr-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
 }
 
 .leave-table {
@@ -111,7 +111,7 @@ body {
 }
 
 /* Override admin-ui `td.actions { flex-wrap: wrap }` so icons stay on one row */
-body main.main-content table.leave-table td.actions.leave-row-actions {
+body main.main-content table.leave-table td.actions.lvActions {
     display: flex !important;
     flex-flow: row nowrap !important;
     align-items: center;
@@ -119,13 +119,13 @@ body main.main-content table.leave-table td.actions.leave-row-actions {
     gap: 4px;
 }
 
-.leave-table td.actions .action-view-btn {
+.leave-table td.actions .iconBtn {
     text-decoration: none;
     flex-shrink: 0;
 }
 
 /* Match icon button sizing for approve link (admin-ui only styles `button`) */
-.leave-table td.actions a.btn.action-view-btn.action-view-btn--icon {
+.leave-table td.actions a.btn.iconBtn {
     width: 36px;
     min-width: 36px;
     height: 36px;
@@ -140,6 +140,12 @@ body main.main-content table.leave-table td.actions.leave-row-actions {
 .leave-table td.actions button:disabled {
     opacity: 0.42;
     cursor: not-allowed;
+}
+
+.leave-table td.actions .iconBtn.dead {
+    opacity: 0.45;
+    cursor: default;
+    pointer-events: none;
 }
 
 .leave-action-placeholder {
@@ -171,13 +177,13 @@ body main.main-content table.leave-table td.actions.leave-row-actions {
 }
 
 .leave-replacement-pill--required {
-    background: var(--admin-warning-bg, #fef3c7);
-    color: var(--admin-warning-text, #b45309);
+    background: var(--hr-warning-bg, #fef3c7);
+    color: var(--hr-warning-text, #b45309);
 }
 
 .leave-replacement-pill--na {
     background: rgba(148, 163, 184, 0.2);
-    color: var(--admin-muted, #64748b);
+    color: var(--hr-muted, #64748b);
 }
 
 .status-pill {
@@ -214,7 +220,7 @@ body main.main-content table.leave-table td.actions.leave-row-actions {
 .leave-table-empty {
     text-align: center;
     padding: 28px 12px;
-    color: var(--admin-muted, #64748b);
+    color: var(--hr-muted, #64748b);
 }
 
 .leave-pagination {
@@ -225,7 +231,7 @@ body main.main-content table.leave-table td.actions.leave-row-actions {
     gap: 8px;
     margin-top: 16px;
     padding-top: 12px;
-    border-top: 1px solid var(--admin-border, #e2e8f0);
+    border-top: 1px solid var(--hr-border, #e2e8f0);
 }
 
 .leave-pagination a {
@@ -235,42 +241,42 @@ body main.main-content table.leave-table td.actions.leave-row-actions {
     min-width: 38px;
     height: 38px;
     padding: 0 10px;
-    border-radius: var(--admin-radius-sm, 8px);
-    border: 1px solid var(--admin-border, #e2e8f0);
-    background: var(--admin-surface, #fff);
-    color: var(--admin-primary, #1e88e5);
+    border-radius: var(--hr-radius-sm, 8px);
+    border: 1px solid var(--hr-border, #e2e8f0);
+    background: var(--hr-surface, #fff);
+    color: var(--hr-primary, #1e88e5);
     font-weight: 600;
     font-size: 14px;
     text-decoration: none;
     transition:
-        background var(--admin-transition, 0.2s ease),
-        border-color var(--admin-transition, 0.2s ease);
+        background var(--hr-transition, 0.2s ease),
+        border-color var(--hr-transition, 0.2s ease);
 }
 
 .leave-pagination a:hover:not(.disabled):not(.active) {
-    border-color: var(--admin-primary, #1e88e5);
-    background: var(--admin-primary-soft, rgba(30, 136, 229, 0.09));
+    border-color: var(--hr-primary, #1e88e5);
+    background: var(--hr-primary-soft, rgba(30, 136, 229, 0.09));
 }
 
 .leave-pagination a.active {
-    background: var(--admin-primary, #1e88e5);
-    border-color: var(--admin-primary, #1e88e5);
+    background: var(--hr-primary, #1e88e5);
+    border-color: var(--hr-primary, #1e88e5);
     color: #fff;
 }
 
 .leave-pagination a.disabled {
     opacity: 0.4;
     pointer-events: none;
-    color: var(--admin-muted, #64748b);
+    color: var(--hr-muted, #64748b);
 }
 
 .pagination-ellipsis {
-    color: var(--admin-muted, #64748b);
+    color: var(--hr-muted, #64748b);
     padding: 0 4px;
 }
 
 /* Detail modal */
-.leave-detail-modal__content {
+.readPanel.readWide {
     max-width: min(560px, 100%);
     max-height: min(88vh, 820px);
     overflow: hidden;
@@ -279,14 +285,14 @@ body main.main-content table.leave-table td.actions.leave-row-actions {
     padding: 0;
 }
 
-.leave-detail-modal__content .admin-row-detail-modal__dl {
+.readPanel.readWide .pairList {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
     padding: 0 20px 20px;
 }
 
-.admin-row-detail-modal__dl dd.leave-detail-dd--multiline {
+.pairList dd.ddBlock {
     white-space: pre-wrap;
     word-break: break-word;
     line-height: 1.5;
@@ -301,7 +307,7 @@ body main.main-content table.leave-table td.actions.leave-row-actions {
 .leave-reject-intro {
     margin: 0 0 12px;
     font-size: 14px;
-    color: var(--admin-muted, #64748b);
+    color: var(--hr-muted, #64748b);
     line-height: 1.45;
 }
 
@@ -310,15 +316,15 @@ body main.main-content table.leave-table td.actions.leave-row-actions {
     font-size: 13px;
     font-weight: 600;
     margin-bottom: 6px;
-    color: var(--admin-text-secondary, #475569);
+    color: var(--hr-text-secondary, #475569);
 }
 
 .leave-reject-textarea {
     width: 100%;
     padding: 10px 12px;
     margin-bottom: 4px;
-    border: 1px solid var(--admin-border, #e2e8f0);
-    border-radius: var(--admin-radius-sm, 8px);
+    border: 1px solid var(--hr-border, #e2e8f0);
+    border-radius: var(--hr-radius-sm, 8px);
     font-family: inherit;
     font-size: 14px;
     resize: vertical;

@@ -1,6 +1,6 @@
 <?php
 $hrPageTitle = 'Refund details — HR';
-$hrExtraCss  = ['hr/hr_tables.css', 'hr/hr_refund_details.css'];
+$hrExtraCss  = ['hr/hr_refund_details.css'];
 include_once APPROOT . '/views/templates/hr/hr_layout_head.php';
 include_once APPROOT . '/views/templates/hr/hr_header.php';
 include_once APPROOT . '/views/templates/hr/hr_sidebar.php';

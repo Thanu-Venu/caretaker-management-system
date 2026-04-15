@@ -1,210 +1,371 @@
-body {
-  margin: 0;
-  font-family: var(--font-primary);
-}
-
-/* Shared page content spacing beside fixed sidebar */
-.main-content,
-.content,
-.payments-page,
-.reports-container,
-.booking-container,
-.caretaker-container,
-.client-container,
-.payment-container,
-.user-container {
-  margin-left: 270px !important;
-  margin-right: 20px !important;
-}
-
-:root {
-  --text-color: #ffffff;
-  --hover-bg: rgba(255, 255, 255, 0.2);
-}
+/* HR shell sidebar — tokens from hr-ui.css (HR fork of admin sidebar styles) */
 
 .sidebar {
-  width: 240px;
-  height: 100vh;
-  background: linear-gradient(180deg, #1E88E5, #00BFA5);
-  color: #fff;
-  padding: 20px 0;
-  position: fixed;
-  overflow: hidden;
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
+    --sidebar-pad-x: 12px;
+    width: var(--hr-sidebar-width, 260px);
+    /* Pin top + bottom to the viewport instead of 100vh — avoids the rail “jumping”
+       when mobile browser chrome or scrollbar changes the visual viewport height. */
+    position: fixed;
+    top: var(--hr-header-height, 52px);
+    bottom: 0;
+    left: 0;
+    height: auto;
+    min-height: 0;
+    background: linear-gradient(180deg, #1e88e5 0%, #1590d8 45%, #00bfa5 100%);
+    color: #fff;
+    padding: 12px var(--sidebar-pad-x) 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--hr-font, "Inter", system-ui, sans-serif);
+    z-index: 1020;
+    box-shadow: 4px 0 24px rgba(15, 23, 42, 0.12);
+    /* Mobile: slide drawer; desktop rail ↔ full width snaps (no width tween — avoids label “expand then snap”) */
+    transition:
+        transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.22s ease;
 }
 
 .menu-scroll {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
+    flex: 1;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 8px 0 12px;
 }
 
-
-/* hide scrollbar (Chrome, Edge, Safari) */
-.sidebar::-webkit-scrollbar {
-  width: 0;
-  width: 0;
-  height: 0;
-  display: none;
+.menu-scroll::-webkit-scrollbar {
+    width: 5px;
 }
 
-/* ---------- Logo ---------- */
-
-.sidebar .logo {
-  text-align: center;
-  margin-bottom: 18px;
-  padding: 0 16px;
+.menu-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
 }
 
-.sidebar .logo h2 {
-  font-size: 20px;
-  color: var(--text-color);
-  letter-spacing: 0.6px;
-  margin: 6px 0;
+.sidebar-brand {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    padding: 0 8px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    letter-spacing: 0.02em;
 }
 
-/* ---------- Menu ---------- */
-.menu {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
+.brand-name {
+    color: #fff;
 }
 
-.menu li {
-  position: relative;
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-/* Link style */
-.menu a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 20px;
-  color: var(--text-color);
-  text-decoration: none;
-  transition: background 0.25s, margin 0.18s, transform 0.18s;
-  font-size: 15px;
+.sidebar-menu li {
+    margin: 4px 0;
 }
 
-/* icons */
-.menu a i {
-  margin-right: 10px;
-  font-size: 18px;
-  color: inherit;
-  /* makes all icons same color as link */
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--hr-radius-sm, 8px);
+    color: rgba(255, 255, 255, 0.92);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
 }
 
-/* Hover behavior (keeps rounded look and reduced width) */
-.menu a:hover {
-  background: var(--hover-bg);
-  margin: 0 10px;
-  /* inset from both sides to give pill look */
-  border-radius: 10px;
+.sidebar-menu a:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
 }
 
-/* Active link */
-.menu a.active {
-  color: #fff;
-  /* force white text */
-  background: rgba(255, 255, 255, 0.3);
-  border-left: 4px solid #fff;
-  font-weight: 600;
-
+.sidebar-menu li.active>a,
+.sidebar-menu a.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset;
 }
 
-/* ensure active icon remains visible */
-.menu a.active i {
-  color: inherit;
+.sidebar-menu i {
+    font-size: 1.125rem;
+    width: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.95;
+    flex-shrink: 0;
 }
 
-/* ---------- Dropdown / Submenu ---------- */
-/* Supports both .dropdown-container (client) and .submenu-list (hr older) */
+.submenu .arrow {
+    margin-left: auto;
+    transition: transform 0.25s ease;
+}
 
-/* hidden by default */
-.dropdown-container,
 .submenu-list {
-  display: none;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  background: rgba(255, 255, 255, 0.03);
+    display: none;
+    list-style: none;
+    padding-left: 20px;
+    margin: 4px 0 0;
 }
 
-/* shown when JS toggles .show or .open */
-.dropdown-container.show,
-.submenu.open .submenu-list,
-.submenu-list.show {
-  display: block;
-}
-
-/* submenu item style */
-.dropdown-container li a,
 .submenu-list li a {
-  color: #fff;
-  /* same white color */
-  font-weight: 600;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 8px;
-
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 6px;
 }
 
-/* hover of submenu items */
-.dropdown-container li a:hover,
-.submenu-list li a:hover {
-  background: rgba(255, 255, 255, 0.25);
-  margin: 0 10px;
-  border-radius: 8px;
+.submenu.active .submenu-list {
+    display: block;
 }
 
-/* ---------- Arrow animation ---------- */
-.arrow {
-  margin-left: auto;
-  transition: transform 0.25s ease;
+.submenu.active .arrow {
+    transform: rotate(180deg);
 }
 
-.arrow.rotate {
-  transform: rotate(180deg);
+/* Bottom account chip — shown only in desktop icon rail (collapsed) */
+.sidebar-rail-footer {
+    display: none;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0 12px;
+    margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    text-decoration: none;
+    color: inherit;
 }
 
-/* ---------- Logout block ---------- */
-.sidebar-logout {
-  padding: 12px 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.16);
+.sidebar-rail-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: linear-gradient(145deg, #ec4899, #db2777);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-.sidebar-logout a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--text-color);
-  text-decoration: none;
-  padding: 12px 16px;
-  transition: background 0.18s;
+.sidebar-rail-footer:hover .sidebar-rail-avatar {
+    transform: scale(1.05);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
 }
 
-.sidebar-logout a:hover {
-  background: var(--hover-bg);
-  margin: 0 10px;
-  border-radius: 10px;
+@media (prefers-reduced-motion: reduce) {
+    .sidebar {
+        transition: none;
+    }
+
+    .sidebar-rail-avatar,
+    .sidebar-rail-footer:hover .sidebar-rail-avatar {
+        transition: none;
+        transform: none;
+    }
 }
 
-@media (max-width: 900px) {
-  .main-content,
-  .content,
-  .payments-page,
-  .reports-container,
-  .booking-container,
-  .caretaker-container,
-  .client-container,
-  .payment-container,
-  .user-container {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-  }
+/* Sidebar toggle (all breakpoints) */
+.sidebar-toggle {
+    position: fixed;
+    top: calc(var(--hr-header-height, 52px) / 2 - 19px);
+    left: 14px;
+    z-index: 1101;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: var(--hr-radius-sm, 8px);
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2);
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease;
+}
+
+.sidebar-toggle:hover {
+    background: rgba(255, 255, 255, 0.28);
+    transform: scale(1.03);
+}
+
+.sidebar-toggle i {
+    font-size: 20px;
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: var(--hr-header-height, 52px);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(2px);
+    z-index: 1015;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* Legacy: .active — JS uses .open */
+.sidebar.active,
+.sidebar.open {
+    transform: translateX(0);
+}
+
+/* Desktop: full width by default; collapsed = narrow icon rail */
+@media (min-width: 1024px) {
+    /* No width/transform tween on desktop — rail snaps; avoids “expand” feel on navigation */
+    .sidebar {
+        transform: translateX(0);
+        transition: none;
+    }
+
+    /* Collapsed rail: clearer active + native title tooltip on hover (labels are sr-only) */
+    body.sidebarTucked .sidebar-menu a.active {
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.45);
+    }
+
+    body.sidebarTucked .sidebar {
+        --sidebar-pad-x: 0;
+        width: var(--hr-sidebar-rail-width, 72px);
+        padding: 12px 0 10px;
+        transform: translateX(0);
+        pointer-events: auto;
+        box-shadow: 4px 0 18px rgba(15, 23, 42, 0.1);
+    }
+
+    body.sidebarTucked .sidebar-rail-footer {
+        display: flex;
+    }
+
+    body.sidebarTucked .sidebar .sidebar-menu a {
+        position: relative;
+        justify-content: center;
+        padding: 11px 6px;
+        gap: 0;
+    }
+
+    body.sidebarTucked .sidebar .sidebar-menu i {
+        font-size: 1.35rem;
+    }
+
+    /* Visually hide labels; keep in DOM for accessibility when title is set */
+    body.sidebarTucked .sidebar .sidebar-menu a > span:not(.menu-item-content) {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    body.sidebarTucked .sidebar .menu-left > span {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    body.sidebarTucked .sidebar .menu-item-content {
+        justify-content: center;
+        width: 100%;
+    }
+
+    body.sidebarTucked .sidebar .menu-left {
+        flex: 0 0 auto;
+        justify-content: center;
+        gap: 0;
+    }
+
+    body.sidebarTucked .sidebar .sidebar-badge {
+        position: absolute;
+        top: 4px;
+        right: 6px;
+        min-width: 16px;
+        height: 16px;
+        padding: 0 4px;
+        font-size: 9px;
+        font-weight: 700;
+        line-height: 16px;
+        border-radius: 999px;
+        margin-left: 0;
+        animation: none;
+    }
+
+    .sidebar-overlay {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+}
+
+@media (max-width: 1023px) {
+    .sidebar {
+        transform: translateX(-105%);
+        width: min(280px, 88vw);
+        box-shadow: 8px 0 32px rgba(15, 23, 42, 0.18);
+    }
+
+    .sidebar.open,
+    .sidebar.active {
+        transform: translateX(0);
+        pointer-events: auto;
+    }
+
+    /* Mobile: ignore desktop collapsed class */
+    body.sidebarTucked .sidebar:not(.open) {
+        transform: translateX(-105%);
+    }
+
+    body.sidebarTucked .sidebar.open {
+        transform: translateX(0);
+    }
+
+    body.sidebar-open {
+        overflow: hidden;
+    }
+}
+
+@media print {
+
+    .sidebar,
+    .sidebar-toggle,
+    .sidebar-overlay {
+        display: none !important;
+    }
 }

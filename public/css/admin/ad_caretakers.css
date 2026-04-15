@@ -33,7 +33,7 @@
 }
 
 /* Qualifications (and similar) as a normal dl row — allows line breaks */
-.admin-row-detail-modal__dl dd.caretaker-detail-dd--multiline {
+.admin-row-detail-modal__dl dd.ddBlock {
     white-space: pre-wrap;
     word-break: break-word;
     line-height: 1.5;
@@ -140,7 +140,7 @@
     margin-top: 20px;
 }
 
-td.actions .caretaker-action-delete {
+td.actions .trashLink {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -153,6 +153,6 @@ td.actions .caretaker-action-delete {
     transition: background 0.15s ease;
 }
 
-td.actions .caretaker-action-delete:hover {
+td.actions .trashLink:hover {
     background: var(--admin-danger-bg, rgba(254, 226, 226, 0.6));
 }

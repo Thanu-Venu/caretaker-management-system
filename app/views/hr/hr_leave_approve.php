@@ -12,30 +12,30 @@ include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
 $hasAffected = !empty($data['affected']);
 ?>
 
-<main class="main-content leave-approve-page">
+<main class="main-content laPage">
     <?php if (!empty($data['error'])): ?>
         <div class="error-message" role="alert"><?= htmlspecialchars((string) $data['error'], ENT_QUOTES, 'UTF-8') ?></div>
     <?php endif; ?>
 
-    <header class="leave-approve-topbar">
+    <header class="laBar">
         <a href="<?= htmlspecialchars(URLROOT . '/HrLeave/index', ENT_QUOTES, 'UTF-8') ?>"
-            class="leave-approve-back"
+            class="laBack"
             title="Back to leave list"
             aria-label="Back to leave list">
             <i class="bx bx-arrow-back" aria-hidden="true"></i>
         </a>
-        <div class="leave-approve-topbar__main">
+        <div class="laBarMain">
             <h1 class="page-title">Approve leave</h1>
             <?php if (!empty($impact['count'])): ?>
-                <span class="leave-approve-flag">Reassign required</span>
+                <span class="laFlag">Reassign required</span>
             <?php endif; ?>
         </div>
-        <button type="button" id="leaveApproveOpenContext" class="btn secondary btn-sm leave-approve-context-trigger">
+        <button type="button" id="leaveApproveOpenContext" class="btn secondary btn-sm laCtxBtn">
             <i class="bx bx-show" aria-hidden="true"></i> Impact &amp; usage
         </button>
     </header>
 
-    <div class="leave-approve-card">
+    <div class="laCard">
         <div class="leave-info leave-info--compact">
             <div class="info-row">
                 <span class="label">Leave ID</span>
@@ -97,9 +97,9 @@ $hasAffected = !empty($data['affected']);
             </div>
 
             <?php if (!$hasAffected): ?>
-                <p class="leave-approve-hint">No bookings affected — replacement not required.</p>
+                <p class="laHint">No bookings affected — replacement not required.</p>
             <?php else: ?>
-                <p class="leave-approve-hint">Select a replacement caregiver when bookings are affected. Open <strong>Impact &amp; usage</strong> above to review bookings.</p>
+                <p class="laHint">Select a replacement caregiver when bookings are affected. Open <strong>Impact &amp; usage</strong> above to review bookings.</p>
             <?php endif; ?>
 
             <div class="field full">
@@ -107,7 +107,7 @@ $hasAffected = !empty($data['affected']);
                 <textarea id="hr_note" name="hr_note" class="form-input" rows="3" placeholder="Add a note (optional)…"></textarea>
             </div>
 
-            <div class="leave-approve-form-actions">
+            <div class="laFoot">
                 <button type="submit" class="btn primary" <?= !empty($data['error']) ? 'disabled' : '' ?>
                     onclick="return confirm('Approve this leave and reassign all affected bookings to the selected caregiver?');">
                     <i class="bx bx-check" aria-hidden="true"></i> Approve leave
@@ -117,17 +117,17 @@ $hasAffected = !empty($data['affected']);
     </div>
 </main>
 
-<div id="leaveApproveContextModal" class="modal admin-row-detail-modal" aria-hidden="true">
-    <div class="modal-content admin-row-detail-modal__content leave-approve-context-modal__content" role="dialog" aria-modal="true"
+<div id="leaveApproveContextModal" class="modal readModal" aria-hidden="true">
+    <div class="modal-content readPanel laModal" role="dialog" aria-modal="true"
         aria-labelledby="leaveApproveContextTitle">
-        <button type="button" class="modal-close admin-row-detail-modal__close" data-leave-approve-context-close aria-label="Close">
+        <button type="button" class="modal-close readClose" data-leave-approve-context-close aria-label="Close">
             <i class="bx bx-x" aria-hidden="true"></i>
         </button>
-        <header class="admin-row-detail-modal__header">
-            <span class="admin-row-detail-modal__header-icon" aria-hidden="true"><i class="bx bx-show"></i></span>
-            <h3 id="leaveApproveContextTitle" class="admin-row-detail-modal__title">Impact &amp; monthly usage</h3>
+        <header class="readHead">
+            <span class="readIcon" aria-hidden="true"><i class="bx bx-show"></i></span>
+            <h3 id="leaveApproveContextTitle" class="readTitle">Impact &amp; monthly usage</h3>
         </header>
-        <div class="leave-approve-context-body">
+        <div class="laScroll">
             <?php if (!empty($impact['count'])): ?>
                 <div class="impact-banner impact-banner--in-modal">
                     This leave overlaps active bookings. Assign a replacement before approving.
@@ -139,7 +139,7 @@ $hasAffected = !empty($data['affected']);
                 </div>
             <?php endif; ?>
 
-            <dl class="leave-approve-usage-dl">
+            <dl class="laUsage">
                 <dt>Monthly usage (leave month)</dt>
                 <dd>
                     <?= (int) $usage['used_before'] ?> + <?= (int) $usage['request_days'] ?> = <strong><?= (int) $usage['used_after'] ?></strong>
@@ -147,12 +147,12 @@ $hasAffected = !empty($data['affected']);
                 </dd>
             </dl>
 
-            <h4 class="leave-approve-context-subtitle">Affected bookings</h4>
+            <h4 class="laSub">Affected bookings</h4>
             <?php if (!$hasAffected): ?>
-                <p class="leave-approve-context-empty">No active bookings during this leave period.</p>
+                <p class="laEmpty">No active bookings during this leave period.</p>
             <?php else: ?>
-                <div class="leave-approve-modal-table-wrap">
-                    <table class="table booking-table leave-approve-modal-table">
+                <div class="laTblWrap">
+                    <table class="table booking-table laTbl">
                         <thead>
                             <tr>
                                 <th>Booking ID</th>

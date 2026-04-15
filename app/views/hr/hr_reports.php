@@ -61,7 +61,7 @@ $exportCsvUrl = URLROOT . '/public?' . http_build_query(array_merge($reportQuery
 $exportPdfUrl = URLROOT . '/public?' . http_build_query(array_merge($reportQuery, ['export' => '1', 'format' => 'pdf']));
 
 $hrPageTitle = 'HR Reports — SmartCare';
-$hrExtraCss  = ['admin/ad_reports.css'];
+$hrExtraCss  = ['hr/hr_reports.css'];
 include_once APPROOT . '/views/templates/hr/hr_layout_head.php';
 include_once APPROOT . '/views/templates/hr/hr_header.php';
 include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
