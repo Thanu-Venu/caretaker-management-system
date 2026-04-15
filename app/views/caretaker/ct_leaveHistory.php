@@ -1,6 +1,3 @@
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,10 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_leaveHistory.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
 </head>
 <body>
-<div class="main-content">
+<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
+<main class="content leavehistory-container">
   <h1>Leave History</h1>
 
   <table class="leave-history-table">
