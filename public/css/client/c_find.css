@@ -196,20 +196,23 @@
     position: fixed;
     inset: 0;
     background: rgba(15, 23, 42, 0.45);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     z-index: 1990;
 }
 
 #searchPopup {
     display: none;
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    transform: none;
     width: min(700px, 94vw);
     max-width: 700px;
-    max-height: 108vh;
+    max-height: min(88vh, 760px);
     overflow-y: auto;
     background: #fff;
     padding: 24px;
@@ -243,6 +246,17 @@
     border-radius: 8px;
     background: #fff;
     box-shadow: none;
+}
+
+/* Keep native date/time picker rendering stable on Windows Chromium */
+#searchPopup .field input[type="date"],
+#searchPopup .field input[type="time"],
+#searchPopup .field input[type="datetime-local"] {
+    appearance: auto;
+    -webkit-appearance: auto;
+    color-scheme: light;
+    background-color: #fff;
+    color: #0f172a;
 }
 
 #searchPopup .field input:focus,

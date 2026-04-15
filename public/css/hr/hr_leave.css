@@ -108,6 +108,7 @@ body {
 
 .leave-table td.actions {
     line-height: 1;
+    background: #fff;
 }
 
 /* Override admin-ui `td.actions { flex-wrap: wrap }` so icons stay on one row */
@@ -138,14 +139,20 @@ body main.main-content table.leave-table td.actions.lvActions {
 }
 
 .leave-table td.actions button:disabled {
-    opacity: 0.42;
+    opacity: 1;
     cursor: not-allowed;
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    color: #94a3b8;
 }
 
 .leave-table td.actions .iconBtn.dead {
-    opacity: 0.45;
+    opacity: 1;
     cursor: default;
     pointer-events: none;
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    color: #94a3b8;
 }
 
 .leave-action-placeholder {
@@ -164,7 +171,11 @@ body main.main-content table.leave-table td.actions.lvActions {
 }
 
 .row-impact {
-    background: rgba(254, 243, 199, 0.35);
+    background: transparent;
+}
+
+.row-impact td:first-child {
+    box-shadow: inset 3px 0 0 var(--hr-warning-text, #b45309);
 }
 
 .leave-replacement-pill {
