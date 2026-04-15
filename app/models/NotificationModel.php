@@ -130,7 +130,11 @@ class NotificationModel
 
     public function getHRUsers()
     {
-        $result = $this->conn->query("SELECT id FROM users WHERE role = 'Manager'");
+        $result = $this->conn->query(
+            "SELECT id
+             FROM users
+             WHERE LOWER(TRIM(role)) IN ('manager', 'hr')"
+        );
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
