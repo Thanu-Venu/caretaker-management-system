@@ -555,8 +555,27 @@ public function saveComplaint()
     public function ct_announcement()
     {
         $announcementModel = $this->model('AnnouncementModel');
-        $announcements = $announcementModel->getCaretakerAnnouncements();
+        $perPage     = 15;
+        $currentPage = max(1, (int) ($_GET['page'] ?? 1));
+        $filters     = [
+            'for_caretaker_portal' => true,
+            'date_from'           => trim((string) ($_GET['date_from'] ?? '')),
+            'date_to'             => trim((string) ($_GET['date_to'] ?? '')),
+            'q'                   => trim((string) ($_GET['q'] ?? '')),
+        ];
+        $totalRecords = $announcementModel->countAnnouncementsFiltered($filters);
+        $totalPages   = $totalRecords > 0 ? (int) ceil($totalRecords / $perPage) : 1;
+        $currentPage  = max(1, min($currentPage, $totalPages));
+        $offset       = ($currentPage - 1) * $perPage;
+        $announcements = $announcementModel->getAnnouncementsFilteredPaged($filters, $perPage, $offset);
 
-        $this->view("caretaker/ct_announcement", $announcements);
+        $this->view('caretaker/ct_announcement', [
+            'announcements' => $announcements,
+            'filters'       => $filters,
+            'currentPage'   => $currentPage,
+            'totalPages'    => $totalPages,
+            'totalRecords'  => $totalRecords,
+            'perPage'       => $perPage,
+        ]);
     }
 }

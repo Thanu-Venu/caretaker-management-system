@@ -140,6 +140,10 @@ public function getClientAnnouncements()
             $parts[] = "(a.target_role IN ('client', 'All'))";
         }
 
+        if (!empty($filters['for_caretaker_portal'])) {
+            $parts[] = "(a.target_role IN ('caretaker', 'All'))";
+        }
+
         return [$parts, $types, $params];
     }
 

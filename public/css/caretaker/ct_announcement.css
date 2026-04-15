@@ -17,10 +17,18 @@ body {
     font-family: 'Poppins', Arial, sans-serif;
 }
 
+.main-content.announcement-container,
 .content.announcement-container {
   padding: 24px 40px;
   min-height: 100vh;
   box-sizing: border-box;
+}
+
+.page-subtitle {
+  margin-top: 8px;
+  color: var(--announcement-muted);
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .card {
