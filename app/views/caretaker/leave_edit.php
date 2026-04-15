@@ -161,7 +161,8 @@ $adjustedRemaining = min(5, $summary['remaining'] + $refundDays);
       remainingThisMonth: <?= (int)$adjustedRemaining ?>
     };
     window.leavePreview = {
-      impactUrl: '<?= htmlspecialchars($data['impactPreviewUrl'] ?? (URLROOT . '/LeaveCRUD/impactPreview')) ?>'
+      impactUrl: '<?= htmlspecialchars($data['impactPreviewUrl'] ?? (URLROOT . '/LeaveCRUD/impactPreview')) ?>',
+      leaveId: <?= (int)($leave->id ?? 0) ?>
     };
   </script>
   <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_leave.js"></script>

@@ -164,6 +164,39 @@
 
         select.addEventListener('change', syncFromNative);
 
+        if (typeof MutationObserver !== 'undefined') {
+            var observer = new MutationObserver(function (mutations) {
+                var shouldRebuild = false;
+                var shouldSync = false;
+
+                mutations.forEach(function (mutation) {
+                    if (mutation.type === 'childList') {
+                        shouldRebuild = true;
+                    } else if (mutation.type === 'attributes') {
+                        if (mutation.target === select) {
+                            shouldSync = true;
+                        } else if (mutation.target && mutation.target.tagName === 'OPTION') {
+                            shouldRebuild = true;
+                        }
+                    }
+                });
+
+                if (shouldRebuild) {
+                    rebuild();
+                    syncFromNative();
+                } else if (shouldSync) {
+                    syncFromNative();
+                }
+            });
+
+            observer.observe(select, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['disabled', 'selected', 'label', 'value']
+            });
+        }
+
         if (select.form) {
             bindRequiredValidation(select.form);
             select.form.addEventListener('reset', function () {

@@ -159,7 +159,8 @@ $impact = $data['impact'] ?? [];
       remainingThisMonth: <?= (int)$summary['remaining'] ?>
     };
     window.leavePreview = {
-      impactUrl: '<?= htmlspecialchars($data['impactPreviewUrl'] ?? (URLROOT . '/LeaveCRUD/impactPreview')) ?>'
+      impactUrl: '<?= htmlspecialchars($data['impactPreviewUrl'] ?? (URLROOT . '/LeaveCRUD/impactPreview')) ?>',
+      leaveId: null
     };
   </script>
   <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_leave.js"></script>

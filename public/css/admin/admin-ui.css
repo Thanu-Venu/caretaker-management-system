@@ -1107,6 +1107,34 @@ select optgroup {
     color: var(--admin-text);
 }
 
+/* Native date/time picker stability (Windows Chromium) */
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+    appearance: auto;
+    -webkit-appearance: auto;
+    color-scheme: light;
+    background-color: var(--admin-surface);
+    color: var(--admin-text);
+}
+
+/* Disable backdrop blur for date/time input contexts to prevent black-flash picker */
+.card:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.admin-card:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.filter-bar:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.filter-section:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.filters-panel:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.search-box:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.search-wrapper:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.modal:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.modal-content:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+[class*="overlay"]:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+[id*="overlay"]:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+[id*="Overlay"]:has(input[type="date"], input[type="time"], input[type="datetime-local"]) {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
 /* Custom select component (replaces native popup to avoid OS-level glitches) */
 .sc-select {
     position: relative;
