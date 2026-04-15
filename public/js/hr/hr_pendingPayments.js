@@ -240,12 +240,14 @@
                 rejectReason.style.display = 'none';
                 confirmSubmit.textContent = 'Approve';
                 confirmSubmit.className = 'btn primary';
+                confirmSubmit.classList.remove('reject');
             } else {
                 confirmTitle.textContent = 'Reject payment';
                 confirmText.textContent = 'Reject this payment? The client will be notified.';
                 rejectReason.style.display = 'block';
                 confirmSubmit.textContent = 'Reject';
                 confirmSubmit.className = 'btn primary';
+                confirmSubmit.classList.add('reject');
             }
             openModal(confirmModal);
         }

@@ -16,7 +16,7 @@
 
 /* Detail panel: slightly narrower than default readPanel */
 .readPanel.narrowRead {
-    max-width: min(480px, 100%);
+    max-width: min(600px, 100%);
 }
 
 .readPanel.narrowRead .pairList {

@@ -145,9 +145,9 @@ include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
                   aria-label="Edit caregiver" title="Edit">
                   <i class="bx bx-edit" aria-hidden="true"></i>
                 </button>
-                <a href="<?php echo URLROOT; ?>/HRCaretakerCRUD/delete/<?php echo (int) $caretaker['id']; ?>"
-                  data-app-confirm="Are you sure you want to delete this caregiver?" title="Delete"
-                  class="trashLink"><i class="bx bx-trash" aria-hidden="true"></i></a>
+                <a href="#" data-id="<?php echo (int) $caretaker['id']; ?>" title="Delete" class="btn secondary btn-sm iconBtn deleteCaretaker">
+                  <i class="bx bx-trash" aria-hidden="true"></i>
+                </a>
               </td>
             </tr>
           <?php endforeach; ?>
@@ -234,5 +234,17 @@ include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
   </div>
 </div>
 
-<script src="<?php echo URLROOT; ?>/public/js/admin/ad_caretakers.js"></script>
+<div id="confirmDeleteModal" class="modal" aria-hidden="true">
+  <div class="modal-content pop-up">
+    <h3>Confirm Delete</h3>
+    <p>Are you sure you want to delete this caregiver?</p>
+
+    <div class="form-actions">
+      <button type="button" class="btn ghost" data-close-delete-modal>Cancel</button>
+      <button id="confirmDeleteBtn" class="btn danger"> Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="<?php echo URLROOT; ?>/public/js/hr/hr_caretakers.js"></script>
 <?php include_once APPROOT . '/views/templates/hr/hr_layout_close.php'; ?>

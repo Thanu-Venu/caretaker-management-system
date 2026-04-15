@@ -253,3 +253,101 @@ body {
     color: #64748b;
     padding: 24px 12px;
 }
+
+/* Confirm modal (same as payments) */
+.confirmBox {
+    max-width: 440px;
+    width: 100%;
+}
+
+.rejectNote {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--hr-border, #e2e8f0);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.confirmBox .modal-buttons {
+    margin-top: 18px;
+}
+
+/* ===== CONFIRM MODAL FIX ===== */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45); /* dark overlay */
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.confirmBox {
+    background: #ffffff;
+    padding: 22px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.2s ease;
+}
+
+.confirmBox h3 {
+    margin-bottom: 10px;
+}
+
+.confirmBox p {
+    color: #444;
+    font-size: 14px;
+}
+
+/* textarea */
+.rejectNote {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    resize: vertical;
+}
+
+/* buttons */
+.modal-buttons {
+    margin-top: 18px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* animation */
+@keyframes fadeIn {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.confirmBox .btn.primary {
+    background: #1e88e5;
+    color: #fff;
+}
+
+.confirmBox .btn.ghost {
+    background: transparent;
+    border: 1px solid #ddd;
+}
