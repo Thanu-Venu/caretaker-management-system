@@ -165,3 +165,27 @@
     font-size: 12px;
     line-height: 1.45;
 }
+
+/* Disabled contact button styling */
+.btn.contact-disabled {
+    background-color: #9ca3af;
+    border-color: #9ca3af;
+    color: #fff;
+    cursor: not-allowed;
+    opacity: 0.75;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn.contact-disabled:hover {
+    background-color: #ef4444;
+    border-color: #ef4444;
+    opacity: 1;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.btn.contact-disabled i {
+    font-size: 1.1rem;
+}
