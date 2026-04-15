@@ -150,7 +150,7 @@ function updateDurationLimits(basis) {
 }
 
 window.onload = function () {
-  // Set Start Date: min = today + 4 days
+  // Set Start Date window: today to today + 4 days
   const startDateInput = document.querySelector('input[name="start_date"]');
   if (!startDateInput) {
     return;
@@ -172,6 +172,7 @@ window.onload = function () {
   };
 
   startDateInput.min = formatDate(minDate);
+  startDateInput.max = formatDate(maxDate);
 };
 
 
