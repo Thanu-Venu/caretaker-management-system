@@ -31,6 +31,11 @@ class PaymentGatewayController extends Controller
             $payment = $this->clientModel->getPaymentByOrderId($orderId);
             if ($payment && strtolower((string)$payment['status']) === 'pending') {
                 $this->clientModel->updatePaymentStatus($payment['id'], 'rejected');
+
+                $paymentType = strtolower(trim((string)($payment['payment_type'] ?? '')));
+                if ($paymentType === 'advance') {
+                    $this->clientModel->updateBookingStatus((int)$payment['booking_id'], 'Payment_Requested');
+                }
             }
         }
 
@@ -112,7 +117,7 @@ class PaymentGatewayController extends Controller
                     || in_array($bookingStatus, ['Payment_Requested', 'Advance_Paid'], true);
 
                 if ($isAdvanceApproval) {
-                    $this->clientModel->updateBookingStatus((int)$payment['booking_id'], 'Accepted');
+                    $this->clientModel->updateBookingStatus((int)$payment['booking_id'], 'Advance_Paid');
                     $bookingDetails = $this->clientModel->getBookingById((int)$payment['booking_id']);
                     if ($bookingDetails) {
                         $this->clientModel->updateBookingAdvancePaidDate((int)$payment['booking_id']);
@@ -122,8 +127,8 @@ class PaymentGatewayController extends Controller
                     $notificationModel->addNotification(
                         (int)$payment['caretaker_id'],
                         'caretaker',
-                        'Booking Accepted',
-                        'Booking #' . $payment['booking_id'] . ' has been accepted after payment approval. You can now view the booking details in your Bookings page.',
+                        'Advance Payment Approved',
+                        'Advance payment for booking #' . $payment['booking_id'] . ' has been approved. You can now view the booking details in your Bookings page.',
                         URLROOT . '/caretaker/ct_booking?booking_id=' . $payment['booking_id'] . '&tab=upcoming'
                     );
                 } else {
@@ -134,6 +139,11 @@ class PaymentGatewayController extends Controller
                         (float)$payment['amount'],
                         (int)$payment['id']
                     );
+                }
+            } else {
+                $paymentType = strtolower(trim((string)($payment['payment_type'] ?? '')));
+                if ($paymentType === 'advance') {
+                    $this->clientModel->updateBookingStatus((int)$payment['booking_id'], 'Payment_Requested');
                 }
             }
         }

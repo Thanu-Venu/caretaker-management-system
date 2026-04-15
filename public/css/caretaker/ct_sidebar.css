@@ -1,5 +1,10 @@
 /* Caretaker sidebar — uses tokens from admin-ui.css (load order: before admin-ui is OK) */
 
+/* Tighter space below the fixed bar than the global admin default (caretaker-only stylesheet). */
+:root {
+    --admin-main-top-gap: 14px;
+}
+
 .sidebar {
     --sidebar-pad-x: 12px;
     width: var(--admin-sidebar-width, 260px);
@@ -138,6 +143,7 @@
     justify-content: center;
     padding: 10px 0 12px;
     margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
     text-decoration: none;
     color: inherit;
 }
@@ -367,159 +373,4 @@
     .sidebar-overlay {
         display: none !important;
     }
-}
-  margin-left: 280px !important;
-  margin-right: 20px !important;
-}
-.sidebar::-webkit-scrollbar {
-  display: none;
-}
-
-/* Sidebar inner scroll area */
-.sidebar .menu-scroll {
-  overflow-y: auto;
-  padding: 0 0 16px;
-}
-
-.sidebar-rail-footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 72px;
-  background: rgba(255, 255, 255, 0.08);
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  color: #fff;
-  text-decoration: none;
-  margin-top: auto;
-}
-
-.sidebar-rail-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.18);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: #fff;
-}
-
-/* Menu items */
-.sidebar ul {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.sidebar ul li {
-  position: relative;
-  margin: 8px 0; /* gap between items */
-}
-
-
-/* Rotate when submenu open */
-.sidebar ul li a {
-  display: flex;
-  align-items: center;   /* vertically center icon, text, and arrow */
-  text-decoration: none;
-  color: #fff;
-  padding: 12px 20px;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-}
-
-.sidebar ul li a i { 
-  font-size: 18px;       /* icon size */
-  margin-right: 10px;    /* space between icon and text */
-}
-
-.sidebar ul li a .link-name {
-  font-size: 15px;
-  font-weight: 500;
-}
-
-.sidebar ul li a .arrow {
-  margin-left: auto;      /* pushes arrow to the far right */
-  font-size: 16px;
-  transition: transform 0.3s ease;
-  line-height: 1;
-}
-
-.sidebar ul li.showMenu > a .arrow {
-  transform: rotate(-180deg);
-}
-
-.sidebar a:hover,
-.sidebar li.active > a {
-  background: rgba(255, 255, 255, 0.3);
-   margin: 0 10px;        /* reduces width from left and right */
-  border-radius: 10px;    /* keeps rounded corners */
-}
-
-
-
-
-
-/* Submenu */
-.sidebar ul .sub-menu {
-  font-weight: 300;
-  display: none;
-  flex-direction: column;
-  padding-left: 20px;
-  margin-top: 5px;
-  border-radius: 4px;
-}
-
-.sidebar ul li.showMenu .sub-menu {
-  display: flex;
-}
-
-.sidebar ul .sub-menu li a {
-  padding: 10px 20px;
-  font-size: 14px;
-  color: #fff;
-  opacity: 0.85;
-}
-
-.sidebar ul .sub-menu li a:hover {
-  opacity: 1;
-}
-
-@media (max-width: 1023px) {
-  .main-content,
-  .content,
-  .payments-page,
-  .reports-container,
-  .booking-container,
-  .caretaker-container,
-  .client-container,
-  .payment-container,
-  .user-container {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-  }
-}
-
-/* Logout at bottom 
-.sidebar .logout {
-  position: absolute;
-  bottom: 20px;
-  width: 100%;
-}
-
-.sidebar .logout a {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: #fff;
-  padding: 12px 20px;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-}
-
-.sidebar .logout a:hover {
-  background: rgba(255, 255, 255, 0.2);
 }

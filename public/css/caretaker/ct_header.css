@@ -273,7 +273,5 @@
     display: block;
 }
 
-/* page content spacing for fixed header */
-body {
-    padding-top: var(--admin-header-height, 52px);
-}
+/* Fixed header offset is applied on main via admin-ui (margin-top + padding-top).
+   Do not add body padding-top here — it doubled the vertical gap on caretaker pages. */

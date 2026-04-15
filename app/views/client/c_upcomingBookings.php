@@ -19,21 +19,20 @@ $upcomingStatusFilterOptions = [
     'Advance_Paid' => 'Advance paid',
     'Accepted' => 'Accepted',
     'Reschedule_Requested' => 'Reschedule requested',
-    'Change_Requested' => 'Change requested',
 ];
 ?>
 
 <?php if ($hasPendingAdvance): ?>
-<div id="advanceModal" class="modal show" role="dialog" aria-modal="true" aria-labelledby="advanceModalTitle">
-    <div class="modal-content" style="max-width:640px;">
-        <button type="button" class="close" onclick="document.getElementById('advanceModal').classList.remove('show')" aria-label="Close">&times;</button>
-        <h3 id="advanceModalTitle">Advance payments required</h3>
-        <p class="text-muted">You have pending advance payments for the following bookings.</p>
-        <div class="advance-modal-list">
-            <?php require APPROOT . '/views/client/partials/advance_pending_booking_cards.php'; ?>
+    <div id="advanceModal" class="modal show" role="dialog" aria-modal="true" aria-labelledby="advanceModalTitle">
+        <div class="modal-content" style="max-width:640px;">
+            <button type="button" class="close" onclick="document.getElementById('advanceModal').classList.remove('show')" aria-label="Close">&times;</button>
+            <h3 id="advanceModalTitle">Advance payments required</h3>
+            <p class="text-muted">You have pending advance payments for the following bookings.</p>
+            <div class="advance-modal-list">
+                <?php require APPROOT . '/views/client/partials/advance_pending_booking_cards.php'; ?>
+            </div>
         </div>
     </div>
-</div>
 <?php endif; ?>
 
 <main class="main-content">
@@ -49,11 +48,11 @@ $upcomingStatusFilterOptions = [
 
     <?php if (!empty($_SESSION['success'])): ?>
         <div class="flash success"><?php echo htmlspecialchars((string) $_SESSION['success']);
-        unset($_SESSION['success']); ?></div>
+                                    unset($_SESSION['success']); ?></div>
     <?php endif; ?>
     <?php if (!empty($_SESSION['error'])): ?>
         <div class="flash error"><?php echo htmlspecialchars((string) $_SESSION['error']);
-        unset($_SESSION['error']); ?></div>
+                                    unset($_SESSION['error']); ?></div>
     <?php endif; ?>
 
     <?php if (empty($data['bookings'])): ?>
@@ -115,10 +114,15 @@ $upcomingStatusFilterOptions = [
                             <td class="booking-actions-cell">
                                 <div class="booking-actions-toolbar" role="group" aria-label="Actions for booking <?= $bid ?>">
                                     <button type="button" class="btn btn-icon secondary booking-detail-open" title="View full details" aria-label="View full details for booking <?= $bid ?>"
-                                            onclick="SmartCareBookingDetail.open(<?= $bid ?>)">
+                                        onclick="SmartCareBookingDetail.open(<?= $bid ?>)">
                                         <i class="bx bx-show" aria-hidden="true"></i>
                                     </button>
-                                    <?php if (in_array($b['status'], $advancePaidStatuses, true)): ?>
+                                    <?php if ($b['status'] === 'Advance_Paid'): ?>
+                                        <button type="button" class="btn tiny contact-disabled" disabled aria-disabled="true" title="Contact available after caregiver accepts">
+                                            <i class="bx bx-lock-alt" aria-hidden="true"></i>
+                                            Contact
+                                        </button>
+                                    <?php elseif (in_array($b['status'], ['Accepted', 'Change_Requested'], true)): ?>
                                         <a class="btn tiny approve" href="<?= URLROOT ?>/client/c_contactCT?booking_id=<?= $bid ?>">Contact</a>
                                     <?php endif; ?>
                                     <?php if ($b['status'] === 'Payment_Requested'): ?>
@@ -259,29 +263,30 @@ $upcomingStatusFilterOptions = [
 <script src="<?= URLROOT ?>/public/js/client/booking-detail-modal.js"></script>
 <script src="<?= URLROOT ?>/public/js/client/c_upcomingBookings.js"></script>
 <?php if (!empty($data['bookings'])): ?>
-<script>
-(function () {
-    var sel = document.getElementById('upcomingBookingsStatusFilter');
-    var table = document.getElementById('upcomingBookingsTable');
-    var emptyRow = document.getElementById('upcomingBookingsEmptyFilter');
-    if (!sel || !table || !emptyRow) {
-        return;
-    }
-    function applyFilter() {
-        var v = sel.value;
-        var rows = table.querySelectorAll('tbody tr[data-status]');
-        var visible = 0;
-        rows.forEach(function (tr) {
-            var show = !v || tr.getAttribute('data-status') === v;
-            tr.hidden = !show;
-            if (show) {
-                visible += 1;
+    <script>
+        (function() {
+            var sel = document.getElementById('upcomingBookingsStatusFilter');
+            var table = document.getElementById('upcomingBookingsTable');
+            var emptyRow = document.getElementById('upcomingBookingsEmptyFilter');
+            if (!sel || !table || !emptyRow) {
+                return;
             }
-        });
-        emptyRow.hidden = visible > 0;
-    }
-    sel.addEventListener('change', applyFilter);
-})();
-</script>
+
+            function applyFilter() {
+                var v = sel.value;
+                var rows = table.querySelectorAll('tbody tr[data-status]');
+                var visible = 0;
+                rows.forEach(function(tr) {
+                    var show = !v || tr.getAttribute('data-status') === v;
+                    tr.hidden = !show;
+                    if (show) {
+                        visible += 1;
+                    }
+                });
+                emptyRow.hidden = visible > 0;
+            }
+            sel.addEventListener('change', applyFilter);
+        })();
+    </script>
 <?php endif; ?>
 <?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

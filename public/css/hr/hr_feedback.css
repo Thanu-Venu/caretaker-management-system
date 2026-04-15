@@ -3,9 +3,9 @@
  */
 .feedback-stars {
     letter-spacing: 0.06em;
-    color: var(--admin-warning, #d97706);
+    color: var(--hr-warning, #d97706);
 }
 
 .feedback-stars .feedback-star--off {
-    color: var(--admin-border-strong, #cbd5e1);
+    color: var(--hr-border-strong, #cbd5e1);
 }

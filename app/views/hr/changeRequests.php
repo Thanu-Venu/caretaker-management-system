@@ -89,16 +89,16 @@ $basisMap = ['Daily' => 'Day', 'Monthly' => 'Month', 'Hourly' => 'Hour', 'Weekly
                                     <?= htmlspecialchars(ucfirst((string) ($req['status'] ?? '')), ENT_QUOTES, 'UTF-8') ?>
                                 </span>
                             </td>
-                            <td class="actions change-request-row-actions">
+                            <td class="actions chActions">
                                 <button type="button"
-                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-change-detail"
+                                    class="btn secondary btn-sm iconBtn chView"
                                     data-change-row="<?= htmlspecialchars(json_encode($req, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT), ENT_QUOTES, 'UTF-8') ?>"
                                     title="View details"
                                     aria-label="View change request details">
                                     <i class="bx bx-show" aria-hidden="true"></i>
                                 </button>
                                 <button type="button"
-                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-change-approve"
+                                    class="btn secondary btn-sm iconBtn chOK"
                                     data-request-id="<?= (int) ($req['request_id'] ?? 0) ?>"
                                     title="Approve request"
                                     aria-label="Approve caregiver change"
@@ -106,7 +106,7 @@ $basisMap = ['Daily' => 'Day', 'Monthly' => 'Month', 'Hourly' => 'Hour', 'Weekly
                                     <i class="bx bx-check" aria-hidden="true"></i>
                                 </button>
                                 <button type="button"
-                                    class="btn secondary btn-sm action-view-btn action-view-btn--icon js-change-reject"
+                                    class="btn secondary btn-sm iconBtn chStop"
                                     data-request-id="<?= (int) ($req['request_id'] ?? 0) ?>"
                                     title="Reject request"
                                     aria-label="Reject caregiver change"
@@ -122,17 +122,17 @@ $basisMap = ['Daily' => 'Day', 'Monthly' => 'Month', 'Hourly' => 'Hour', 'Weekly
     <?php endif; ?>
 </main>
 
-<div id="changeRequestDetailModal" class="modal admin-row-detail-modal" aria-hidden="true">
-    <div class="modal-content admin-row-detail-modal__content change-request-detail-modal__content" role="dialog" aria-modal="true"
+<div id="changeRequestDetailModal" class="modal readModal" aria-hidden="true">
+    <div class="modal-content readPanel readWide" role="dialog" aria-modal="true"
         aria-labelledby="changeRequestDetailTitle">
-        <button type="button" class="modal-close admin-row-detail-modal__close" data-close-change-detail aria-label="Close">
+        <button type="button" class="modal-close readClose" data-close-change-detail aria-label="Close">
             <i class="bx bx-x" aria-hidden="true"></i>
         </button>
-        <header class="admin-row-detail-modal__header">
-            <span class="admin-row-detail-modal__header-icon" aria-hidden="true"><i class="bx bx-show"></i></span>
-            <h3 id="changeRequestDetailTitle" class="admin-row-detail-modal__title">Change request</h3>
+        <header class="readHead">
+            <span class="readIcon" aria-hidden="true"><i class="bx bx-show"></i></span>
+            <h3 id="changeRequestDetailTitle" class="readTitle">Change request</h3>
         </header>
-        <dl class="admin-row-detail-modal__dl" id="changeRequestDetailDl"></dl>
+        <dl class="pairList" id="changeRequestDetailDl"></dl>
     </div>
 </div>
 

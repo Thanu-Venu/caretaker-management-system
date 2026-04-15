@@ -25,7 +25,7 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
 <body>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-  <main class="main-content">
+  <main class="content">
     <section class="page-header settings-page-header">
       <h1 class="page-title">Profile &amp; Settings</h1>
     </section>

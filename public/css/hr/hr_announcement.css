@@ -7,6 +7,8 @@ body {
 .hr-announcements-page {
     padding: 20px 25px;
     min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .hr-announcements-page .page-header .page-title {
@@ -16,13 +18,12 @@ body {
 .hr-announcements-page .page-subtitle {
     margin: 0 0 16px;
     font-size: 14px;
-    color: var(--admin-muted, #64748b);
+    color: var(--hr-muted, #64748b);
 }
 
 .hr-announcement-filters {
     margin-bottom: 16px;
     flex-wrap: wrap;
-    align-items: flex-end;
 }
 
 .hr-announcement-filters .filter-group--grow {
@@ -38,20 +39,20 @@ body {
 .no-data {
     text-align: center;
     padding: 36px 16px;
-    color: var(--admin-muted, #64748b);
-    background: var(--admin-surface, #fff);
-    border: 1px solid var(--admin-border, #e2e8f0);
-    border-radius: var(--admin-radius, 12px);
-    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
+    color: var(--hr-muted, #64748b);
+    background: var(--hr-surface, #fff);
+    border: 1px solid var(--hr-border, #e2e8f0);
+    border-radius: var(--hr-radius, 12px);
+    box-shadow: var(--hr-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
 }
 
 .hr-announcements-table-wrap {
-    background: var(--admin-surface, #fff);
-    border: 1px solid var(--admin-border, #e2e8f0);
-    border-radius: var(--admin-radius, 12px);
+    background: var(--hr-surface, #fff);
+    border: 1px solid var(--hr-border, #e2e8f0);
+    border-radius: var(--hr-radius, 12px);
     padding: 12px;
     overflow-x: auto;
-    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
+    box-shadow: var(--hr-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
 }
 
 .hr-announcements-table {
@@ -71,7 +72,7 @@ body {
 .hr-announcements-title-text {
     display: block;
     font-weight: 600;
-    color: var(--admin-text, #0f172a);
+    color: var(--hr-text, #0f172a);
 }
 
 .hr-announcements-by {
@@ -79,13 +80,13 @@ body {
     margin-top: 4px;
     font-size: 12px;
     font-weight: 500;
-    color: var(--admin-muted, #64748b);
+    color: var(--hr-muted, #64748b);
 }
 
 .hr-announcements-msg {
     max-width: 360px;
     word-break: break-word;
-    color: var(--admin-text-secondary, #475569);
+    color: var(--hr-text-secondary, #475569);
     font-size: 14px;
 }
 
@@ -104,5 +105,22 @@ body {
 
 .hr-announcements-page-meta {
     font-size: 14px;
-    color: var(--admin-muted, #64748b);
+    color: var(--hr-muted, #64748b);
+}
+
+@media (max-width: 1023px) {
+    .hr-announcements-page {
+        padding: 16px 0 20px;
+    }
+
+    .hr-announcement-filters {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .hr-announcements-table-wrap {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
 }

@@ -159,6 +159,16 @@ body {
   border: 1px solid #f1d89e;
 }
 
+.ct-page-filters {
+  margin: 0 0 14px;
+}
+
+.ct-page-filters .filter-group--actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
 /* Top section with button */
 .top-right-btn {
   display: flex;
@@ -266,13 +276,23 @@ tbody tr:hover {
     justify-content: center;
   }
 
-  .add-btn {
+  .page-header .header-actions {
     width: 100%;
-    margin-top: 10px;
+    justify-content: flex-end;
+  }
+
+  .add-btn {
+    width: auto;
+    max-width: 100%;
+    margin-top: 0;
   }
 
   .leave-summary-strip {
     grid-template-columns: 1fr;
+  }
+
+  .ct-page-filters {
+    width: 100%;
   }
 }
 
@@ -303,4 +323,12 @@ table {
     width: 100%;
     box-sizing: border-box;
   }
+}
+
+/* Caretaker table chrome: avoid double border with shared shell table container */
+.content .table-container {
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  margin-top: 0 !important;
 }
