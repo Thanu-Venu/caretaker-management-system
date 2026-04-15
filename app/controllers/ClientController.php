@@ -1561,16 +1561,16 @@ class ClientController extends Controller
                 $msg .= "Booking ID: {$bookingId}";
             }
 
-            $hr_user = $hr_users[0];
-
-            // ✅ best: link directly to a booking details page
-            $notifModel->addNotification(
-                $hr_user['id'],
-                'Manager',
-                'New Booking Request',
-                $msg,
-                URLROOT . "/hr/hr_pending_request?booking_id=" . $bookingId
-            );
+            foreach ($hr_users as $hr_user) {
+                // Notify every HR/Manager so the pending request page updates for all of them.
+                $notifModel->addNotification(
+                    (int) $hr_user['id'],
+                    'Manager',
+                    'New Booking Request',
+                    $msg,
+                    URLROOT . "/hr/hr_pending_request?booking_id=" . $bookingId
+                );
+            }
         }
 
         header("Location: " . URLROOT . "/client/c_bookingConfirm?booking_id=" . $bookingId);
