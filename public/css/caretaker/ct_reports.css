@@ -27,6 +27,10 @@ body {
   box-sizing: border-box;
   font-family: 'Poppins', Arial, sans-serif;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
 }
 
 /* Removed old h1 basic styling as HTML uses inline header style for titles */

@@ -1,139 +1,83 @@
-:root {
-  --announcement-bg-1: #f4f7fb;
-  --announcement-bg-2: #eef6ff;
-  --announcement-card: #ffffff;
-  --announcement-text: #17324d;
-  --announcement-muted: #5b7288;
-  --announcement-accent: #1e88e5;
-  --announcement-accent-strong: #1565c0;
-  --announcement-border: #d8e6f4;
-  --announcement-hover: #eef7ff;
+.caretaker-announcements-page {
+    padding: 12px 24px 24px;
+    background: var(--admin-bg, #f8fafc);
+    min-height: 100vh;
 }
 
-body {
-    background: linear-gradient(180deg, #f4f7fb, #f9fcff);
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', Arial, sans-serif;
+.caretaker-announcements-page .page-header {
+    margin: 0 0 12px;
 }
 
-.content.announcement-container {
-  padding: 24px 40px;
-  min-height: 100vh;
-  box-sizing: border-box;
+
+
+.caretaker-announcements-page .page-subtitle {
+    margin-top: 6px;
+    color: var(--admin-text-secondary, #334155);
+    font-size: 14px;
 }
 
-.card {
-  background: var(--announcement-card);
-  padding: 30px 35px;
-  border-radius: 16px;
-  border: 1px solid var(--announcement-border);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  margin-bottom: 30px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.caretaker-announcement-filters {
+    margin: 12px 0 18px;
 }
 
-.card:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+.caretaker-announcements-table-wrap {
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    overflow: hidden;
 }
 
-.page-title {
-  font-size: 30px;
-  color: var(--announcement-accent);
-  letter-spacing: 0.2px;
-  margin: 0 0 5px 0;
-  font-weight: 700;
-}
-
-.table-container {
-  overflow-x: auto;
-  border: 1px solid var(--announcement-border);
-  border-radius: 12px;
-  margin-top: 25px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-  overflow: hidden;
-  min-width: 600px;
-}
-
-thead th {
-  background-color: var(--announcement-accent);
-  color: #ffffff;
-}
-
-th,
-td {
-  padding: 16px 20px;
-  border-bottom: 1px solid #edf3f9;
-  text-align: left;
-}
-
-th {
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 15px;
-}
-
-td {
-  color: var(--announcement-text);
-  vertical-align: middle;
-}
-
-tbody tr {
-  transition: background-color 0.2s ease;
-}
-
-tbody tr:hover {
-  background-color: var(--announcement-hover);
-}
-
-/* Date Badge */
-.announcement-date {
-  font-size: 13px;
-  color: var(--announcement-accent-strong);
-  background: #e3f2fd;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-/* Role Tag */
-.role-tag {
-  background: linear-gradient(135deg, #1e88e5, #1565c0);
-  color: #ffffff;
-  padding: 6px 16px;
-  font-size: 13px;
-  border-radius: 20px;
-  font-weight: 600;
-  white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(30, 136, 229, 0.3);
-}
-
-@media (max-width: 1024px) {
-  .announcement-container {
-    padding: 16px;
-    width: calc(100% - 255px);
-  }
-}
-
-@media (max-width: 768px) {
-  .announcement-container {
-    margin-left: 0 !important;
-    padding: 16px;
+.caretaker-announcements-table {
     width: 100%;
-  }
-  
-  .page-title {
-    font-size: 26px;
-  }
+}
 
-  .card {
-    padding: 20px;
-  }
+.caretaker-announcements-date {
+    white-space: nowrap;
+    color: var(--admin-text-secondary, #334155);
+    font-size: 13px;
+}
+
+.caretaker-announcements-title-text {
+    display: block;
+    color: var(--admin-text, #0f172a);
+    font-weight: 600;
+}
+
+.caretaker-announcements-by {
+    display: block;
+    margin-top: 4px;
+    color: var(--admin-muted, #64748b);
+    font-size: 12px;
+}
+
+.caretaker-announcements-msg {
+    max-width: 44ch;
+    color: var(--admin-text-secondary, #334155);
+}
+
+.caretaker-announcements-audience {
+    white-space: nowrap;
+}
+
+.caretaker-announcements-pagination {
+    margin-top: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.caretaker-announcements-page-meta {
+    color: var(--admin-muted, #64748b);
+    font-size: 13px;
+}
+
+@media (max-width: 900px) {
+    .caretaker-announcements-page {
+        padding: 8px 16px 16px;
+    }
+
+    .caretaker-announcements-msg {
+        max-width: 30ch;
+    }
 }

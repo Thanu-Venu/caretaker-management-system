@@ -6,6 +6,10 @@
     box-sizing: border-box;
 }
 
+body {
+    --admin-main-extra-left: 16px;
+}
+
 /* HEADER */
 .main-header {
     height: var(--admin-header-height, 52px);
