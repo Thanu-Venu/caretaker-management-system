@@ -77,7 +77,7 @@
             var dd = document.createElement('dd');
             dd.textContent = text;
             if (key === 'reason' || key === 'hr_note') {
-                dd.className = 'leave-detail-dd--multiline';
+                dd.className = 'ddBlock';
             }
             dl.appendChild(dt);
             dl.appendChild(dd);
@@ -171,7 +171,7 @@
         var rejectUrl = getRejectUrl();
         var activeLeaveId = null;
 
-        document.querySelectorAll('.js-leave-detail').forEach(function (btn) {
+        document.querySelectorAll('.lvView').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 fillDetailModal(parseRow(btn));
@@ -193,7 +193,7 @@
             });
         }
 
-        document.querySelectorAll('.js-leave-reject').forEach(function (btn) {
+        document.querySelectorAll('.lvReject').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 if (btn.disabled) {

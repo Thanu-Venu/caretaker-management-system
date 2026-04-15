@@ -74,7 +74,7 @@
         var dd = document.createElement('dd');
         dd.textContent = text;
         if (multiline) {
-            dd.className = 'refund-detail-dd--multiline';
+            dd.className = 'ddBlock';
         }
         dl.appendChild(dt);
         dl.appendChild(dd);
@@ -181,7 +181,7 @@
         var processAction = '';
         var processRefundId = null;
 
-        document.querySelectorAll('.js-refund-detail').forEach(function (btn) {
+        document.querySelectorAll('.rfView').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 fillDetailModal(parseRow(btn));
@@ -222,7 +222,7 @@
             openModal(processModal);
         }
 
-        document.querySelectorAll('.js-refund-approve').forEach(function (btn) {
+        document.querySelectorAll('.rfOK').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 if (btn.disabled) {
@@ -236,7 +236,7 @@
             });
         });
 
-        document.querySelectorAll('.js-refund-decline').forEach(function (btn) {
+        document.querySelectorAll('.rfStop').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 if (btn.disabled) {
@@ -279,7 +279,7 @@
 
         var completeRefundId = null;
 
-        document.querySelectorAll('.js-refund-complete').forEach(function (btn) {
+        document.querySelectorAll('.rfDone').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 if (btn.disabled) {

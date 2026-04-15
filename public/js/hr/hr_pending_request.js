@@ -145,7 +145,7 @@
             var dd = document.createElement('dd');
             dd.textContent = text;
             if (MULTILINE_KEYS[key] || key === 'availability_conflict') {
-                dd.className = 'booking-detail-dd--multiline';
+                dd.className = 'ddBlock';
             }
             dl.appendChild(dt);
             dl.appendChild(dd);
@@ -190,7 +190,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         var detailModal = document.getElementById('bookingDetailModal');
 
-        document.querySelectorAll('.js-booking-detail').forEach(function (btn) {
+        document.querySelectorAll('.bkView').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 fillDetailModal(parseBooking(btn));
@@ -221,7 +221,7 @@
             }
         });
 
-        document.querySelectorAll('.js-booking-accept-form').forEach(function (form) {
+        document.querySelectorAll('.bkAccept').forEach(function (form) {
             form.addEventListener('submit', function (e) {
                 var btn = form.querySelector('button[type="submit"]');
                 if (btn && btn.disabled) {
@@ -234,7 +234,7 @@
             });
         });
 
-        document.querySelectorAll('.js-booking-reject-form').forEach(function (form) {
+        document.querySelectorAll('.bkReject').forEach(function (form) {
             form.addEventListener('submit', function (e) {
                 var btn = form.querySelector('button[type="submit"]');
                 if (btn && btn.disabled) {

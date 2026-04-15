@@ -121,7 +121,7 @@
             var dd = document.createElement('dd');
             dd.textContent = text;
             if (MULTILINE_KEYS[key]) {
-                dd.className = 'payment-detail-dd--multiline';
+                dd.className = 'ddBlock';
             }
             dl.appendChild(dt);
             dl.appendChild(dd);
@@ -205,7 +205,7 @@
         var actionType = '';
         var selectedPaymentId = null;
 
-        document.querySelectorAll('.js-payment-detail').forEach(function (btn) {
+        document.querySelectorAll('.payView').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 fillDetailModal(parsePayment(btn));
@@ -250,7 +250,7 @@
             openModal(confirmModal);
         }
 
-        document.querySelectorAll('.js-open-approve-modal').forEach(function (btn) {
+        document.querySelectorAll('.payOK').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 if (btn.disabled) {
@@ -264,7 +264,7 @@
             });
         });
 
-        document.querySelectorAll('.js-open-reject-modal').forEach(function (btn) {
+        document.querySelectorAll('.payNo').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 if (btn.disabled) {

@@ -2,10 +2,10 @@
  * HR complaints — tab switch (client vs caregiver).
  */
 function switchComplaintTab(tabId, event) {
-    document.querySelectorAll('.complaint-tab-panel').forEach(function (tab) {
+    document.querySelectorAll('.issuePanel').forEach(function (tab) {
         tab.classList.remove('active');
     });
-    document.querySelectorAll('.complaint-tab-btn').forEach(function (btn) {
+    document.querySelectorAll('.issueTab').forEach(function (btn) {
         btn.classList.remove('active');
     });
 
