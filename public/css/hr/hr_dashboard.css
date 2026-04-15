@@ -34,6 +34,10 @@
     min-height: 0;
 }
 
+.page-title.dashboard-page-header_title {
+    color: #1e88e5;
+}
+
 .hr-recent-list {
     list-style: none;
     margin: 0;
@@ -57,7 +61,7 @@
 .hr-recent-list__title {
     font-size: 0.875rem;
     font-weight: 700;
-    color: var(--dash-text, #0f172a);
+    color: var(--dash-text, #1e88e5);
     letter-spacing: -0.01em;
 }
 
