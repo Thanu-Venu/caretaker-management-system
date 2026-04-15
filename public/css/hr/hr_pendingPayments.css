@@ -16,7 +16,7 @@ body {
     font-size: 14px;
     background: rgba(16, 185, 129, 0.1);
     color: #047857;
-    border-radius: var(--admin-radius-sm, 8px);
+    border-radius: var(--hr-radius-sm, 8px);
     border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
@@ -26,7 +26,7 @@ body {
     font-size: 14px;
     background: rgba(239, 68, 68, 0.08);
     color: #b91c1c;
-    border-radius: var(--admin-radius-sm, 8px);
+    border-radius: var(--hr-radius-sm, 8px);
     border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
@@ -70,7 +70,7 @@ body {
     white-space: nowrap;
 }
 
-.payment-row-actions {
+.payActions {
     display: inline-flex;
     flex-wrap: wrap;
     align-items: center;
@@ -78,7 +78,7 @@ body {
     gap: 8px;
 }
 
-.payment-row-actions button:disabled {
+.payActions button:disabled {
     opacity: 0.45;
     cursor: not-allowed;
 }
@@ -123,7 +123,7 @@ body {
 }
 
 /* Detail modal — wide dl */
-.payment-detail-modal__content {
+.readPanel.readWide {
     max-width: min(720px, 100%);
     max-height: min(88vh, 860px);
     overflow: hidden;
@@ -132,7 +132,7 @@ body {
     padding: 0;
 }
 
-.payment-detail-modal__content .admin-row-detail-modal__dl {
+.readPanel.readWide .pairList {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
@@ -146,23 +146,23 @@ body {
 }
 
 /* Confirm modal */
-.payment-confirm-modal__content {
+.confirmBox {
     max-width: 440px;
     width: 100%;
 }
 
-.payment-reject-reason {
+.rejectNote {
     width: 100%;
     margin-top: 12px;
     padding: 10px 12px;
-    border: 1px solid var(--admin-border, #e2e8f0);
-    border-radius: var(--admin-radius-sm, 8px);
+    border: 1px solid var(--hr-border, #e2e8f0);
+    border-radius: var(--hr-radius-sm, 8px);
     font-family: inherit;
     font-size: 14px;
     resize: vertical;
     box-sizing: border-box;
 }
 
-.payment-confirm-modal__content .modal-buttons {
+.confirmBox .modal-buttons {
     margin-top: 18px;
 }
