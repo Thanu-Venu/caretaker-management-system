@@ -1874,7 +1874,8 @@ class ClientController extends Controller
         $bookingId = $_GET['booking_id'] ?? null;
         $caretakerId = null;
         $hasAccess = false;
-        $allowedContactStatuses = ['advance_paid', 'accepted', 'reschedule_requested', 'change_requested', 'completed', 'paid'];
+        // Only allow contact for Accepted status
+        $allowedContactStatuses = ['accepted'];
 
         // Primary method: Get from booking (with payment verification)
         if ($bookingId) {
@@ -1882,14 +1883,14 @@ class ClientController extends Controller
 
             // Security Check 1: Verify booking belongs to logged-in client
             if ($booking && (int)$booking['client_id'] === (int)$clientId) {
-                // Security Check 2: Verify advance payment has been made
+                // Security Check 2: Verify booking is in Accepted status
                 $bookingStatus = strtolower(trim((string)($booking['status'] ?? '')));
 
                 if (in_array($bookingStatus, $allowedContactStatuses, true)) {
                     $caretakerId = $booking['caretaker_id'];
                     $hasAccess = true;
                 } else {
-                    $_SESSION['error'] = "Caretaker contact details are only available after advance payment has been made.";
+                    $_SESSION['error'] = "Caretaker contact details are only available for Accepted bookings.";
                 }
             } else {
                 $_SESSION['error'] = "Unauthorized access to booking details.";
@@ -1909,7 +1910,7 @@ class ClientController extends Controller
             }
 
             if (!$hasAccess) {
-                $_SESSION['error'] = "No caretaker details available. Please make advance payment for a booking first.";
+                $_SESSION['error'] = "No caretaker details available. Caregiver contact is only available for Accepted bookings.";
             }
         }
 
