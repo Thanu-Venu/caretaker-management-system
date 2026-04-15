@@ -175,5 +175,23 @@ function hr_booking_row_json(array $row): string
     </div>
 </div>
 
+<!-- Accept / reject confirm modal -->
+<div id="bookingConfirmModal" class="modal" aria-hidden="true">
+    <div class="modal-content confirmBox" role="dialog" aria-modal="true"
+        aria-labelledby="bookingConfirmTitle">
+
+        <h3 id="bookingConfirmTitle">Confirm</h3>
+        <p id="bookingConfirmText"></p>
+
+        <textarea id="bookingRejectReason" class="rejectNote" rows="3"
+            placeholder="Rejection reason (required)" style="display: none;"></textarea>
+
+        <div class="modal-buttons">
+            <button type="button" class="btn ghost" id="bookingConfirmCancel">Cancel</button>
+            <button type="button" class="btn primary" id="bookingConfirmSubmit">Confirm</button>
+        </div>
+    </div>
+</div>
+
 <script src="<?= URLROOT ?>/public/js/hr/hr_pending_request.js"></script>
 <?php include_once APPROOT . '/views/templates/hr/hr_layout_close.php'; ?>

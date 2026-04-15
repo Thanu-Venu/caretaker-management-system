@@ -1,6 +1,3 @@
-/**
- * HR pending service requests: admin-style detail modal; accept / reject with confirm.
- */
 (function () {
     'use strict';
 
@@ -59,137 +56,69 @@
     };
 
     function pickBookingId(d) {
-        if (d.booking_id != null && d.booking_id !== '') {
-            return d.booking_id;
-        }
-        if (d.id != null && d.id !== '') {
-            return d.id;
-        }
-        return '';
+        return d.booking_id || d.id || '';
     }
 
     function formatMoney(n) {
         var x = parseFloat(n);
-        if (isNaN(x)) {
-            return '—';
-        }
-        return 'Rs ' + x.toFixed(2);
-    }
-
-    function stringifyConflict(c) {
-        if (!c || typeof c !== 'object') {
-            return '';
-        }
-        var parts = [];
-        if (c.conflict_booking_id != null) {
-            parts.push('Conflicting booking #' + c.conflict_booking_id);
-        }
-        if (c.status) {
-            parts.push('status: ' + c.status);
-        }
-        if (c.start_date && c.end_date) {
-            parts.push(c.start_date + ' → ' + c.end_date);
-        }
-        return parts.join(' · ') || JSON.stringify(c);
+        return isNaN(x) ? '—' : 'Rs ' + x.toFixed(2);
     }
 
     function formatValue(key, val, d) {
-        if (key === '_booking_id') {
-            return pickBookingId(d) !== '' ? String(pickBookingId(d)) : '—';
-        }
-        if (key === 'availability_ok') {
-            if (val === true || val === 1 || val === '1') {
-                return 'Yes';
-            }
-            if (val === false || val === 0 || val === '0') {
-                return 'No';
-            }
-            return val == null || val === '' ? '—' : String(val);
-        }
-        if (key === 'caretaker_overlap') {
-            if (val === true || val === 1 || val === '1') {
-                return 'Yes';
-            }
-            return 'No';
-        }
-        if (key === 'availability_conflict') {
-            var s = stringifyConflict(val);
-            return s || '—';
-        }
-        if (MONEY_KEYS[key]) {
-            if (val === null || val === undefined || val === '') {
-                return '—';
-            }
-            return formatMoney(val);
-        }
-        if (val === null || val === undefined || val === '') {
-            return '—';
-        }
-        return String(val);
+        if (key === '_booking_id') return pickBookingId(d) || '—';
+
+        if (MONEY_KEYS[key]) return val ? formatMoney(val) : '—';
+
+        return val || '—';
     }
 
     function fillDetailModal(d) {
         var dl = document.getElementById('bookingDetailDl');
         var titleEl = document.getElementById('bookingDetailTitle');
-        if (!dl) {
-            return;
-        }
+
         dl.innerHTML = '';
+
         DETAIL_ROWS.forEach(function (row) {
-            var key = row.key;
-            var label = row.label;
-            var raw = key === '_booking_id' ? pickBookingId(d) : d[key];
-            var text = formatValue(key, raw, d);
             var dt = document.createElement('dt');
-            dt.textContent = label;
+            dt.textContent = row.label;
+
             var dd = document.createElement('dd');
-            dd.textContent = text;
-            if (MULTILINE_KEYS[key] || key === 'availability_conflict') {
-                dd.className = 'ddBlock';
-            }
+            dd.textContent = formatValue(row.key, d[row.key], d);
+
+            if (MULTILINE_KEYS[row.key]) dd.className = 'ddBlock';
+
             dl.appendChild(dt);
             dl.appendChild(dd);
         });
-        if (titleEl) {
-            var bid = pickBookingId(d);
-            titleEl.textContent = bid ? 'Booking #' + bid : 'Booking details';
-        }
-    }
 
-    function setBodyScroll(lock) {
-        document.body.style.overflow = lock ? 'hidden' : '';
+        titleEl.textContent = 'Booking #' + pickBookingId(d);
     }
 
     function openModal(el) {
-        if (!el) {
-            return;
-        }
         el.classList.add('show');
         el.setAttribute('aria-hidden', 'false');
-        setBodyScroll(true);
+        document.body.style.overflow = 'hidden';
     }
 
     function closeModal(el) {
-        if (!el) {
-            return;
-        }
         el.classList.remove('show');
         el.setAttribute('aria-hidden', 'true');
-        setBodyScroll(false);
+        document.body.style.overflow = '';
     }
 
     function parseBooking(el) {
-        var raw = el.getAttribute('data-booking') || '{}';
         try {
-            return JSON.parse(raw);
-        } catch (e) {
+            return JSON.parse(el.getAttribute('data-booking') || '{}');
+        } catch {
             return {};
         }
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+
         var detailModal = document.getElementById('bookingDetailModal');
 
+        // VIEW
         document.querySelectorAll('.bkView').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -204,47 +133,103 @@
             });
         });
 
-        if (detailModal) {
-            detailModal.addEventListener('click', function (e) {
-                if (e.target === detailModal) {
-                    closeModal(detailModal);
-                }
-            });
+        // ===============================
+        // ✅ NEW CONFIRM MODAL (IMPORTANT)
+        // ===============================
+
+        var confirmModal = document.getElementById('bookingConfirmModal');
+        var confirmTitle = document.getElementById('bookingConfirmTitle');
+        var confirmText = document.getElementById('bookingConfirmText');
+        var confirmSubmit = document.getElementById('bookingConfirmSubmit');
+        var confirmCancel = document.getElementById('bookingConfirmCancel');
+        var rejectReason = document.getElementById('bookingRejectReason');
+
+        var selectedForm = null;
+        var actionType = '';
+
+        function openConfirm(type, form) {
+            selectedForm = form;
+            actionType = type;
+
+            rejectReason.value = '';
+
+            if (type === 'accept') {
+                confirmTitle.textContent = 'Request Advance Payment';
+                confirmText.textContent = 'Request advance payment from client?';
+                rejectReason.style.display = 'none';
+                confirmSubmit.textContent = 'Confirm';
+
+                confirmSubmit.classList.remove('reject');
+            } else {
+                confirmTitle.textContent = 'Reject Booking';
+                confirmText.textContent = 'Reject this booking request?';
+                rejectReason.style.display = 'block';
+                confirmSubmit.textContent = 'Reject';
+
+                confirmSubmit.classList.add('reject');
+            }
+
+            openModal(confirmModal);
         }
 
-        document.addEventListener('keydown', function (e) {
-            if (e.key !== 'Escape') {
-                return;
-            }
-            if (detailModal && detailModal.classList.contains('show')) {
-                closeModal(detailModal);
-            }
-        });
+        function closeConfirm() {
+            closeModal(confirmModal);
+            selectedForm = null;
+        }
 
+        // ACCEPT
         document.querySelectorAll('.bkAccept').forEach(function (form) {
             form.addEventListener('submit', function (e) {
-                var btn = form.querySelector('button[type="submit"]');
-                if (btn && btn.disabled) {
-                    e.preventDefault();
-                    return;
-                }
-                if (!window.confirm('Request advance payment from the client for this booking?')) {
-                    e.preventDefault();
-                }
+                e.preventDefault();
+                openConfirm('accept', form);
             });
         });
 
+        // REJECT
         document.querySelectorAll('.bkReject').forEach(function (form) {
             form.addEventListener('submit', function (e) {
-                var btn = form.querySelector('button[type="submit"]');
-                if (btn && btn.disabled) {
-                    e.preventDefault();
-                    return;
-                }
-                if (!window.confirm('Reject this booking request? The client will be notified.')) {
-                    e.preventDefault();
-                }
+                e.preventDefault();
+                openConfirm('reject', form);
             });
         });
+
+        // CONFIRM BUTTON
+        confirmSubmit.addEventListener('click', function () {
+            if (!selectedForm) return;
+
+            if (actionType === 'reject') {
+                var reason = rejectReason.value.trim();
+
+                if (!reason) {
+                    alert('Please enter a rejection reason.');
+                    return;
+                }
+
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'reason';
+                input.value = reason;
+                selectedForm.appendChild(input);
+            }
+
+            selectedForm.submit();
+        });
+
+        // CANCEL
+        confirmCancel.addEventListener('click', closeConfirm);
+
+        // OUTSIDE CLICK
+        confirmModal.addEventListener('click', function (e) {
+            if (e.target === confirmModal) closeConfirm();
+        });
+
+        // ESC KEY
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && confirmModal.classList.contains('show')) {
+                closeConfirm();
+            }
+        });
+
     });
+
 })();

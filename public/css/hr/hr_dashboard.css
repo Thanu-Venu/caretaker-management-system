@@ -112,7 +112,7 @@ body > header.main-header ~ .main-content.managerHome {
 
 /* ----- Layout wrapper ----- */
 .managerHomeInner {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     min-width: 0;
     width: 100%;
@@ -991,7 +991,7 @@ body > header.main-header ~ .main-content.managerHome {
 .recentRowTitle {
     font-size: 0.875rem;
     font-weight: 700;
-    color: var(--dash-text, #0f172a);
+    color: var(--dash-text, #1e88e5);
     letter-spacing: -0.01em;
 }
 
