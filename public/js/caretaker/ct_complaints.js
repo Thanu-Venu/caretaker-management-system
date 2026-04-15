@@ -1,11 +1,25 @@
-document.getElementById("clientName").addEventListener("change", function() {
-    let selected = this.options[this.selectedIndex];
+document.addEventListener("DOMContentLoaded", function () {
+    const clientSelect = document.getElementById("clientName");
+    const dateInput = document.getElementById("dateOfService");
+    const serviceSelect = document.getElementById("serviceType");
+    const successMessage = document.getElementById("successMessage");
 
-    // Auto-fill date of service
-    let serviceDate = selected.getAttribute("data-booking-date");
-    document.getElementById("dateOfService").value = serviceDate;
+    // Auto-hide success message after 4 seconds
+    if (successMessage) {
+        setTimeout(function () {
+            successMessage.style.display = "none";
+        }, 4000);
+    }
 
-    // Auto-fill service type
-    let serviceType = selected.getAttribute("data-service");
-    document.getElementById("serviceType").value = serviceType;
-}); 
+    if (clientSelect && dateInput && serviceSelect) {
+        clientSelect.addEventListener("change", function () {
+            const selected = this.options[this.selectedIndex];
+
+            const serviceDate = selected.getAttribute("data-booking-date") || "";
+            dateInput.value = serviceDate;
+
+            const serviceType = selected.getAttribute("data-service") || "";
+            serviceSelect.value = serviceType;
+        });
+    }
+});

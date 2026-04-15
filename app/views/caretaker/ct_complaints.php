@@ -15,8 +15,19 @@
 <body>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
+<?php
+    $complaintSuccessMessage = isset($_SESSION['success']) ? (string)$_SESSION['success'] : '';
+    unset($_SESSION['success'], $_SESSION['error']);
+?>
+
+<?php if ($complaintSuccessMessage): ?>
+  <div id="successMessage" class="success-message" style="background-color: #e3f2fd; color: #1565c0; padding: 12px 20px; margin: 0 auto 16px auto; border-radius: 4px; font-weight: 500; width: fit-content; border-left: 4px solid #1e88e5;">
+    <?= htmlspecialchars($complaintSuccessMessage) ?> HR will take action about the complaint.
+  </div>
+<?php endif; ?>
+
   <main class="content complaint-container">
-      <header class="page-header" style="margin-bottom: 24px;">
+      <header class="page-header" style="margin-bottom: 24px; margin-top: -16px;">
         <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">Register a Complaint</h1>
       </header>
 
@@ -49,8 +60,6 @@
        <option value="Babysitter">Babysitting</option>
     </select>
 
-    </select>
-  
 
     <label for="dateOfService">Date of Service</label>
     <input type="date" id="dateOfService" name="service_date" >
@@ -104,6 +113,7 @@
     </div>
   </div>
 
-</div>
+</main>
 <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_complaints.js"></script>
 </body>
+</html>

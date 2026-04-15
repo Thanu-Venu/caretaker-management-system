@@ -26,7 +26,7 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
   <main class="content settings-container">
-    <section class="page-header settings-page-header">
+    <section class="page-header settings-page-header" style="margin-top: -16px;">
       <h1 class="page-title" style="color: #1e88e5; font-size: 28px; font-weight: 600; margin-bottom: 20px;">Profile &amp; Settings</h1>
     </section>
 

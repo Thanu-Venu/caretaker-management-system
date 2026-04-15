@@ -260,7 +260,7 @@ class LeaveCRUDController extends Controller
                 return;
             }
 
-            $_SESSION['leave_success'] = 'Leave request submitted successfully and sent to HR for approval. Status: Pending.';
+            $_SESSION['leave_success'] = 'Leave request submitted successfully and sent to HR for approval.';
 
             if (($validation['impact']['count'] ?? 0) > 0) {
                 $ids = implode(', ', $validation['impact']['booking_ids'] ?? []);

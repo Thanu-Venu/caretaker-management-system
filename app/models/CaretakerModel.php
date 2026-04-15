@@ -763,10 +763,13 @@ public function getResolvedComplaintsByCaretaker($caretaker_id)
         "SELECT ct_complaints.*, clients.name AS client_name
          FROM ct_complaints
          JOIN clients ON ct_complaints.client_id = clients.id
-         WHERE ct_complaints.caretaker_id = ? 
-         AND ct_complaints.status = 'Resolved'
-         ORDER BY ct_complaints.service_date DESC"
+         WHERE ct_complaints.caretaker_id = ?
+         ORDER BY ct_complaints.complaint_id DESC, ct_complaints.service_date DESC"
     );
+
+    if (!$stmt) {
+        return [];
+    }
 
     $stmt->bind_param("i", $caretaker_id);
     $stmt->execute();

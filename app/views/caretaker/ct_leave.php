@@ -25,11 +25,25 @@ $warning = $data['warning'] ?? '';
 <body>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
+
+<?php if ($success): ?>
+    <div id="successMessage" class="success-message" style="background-color: #e3f2fd; color: #1565c0; padding: 14px 20px; margin: 20px auto; border-radius: 4px; font-weight: 500; width: fit-content; border-left: 4px solid #1e88e5; max-width: 90%;">
+        ✓ <?= htmlspecialchars($success) ?> All requests are submitted as Pending and require HR approval.
+    </div>
+    <script>
+        setTimeout(function() {
+            const msg = document.getElementById('successMessage');
+            if (msg) msg.style.display = 'none';
+        }, 5000);
+    </script>
+<?php endif; ?>
+
     <main class="content">
-        <header class="page-header" style="margin-bottom: 24px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+        <header class="page-header" style="margin-bottom: 24px; margin-top: -16px;">
+            <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
                 <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">Leave Requests</h1>
 
+                <div style="margin-left: auto;">
         <?php if ((int)$summary['remaining'] <= 0): ?>
             <button class="add-btn" onclick="alert('Your leave is finished for this month! You cannot request more leaves this month.');">
                 Request Leave
@@ -40,6 +54,7 @@ $warning = $data['warning'] ?? '';
                 Request Leave
             </button>
         <?php endif; ?>
+                </div>
             </div>
         </header>
         <div class="booking">
@@ -66,11 +81,7 @@ $warning = $data['warning'] ?? '';
                     </div>
                 </div>
 <br>
-                <?php if ($success): ?>
-                    <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-                <?php endif; ?>
-
-                <?php if ($warning): ?>
+                <?php if (!empty($warnings)): ?>
                     <div class="alert alert-warning"><?= htmlspecialchars($warning) ?></div>
                 <?php endif; ?>
 

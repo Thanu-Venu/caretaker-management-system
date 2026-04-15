@@ -18,7 +18,7 @@
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
   <main class="content reports-container">
-    <header class="page-header" style="margin-bottom: 24px;">
+    <header class="page-header" style="margin-bottom: 24px; margin-top: -16px;">
       <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">My Reports</h1>
     </header>
 

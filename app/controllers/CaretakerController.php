@@ -380,20 +380,29 @@ public function addComplaint()
 }
 public function saveComplaint()
 {
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-        $data = [
-            'caretaker_id' => AuthSession::profileId(),
-            'client_id' => $_POST['client_id'],
-            'service_type' => $_POST['service_type'],
-            'service_date' => $_POST['service_date'],
-            'description' => $_POST['description']
-        ];
-
-        $this->caretakerModel->addComplaint($data);
-
-        echo "success";
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/caretaker/ct_complaints");
+        exit;
     }
+
+    $data = [
+        'caretaker_id' => AuthSession::profileId(),
+        'client_id' => $_POST['client_id'] ?? '',
+        'service_type' => $_POST['service_type'] ?? '',
+        'service_date' => $_POST['service_date'] ?? '',
+        'description' => $_POST['description'] ?? ''
+    ];
+
+    $ok = $this->caretakerModel->addComplaint($data);
+
+    if ($ok) {
+        $_SESSION['success'] = 'Complaint submitted successfully.';
+    } else {
+        $_SESSION['error'] = 'Failed to save complaint. Please try again.';
+    }
+
+    header("Location: " . URLROOT . "/caretaker/ct_complaints");
+    exit;
 }
     public function ct_reports()
     {

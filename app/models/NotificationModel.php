@@ -23,7 +23,7 @@ class NotificationModel
         if ($r === 'client') {
             return 'client';
         }
-        if ($r === 'caretaker') {
+        if ($r === 'caretaker' || $r === 'caregiver') {
             return 'caretaker';
         }
         return $role;
@@ -55,15 +55,27 @@ class NotificationModel
     {
         $user_role = $this->normalizeNotifRole((string)$user_role);
 
-        $stmt = $this->conn->prepare(
-            "SELECT *
-             FROM notifications
-             WHERE user_id = ?
-               AND user_role = ?
-             ORDER BY created_at DESC
-             LIMIT ?"
-        );
-        $stmt->bind_param("isi", $user_id, $user_role, $limit);
+                if ($user_role === 'caretaker') {
+                        $stmt = $this->conn->prepare(
+                                "SELECT *
+                                 FROM notifications
+                                 WHERE user_id = ?
+                                     AND user_role IN ('caretaker', 'caregiver')
+                                 ORDER BY created_at DESC
+                                 LIMIT ?"
+                        );
+                        $stmt->bind_param("ii", $user_id, $limit);
+                } else {
+                        $stmt = $this->conn->prepare(
+                                "SELECT *
+                                 FROM notifications
+                                 WHERE user_id = ?
+                                     AND user_role = ?
+                                 ORDER BY created_at DESC
+                                 LIMIT ?"
+                        );
+                        $stmt->bind_param("isi", $user_id, $user_role, $limit);
+                }
         $stmt->execute();
         $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         $stmt->close();
@@ -75,14 +87,25 @@ class NotificationModel
     {
         $user_role = $this->normalizeNotifRole((string)$user_role);
 
-        $stmt = $this->conn->prepare(
-            "SELECT COUNT(*) AS count
-             FROM notifications
-             WHERE user_id = ?
-               AND user_role = ?
-               AND is_read = 0"
-        );
-        $stmt->bind_param("is", $user_id, $user_role);
+        if ($user_role === 'caretaker') {
+            $stmt = $this->conn->prepare(
+                "SELECT COUNT(*) AS count
+                 FROM notifications
+                 WHERE user_id = ?
+                   AND user_role IN ('caretaker', 'caregiver')
+                   AND is_read = 0"
+            );
+            $stmt->bind_param("i", $user_id);
+        } else {
+            $stmt = $this->conn->prepare(
+                "SELECT COUNT(*) AS count
+                 FROM notifications
+                 WHERE user_id = ?
+                   AND user_role = ?
+                   AND is_read = 0"
+            );
+            $stmt->bind_param("is", $user_id, $user_role);
+        }
         $stmt->execute();
         $row = $stmt->get_result()->fetch_assoc();
         $stmt->close();
@@ -93,12 +116,21 @@ class NotificationModel
     {
         $user_role = $this->normalizeNotifRole((string)$user_role);
 
-        $stmt = $this->conn->prepare(
-            "UPDATE notifications
-             SET is_read = 1
-             WHERE user_id = ? AND user_role = ? AND is_read = 0"
-        );
-        $stmt->bind_param("is", $user_id, $user_role);
+        if ($user_role === 'caretaker') {
+            $stmt = $this->conn->prepare(
+                "UPDATE notifications
+                 SET is_read = 1
+                 WHERE user_id = ? AND user_role IN ('caretaker', 'caregiver') AND is_read = 0"
+            );
+            $stmt->bind_param("i", $user_id);
+        } else {
+            $stmt = $this->conn->prepare(
+                "UPDATE notifications
+                 SET is_read = 1
+                 WHERE user_id = ? AND user_role = ? AND is_read = 0"
+            );
+            $stmt->bind_param("is", $user_id, $user_role);
+        }
         $stmt->execute();
         $affected = (int)$stmt->affected_rows;
         $stmt->close();
@@ -142,13 +174,23 @@ class NotificationModel
     {
         $user_role = $this->normalizeNotifRole((string)$user_role);
 
-        $stmt = $this->conn->prepare(
-            "SELECT id, link, is_read
-             FROM notifications
-             WHERE id = ? AND user_id = ? AND user_role = ?
-             LIMIT 1"
-        );
-        $stmt->bind_param("iis", $notifId, $user_id, $user_role);
+        if ($user_role === 'caretaker') {
+            $stmt = $this->conn->prepare(
+                "SELECT id, link, is_read
+                 FROM notifications
+                 WHERE id = ? AND user_id = ? AND user_role IN ('caretaker', 'caregiver')
+                 LIMIT 1"
+            );
+            $stmt->bind_param("ii", $notifId, $user_id);
+        } else {
+            $stmt = $this->conn->prepare(
+                "SELECT id, link, is_read
+                 FROM notifications
+                 WHERE id = ? AND user_id = ? AND user_role = ?
+                 LIMIT 1"
+            );
+            $stmt->bind_param("iis", $notifId, $user_id, $user_role);
+        }
         $stmt->execute();
         $row = $stmt->get_result()->fetch_assoc();
         $stmt->close();
@@ -159,12 +201,21 @@ class NotificationModel
     {
         $user_role = $this->normalizeNotifRole((string)$user_role);
 
-        $stmt = $this->conn->prepare(
-            "UPDATE notifications
-             SET is_read = 1
-             WHERE id = ? AND user_id = ? AND user_role = ?"
-        );
-        $stmt->bind_param("iis", $notifId, $user_id, $user_role);
+        if ($user_role === 'caretaker') {
+            $stmt = $this->conn->prepare(
+                "UPDATE notifications
+                 SET is_read = 1
+                 WHERE id = ? AND user_id = ? AND user_role IN ('caretaker', 'caregiver')"
+            );
+            $stmt->bind_param("ii", $notifId, $user_id);
+        } else {
+            $stmt = $this->conn->prepare(
+                "UPDATE notifications
+                 SET is_read = 1
+                 WHERE id = ? AND user_id = ? AND user_role = ?"
+            );
+            $stmt->bind_param("iis", $notifId, $user_id, $user_role);
+        }
         $stmt->execute();
         $ok = ($stmt->affected_rows > 0);
         $stmt->close();

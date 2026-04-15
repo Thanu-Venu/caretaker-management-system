@@ -8,7 +8,10 @@ if (!isset($_SESSION['user'])) {
 
 $notifModel = new NotificationModel();
 $user_id   = AuthSession::profileId();
-$user_role = $_SESSION['legacy_role'] ?? $_SESSION['role'];
+$user_role = AuthSession::role();
+if ($user_role === 'manager') {
+    $user_role = 'Manager';
+}
 
 $notifications = $notifModel->getNotifications($user_id, $user_role);
 $unreadCount   = $notifModel->countUnread($user_id, $user_role);
