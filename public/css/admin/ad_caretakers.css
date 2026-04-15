@@ -52,8 +52,8 @@
 .caretaker-form-modal {
     z-index: 2110;
     background: rgba(15, 23, 42, 0.52);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
 }
 
 .caretaker-form-modal__content {

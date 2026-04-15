@@ -12,12 +12,13 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
-</head>
 <body>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
 <main class="content leavehistory-container">
-  <h1>Leave History</h1>
+  <header class="page-header">
+    <h1 class="page-title">Leave History</h1>
+  </header>
 
   <table class="leave-history-table">
     <thead>

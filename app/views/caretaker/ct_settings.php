@@ -25,9 +25,9 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
 <body>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-  <main class="content settings-container">
+  <main class="content">
     <section class="page-header settings-page-header">
-      <h1 class="page-title" style="color: #1e88e5; font-size: 28px; font-weight: 600; margin-bottom: 20px;">Profile &amp; Settings</h1>
+      <h1 class="page-title">Profile &amp; Settings</h1>
     </section>
 
     <?php if (!empty($data['latestProfileChangeRequest'])): 
@@ -136,7 +136,7 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
       </section>
 
     </div>
-  </div>
+  </main>
 
   <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_setting.js"></script>
 </body>
