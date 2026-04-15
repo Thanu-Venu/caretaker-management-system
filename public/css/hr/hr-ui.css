@@ -1834,3 +1834,76 @@ textarea.is-invalid {
 .field .field-hint + .field-error {
     margin-top: 4px;
 }
+
+/* =========================
+   COMMON POPUP / CONFIRM MODAL
+   ========================= */
+
+.modal-content.pop-up {
+    max-width: min(420px, 100%);
+    padding: 18px 20px;
+    border-radius: var(--hr-radius);
+    background: var(--hr-surface);
+    border: 1px solid var(--hr-border);
+    box-shadow: var(--hr-shadow-hover);
+    text-align: center;
+}
+
+/* Title */
+.modal-content.pop-up h3 {
+    margin: 0 0 8px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--hr-text);
+}
+
+/* Message */
+.modal-content.pop-up p {
+    margin: 0 0 18px;
+    font-size: 14px;
+    color: var(--hr-muted);
+    line-height: 1.5;
+}
+
+/* Actions */
+.modal-content.pop-up .form-actions {
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Danger button (GLOBAL) */
+.btn.danger {
+    background: var(--hr-danger);
+    color: #fff;
+    border: 1px solid rgba(220, 38, 38, 0.4);
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25);
+}
+
+.btn.danger:hover {
+    background: #b91c1c;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+}
+
+.modal-content.pop-up::before {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--hr-danger-bg);
+    color: var(--hr-danger);
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.modal .btn.primary.reject {
+    background-color: #dc3545 !important; /* red */
+    color: #fff !important;
+    border: none !important;
+}
+
+.modal .btn.primary.reject:hover {
+    background-color: #b02a37 !important;
+}
