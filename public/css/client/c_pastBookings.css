@@ -91,3 +91,8 @@
     color: #f59e0b;
     outline: none;
 }
+
+/* Highlight selected stars in feedback modal */
+.stars span.active {
+    color: #f59e0b;
+}
