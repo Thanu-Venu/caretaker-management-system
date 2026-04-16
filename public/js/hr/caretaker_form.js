@@ -98,12 +98,32 @@ document.addEventListener('DOMContentLoaded', function() {
         return false;
       }
 
-      // Password length validation (only for add form)
+      // Password strength (add form only; optional script if included)
       if (passwordField) {
         const passwordValue = passwordField.value.trim();
-        if (passwordValue.length < 6) {
+        if (passwordValue.length < 8) {
           e.preventDefault();
-          displayError('Password must be at least 6 characters long');
+          displayError('Password must be at least 8 characters long');
+          return false;
+        }
+        if (!/[A-Z]/.test(passwordValue)) {
+          e.preventDefault();
+          displayError('Password must include at least one uppercase letter');
+          return false;
+        }
+        if (!/[a-z]/.test(passwordValue)) {
+          e.preventDefault();
+          displayError('Password must include at least one lowercase letter');
+          return false;
+        }
+        if (!/[0-9]/.test(passwordValue)) {
+          e.preventDefault();
+          displayError('Password must include at least one number');
+          return false;
+        }
+        if (!/[^A-Za-z0-9]/.test(passwordValue)) {
+          e.preventDefault();
+          displayError('Password must include at least one special character');
           return false;
         }
       }

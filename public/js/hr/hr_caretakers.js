@@ -153,6 +153,55 @@
         if (fileInput) {
             fileInput.value = '';
         }
+        var np = editForm.querySelector('input[name="new_password"]');
+        if (np) {
+            np.value = '';
+            np.type = 'password';
+            var tw = np.closest('.password-input-wrap');
+            var tbtn = tw && tw.querySelector('.password-toggle');
+            if (tbtn) {
+                tbtn.setAttribute('aria-label', 'Show password');
+                var ic = tbtn.querySelector('i');
+                if (ic) {
+                    ic.classList.remove('bx-show');
+                    ic.classList.add('bx-hide');
+                }
+            }
+        }
+    }
+
+    function bindPasswordToggles(root) {
+        var scope = root || document;
+        scope.querySelectorAll('.password-input-wrap .password-toggle').forEach(function (btn) {
+            if (btn.getAttribute('data-pw-toggle-bound') === '1') {
+                return;
+            }
+            btn.setAttribute('data-pw-toggle-bound', '1');
+            btn.addEventListener('click', function () {
+                var wrap = btn.closest('.password-input-wrap');
+                var inp = wrap && wrap.querySelector('input');
+                var icon = btn.querySelector('i');
+                if (!inp) {
+                    return;
+                }
+                var plain = inp.type === 'text';
+                if (plain) {
+                    inp.type = 'password';
+                    btn.setAttribute('aria-label', 'Show password');
+                    if (icon) {
+                        icon.classList.remove('bx-show');
+                        icon.classList.add('bx-hide');
+                    }
+                } else {
+                    inp.type = 'text';
+                    btn.setAttribute('aria-label', 'Hide password');
+                    if (icon) {
+                        icon.classList.remove('bx-hide');
+                        icon.classList.add('bx-show');
+                    }
+                }
+            });
+        });
     }
 
     function bindDetailButtons() {
@@ -273,5 +322,6 @@ confirmDeleteModal.addEventListener('click', function (e) {
         closeDeleteModal();
     }
 });
-    
+
+    bindPasswordToggles(document);
 })();
