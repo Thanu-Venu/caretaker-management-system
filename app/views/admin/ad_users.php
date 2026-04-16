@@ -175,7 +175,7 @@ if ($openModal === 'add') {
                     <i class="bx bx-edit" aria-hidden="true"></i>
                   </button>
                   <a href="<?php echo URLROOT; ?>/userCRUD/delete/<?php echo (int) ($user['id'] ?? 0); ?><?php echo $deleteSuffix; ?>"
-                    onclick="return confirm('Delete this staff member?');" title="Delete" class="staff-user-action-delete">
+                    data-app-confirm="Delete this staff member?" title="Delete" class="staff-user-action-delete">
                     <i class="bx bx-trash" aria-hidden="true"></i>
                   </a>
                 </td>

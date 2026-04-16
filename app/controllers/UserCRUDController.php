@@ -122,6 +122,14 @@ class UserCRUDController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $returnQs = $this->staffListQueryFromPostedReturn($_POST['_staff_list_qs'] ?? null);
+            $pw = trim((string) ($_POST['password'] ?? ''));
+            $pwErr = UserModel::validatePasswordPolicy($pw);
+            if ($pwErr !== null) {
+                $_SESSION['error'] = $pwErr;
+                $sep = $returnQs === '' ? '?' : '&';
+                header('Location: ' . URLROOT . '/userCRUD/list' . $returnQs . $sep . 'open=add');
+                exit;
+            }
             $ok = $this->userModel->addUser($_POST);
             if (!$ok) {
                 $_SESSION['error'] = 'Could not add staff member. Check the details and try again.';
@@ -151,6 +159,16 @@ class UserCRUDController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $returnQs = $this->staffListQueryFromPostedReturn($_POST['_staff_list_qs'] ?? null);
+            $newPw = trim((string) ($_POST['new_password'] ?? ''));
+            if ($newPw !== '') {
+                $pwErr = UserModel::validatePasswordPolicy($newPw);
+                if ($pwErr !== null) {
+                    $_SESSION['error'] = $pwErr;
+                    $sep = $returnQs === '' ? '?' : '&';
+                    header('Location: ' . URLROOT . '/userCRUD/list' . $returnQs . $sep . 'open=edit&id=' . (int) $id);
+                    exit;
+                }
+            }
             $ok = $this->userModel->updateUser($id, $_POST);
             if (!$ok) {
                 $_SESSION['error'] = 'Could not update staff member. Please try again.';

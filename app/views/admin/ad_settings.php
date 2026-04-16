@@ -92,7 +92,7 @@ unset($_SESSION['flash_success'], $_SESSION['flash_error']);
 
                     <div class="field">
                         <label for="settings-new-password">New password<span class="required-mark" aria-hidden="true">*</span></label>
-                        <input id="settings-new-password" type="password" name="new_password" placeholder="Min. 8 chars, upper, lower, number" required autocomplete="new-password">
+                        <input id="settings-new-password" type="password" name="new_password" placeholder="Min. 8 chars: upper, lower, number, symbol" required autocomplete="new-password">
                     </div>
 
                     <div class="field">

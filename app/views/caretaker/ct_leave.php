@@ -54,11 +54,7 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
                     </div>
                 </div>
 <br>
-                <?php if ($success): ?>
-                    <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-                <?php endif; ?>
-
-                <?php if ($warning): ?>
+                <?php if (!empty($warnings)): ?>
                     <div class="alert alert-warning"><?= htmlspecialchars($warning) ?></div>
                 <?php endif; ?>
 
@@ -117,7 +113,7 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
                                                     <i class="bx bx-edit"></i>
                                                 </a> |
                                                 <a href="<?php echo URLROOT; ?>/LeaveCRUD/delete/<?php echo $leave['id']; ?>"
-                                                    onclick="return confirm('Cancel this leave request?');">
+                                                    data-app-confirm="Cancel this leave request?">
                                                     <i class="bx bx-trash"></i>
                                                 </a>
                                             <?php else: ?>

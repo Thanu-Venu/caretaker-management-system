@@ -151,7 +151,7 @@ $paginationQuery = static function (int $p) use ($filters): string {
                     <i class="bx bx-edit" aria-hidden="true"></i>
                   </button>
                   <a href="<?php echo URLROOT; ?>/CaretakerCRUD/delete/<?php echo (int) $caretaker['id']; ?>"
-                    onclick="return confirm('Are you sure you want to delete this caregiver?');" title="Delete"
+                    data-app-confirm="Are you sure you want to delete this caregiver?" title="Delete"
                     class="trashLink"><i class="bx bx-trash" aria-hidden="true"></i></a>
                 </td>
               </tr>

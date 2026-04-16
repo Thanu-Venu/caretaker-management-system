@@ -244,7 +244,7 @@ class ClientController extends Controller
         $clientModel = $this->model('ClientModel');
         $clientId = AuthSession::profileId();
 
-        $bookingId = $_POST['booking_Id'];
+        $bookingId = $_POST['booking_id'];
 
         // Validate booking ownership (prevents IDOR)
         $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/c_pastBookings");
@@ -273,6 +273,16 @@ class ClientController extends Controller
         ];
 
         $clientModel->addFeedback($data);
+
+        // Notify caretaker about new feedback
+        $notifModel = $this->model('NotificationModel');
+        $notifModel->addNotification(
+            $caretakerId,
+            'caretaker',
+            'New Feedback Received',
+            'You have received new feedback from a client.',
+            URLROOT . '/caretaker/feedback_list'
+        );
 
         $_SESSION['success'] = "Feedback submitted successfully!";
         header("Location: " . URLROOT . "/client/c_pastBookings");
@@ -1561,16 +1571,16 @@ class ClientController extends Controller
                 $msg .= "Booking ID: {$bookingId}";
             }
 
-            $hr_user = $hr_users[0];
-
-            // ✅ best: link directly to a booking details page
-            $notifModel->addNotification(
-                $hr_user['id'],
-                'Manager',
-                'New Booking Request',
-                $msg,
-                URLROOT . "/hr/hr_pending_request?booking_id=" . $bookingId
-            );
+            foreach ($hr_users as $hr_user) {
+                // Notify every HR/Manager so the pending request page updates for all of them.
+                $notifModel->addNotification(
+                    (int) $hr_user['id'],
+                    'Manager',
+                    'New Booking Request',
+                    $msg,
+                    URLROOT . "/hr/hr_pending_request?booking_id=" . $bookingId
+                );
+            }
         }
 
         header("Location: " . URLROOT . "/client/c_bookingConfirm?booking_id=" . $bookingId);

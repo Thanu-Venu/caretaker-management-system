@@ -99,7 +99,7 @@ $hasAffected = !empty($data['affected']);
             <?php if (!$hasAffected): ?>
                 <p class="laHint">No bookings affected — replacement not required.</p>
             <?php else: ?>
-                <p class="laHint">Select a replacement caregiver when bookings are affected. Open <strong>Impact &amp; usage</strong> above to review bookings.</p>
+                <p class="laHint">Bookings are affected by this leave. Select a replacement caregiver to reassign all affected bookings. Click <strong>Impact &amp; usage</strong> to review details.</p>
             <?php endif; ?>
 
             <div class="field full">
@@ -109,7 +109,7 @@ $hasAffected = !empty($data['affected']);
 
             <div class="laFoot">
                 <button type="submit" class="btn primary" <?= !empty($data['error']) ? 'disabled' : '' ?>
-                    onclick="return confirm('Approve this leave and reassign all affected bookings to the selected caregiver?');">
+                    data-app-confirm="Approve this leave and reassign all affected bookings to the selected caregiver?">
                     <i class="bx bx-check" aria-hidden="true"></i> Approve leave
                 </button>
                 <button type="button" class="btn danger" id="rejectLeaveBtn"

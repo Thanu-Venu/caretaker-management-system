@@ -109,7 +109,7 @@ body {
 /* KPI cards */
 .refund-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
     gap: 14px;
     margin-bottom: 18px;
 }
@@ -118,7 +118,7 @@ body {
     background: var(--hr-surface, #fff);
     border: 1px solid var(--hr-border, #e2e8f0);
     border-radius: var(--hr-radius, 12px);
-    padding: 14px 16px;
+    padding: 18px 20px;
     box-shadow: var(--hr-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
 }
 

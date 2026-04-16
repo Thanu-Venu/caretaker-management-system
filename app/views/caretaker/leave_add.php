@@ -5,6 +5,8 @@ $warnings = $data['warnings'] ?? [];
 $summary = $data['monthlySummary'] ?? ['limit' => 5, 'used' => 0, 'remaining' => 5, 'percentage' => 0, 'label' => '0 / 5 days used'];
 $policy = $data['policy'] ?? ['advanceNoticeDays' => 3, 'maxPerRequest' => 7, 'monthlyLimit' => 5];
 $impact = $data['impact'] ?? [];
+$success = isset($_SESSION['leave_success']) ? (string)$_SESSION['leave_success'] : '';
+unset($_SESSION['leave_success']);
 ?>
 
 <?php
@@ -145,7 +147,8 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
       remainingThisMonth: <?= (int)$summary['remaining'] ?>
     };
     window.leavePreview = {
-      impactUrl: '<?= htmlspecialchars($data['impactPreviewUrl'] ?? (URLROOT . '/LeaveCRUD/impactPreview')) ?>'
+      impactUrl: '<?= htmlspecialchars($data['impactPreviewUrl'] ?? (URLROOT . '/LeaveCRUD/impactPreview')) ?>',
+      leaveId: null
     };
   </script>
   <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_leave.js"></script>

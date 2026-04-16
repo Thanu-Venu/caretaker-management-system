@@ -29,22 +29,28 @@
         return input.parentElement || document.body;
     }
 
+    function passwordErrorAnchor(input) {
+        var wrap = input.closest('.password-input-wrap');
+        return wrap || input;
+    }
+
     function getOrCreateErrorEl(input) {
-        var host = getErrorHost(input);
-        var next = input.nextElementSibling;
+        var anchor = passwordErrorAnchor(input);
+        var next = anchor.nextElementSibling;
         if (next && next.classList && next.classList.contains(ERROR_TEXT_CLASS)) {
             return next;
         }
         var el = document.createElement('p');
         el.className = ERROR_TEXT_CLASS;
         el.setAttribute('role', 'alert');
-        input.insertAdjacentElement('afterend', el);
+        anchor.insertAdjacentElement('afterend', el);
         return el;
     }
 
     function clearFieldError(input) {
         input.classList.remove(ERROR_CLASS);
-        var n = input.nextElementSibling;
+        var anchor = passwordErrorAnchor(input);
+        var n = anchor.nextElementSibling;
         if (n && n.classList && n.classList.contains(ERROR_TEXT_CLASS)) {
             n.textContent = '';
             n.style.display = 'none';
@@ -120,6 +126,9 @@
             }
             if (!/[0-9]/.test(v)) {
                 return { ok: false, message: 'Password must include at least one number.' };
+            }
+            if (!/[^A-Za-z0-9]/.test(v)) {
+                return { ok: false, message: 'Password must include at least one special character.' };
             }
             return { ok: true };
         },

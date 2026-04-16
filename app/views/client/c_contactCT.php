@@ -4,12 +4,21 @@ $clientExtraCss  = ['client/c_contactCT.css'];
 require_once APPROOT . '/views/templates/client/client_layout_head.php';
 require_once APPROOT . '/views/templates/client/c_header.php';
 require_once APPROOT . '/views/templates/client/c_sidebar.php';
+
+$paymentId = $_GET['payment_id'] ?? null;
 ?>
   <main class="main-content">
     <div class="page-header">
       <h1><i class="fas fa-user-nurse"></i> Contact Your Caregiver</h1>
       <p class="subtitle">Get in touch with your assigned caregiver</p>
     </div>
+
+    <?php if (!empty($paymentId)): ?>
+      <div class="payment-note">
+        <i class="fas fa-info-circle"></i>
+        <p>This is your before-caregiver details page. After HR approves the payment, you can view the updated caretaker details.</p>
+      </div>
+    <?php endif; ?>
 
     <?php $caretaker = $data['caretaker'] ?? null; ?>
 

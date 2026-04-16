@@ -1,14 +1,6 @@
 <?php
 
-/**
- * PendingCountModel
- *
- * Centralized model for fetching pending item counts for sidebar badges.
- * This model provides role-based badge counts for all dashboards.
- *
- * @package SmartCare
- * @subpackage Models
- */
+require_once APPROOT . '/core/Database.php';
 
 class PendingCountModel
 {
@@ -16,10 +8,8 @@ class PendingCountModel
 
     public function __construct()
     {
-        $this->db = new mysqli("localhost", "root", "", "smartcare");
-        if ($this->db->connect_errno) {
-            die("Failed to connect to MySQL: " . $this->db->connect_error);
-        }
+        $database = new Database();
+        $this->db = $database->conn;
     }
 
     /**

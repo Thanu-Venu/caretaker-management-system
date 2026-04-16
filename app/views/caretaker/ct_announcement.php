@@ -42,32 +42,48 @@ $ct_audience_label = static function (string $role): string {
     if ($r === 'all') {
         return 'Everyone';
     }
-    return $role !== '' ? $role : '...';
+
+    return $role !== '' ? $role : '—';
 };
 
-$buildPageUrl = static function (int $page) use ($filters): string {
-    $query = ['url' => 'caretaker/ct_announcement'];
-    if ($filters['date_from'] !== '') {
-        $query['date_from'] = $filters['date_from'];
+$buildAnnPageUrl = static function (int $page) use ($df, $dt, $fq): string {
+    $q = ['url' => 'caretaker/ct_announcement'];
+    if ($df !== '') {
+        $q['date_from'] = $df;
     }
-    if ($filters['date_to'] !== '') {
-        $query['date_to'] = $filters['date_to'];
+    if ($dt !== '') {
+        $q['date_to'] = $dt;
     }
-    if ($filters['q'] !== '') {
-        $query['q'] = $filters['q'];
+    if ($fq !== '') {
+        $q['q'] = $fq;
     }
     if ($page > 1) {
-        $query['page'] = $page;
+        $q['page'] = $page;
     }
+
     return URLROOT . '/public?' . http_build_query($q);
 };
-
-$caretakerPageTitle = 'Announcements - SmartCare';
-$caretakerExtraCss = ['caretaker/ct_announcement.css'];
-require_once APPROOT . '/views/templates/caretaker/caretaker_layout_head.php';
-include_once APPROOT . '/views/templates/caretaker/ct_header.php';
-include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
 ?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements — SmartCare</title>
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_announcement.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
 
 <main class="content ct-announcements-page">
     <header class="page-header">
@@ -126,18 +142,6 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
                     <?php endforeach; ?>
                 </tbody>
             </table>
-
-            <?php if ($totalPages > 1): ?>
-                <nav class="ct-announcements-pagination" aria-label="Announcements pagination">
-                    <?php if ($currentPage > 1): ?>
-                        <a class="btn secondary btn-sm" href="<?= ct_ann_esc($buildPageUrl($currentPage - 1)) ?>">Previous</a>
-                    <?php endif; ?>
-                    <span class="ct-announcements-page-meta">Page <?= (int) $currentPage ?> of <?= (int) $totalPages ?> (<?= (int) $totalRecords ?> total)</span>
-                    <?php if ($currentPage < $totalPages): ?>
-                        <a class="btn secondary btn-sm" href="<?= ct_ann_esc($buildPageUrl($currentPage + 1)) ?>">Next</a>
-                    <?php endif; ?>
-                </nav>
-            <?php endif; ?>
         </div>
     <?php else: ?>
         <div class="no-data">
@@ -145,5 +149,5 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
         </div>
     <?php endif; ?>
 </main>
-
-<?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>
+</body>
+</html>

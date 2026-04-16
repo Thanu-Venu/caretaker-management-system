@@ -20,12 +20,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const policy = window.leavePolicy || {
         advanceNoticeDays: 3,
-        maxPerRequest: 7,
+        maxPerRequest: 5,
         monthlyLimit: 5
     };
     const previewConfig = window.leavePreview || { impactUrl: '' };
     let impactDebounceTimer = null;
     let activeImpactController = null;
+    let lastPreviewStartDate = '';
+    let serverWindow = {
+        maxEndDate: null,
+        startMonthUsed: null,
+        startMonthRemaining: null,
+        canRequest: true
+    };
 
     function parseDate(value) {
         return value ? new Date(value + 'T00:00:00') : null;
@@ -51,6 +58,46 @@ document.addEventListener('DOMContentLoaded', () => {
         return Math.floor(diffMs / 86400000) + 1;
     }
 
+    function toLocalIsoDate(dateObj) {
+        if (!(dateObj instanceof Date) || Number.isNaN(dateObj.getTime())) {
+            return '';
+        }
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const d = String(dateObj.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
+    function getFallbackMaxEndDate(startValue) {
+        const startDateObj = parseDate(startValue);
+        if (!startDateObj) {
+            return '';
+        }
+        const maxDays = Math.max(1, Number(policy.maxPerRequest) || 5);
+        const maxEndDateObj = new Date(startDateObj);
+        maxEndDateObj.setDate(maxEndDateObj.getDate() + (maxDays - 1));
+        return toLocalIsoDate(maxEndDateObj);
+    }
+
+    function applyServerWindow(payload) {
+        if (!payload || typeof payload !== 'object') {
+            serverWindow = {
+                maxEndDate: null,
+                startMonthUsed: null,
+                startMonthRemaining: null,
+                canRequest: true
+            };
+            return;
+        }
+
+        serverWindow = {
+            maxEndDate: payload.max_end_date || null,
+            startMonthUsed: (typeof payload.start_month_used === 'number') ? payload.start_month_used : null,
+            startMonthRemaining: (typeof payload.start_month_remaining === 'number') ? payload.start_month_remaining : null,
+            canRequest: payload.can_request !== false
+        };
+    }
+
     function getMinAdvanceDate() {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -64,12 +111,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function syncDateHints() {
         const minAdvance = getMinAdvanceDate();
-        const minAdvanceIso = minAdvance.toISOString().slice(0, 10);
+        const minAdvanceIso = toLocalIsoDate(minAdvance);
 
         const leaveType = leaveTypeInput ? leaveTypeInput.value : '';
         if (leaveType === 'Sick Leave') {
             startHint.textContent = `Sick leave can be requested starting from today.`;
-            startInput.min = new Date().toISOString().slice(0, 10);
+            startInput.min = toLocalIsoDate(new Date());
         } else {
             startHint.textContent = `Leave must be requested at least ${policy.advanceNoticeDays} days in advance. Earliest start: ${formatDate(minAdvanceIso)}.`;
             startInput.min = minAdvanceIso;
@@ -81,26 +128,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (startInput.value) {
-            const startDateObj = parseDate(startInput.value);
-
-            // Check if start month is current month
-            const isCurrentMonth = startDateObj.getMonth() === new Date().getMonth() && startDateObj.getFullYear() === new Date().getFullYear();
-
-            let allowedDays = 5;
-            if (isCurrentMonth && typeof policy.remainingThisMonth !== 'undefined') {
-                allowedDays = Math.min(5, policy.remainingThisMonth);
-            }
-            if (allowedDays < 1) allowedDays = 0;
-
-            const maxEndDateObj = new Date(startDateObj);
-            if (allowedDays > 0) {
-                maxEndDateObj.setDate(maxEndDateObj.getDate() + (allowedDays - 1));
-            }
-            const maxEndIso = maxEndDateObj.toISOString().slice(0, 10);
-
             endInput.min = startInput.value;
+            const fallbackMaxEndIso = getFallbackMaxEndDate(startInput.value);
+            let maxEndIso = fallbackMaxEndIso;
+
+            if (serverWindow.maxEndDate && serverWindow.maxEndDate < maxEndIso) {
+                maxEndIso = serverWindow.maxEndDate;
+            }
+
+            if (serverWindow.canRequest === false) {
+                endInput.max = startInput.value;
+                endHint.textContent = 'No leave days remaining for the selected month.';
+                if (endInput.value) {
+                    endInput.value = '';
+                }
+                return;
+            }
+
+            if (!maxEndIso) {
+                maxEndIso = fallbackMaxEndIso;
+            }
             endInput.max = maxEndIso;
-            endHint.textContent = allowedDays > 0 ? `End date must be between ${formatDate(startInput.value)} and ${formatDate(maxEndIso)} (Max ${allowedDays} days remaining).` : 'You have no leave days remaining this month.';
+            const remainingHint = (typeof serverWindow.startMonthRemaining === 'number')
+                ? ` Start-month remaining: ${serverWindow.startMonthRemaining} day(s).`
+                : '';
+            endHint.textContent = `End date must be between ${formatDate(startInput.value)} and ${formatDate(maxEndIso)} (maximum ${policy.maxPerRequest} days per request).${remainingHint}`;
 
             // Auto-correct end date if it violates max
             if (endInput.value && endInput.value > maxEndIso && document.activeElement !== endInput) {
@@ -120,8 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function collectClientErrors() {
         const errors = [];
-        const todayIso = new Date().toISOString().slice(0, 10);
-        const minAdvanceIso = getMinAdvanceDate().toISOString().slice(0, 10);
+        const todayIso = toLocalIsoDate(new Date());
+        const minAdvanceIso = toLocalIsoDate(getMinAdvanceDate());
         const leaveType = leaveTypeInput ? leaveTypeInput.value : '';
 
         if (startInput.value && startInput.value < todayIso) {
@@ -142,22 +194,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const days = getInclusiveDays(startInput.value, endInput.value);
         if (days > 0) {
-            if (startInput.value) {
-                const startObj = parseDate(startInput.value);
-                const isCurrentMonth = startObj.getMonth() === new Date().getMonth() && startObj.getFullYear() === new Date().getFullYear();
-                if (isCurrentMonth && typeof policy.remainingThisMonth !== 'undefined') {
-                    if (days > policy.remainingThisMonth) {
-                        errors.push(`You only have ${policy.remainingThisMonth} remaining leave days but requested ${days}.`);
-                    }
-                }
+            if (startInput.value && serverWindow.canRequest === false) {
+                errors.push('No leave days remaining for the selected month.');
+            }
+
+            if (startInput.value && endInput.value && serverWindow.maxEndDate && endInput.value > serverWindow.maxEndDate) {
+                errors.push('Selected range exceeds your available leave days for the selected month.');
             }
 
             if (leaveType === 'Sick Leave') {
-                if (days > 5) {
+                if (days > Number(policy.maxPerRequest || 5)) {
                     errors.push('Sick leave cannot exceed 5 days.');
                 }
             } else {
-                if (days > 5) {
+                if (days > Number(policy.maxPerRequest || 5)) {
                     errors.push('Other leave types cannot exceed 5 days per request.');
                 }
             }
@@ -230,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchImpactPreview() {
-        if (!previewConfig.impactUrl || !startInput.value || !endInput.value || endInput.value < startInput.value) {
+        if (!previewConfig.impactUrl || !startInput.value) {
             hideImpactPreview();
             return;
         }
@@ -245,6 +295,9 @@ document.addEventListener('DOMContentLoaded', () => {
             start_date: startInput.value,
             end_date: endInput.value
         });
+        if (previewConfig.leaveId) {
+            body.append('leave_id', String(previewConfig.leaveId));
+        }
 
         try {
             const response = await fetch(previewConfig.impactUrl, {
@@ -262,9 +315,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const payload = await response.json();
+            applyServerWindow(payload);
+            syncDateHints();
             renderImpactPreview(payload);
         } catch (error) {
             if (error.name !== 'AbortError') {
+                applyServerWindow(null);
                 hideImpactPreview();
             }
         }
@@ -281,6 +337,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function syncFormState() {
+        if (startInput.value !== lastPreviewStartDate) {
+            lastPreviewStartDate = startInput.value;
+            applyServerWindow(null);
+        }
         syncDateHints();
         updateDurationBadge();
         const errors = collectClientErrors();

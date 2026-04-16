@@ -121,7 +121,7 @@ body > header.main-header ~ .main-content.admin-dashboard-page {
 
 /* ----- Layout wrapper ----- */
 .dashboard-layout {
-    max-width: 1200px;
+    max-width: 1600px;
     margin: 0 auto;
     min-width: 0;
     width: 100%;
@@ -206,16 +206,16 @@ body > header.main-header ~ .main-content.admin-dashboard-page {
 }
 
 .dashboard-page-header__greeting {
-    color: var(--dash-muted);
+    color: #0f3555;
     font-weight: 600;
-    font-size: 0.55em;
+    font-size: 14px;
     letter-spacing: 0.01em;
     opacity: 0.9;
 }
 
 .dashboard-page-header__name {
     font-weight: 800;
-    color: var(--admin-page-heading-color, #0f3555);
+    color: var(--admin-page-heading-color, #1e88e5);
     max-width: 100%;
 }
 
