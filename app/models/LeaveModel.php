@@ -7,6 +7,7 @@ class LeaveModel
     public const MAX_DAYS_PER_REQUEST = 5;
     public const MONTHLY_LEAVE_LIMIT = 5;
     public const ADVANCE_NOTICE_DAYS = 3;
+    private $notificationModel;
 
     private function bookingEndDateExpr(): string
     {

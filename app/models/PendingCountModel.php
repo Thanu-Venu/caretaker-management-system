@@ -1,5 +1,7 @@
 <?php
 
+require_once APPROOT . '/core/Database.php';
+
 /**
  * PendingCountModel
  *
@@ -16,10 +18,8 @@ class PendingCountModel
 
     public function __construct()
     {
-        $this->db = new mysqli("localhost", "root", "", "smartcare");
-        if ($this->db->connect_errno) {
-            die("Failed to connect to MySQL: " . $this->db->connect_error);
-        }
+        $database = new Database();
+        $this->db = $database->conn;
     }
 
     /**

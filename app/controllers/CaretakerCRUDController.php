@@ -50,8 +50,9 @@ class CaretakerCRUDController extends Controller
 
             // Password validation
             if (!empty($data['password'])) {
-                if (strlen(trim($data['password'])) < 6) {
-                    $errors[] = "Password must be at least 6 characters long.";
+                $pwErr = CaretakerModel::validateCaretakerPassword(trim($data['password']));
+                if ($pwErr !== null) {
+                    $errors[] = $pwErr;
                 }
             }
 
@@ -181,6 +182,14 @@ class CaretakerCRUDController extends Controller
                 }
             }
 
+            $newPassword = trim($data['new_password'] ?? '');
+            if ($newPassword !== '') {
+                $pwErr = CaretakerModel::validateCaretakerPassword($newPassword);
+                if ($pwErr !== null) {
+                    $errors[] = $pwErr;
+                }
+            }
+
             // If there are validation errors, store and redirect
             if (!empty($errors)) {
                 $_SESSION['error'] = implode("; ", $errors);
@@ -209,6 +218,9 @@ class CaretakerCRUDController extends Controller
             }
 
             $this->caretakerModel->updateCaretaker($id, $data, $profileImage);
+            if ($newPassword !== '') {
+                $this->caretakerModel->updateCaretakerPassword($id, password_hash($newPassword, PASSWORD_DEFAULT));
+            }
             $this->historyModel->log([
                 'user_id' => AuthSession::profileId(),
                 'username' => $_SESSION['user']['username'],
