@@ -24,6 +24,10 @@ body {
   box-sizing: border-box;
 }
 
+.announcement-container .page-header {
+  margin-bottom: 24px;
+}
+
 .page-subtitle {
   margin-top: 8px;
   color: var(--announcement-muted);
@@ -48,8 +52,8 @@ body {
 .page-title {
   font-size: 30px;
   color: var(--announcement-accent);
-  letter-spacing: 0.2px;
-  margin: 0 0 5px 0;
+  letter-spacing: -0.02em;
+  margin: 0;
   font-weight: 700;
 }
 
@@ -66,7 +70,7 @@ table {
   border-collapse: collapse;
   font-size: 14px;
   overflow: hidden;
-  min-width: 600px;
+  min-width: 760px;
 }
 
 thead th {

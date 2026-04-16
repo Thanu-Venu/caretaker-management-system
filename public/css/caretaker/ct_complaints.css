@@ -112,7 +112,7 @@ form textarea {
   border-collapse: collapse;
   font-size: 14px;
   overflow: hidden;
-  min-width: 600px;
+  min-width: 760px;
 }
 
 .complaint-table thead th {
@@ -182,7 +182,7 @@ form textarea {
 }
 
 table {
-  min-width: 600px;
+  min-width: 760px;
 }
 
 @media (max-width: 1024px) {

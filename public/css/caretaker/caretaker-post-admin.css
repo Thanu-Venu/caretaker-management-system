@@ -1,0 +1,81 @@
+/* Shared caretaker page shell to keep all caretaker screens aligned. */
+
+body {
+  background: #f8fafc;
+}
+
+body > .content:not(.admin-dashboard-page),
+body > .main-content:not(.admin-dashboard-page),
+body > header.main-header ~ .content:not(.admin-dashboard-page),
+body > header.main-header ~ .main-content:not(.admin-dashboard-page) {
+  margin-left: calc(
+    var(--admin-sidebar-width, 260px) + var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px)
+  ) !important;
+  margin-right: calc(var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px)) !important;
+  margin-top: var(--admin-header-height, 60px) !important;
+  margin-bottom: 24px !important;
+  padding-top: 8px !important;
+  min-width: 0;
+  width: auto !important;
+  max-width: none;
+  box-sizing: border-box;
+}
+
+/* Keep top page titles aligned consistently across caretaker pages. */
+body > .content:not(.admin-dashboard-page) > .page-header:first-child,
+body > .main-content:not(.admin-dashboard-page) > .page-header:first-child,
+body > header.main-header ~ .content:not(.admin-dashboard-page) > .page-header:first-child,
+body > header.main-header ~ .main-content:not(.admin-dashboard-page) > .page-header:first-child {
+  margin-top: 0 !important;
+}
+
+body > .content:not(.admin-dashboard-page) .page-title,
+body > .main-content:not(.admin-dashboard-page) .page-title {
+  line-height: 1.15;
+}
+
+@media (min-width: 1024px) {
+  body.admin-sidebar-collapsed > .content:not(.admin-dashboard-page),
+  body.admin-sidebar-collapsed > .main-content:not(.admin-dashboard-page),
+  body.admin-sidebar-collapsed > header.main-header ~ .content:not(.admin-dashboard-page),
+  body.admin-sidebar-collapsed > header.main-header ~ .main-content:not(.admin-dashboard-page) {
+    margin-left: calc(
+      var(--admin-sidebar-rail-width, 72px) * 2 + var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px)
+    ) !important;
+    margin-right: calc(
+      var(--admin-sidebar-rail-width, 72px) + var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px)
+    ) !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  body > .content:not(.admin-dashboard-page),
+  body > .main-content:not(.admin-dashboard-page),
+  body > header.main-header ~ .content:not(.admin-dashboard-page),
+  body > header.main-header ~ .main-content:not(.admin-dashboard-page) {
+    margin-left: calc(var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px)) !important;
+    margin-right: calc(var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px)) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body > .content:not(.admin-dashboard-page),
+  body > .main-content:not(.admin-dashboard-page),
+  body > header.main-header ~ .content:not(.admin-dashboard-page),
+  body > header.main-header ~ .main-content:not(.admin-dashboard-page) {
+    margin-left: calc(16px + var(--admin-main-extra-left, 16px)) !important;
+    margin-right: calc(16px + var(--admin-main-extra-left, 16px)) !important;
+    margin-bottom: 16px !important;
+    padding-top: 8px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  body > .content:not(.admin-dashboard-page),
+  body > .main-content:not(.admin-dashboard-page),
+  body > header.main-header ~ .content:not(.admin-dashboard-page),
+  body > header.main-header ~ .main-content:not(.admin-dashboard-page) {
+    margin-left: 12px !important;
+    margin-right: 12px !important;
+  }
+}

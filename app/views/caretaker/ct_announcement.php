@@ -1,20 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+$caretakerPageTitle = 'Announcements - SmartCare';
+$caretakerExtraCss = ['caretaker/ct_announcement.css'];
+require_once APPROOT . '/views/templates/caretaker/caretaker_layout_head.php';
+include_once APPROOT . '/views/templates/caretaker/ct_header.php';
+include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
+?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Announcements</title>
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_announcement.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-</head>
-
-<body>
 
 <?php
 $announcements  = isset($announcements) && is_array($announcements) ? $announcements : [];
@@ -67,8 +58,6 @@ $buildPageUrl = static function (int $page) use ($filters): string {
 };
 ?>
 
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
 <main class="main-content announcement-container caretaker-announcements-page">
     <header class="page-header">
         <h1 class="page-title">Announcements</h1>
@@ -154,5 +143,4 @@ $buildPageUrl = static function (int $page) use ($filters): string {
     <?php endif; ?>
 </main>
 
-</body>
-</html>
+<?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>

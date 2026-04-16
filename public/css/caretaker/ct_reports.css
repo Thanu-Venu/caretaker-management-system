@@ -116,7 +116,7 @@ h2 {
   border-collapse: collapse;
   font-size: 14px;
   overflow: hidden;
-  min-width: 600px;
+  min-width: 760px;
 }
 
 .report-table thead th {
@@ -194,7 +194,7 @@ h2 {
 }
 
 table {
-  min-width: 600px;
+  min-width: 760px;
 }
 
 @media (max-width: 1024px) {

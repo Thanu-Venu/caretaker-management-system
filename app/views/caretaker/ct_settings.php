@@ -6,26 +6,14 @@ if (isset($data['user'])) {
 $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
   (($data['latestProfileChangeRequest']['status'] ?? '') === 'Pending');
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caretaker Settings & Profile</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_settings.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-</head>
-
-<body>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-  <main class="main-content">
+<?php
+$caretakerPageTitle = 'Profile Settings - SmartCare';
+$caretakerExtraCss = ['caretaker/ct_settings.css'];
+require_once APPROOT . '/views/templates/caretaker/caretaker_layout_head.php';
+include_once APPROOT . '/views/templates/caretaker/ct_header.php';
+include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
+?>
+<main class="main-content">
     <section class="page-header settings-page-header">
       <h1 class="page-title">Profile &amp; Settings</h1>
     </section>
@@ -140,6 +128,5 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
   </main>
 
   <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_settings.js"></script>
-</body>
 
-</html>
+<?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>

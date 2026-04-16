@@ -273,7 +273,7 @@
     display: block;
 }
 
-/* page content spacing for fixed header */
+/* Caretaker pages use shared shell spacing in caretaker-post-admin.css. */
 body {
-    padding-top: var(--admin-header-height, 52px);
+    padding-top: 0;
 }

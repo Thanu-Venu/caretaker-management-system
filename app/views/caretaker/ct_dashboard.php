@@ -1,28 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartCare Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/ad_dashboard.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-</head>
-
-<body>
-
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-
+<?php
+$caretakerPageTitle = 'Dashboard - SmartCare';
+$caretakerExtraCss = ['admin/ad_dashboard.css', 'caretaker/ct_dashboard.css'];
+require_once APPROOT . '/views/templates/caretaker/caretaker_layout_head.php';
+include_once APPROOT . '/views/templates/caretaker/ct_header.php';
+include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
+?>
 <?php
   $upcomingCount = count($data['upcoming'] ?? []);
   $pendingLeaveCount = 0;
@@ -40,7 +22,7 @@
   $availabilityLabel = $availability ? "Visible to clients" : "Hidden from clients";
 ?>
 
-<div class="main-content admin-dashboard-page">
+<main class="main-content admin-dashboard-page caretaker-dashboard-page">
   <div class="dashboard-layout">
 
     <header class="page-header dashboard-page-header">
@@ -165,13 +147,6 @@
       </div>
     </div>
 
-    <style>
-      @media (min-width: 1101px) {
-        .ct-overview-grid {
-          grid-template-columns: 2fr 1fr !important;
-        }
-      }
-    </style>
     <section class="dashboard-overview-charts" aria-label="Caretaker overview">
       <h2 class="dashboard-overview-charts__heading">Overview</h2>
       <div class="dashboard-overview-charts__grid ct-overview-grid">
@@ -247,7 +222,7 @@
     </section>
 
   </div>
-</div>
+</main>
 
 <script>
   window.dashboardData = {
@@ -258,6 +233,5 @@
   };
 </script>
 <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_dashboard.js"></script>
-</body>
 
-</html>
+<?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>
