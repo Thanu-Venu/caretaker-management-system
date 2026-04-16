@@ -50,7 +50,7 @@ table {
   border-collapse: collapse;
   font-size: 14px;
   overflow: hidden;
-  min-width: 600px;
+  min-width: 760px;
 }
 
 thead th {
@@ -116,7 +116,7 @@ td:nth-child(4) {
 }
 
 table {
-  min-width: 600px;
+  min-width: 760px;
 }
 
 @media (max-width: 1024px) {

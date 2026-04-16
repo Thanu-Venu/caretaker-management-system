@@ -2,16 +2,6 @@
 
 require_once APPROOT . '/core/Database.php';
 
-/**
- * PendingCountModel
- *
- * Centralized model for fetching pending item counts for sidebar badges.
- * This model provides role-based badge counts for all dashboards.
- *
- * @package SmartCare
- * @subpackage Models
- */
-
 class PendingCountModel
 {
     private $db;

@@ -34,6 +34,13 @@ class CaretakerController extends Controller
         }
 
         $_SESSION['user'] = $user;
+        
+        // Prevent redirect loops - only redirect if not already on a caretaker page
+        $currentUrl = $_SERVER['REQUEST_URI'] ?? '';
+        if (strpos($currentUrl, 'caretaker') === false) {
+            header("Location: index.php?url=caretaker/ct_dashboard");
+            exit;
+        }
     }
 
     public function ct_dashboard()
@@ -420,7 +427,7 @@ class CaretakerController extends Controller
 public function ct_complaints()
 {
     $caretakerId = AuthSession::profileId();
-    $resolvedComplaints = $this->caretakerModel->getResolvedComplaintsByCaretaker($caretakerId);
+    $complaints = $this->caretakerModel->getComplaintsByCaretaker($caretakerId);
 
     $filters = [
         'status' => trim((string) ($_GET['complaint_status'] ?? '')),
@@ -429,7 +436,7 @@ public function ct_complaints()
 
     $serviceTypeOptions = [];
     $statusOptions = [];
-    foreach ($resolvedComplaints as $complaint) {
+    foreach ($complaints as $complaint) {
         $serviceType = trim((string) ($complaint['service_type'] ?? ''));
         $status = trim((string) ($complaint['status'] ?? ''));
         if ($serviceType !== '') {
@@ -444,7 +451,7 @@ public function ct_complaints()
     sort($serviceTypeOptions, SORT_NATURAL | SORT_FLAG_CASE);
     sort($statusOptions, SORT_NATURAL | SORT_FLAG_CASE);
 
-    $resolvedComplaints = array_values(array_filter($resolvedComplaints, static function ($complaint) use ($filters) {
+    $complaints = array_values(array_filter($complaints, static function ($complaint) use ($filters) {
         $status = trim((string) ($complaint['status'] ?? ''));
         $serviceType = trim((string) ($complaint['service_type'] ?? ''));
 
@@ -459,12 +466,17 @@ public function ct_complaints()
         return true;
     }));
 
+    // Generate form token to prevent duplicate submissions
+    $formToken = bin2hex(random_bytes(32));
+    $_SESSION['complaint_form_token'] = $formToken;
+
     $data = [
         'clients' => $this->caretakerModel->getClients($caretakerId),
-        'resolvedComplaints' => $resolvedComplaints,
+        'complaints' => $complaints,
         'filters' => $filters,
         'serviceTypeOptions' => $serviceTypeOptions,
         'statusOptions' => $statusOptions,
+        'form_token' => $formToken,
     ];
 
     $this->view('caretaker/ct_complaints', $data);
@@ -483,9 +495,9 @@ public function addComplaint()
 
         $data = [
             'caretaker_id' => AuthSession::profileId(),
-            'client_id' => $_POST['client_id'], // ✅ CHANGE THIS
+            'client_id' => $_POST['client_id'], // 
             'service_type' => $_POST['service_type'],
-            'service_date' => $_POST['service_date'], // ✅ CHANGE THIS
+            'service_date' => $_POST['service_date'], // 
             'description' => $_POST['description']
         ];
 
@@ -683,13 +695,8 @@ public function saveComplaint()
 
     public function index()
     {
-        $clients = $this->clientModel->getAllClient();
-        $complaints = $this->complaintModel->getAllComplaints();
-
-        $this->view('caretaker/complaints', [
-            'clients' => $clients,
-            'complaints' => $complaints
-        ]);
+        // Redirect to dashboard when accessing /caretaker without a specific method
+        $this->ct_dashboard();
     }
 
     public function submit()

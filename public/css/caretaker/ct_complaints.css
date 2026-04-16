@@ -79,6 +79,7 @@ body {
   color: #b91c1c;
 }
 
+
 .content.complaint-container .complaints-past-heading {
   margin: 0 0 20px;
   font-size: 1.25rem;
@@ -187,7 +188,7 @@ body {
   border-collapse: collapse;
   font-size: 14px;
   overflow: hidden;
-  min-width: 600px;
+  min-width: 760px;
 }
 
 .complaint-table thead th {
@@ -257,7 +258,7 @@ body {
 }
 
 table {
-  min-width: 600px;
+  min-width: 760px;
 }
 
 @media (max-width: 1024px) {

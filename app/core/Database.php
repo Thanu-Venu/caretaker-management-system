@@ -3,8 +3,7 @@ class Database
 {
     public $conn;
 
-    public function __construct()
-    {
+    public function __construct() {
         $host = "localhost";
         $user = "root";
         $pass = "";

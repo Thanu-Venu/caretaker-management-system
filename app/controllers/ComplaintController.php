@@ -333,13 +333,13 @@ class ComplaintController
 
     public function updateCaretakerComplaintStatus()
     {
-        if (!AuthSession::hasRole('manager')) {
+        if (!AuthSession::hasRole('manager') && !AuthSession::hasRole('hr')) {
             echo "<script>alert('Unauthorized');</script>";
             exit;
         }
 
         $complaint_id = (int)$_POST['complaint_id'];
-        $status = $_POST['action']; // Pending / In Progress / Resolved
+        $status = $_POST['status']; // Pending / In Progress / Resolved
 
         if (!$complaint_id || !$status) {
             echo "<script>alert('Invalid data');</script>";
@@ -353,7 +353,7 @@ class ComplaintController
         }
 
         // Redirect back to HR complaints page
-        header("Location: " . URLROOT . "/public/index.php?url=Complaint/index");
+        header("Location: " . URLROOT . "/public/index.php?url=hr/hr_complaint");
         exit;
     }
 }

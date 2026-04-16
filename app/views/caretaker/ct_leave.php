@@ -7,41 +7,13 @@ $leaveTypeOptions = $data['leaveTypeOptions'] ?? [];
 $selectedLeaveStatus = trim((string) ($leaveFilters['status'] ?? ''));
 $selectedLeaveType = trim((string) ($leaveFilters['leave_type'] ?? ''));
 ?>
-
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leave Management</title>
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_leave.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-</head>
-
-<body>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-
-<?php if ($success): ?>
-    <div id="successMessage" class="success-message" style="background-color: #e3f2fd; color: #1565c0; padding: 14px 20px; margin: 20px auto; border-radius: 4px; font-weight: 500; width: fit-content; border-left: 4px solid #1e88e5; max-width: 90%;">
-        ✓ <?= htmlspecialchars($success) ?> All requests are submitted as Pending and require HR approval.
-    </div>
-    <script>
-        setTimeout(function() {
-            const msg = document.getElementById('successMessage');
-            if (msg) msg.style.display = 'none';
-        }, 5000);
-    </script>
-<?php endif; ?>
-
+<?php
+$caretakerPageTitle = 'Leave Management - SmartCare';
+$caretakerExtraCss = ['caretaker/ct_leave.css'];
+require_once APPROOT . '/views/templates/caretaker/caretaker_layout_head.php';
+include_once APPROOT . '/views/templates/caretaker/ct_header.php';
+include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
+?>
     <main class="content">
         <header class="page-header">
             <h1 class="page-title">Leave Requests</h1>
@@ -162,6 +134,5 @@ $selectedLeaveType = trim((string) ($leaveFilters['leave_type'] ?? ''));
             </div>
         </div>
     </main>
-</body>
 
-</html>
+<?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>

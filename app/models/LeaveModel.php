@@ -262,11 +262,11 @@ class LeaveModel
             . "Time: {$data['start_time']} - {$data['end_time']}\n"
             . "Reason: {$data['reason']}";
         // Notify Manager
-        $managerLink = URLROOT . "/hr/hr_leave";
+        $managerLink = URLROOT . "/public?url=hr/hr_leave";
         $this->notifyRoleUsers("Manager", $title, $message, $managerLink);
 
         // Notify Admin
-        $adminLink = URLROOT . "/admin/ad_leave";
+        $adminLink = URLROOT . "/public?url=admin/ad_leave";
         $this->notifyRoleUsers("admin", $title, $message, $adminLink);
         return true;
     }
@@ -439,25 +439,23 @@ class LeaveModel
         if (empty($replacementId)) {
             $sql = "UPDATE leaves
                     SET status='Approved',
-                        approved_by=?,
                         approved_at=NOW(),
                         replacement_caretaker_id=NULL,
                         hr_note=?
                     WHERE id=? AND status='Pending'";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("isi", $hrId, $hrNote, $leaveId);
+            $stmt->bind_param("si", $hrNote, $leaveId);
             return $stmt->execute();
         }
 
         $sql = "UPDATE leaves
                 SET status='Approved',
-                    approved_by=?,
                     approved_at=NOW(),
                     replacement_caretaker_id=?,
                     hr_note=?
                 WHERE id=? AND status='Pending'";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("iisi", $hrId, $replacementId, $hrNote, $leaveId);
+        $stmt->bind_param("isi", $replacementId, $hrNote, $leaveId);
         return $stmt->execute();
     }
 
@@ -574,7 +572,7 @@ class LeaveModel
                 . "Note: " . (trim($hrNote) !== '' ? $hrNote : '—');
 
             // Change this link to your caretaker leave page route
-            $link  = URLROOT . "/caretaker/ct_leave";
+            $link  = URLROOT . "/public?url=caretaker/ct_leave";
 
             // Notify original caretaker via shared helper (includes role fallback handling).
             $this->notifyUser($oldCaretakerId, 'caretaker', $title, $msg, $link);
@@ -586,7 +584,7 @@ class LeaveModel
                     . "Leave period: {$leaveStart} to {$leaveEnd}.\n"
                     . "Affected bookings: " . count($affected) . "\n"
                     . "Please review your updated schedule.";
-                $replacementLink = URLROOT . '/caretaker/ct_booking';
+                $replacementLink = URLROOT . '/public?url=caretaker/ct_booking';
                 $this->notifyUser((int)$replacementId, 'caretaker', $replacementTitle, $replacementMessage, $replacementLink);
 
                 // Get replacement caregiver details for client notifications

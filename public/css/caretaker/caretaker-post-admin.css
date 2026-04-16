@@ -1,0 +1,26 @@
+/* Caretaker post-admin styles - fixes for caretaker pages after admin-ui.css */
+
+/* Main content spacing for caretaker pages */
+.content {
+    margin-top: var(--admin-header-height, 52px);
+    padding: var(--admin-gutter, 24px);
+    min-height: calc(100vh - var(--admin-header-height, 52px));
+}
+
+/* Caretaker-specific adjustments */
+.ct-announcements-page {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Ensure proper spacing for caretaker pages */
+main.content {
+    padding-left: calc(var(--admin-sidebar-width, 260px) + var(--admin-gutter, 24px));
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    main.content {
+        padding-left: var(--admin-gutter, 24px);
+    }
+}

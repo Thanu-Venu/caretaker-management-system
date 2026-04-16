@@ -64,7 +64,7 @@ if (count($sbParts) >= 2) {
             </li>
             <li><a href="<?= URLROOT ?>/public?url=hr/hr_schedule"><i class="bx bx-calendar"></i> <span>Schedule</span></a></li>
             <li>
-                <a href="<?= URLROOT ?>/HrLeave/index">
+                <a href="<?= URLROOT ?>/public?url=HrLeave/index">
                     <span class="menu-item-content">
                         <span class="menu-left">
                             <i class="bx bx-time"></i> <span>Leave</span>

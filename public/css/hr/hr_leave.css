@@ -309,46 +309,7 @@ body main.main-content table.leave-table td.actions.lvActions {
     line-height: 1.5;
 }
 
-/* Reject modal */
-.leave-reject-modal__content {
-    max-width: 440px;
-    width: 100%;
-}
 
-.leave-reject-intro {
-    margin: 0 0 12px;
-    font-size: 14px;
-    color: var(--hr-muted, #64748b);
-    line-height: 1.45;
-}
-
-.leave-reject-label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: var(--hr-text-secondary, #475569);
-}
-
-.leave-reject-textarea {
-    width: 100%;
-    padding: 10px 12px;
-    margin-bottom: 4px;
-    border: 1px solid var(--hr-border, #e2e8f0);
-    border-radius: var(--hr-radius-sm, 8px);
-    font-family: inherit;
-    font-size: 14px;
-    resize: vertical;
-    box-sizing: border-box;
-}
-
-.required-mark {
-    color: #dc2626;
-}
-
-.leave-reject-modal__content .modal-buttons {
-    margin-top: 16px;
-}
 
 @media (max-width: 1024px) {
     .main-content {
