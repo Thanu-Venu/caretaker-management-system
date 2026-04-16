@@ -135,3 +135,56 @@
     border-top: 1px solid var(--hr-border);
     background: rgba(248, 250, 252, 0.65);
 }
+
+/* Password field with visibility toggle (add / edit caregiver) */
+.caretaker-form .password-input-wrap {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+.caretaker-form .password-input-wrap input[type="password"],
+.caretaker-form .password-input-wrap input[type="text"] {
+    width: 100%;
+    /* Toggle is 2.25rem wide + 8px inset; keep text/placeholder clear of the icon */
+    padding-right: calc(2.25rem + 20px);
+    box-sizing: border-box;
+    /* .modal-content input { margin-bottom } stretches the wrap; 50% centers the icon too low */
+    margin-bottom: 0;
+}
+
+.caretaker-form .password-toggle {
+    position: absolute;
+    right: 8px;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    height: 2.25rem;
+    width: 2.25rem;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--hr-muted, #64748b);
+    cursor: pointer;
+    line-height: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.caretaker-form .password-toggle:hover {
+    color: var(--hr-text, #0f172a);
+}
+
+.caretaker-form .password-toggle:focus-visible {
+    outline: 2px solid var(--hr-primary, #1d4ed8);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.caretaker-form .password-toggle i {
+    font-size: 1.25rem;
+    line-height: 1;
+    display: block;
+    pointer-events: none;
+}
