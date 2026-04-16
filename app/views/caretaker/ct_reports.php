@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
 $caretakerPageTitle = 'Reports - SmartCare';
 $caretakerExtraCss = ['caretaker/ct_reports.css'];
@@ -6,32 +5,6 @@ require_once APPROOT . '/views/templates/caretaker/caretaker_layout_head.php';
 include_once APPROOT . '/views/templates/caretaker/ct_header.php';
 include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
 ?>
-<main class="content reports-container">
-    <header class="page-header" style="margin-bottom: 24px;">
-      <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">My Reports</h1>
-    </header>
-
-=======
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartCare Dashboard</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_reports.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-</head>
-
-<body>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
->>>>>>> 1de7447a803ad4e6db33e06c5eaa671e707976aa
 <?php
 $rows = (isset($services) && is_array($services)) ? $services : [];
 
@@ -123,10 +96,4 @@ $totalClients = count($uniqueClients);
     }, $rows), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>;
   </script>
   <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_reports.js"></script>
-<<<<<<< HEAD
-
 <?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>
-=======
-</body>
-</html>
->>>>>>> 1de7447a803ad4e6db33e06c5eaa671e707976aa

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
 $caretakerPageTitle = 'Schedule - SmartCare';
 $caretakerExtraCss = ['caretaker/ct_schedule.css'];
@@ -9,38 +8,8 @@ include_once APPROOT . '/views/templates/caretaker/ct_header.php';
 include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
 ?>
 <main class="content schedule-container">
-    <header class="page-header" style="margin-bottom: 24px;">
-        <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">My Schedule</h1>
-=======
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caretaker Schedule</title>
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_schedule.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-
-  <!-- Modal CSS removed - using external stylesheet -->
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-</head>
-
-<body>
-
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-  <main class="content schedule-container">
     <header class="page-header">
         <h1 class="page-title">My Schedule</h1>
->>>>>>> 1de7447a803ad4e6db33e06c5eaa671e707976aa
     </header>
 
     <div class="card">
@@ -186,4 +155,7 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
     });
   </script>
 
-<?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>
+
+</body>
+
+</html>

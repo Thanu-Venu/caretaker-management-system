@@ -674,13 +674,8 @@ public function saveComplaint()
 
     public function index()
     {
-        $clients = $this->clientModel->getAllClient();
-        $complaints = $this->complaintModel->getAllComplaints();
-
-        $this->view('caretaker/complaints', [
-            'clients' => $clients,
-            'complaints' => $complaints
-        ]);
+        // Redirect to dashboard when accessing /caretaker without a specific method
+        $this->ct_dashboard();
     }
 
     public function submit()

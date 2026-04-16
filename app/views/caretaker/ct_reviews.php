@@ -1,35 +1,14 @@
-<<<<<<< HEAD
+
 <?php
 $caretakerPageTitle = 'Caretaker Feedback - SmartCare';
 $caretakerExtraCss = ['caretaker/ct_reviews.css'];
 require_once APPROOT . '/views/templates/caretaker/caretaker_layout_head.php';
 include_once APPROOT . '/views/templates/caretaker/ct_header.php';
 include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
-=======
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caretaker Feedback</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_reviews.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-</head>
-
-<body>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-<?php
 $feedbackFilters = (isset($data['filters']) && is_array($data['filters'])) ? $data['filters'] : [];
 $feedbackServiceOptions = (isset($data['serviceOptions']) && is_array($data['serviceOptions'])) ? $data['serviceOptions'] : [];
 $selectedFeedbackService = trim((string) ($feedbackFilters['service'] ?? ''));
 $selectedFeedbackRating = trim((string) ($feedbackFilters['rating'] ?? ''));
->>>>>>> 1de7447a803ad4e6db33e06c5eaa671e707976aa
 ?>
 <main class="content reviews-container">
   <header class="page-header">

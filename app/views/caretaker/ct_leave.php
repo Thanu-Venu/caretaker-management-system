@@ -7,9 +7,6 @@ $leaveTypeOptions = $data['leaveTypeOptions'] ?? [];
 $selectedLeaveStatus = trim((string) ($leaveFilters['status'] ?? ''));
 $selectedLeaveType = trim((string) ($leaveFilters['leave_type'] ?? ''));
 ?>
-
-
-<<<<<<< HEAD
 <?php
 $caretakerPageTitle = 'Leave Management - SmartCare';
 $caretakerExtraCss = ['caretaker/ct_leave.css'];
@@ -17,42 +14,6 @@ require_once APPROOT . '/views/templates/caretaker/caretaker_layout_head.php';
 include_once APPROOT . '/views/templates/caretaker/ct_header.php';
 include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
 ?>
-<main class="content">
-        <header class="page-header" style="margin-bottom: 24px;">
-            <div class="header-row">
-                <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">Leave Requests</h1>
-                <div class="top-right-btn">
-                    <?php if ((int)$summary['remaining'] <= 0): ?>
-                        <button class="add-btn" onclick="alert('Your leave is finished for this month! You cannot request more leaves this month.');">
-                            Request Leave
-                        </button>
-                    <?php else: ?>
-                        <button class="add-btn" onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">
-                            Request Leave
-                        </button>
-                    <?php endif; ?>
-                </div>
-=======
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leave Management</title>
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_leave.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-</head>
-
-<body>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
     <main class="content">
         <header class="page-header">
             <h1 class="page-title">Leave Requests</h1>
@@ -67,7 +28,6 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
                         Request Leave
                     </button>
                 <?php endif; ?>
->>>>>>> 1de7447a803ad4e6db33e06c5eaa671e707976aa
             </div>
         </header>
         <div class="booking">
@@ -178,22 +138,5 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
             </div>
         </div>
     </main>
-<<<<<<< HEAD
-            <script>
-                const searchInput = document.getElementById('searchInput');
-                if (searchInput) {
-                    searchInput.addEventListener('keyup', function() {
-                        const filter = this.value.toLowerCase();
-                        document.querySelectorAll('tbody tr').forEach(row => {
-                            row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
-                        });
-                    });
-                }
-            </script>
 
 <?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>
-=======
-</body>
-
-</html>
->>>>>>> 1de7447a803ad4e6db33e06c5eaa671e707976aa
