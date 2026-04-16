@@ -28,7 +28,7 @@ $paymentId = $data['payment_id'] ?? null;
         </ul>
 
         <div class="header-actions payment-success-actions">
-            <a class="btn" href="<?= URLROOT ?>/client/c_contactCT<?= $paymentId ? ('?payment_id=' . urlencode((string) $paymentId)) : '' ?>">Continue</a>
+            <a class="btn" href="<?= URLROOT ?>/client/c_upcomingBookings">Continue</a>
             <a class="btn secondary" href="<?= URLROOT ?>/client/payments">View payments</a>
             <a class="btn secondary" href="<?= URLROOT ?>/public?url=client/c_dashboard">Back to dashboard</a>
         </div>
