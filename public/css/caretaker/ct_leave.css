@@ -4,10 +4,14 @@ body {
 
 .content {
   flex: 1;
-  padding: 24px 40px;
+  padding: 24px 0 0;
   box-sizing: border-box;
   font-family: 'Poppins', Arial, sans-serif;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
 }
 
 .card {
@@ -186,6 +190,7 @@ body {
   padding: 10px 18px;
   font-weight: 600;
   font-size: 16px;
+  
 }
 
 .add-btn:hover {
@@ -311,7 +316,6 @@ table {
 @media (max-width: 1024px) {
   .content, .main-content {
     padding: 16px;
-    width: calc(100% - 255px);
     box-sizing: border-box;
   }
 }
@@ -320,7 +324,6 @@ table {
   .content, .main-content {
     margin-left: 0 !important;
     padding: 16px;
-    width: 100%;
     box-sizing: border-box;
   }
 }

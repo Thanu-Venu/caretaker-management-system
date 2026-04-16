@@ -74,6 +74,21 @@ class ComplaintController
                     URLROOT . "/admin/ad_feedback"   // or your admin complaints page link
                 );
 
+                // Notify all HR/Manager users so the complaint appears in the HR notifications panel too.
+                $hrUsers = $this->notificationModel->getHRUsers();
+                if (!empty($hrUsers)) {
+                    $hrMessage = "A new complaint was submitted by " . $client_name . " (Caregiver: " . $caretaker_name . ").";
+                    foreach ($hrUsers as $hrUser) {
+                        $this->notificationModel->addNotification(
+                            (int) $hrUser['id'],
+                            'Manager',
+                            'New Complaint',
+                            $hrMessage,
+                            URLROOT . "/public/index.php?url=Complaint/index"
+                        );
+                    }
+                }
+
                 echo "<script>
         alert('Complaint submitted successfully!');
         window.location.href='" . URLROOT . "/public/index.php?url=Complaint/complaintlist';

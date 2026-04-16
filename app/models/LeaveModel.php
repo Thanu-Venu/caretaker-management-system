@@ -24,6 +24,9 @@ class LeaveModel
     {
         $db = new Database();
         $this->conn = $db->conn;
+        // Use NotificationModel for notifications
+        require_once APPROOT . '/models/NotificationModel.php';
+        $this->notificationModel = new NotificationModel();
     }
 
     private function bindDynamicParams(mysqli_stmt $stmt, string $types, array &$params): void
@@ -351,7 +354,7 @@ class LeaveModel
         return $stmt->affected_rows > 0;
     }
 
-    /* ================= HR - REASSIGN + APPROVE (USING booking_reassignments) ================= */
+    /* ================= HR - REASSIGN + APPROVE (PRIMARY: booking_reassignments) ================= */
 
     // Bookings affected by leave overlap (booking_date..end_date overlaps leaveStart..leaveEnd)
     public function getAffectedBookingsRange($caretakerId, $leaveStart, $leaveEnd)
@@ -461,7 +464,7 @@ class LeaveModel
      * Insert reassignment rows for all affected bookings.
      * NOTE: We store only the overlap portion per booking (better than storing whole leave blindly).
      */
-    private function createReassignmentsForLeave($oldCaretakerId, $replacementId, $hrId, $leaveStart, $leaveEnd, $note = '')
+    private function createReassignmentsForLeave($leaveId, $oldCaretakerId, $replacementId, $hrId, $leaveStart, $leaveEnd, $note = '')
     {
         $affected = $this->getAffectedBookingsRange($oldCaretakerId, $leaveStart, $leaveEnd);
         if (empty($affected)) return true;
@@ -470,6 +473,12 @@ class LeaveModel
             (booking_id, old_caretaker_id, new_caretaker_id, start_date, end_date, reassigned_by, reassigned_at, note)
             VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)";
         $stmt = $this->conn->prepare($sql);
+
+        // Backward-compat: some environments still inspect legacy leave_booking_reassignment table.
+        $legacySql = "INSERT INTO leave_booking_reassignment
+            (leave_id, booking_id, old_caretaker_id, new_caretaker_id, reassign_start, reassign_end, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, NOW())";
+        $legacyStmt = $this->conn->prepare($legacySql);
 
         foreach ($affected as $b) {
             $bookingId = (int)$b['id'];
@@ -481,6 +490,13 @@ class LeaveModel
 
             $stmt->bind_param("iiissis", $bookingId, $oldCaretakerId, $replacementId, $oStart, $oEnd, $hrId, $note);
             if (!$stmt->execute()) return false;
+
+            if ($legacyStmt) {
+                $legacyStmt->bind_param("iiiiss", $leaveId, $bookingId, $oldCaretakerId, $replacementId, $oStart, $oEnd);
+                if (!$legacyStmt->execute()) {
+                    return false;
+                }
+            }
         }
         return true;
     }
@@ -530,6 +546,7 @@ class LeaveModel
             // Create reassignment records only if affected bookings exist
             if (!empty($affected)) {
                 $ok = $this->createReassignmentsForLeave(
+                    $leaveId,
                     $oldCaretakerId,
                     $replacementId,
                     $hrId,
@@ -558,27 +575,49 @@ class LeaveModel
             // Change this link to your caretaker leave page route
             $link  = URLROOT . "/caretaker/ct_leave";
 
-            // If you already have notifyUser(), use it.
-            // If not, this is the direct insert.
-            $sqlN = "INSERT INTO notifications (user_id, user_role, title, message, link, is_read)
-                 VALUES (?, 'caretaker', ?, ?, ?, 0)";
-            $stmtN = $this->conn->prepare($sqlN);
-            if ($stmtN) {
-                $stmtN->bind_param("isss", $oldCaretakerId, $title, $msg, $link);
-                $stmtN->execute();
-            }
+            // Notify original caretaker via shared helper (includes role fallback handling).
+            $this->notifyUser($oldCaretakerId, 'caretaker', $title, $msg, $link);
 
             if (!empty($affected) && !empty($replacementId)) {
-                $replacementTitle = 'Replacement Assignment Created';
-                $replacementMessage = "You have been assigned as a replacement caretaker.\n"
+                // Notify replacement caretaker
+                $replacementTitle = 'New Service Assignment';
+                $replacementMessage = "You have been assigned as a replacement caregiver.\n"
                     . "Leave period: {$leaveStart} to {$leaveEnd}.\n"
+                    . "Affected bookings: " . count($affected) . "\n"
                     . "Please review your updated schedule.";
                 $replacementLink = URLROOT . '/caretaker/ct_booking';
                 $this->notifyUser((int)$replacementId, 'caretaker', $replacementTitle, $replacementMessage, $replacementLink);
 
-                $hrTitle = 'Leave Reassignment Completed';
-                $hrMessage = "Leave ID {$leaveId} was approved with replacement caretaker ID {$replacementId}.\n"
-                    . 'Affected bookings: ' . count($affected);
+                // Get replacement caregiver details for client notifications
+                $sqlRepl = "SELECT id, name FROM caretakers WHERE id = ?";
+                $stmtRepl = $this->conn->prepare($sqlRepl);
+                $stmtRepl->bind_param("i", $replacementId);
+                $stmtRepl->execute();
+                $replResult = $stmtRepl->get_result()->fetch_assoc();
+                $replacementName = $replResult ? $replResult['name'] : 'New Caregiver';
+
+                // Notify all affected clients about the new caregiver
+                $uniqueClients = [];
+                foreach ($affected as $booking) {
+                    $clientId = (int)($booking['client_id'] ?? 0);
+                    if ($clientId > 0 && !isset($uniqueClients[$clientId])) {
+                        $uniqueClients[$clientId] = true;
+
+                        $clientTitle = 'Your Caregiver Has Been Changed';
+                        $clientMessage = "Your caregiver has been reassigned for your service.\n"
+                            . "New caregiver: {$replacementName}\n"
+                            . "Service period: {$leaveStart} to {$leaveEnd}\n"
+                            . "Your service will continue uninterrupted.";
+                        $clientLink = URLROOT . '/client/c_booking';
+                        $this->notifyUser($clientId, 'client', $clientTitle, $clientMessage, $clientLink);
+                    }
+                }
+
+                // Notify HR/Manager about completion
+                $hrTitle = 'Leave Approved with Reassignment';
+                $hrMessage = "Leave ID {$leaveId} approved and reassigned to caregiver {$replacementName} (ID: {$replacementId}).\n"
+                    . 'Affected bookings: ' . count($affected) . '\n'
+                    . "Clients notified about service continuity.";
                 $this->notifyRoleUsers('Manager', $hrTitle, $hrMessage, URLROOT . '/HrLeave/index');
             }
 
@@ -814,11 +853,12 @@ class LeaveModel
 
     private function notifyUser($userId, $role, $title, $message, $link = null)
     {
-        $sql = "INSERT INTO notifications (user_id, user_role, title, message, link, is_read)
-            VALUES (?, ?, ?, ?, ?, 0)";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("issss", $userId, $role, $title, $message, $link);
-        return $stmt->execute();
+        // Use NotificationModel for role normalization and notification creation
+        $result = $this->notificationModel->addNotification($userId, $role, $title, $message, $link ?? '#');
+        if (!$result) {
+            error_log("[LeaveModel] Failed to create notification for user_id={$userId}, role={$role}, title={$title}");
+        }
+        return $result;
     }
 
     /**
@@ -827,7 +867,7 @@ class LeaveModel
      */
     private function notifyRoleUsers($role, $title, $message, $link = null)
     {
-        // Change 'users' table/columns to match your project (very likely you have one)
+        // Use NotificationModel to get all users of the role and notify them
         $sql = "SELECT id FROM users WHERE role = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $role);
@@ -837,7 +877,10 @@ class LeaveModel
         $ok = true;
         foreach ($rows as $r) {
             $uid = (int)$r['id'];
-            $ok = $ok && $this->notifyUser($uid, $role, $title, $message, $link);
+            $ok = $ok && $this->notificationModel->addNotification($uid, $role, $title, $message, $link ?? '#');
+            if (!$ok) {
+                error_log("[LeaveModel] Failed to notify role user_id={$uid}, role={$role}, title={$title}");
+            }
         }
         return $ok;
     }

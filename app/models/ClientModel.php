@@ -507,10 +507,10 @@ class ClientModel
             SELECT b.id, b.booking_date
             FROM bookings b
             WHERE b.client_id = ?
-              AND COALESCE(b.service_start_date, b.booking_date) = DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+                            AND COALESCE(b.service_start_date, b.booking_date) = DATE_ADD(CURDATE(), INTERVAL 1 DAY)
               AND b.status IN ('Requested','Payment_Requested')
         ");
-        $reminderCheckStmt->bind_param("i", $clientId);
+                $reminderCheckStmt->bind_param("i", $clientId);
         $reminderCheckStmt->execute();
         $reminderRows = $reminderCheckStmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
@@ -521,7 +521,7 @@ class ClientModel
               AND user_role = 'client'
               AND title = 'Booking Payment Reminder'
               AND link = ?
-              AND DATE(created_at) = CURDATE()
+                            AND DATE(created_at) = CURDATE()
             LIMIT 1
         ");
 
@@ -619,7 +619,7 @@ class ClientModel
             UPDATE bookings
             SET status = 'Completed'
             WHERE client_id = " . (int)$clientId . "
-              AND status IN ('Accepted', 'Advance_Paid', 'Change_Requested', 'Reschedule_Requested')
+                            AND status IN ('Requested', 'Payment_Requested', 'Accepted', 'Advance_Paid', 'Change_Requested', 'Reschedule_Requested')
               AND CURDATE() > (
                     CASE
                         WHEN basis = 'Hourly' THEN booking_date
@@ -640,7 +640,6 @@ class ClientModel
                 b.service_type,
                 b.status,
                 b.customization,
-                b.caretaker_changed_once,
                 b.total_payment,
                 b.advance_amount,
                 b.service_start_date,
@@ -649,16 +648,16 @@ class ClientModel
             FROM bookings b
             JOIN caretakers ct ON b.caretaker_id = ct.id
             WHERE b.client_id = ?
-                            AND b.status IN ('Accepted','Advance_Paid','Reschedule_Requested','Change_Requested')
+                            AND b.status IN ('Requested','Payment_Requested','Accepted','Advance_Paid','Reschedule_Requested','Change_Requested')
                             AND CURDATE() BETWEEN b.booking_date AND (
-                                        CASE
-                                                WHEN b.basis = 'Hourly' THEN b.booking_date
-                                                WHEN b.basis = 'Daily' THEN DATE_ADD(b.booking_date, INTERVAL (GREATEST(b.duration, 1) - 1) DAY)
-                                                WHEN b.basis = 'Monthly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) MONTH), INTERVAL 1 DAY)
-                                                WHEN b.basis = 'Yearly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) YEAR), INTERVAL 1 DAY)
-                                                ELSE b.booking_date
-                                        END
-                            )
+                    CASE
+                        WHEN b.basis = 'Hourly' THEN b.booking_date
+                        WHEN b.basis = 'Daily' THEN DATE_ADD(b.booking_date, INTERVAL (GREATEST(b.duration, 1) - 1) DAY)
+                        WHEN b.basis = 'Monthly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) MONTH), INTERVAL 1 DAY)
+                        WHEN b.basis = 'Yearly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) YEAR), INTERVAL 1 DAY)
+                        ELSE b.booking_date
+                    END
+              )
             ORDER BY b.booking_date ASC";
 
         $stmt = $this->conn->prepare($sql);
@@ -666,6 +665,7 @@ class ClientModel
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
+
     public function getPastBookingsWithFeedback($clientId)
     {
         // Auto-complete bookings that have passed their end date
@@ -673,7 +673,7 @@ class ClientModel
             UPDATE bookings
             SET status = 'Completed'
             WHERE client_id = " . (int)$clientId . "
-              AND status IN ('Accepted', 'Advance_Paid', 'Change_Requested', 'Reschedule_Requested')
+                            AND status IN ('Requested', 'Payment_Requested', 'Accepted', 'Advance_Paid', 'Change_Requested', 'Reschedule_Requested')
               AND CURDATE() > (
                     CASE
                         WHEN basis = 'Hourly' THEN booking_date

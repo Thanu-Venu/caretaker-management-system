@@ -73,6 +73,29 @@
   font-size: 20px;
 }
 
+.payment-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 20px;
+  margin-bottom: 25px;
+  border-radius: 10px;
+  border: 1px solid rgba(30, 136, 229, 0.22);
+  background: rgba(30, 136, 229, 0.08);
+  color: #1f3b63;
+}
+
+.payment-note i {
+  margin-top: 2px;
+  color: #1E88E5;
+  font-size: 20px;
+}
+
+.payment-note p {
+  margin: 0;
+  line-height: 1.55;
+}
+
 /* Caretaker Profile Card */
 .caretaker-profile {
   background: #fff;

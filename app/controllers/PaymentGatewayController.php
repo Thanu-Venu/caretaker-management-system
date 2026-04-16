@@ -97,6 +97,7 @@ class PaymentGatewayController extends Controller
                 $amountPaid = (float)($payment['amount'] ?? 0);
                 $bookingId = (int)($payment['booking_id'] ?? 0);
                 $paymentType = strtolower(trim((string)($payment['payment_type'] ?? 'advance')));
+                $hrUsers = $notificationModel->getHRUsers();
 
                 $clientTitle = 'Payment Successful';
                 $clientMessage = "Your payment for booking #{$bookingId} was successful.\n" .
@@ -110,6 +111,24 @@ class PaymentGatewayController extends Controller
                     $clientMessage,
                     URLROOT . '/client/payments?tab=paid_history'
                 );
+
+                if (!empty($hrUsers)) {
+                    $paymentLabel = $paymentType === 'advance' ? 'Advance Payment' : 'Recurring Payment';
+                    $hrMessage = $paymentLabel . " received for booking #{$bookingId}.\n" .
+                        "Amount: LKR " . number_format($amountPaid, 2) . "\n" .
+                        "Payment status: Approved\n" .
+                        "Please review the booking in the HR pending requests page.";
+
+                    foreach ($hrUsers as $hrUser) {
+                        $notificationModel->addNotification(
+                            (int) $hrUser['id'],
+                            'Manager',
+                            $paymentLabel . ' Approved',
+                            $hrMessage,
+                            URLROOT . '/hr/hr_pending_request?booking_id=' . $bookingId
+                        );
+                    }
+                }
 
                 $paymentType = strtolower(trim((string)($payment['payment_type'] ?? '')));
                 $bookingStatus = (string)($payment['booking_status'] ?? '');

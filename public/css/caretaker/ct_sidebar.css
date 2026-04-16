@@ -238,6 +238,19 @@
     pointer-events: auto;
 }
 
+/* Keep top content alignment consistent across caretaker pages.
+   This also overrides per-page inline margin-top tweaks. */
+body > .content .page-header,
+body > main.content .page-header,
+body > .main-content .page-header,
+body > main.main-content .page-header,
+body > .content .settings-page-header,
+body > main.content .settings-page-header,
+body > .main-content .settings-page-header,
+body > main.main-content .settings-page-header {
+    margin-top: -40px !important;
+}
+
 /* Legacy: .active — JS uses .open */
 .sidebar.active,
 .sidebar.open {

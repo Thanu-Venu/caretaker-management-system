@@ -83,6 +83,13 @@ $buildAnnPageUrl = static function (int $page) use ($df, $dt, $fq): string {
 </head>
 
 <body>
+    <?php
+    /** @var array $announcements @var array $filters @var int $currentPage @var int $totalPages @var int $totalRecords @var int $perPage */
+    $announcements = isset($announcements) && is_array($announcements) ? $announcements : [];
+    $filters       = isset($filters) && is_array($filters) ? $filters : ['date_from' => '', 'date_to' => '', 'q' => ''];
+    $currentPage   = (int)($currentPage ?? 1);
+    $totalPages    = (int)($totalPages ?? 1);
+    $totalRecords  = (int)($totalRecords ?? 0);
 
 <?php
 $announcements  = isset($announcements) && is_array($announcements) ? $announcements : [];
@@ -252,5 +259,18 @@ $buildPageUrl = static function (int $page) use ($filters): string {
     <?php endif; ?>
 </main>
 
+            <?php if ($totalPages > 1): ?>
+                <nav class="caretaker-announcements-pagination" aria-label="Announcements pagination">
+                    <?php if ($currentPage > 1): ?>
+                        <a class="btn secondary btn-sm" href="<?= ct_ann_esc($buildAnnPageUrl($currentPage - 1)) ?>">Previous</a>
+                    <?php endif; ?>
+                    <span class="caretaker-announcements-page-meta">Page <?= (int)$currentPage ?> of <?= (int)$totalPages ?> (<?= (int)$totalRecords ?> total)</span>
+                    <?php if ($currentPage < $totalPages): ?>
+                        <a class="btn secondary btn-sm" href="<?= ct_ann_esc($buildAnnPageUrl($currentPage + 1)) ?>">Next</a>
+                    <?php endif; ?>
+                </nav>
+            <?php endif; ?>
+        <?php endif; ?>
+    </main>
 </body>
 </html>

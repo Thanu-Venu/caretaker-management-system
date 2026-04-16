@@ -29,6 +29,19 @@ $selectedLeaveType = trim((string) ($leaveFilters['leave_type'] ?? ''));
 <body>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
+
+<?php if ($success): ?>
+    <div id="successMessage" class="success-message" style="background-color: #e3f2fd; color: #1565c0; padding: 14px 20px; margin: 20px auto; border-radius: 4px; font-weight: 500; width: fit-content; border-left: 4px solid #1e88e5; max-width: 90%;">
+        ✓ <?= htmlspecialchars($success) ?> All requests are submitted as Pending and require HR approval.
+    </div>
+    <script>
+        setTimeout(function() {
+            const msg = document.getElementById('successMessage');
+            if (msg) msg.style.display = 'none';
+        }, 5000);
+    </script>
+<?php endif; ?>
+
     <main class="content">
         <header class="page-header">
             <h1 class="page-title">Leave Requests</h1>
@@ -69,11 +82,7 @@ $selectedLeaveType = trim((string) ($leaveFilters['leave_type'] ?? ''));
                     </div>
                 </div>
 <br>
-                <?php if ($success): ?>
-                    <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-                <?php endif; ?>
-
-                <?php if ($warning): ?>
+                <?php if (!empty($warnings)): ?>
                     <div class="alert alert-warning"><?= htmlspecialchars($warning) ?></div>
                 <?php endif; ?>
 
