@@ -435,25 +435,23 @@ class LeaveModel
         if (empty($replacementId)) {
             $sql = "UPDATE leaves
                     SET status='Approved',
-                        approved_by=?,
                         approved_at=NOW(),
                         replacement_caretaker_id=NULL,
                         hr_note=?
                     WHERE id=? AND status='Pending'";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("isi", $hrId, $hrNote, $leaveId);
+            $stmt->bind_param("si", $hrNote, $leaveId);
             return $stmt->execute();
         }
 
         $sql = "UPDATE leaves
                 SET status='Approved',
-                    approved_by=?,
                     approved_at=NOW(),
                     replacement_caretaker_id=?,
                     hr_note=?
                 WHERE id=? AND status='Pending'";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("iisi", $hrId, $replacementId, $hrNote, $leaveId);
+        $stmt->bind_param("isi", $replacementId, $hrNote, $leaveId);
         return $stmt->execute();
     }
 

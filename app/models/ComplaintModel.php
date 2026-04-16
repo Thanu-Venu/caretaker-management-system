@@ -5,7 +5,7 @@ class ComplaintModel
 
     public function __construct()
     {
-        $this->db = new mysqli("localhost", "root", "Thanuvenu", "smartcare");
+        $this->db = new mysqli("localhost", "root", "", "smartcare");
         if ($this->db->connect_errno) {
             die("Failed to connect to MySQL: " . $this->db->connect_error);
         }
