@@ -1,5 +1,10 @@
 /* Caretaker sidebar — uses tokens from admin-ui.css (load order: before admin-ui is OK) */
 
+/* Tighter space below the fixed bar than the global admin default (caretaker-only stylesheet). */
+:root {
+    --admin-main-top-gap: 14px;
+}
+
 .sidebar {
     --sidebar-pad-x: 12px;
     width: var(--admin-sidebar-width, 260px);
@@ -138,6 +143,7 @@
     justify-content: center;
     padding: 10px 0 12px;
     margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
     text-decoration: none;
     color: inherit;
 }

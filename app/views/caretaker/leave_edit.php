@@ -31,8 +31,8 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
 ?>
 <main class="main-content">
     <section class="leave-layout">
-      <header class="page-header" style="margin-bottom: 24px;">
-        <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">Edit Leave Request</h1>
+      <header class="page-header">
+        <h1 class="page-title">Edit Leave Request</h1>
         <p style="color: #5b7288; margin-top: 5px; font-size: 14px;">Modifying a <strong>Pending</strong> request. Approval status will be reset.</p>
       </header>
       <div class="leave-summary-card">

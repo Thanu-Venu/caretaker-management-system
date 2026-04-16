@@ -2,9 +2,14 @@
 $summary = $data['monthlySummary'] ?? ['limit' => 5, 'used' => 0, 'remaining' => 5, 'percentage' => 0, 'label' => '0 / 5 days used'];
 $success = $data['success'] ?? '';
 $warning = $data['warning'] ?? '';
+$leaveFilters = $data['filters'] ?? [];
+$leaveTypeOptions = $data['leaveTypeOptions'] ?? [];
+$selectedLeaveStatus = trim((string) ($leaveFilters['status'] ?? ''));
+$selectedLeaveType = trim((string) ($leaveFilters['leave_type'] ?? ''));
 ?>
 
 
+<<<<<<< HEAD
 <?php
 $caretakerPageTitle = 'Leave Management - SmartCare';
 $caretakerExtraCss = ['caretaker/ct_leave.css'];
@@ -27,6 +32,42 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
                         </button>
                     <?php endif; ?>
                 </div>
+=======
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Management</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_leave.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+
+<body>
+<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
+<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
+    <main class="content">
+        <header class="page-header">
+            <h1 class="page-title">Leave Requests</h1>
+            <div class="header-actions">
+                <?php if ((int)$summary['remaining'] <= 0): ?>
+                    <button type="button" class="add-btn" onclick="alert('Your leave is finished for this month! You cannot request more leaves this month.');">
+                        Request Leave
+                    </button>
+                <?php else: ?>
+                    <button type="button" class="add-btn"
+                        onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">
+                        Request Leave
+                    </button>
+                <?php endif; ?>
+>>>>>>> 1de7447a803ad4e6db33e06c5eaa671e707976aa
             </div>
         </header>
         <div class="booking">
@@ -60,6 +101,36 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
                 <?php if ($warning): ?>
                     <div class="alert alert-warning"><?= htmlspecialchars($warning) ?></div>
                 <?php endif; ?>
+
+                <form class="filter-section filters-inline ct-page-filters" method="get" action="<?= htmlspecialchars(URLROOT . '/public', ENT_QUOTES, 'UTF-8') ?>">
+                    <input type="hidden" name="url" value="caretaker/ct_leave">
+                    <div class="filter-group">
+                        <label for="leaveStatusFilter">Status</label>
+                        <select id="leaveStatusFilter" name="leave_status">
+                            <option value="">All statuses</option>
+                            <?php foreach (['Pending', 'Approved', 'Rejected', 'Cancelled'] as $status): ?>
+                                <option value="<?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8') ?>" <?= strcasecmp($selectedLeaveStatus, $status) === 0 ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="leaveTypeFilter">Leave type</label>
+                        <select id="leaveTypeFilter" name="leave_type">
+                            <option value="">All types</option>
+                            <?php foreach ($leaveTypeOptions as $type): ?>
+                                <option value="<?= htmlspecialchars((string) $type, ENT_QUOTES, 'UTF-8') ?>" <?= strcasecmp($selectedLeaveType, (string) $type) === 0 ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars((string) $type, ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="filter-group filter-group--actions">
+                        <button type="submit" class="btn primary">Apply</button>
+                        <a class="btn ghost" href="<?= htmlspecialchars(URLROOT . '/public?url=caretaker/ct_leave', ENT_QUOTES, 'UTF-8') ?>">Reset</a>
+                    </div>
+                </form>
 
                 <div class="table-container">
                     <table>
@@ -107,6 +178,7 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
             </div>
         </div>
     </main>
+<<<<<<< HEAD
             <script>
                 const searchInput = document.getElementById('searchInput');
                 if (searchInput) {
@@ -120,3 +192,8 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
             </script>
 
 <?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>
+=======
+</body>
+
+</html>
+>>>>>>> 1de7447a803ad4e6db33e06c5eaa671e707976aa

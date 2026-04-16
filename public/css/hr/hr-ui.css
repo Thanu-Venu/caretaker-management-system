@@ -1,72 +1,57 @@
-/* ============================================================
-   SmartCare Admin — unified design system (premium SaaS shell)
-   Loaded after page CSS where possible via ad_header; pages should
-   not redefine body/main margins — use variables below.
-   ============================================================ */
-
 :root {
-    /* Blue→teal gradient: chrome (header/sidebar) */
-    --admin-chrome-gradient: linear-gradient(90deg, #1e88e5, #00bfa5);
-    /* In-app UI: solid colors (tables, buttons) — tuned to primary/teal, not neutral slate */
-    --admin-primary: #1e88e5;
-    --admin-accent-teal: #00bfa5;
-    /* Vertical accent: matches sidebar; thin bars only (not full-width table chrome) */
-    --admin-heading-accent: linear-gradient(180deg, var(--admin-primary) 0%, var(--admin-accent-teal) 100%);
-    /* Table header: deep blue-ink (same family as --admin-primary), reads cohesive with chrome */
-    --admin-table-header-bg: #1e88e5;
-    --admin-table-header-text: #f1f5f9;
-    /* Page titles: cool ink (not pure neutral black) so they sit in the same story as blue/teal */
-    --admin-page-heading-color: #0f3555;
-    --admin-primary-dark: #1565c0;
-    --admin-primary-hover: #1976d2;
-    --admin-primary-soft: rgba(30, 136, 229, 0.09);
-    --admin-teal-soft: rgba(0, 191, 165, 0.1);
-    --admin-primary-ring: rgba(30, 136, 229, 0.22);
-    --admin-primary-muted: rgba(30, 136, 229, 0.22);
-    --admin-text: #0f172a;
-    --admin-text-secondary: #334155;
-    --admin-muted: #64748b;
-    --admin-bg: #f8fafc;
-    --admin-bg-gradient: linear-gradient(165deg, #f8fafc 0%, #f1f5f9 42%, #f0fdfa 100%);
-    --admin-surface: #ffffff;
-    --admin-surface-glass: rgba(255, 255, 255, 0.88);
-    --admin-border: #e2e8f0;
-    --admin-border-strong: #cbd5e1;
-    --admin-radius-sm: 8px;
-    --admin-radius: 12px;
-    --admin-radius-lg: 16px;
-    --admin-radius-full: 9999px;
-    --admin-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
-    --admin-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.06);
-    --admin-shadow-hover: 0 4px 12px rgba(15, 23, 42, 0.08), 0 12px 28px rgba(30, 41, 59, 0.1);
-    /* Unified table cell rhythm (fixes mismatched padding across pages) */
-    --admin-table-th-py: 12px;
-    --admin-table-th-px: 16px;
-    --admin-table-td-py: 11px;
-    --admin-table-td-px: 16px;
-    --admin-header-height: 52px;
-    --admin-sidebar-width: 260px;
-    /* Icon-only rail when sidebar is collapsed (desktop) */
-    --admin-sidebar-rail-width: 72px;
-    --admin-gutter: 24px;
-    /* Inset past the fixed rail (not a second “sidebar margin” — keep modest so content doesn’t sit under shadow) */
-    --admin-main-extra-left: 16px;
-    /* Space between fixed top bar and main page content (heading area) */
-    --admin-main-top-gap: 28px;
-    --admin-section-gap: 24px;
-    --admin-font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-    --admin-transition: 0.2s ease;
-    --admin-success: #059669;
-    --admin-success-bg: #d1fae5;
-    --admin-success-text: #047857;
-    --admin-warning: #d97706;
-    --admin-warning-bg: #fef3c7;
-    --admin-warning-text: #b45309;
-    --admin-danger: #dc2626;
-    --admin-danger-bg: #fee2e2;
-    --admin-danger-text: #b91c1c;
-    --admin-info-bg: #dbeafe;
-    --admin-info-text: #1d4ed8;
+    --hr-chrome-gradient: linear-gradient(90deg, #1e88e5, #00bfa5);
+    --hr-primary: #1e88e5;
+    --hr-accent-teal: #00bfa5;
+    --hr-heading-accent: linear-gradient(180deg, var(--hr-primary) 0%, var(--hr-accent-teal) 100%);
+    --hr-table-header-bg: #1e88e5;
+    --hr-table-header-text: #f1f5f9;
+    --hr-page-heading-color: #0f3555;
+    --hr-primary-dark: #1565c0;
+    --hr-primary-hover: #1976d2;
+    --hr-primary-soft: rgba(30, 136, 229, 0.09);
+    --hr-teal-soft: rgba(0, 191, 165, 0.1);
+    --hr-primary-ring: rgba(30, 136, 229, 0.22);
+    --hr-primary-muted: rgba(30, 136, 229, 0.22);
+    --hr-text: #0f172a;
+    --hr-text-secondary: #334155;
+    --hr-muted: #64748b;
+    --hr-bg: #f8fafc;
+    --hr-bg-gradient: linear-gradient(165deg, #f8fafc 0%, #f1f5f9 42%, #f0fdfa 100%);
+    --hr-surface: #ffffff;
+    --hr-surface-glass: rgba(255, 255, 255, 0.88);
+    --hr-border: #e2e8f0;
+    --hr-border-strong: #cbd5e1;
+    --hr-radius-sm: 8px;
+    --hr-radius: 12px;
+    --hr-radius-lg: 16px;
+    --hr-radius-full: 9999px;
+    --hr-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --hr-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.06);
+    --hr-shadow-hover: 0 4px 12px rgba(15, 23, 42, 0.08), 0 12px 28px rgba(30, 41, 59, 0.1);
+    --hr-table-th-py: 12px;
+    --hr-table-th-px: 16px;
+    --hr-table-td-py: 11px;
+    --hr-table-td-px: 16px;
+    --hr-header-height: 52px;
+    --hr-sidebar-width: 260px;
+    --hr-sidebar-rail-width: 72px;
+    --hr-gutter: 24px;
+    --hr-main-extra-left: 16px;
+    --hr-main-top-gap: 28px;
+    --hr-section-gap: 24px;
+    --hr-font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --hr-transition: 0.2s ease;
+    --hr-success: #059669;
+    --hr-success-bg: #d1fae5;
+    --hr-success-text: #047857;
+    --hr-warning: #d97706;
+    --hr-warning-bg: #fef3c7;
+    --hr-warning-text: #b45309;
+    --hr-danger: #dc2626;
+    --hr-danger-bg: #fee2e2;
+    --hr-danger-text: #b91c1c;
+    --hr-info-bg: #dbeafe;
+    --hr-info-text: #1d4ed8;
 }
 
 *,
@@ -80,7 +65,6 @@ html {
     color-scheme: light;
 }
 
-/* Admin shell uses fixed sidebar + wide grids; clip sub-pixel overflow at the viewport (charts, legends) */
 body:has(aside.sidebar) {
     overflow-x: clip;
 }
@@ -89,111 +73,94 @@ body {
     margin: 0;
     min-height: 100vh;
     min-height: 100dvh;
-    background: var(--admin-bg);
-    background-image: var(--admin-bg-gradient);
-    /* "fixed" repaints on scroll and can make the whole page (including the bottom edge) feel unstable */
+    background: var(--hr-bg);
+    background-image: var(--hr-bg-gradient);
     background-attachment: scroll;
-    color: var(--admin-text);
-    font-family: var(--admin-font);
+    color: var(--hr-text);
+    font-family: var(--hr-font);
     font-size: 15px;
     line-height: 1.55;
     font-weight: 400;
 }
 
-/* ---------- App shell: align with fixed header + sidebar ---------- */
-
-body>.main-content:not(.admin-dashboard-page),
-body>main.main-content:not(.admin-dashboard-page),
-body main.main-content:not(.admin-dashboard-page),
+body>.main-content:not(.managerHome),
+body>main.main-content:not(.managerHome),
+body main.main-content:not(.managerHome),
 body>.content,
 body>main.content,
 body main.content,
 body>.payments-page,
 body>.reports-container,
-body>.admin-dashboard,
-/* Header + sidebar + scripts come first; main column is still body > … but not the first child */
-body > header.main-header ~ .main-content:not(.admin-dashboard-page),
-body > header.main-header ~ main.main-content:not(.admin-dashboard-page),
+body>.widePage,
+body > header.main-header ~ .main-content:not(.managerHome),
+body > header.main-header ~ main.main-content:not(.managerHome),
 body > header.main-header ~ .content,
 body > header.main-header ~ main.content,
 body > header.main-header ~ .payments-page,
 body > header.main-header ~ .reports-container,
-body > header.main-header ~ .admin-dashboard {
-    /* Past sidebar: gutter + extra; same extra on the right so side margins match */
-    margin-left: calc(var(--admin-sidebar-width) + var(--admin-gutter) + var(--admin-main-extra-left, 30px));
-    /* Header offset on margin; breathing room under bar on padding (avoids margin collapse) */
-    margin-top: var(--admin-header-height);
-    margin-right: calc(var(--admin-gutter) + var(--admin-main-extra-left, 30px));
-    margin-bottom: var(--admin-gutter);
-    padding-top: var(--admin-main-top-gap, 24px);
+body > header.main-header ~ .widePage {
+    margin-left: calc(var(--hr-sidebar-width) + var(--hr-gutter) + var(--hr-main-extra-left, 30px));
+    margin-top: var(--hr-header-height);
+    margin-right: calc(var(--hr-gutter) + var(--hr-main-extra-left, 30px));
+    margin-bottom: var(--hr-gutter);
+    padding-top: var(--hr-main-top-gap, 24px);
     padding-bottom: 0;
     padding-left: 0;
     padding-right: 0;
-    /* Lets the main column shrink inside the viewport so grids don’t force horizontal scroll */
     min-width: 0;
-    min-height: calc(100vh - var(--admin-header-height) - var(--admin-gutter) * 2);
-    min-height: calc(100dvh - var(--admin-header-height) - var(--admin-gutter) * 2);
+    min-height: calc(100vh - var(--hr-header-height) - var(--hr-gutter) * 2);
+    min-height: calc(100dvh - var(--hr-header-height) - var(--hr-gutter) * 2);
     max-width: 100%;
-    /* Contain stray wide descendants (charts, tables) so the viewport does not gain a horizontal scrollbar */
     overflow-x: clip;
-    /* No margin animation — animating main margins when the rail toggles or the breakpoint flips reads as the “bottom bar moving” */
     transition: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    body>.main-content:not(.admin-dashboard-page),
-    body>main.main-content:not(.admin-dashboard-page),
-    body main.main-content:not(.admin-dashboard-page),
+    body>.main-content:not(.managerHome),
+    body>main.main-content:not(.managerHome),
+    body main.main-content:not(.managerHome),
     body>.content,
     body>main.content,
     body main.content,
     body>.payments-page,
     body>.reports-container,
-    body>.admin-dashboard,
-    body > header.main-header ~ .main-content:not(.admin-dashboard-page),
-    body > header.main-header ~ main.main-content:not(.admin-dashboard-page),
+    body>.widePage,
+    body > header.main-header ~ .main-content:not(.managerHome),
+    body > header.main-header ~ main.main-content:not(.managerHome),
     body > header.main-header ~ .content,
     body > header.main-header ~ main.content,
     body > header.main-header ~ .payments-page,
     body > header.main-header ~ .reports-container,
-    body > header.main-header ~ .admin-dashboard {
+    body > header.main-header ~ .widePage {
         transition: none;
     }
 }
 
-/* Collapsed = icon rail only on desktop; mobile drawer ignores rail width */
 @media (min-width: 1024px) {
-    /*
-     * Strip beside content: (rail→main) == (main→viewport). With fixed rail R and gutter G:
-     * margin-left − R = margin-right  ⇒  margin-left = R + margin-right.
-     * Both sides also add --admin-main-extra-left for even padding past that strip.
-     */
-    body.admin-sidebar-collapsed > .main-content:not(.admin-dashboard-page),
-    body.admin-sidebar-collapsed > main.main-content:not(.admin-dashboard-page),
-    body.admin-sidebar-collapsed main.main-content:not(.admin-dashboard-page),
-    body.admin-sidebar-collapsed > .content,
-    body.admin-sidebar-collapsed > main.content,
-    body.admin-sidebar-collapsed main.content,
-    body.admin-sidebar-collapsed > .payments-page,
-    body.admin-sidebar-collapsed > .reports-container,
-    body.admin-sidebar-collapsed > .admin-dashboard,
-    body.admin-sidebar-collapsed > header.main-header ~ .main-content:not(.admin-dashboard-page),
-    body.admin-sidebar-collapsed > header.main-header ~ main.main-content:not(.admin-dashboard-page),
-    body.admin-sidebar-collapsed > header.main-header ~ .content,
-    body.admin-sidebar-collapsed > header.main-header ~ main.content,
-    body.admin-sidebar-collapsed > header.main-header ~ .payments-page,
-    body.admin-sidebar-collapsed > header.main-header ~ .reports-container,
-    body.admin-sidebar-collapsed > header.main-header ~ .admin-dashboard {
+    body.sidebarTucked > .main-content:not(.managerHome),
+    body.sidebarTucked > main.main-content:not(.managerHome),
+    body.sidebarTucked main.main-content:not(.managerHome),
+    body.sidebarTucked > .content,
+    body.sidebarTucked > main.content,
+    body.sidebarTucked main.content,
+    body.sidebarTucked > .payments-page,
+    body.sidebarTucked > .reports-container,
+    body.sidebarTucked > .widePage,
+    body.sidebarTucked > header.main-header ~ .main-content:not(.managerHome),
+    body.sidebarTucked > header.main-header ~ main.main-content:not(.managerHome),
+    body.sidebarTucked > header.main-header ~ .content,
+    body.sidebarTucked > header.main-header ~ main.content,
+    body.sidebarTucked > header.main-header ~ .payments-page,
+    body.sidebarTucked > header.main-header ~ .reports-container,
+    body.sidebarTucked > header.main-header ~ .widePage {
         margin-left: calc(
-            var(--admin-sidebar-rail-width) * 2 + var(--admin-gutter) + var(--admin-main-extra-left, 30px)
+            var(--hr-sidebar-rail-width) * 2 + var(--hr-gutter) + var(--hr-main-extra-left, 30px)
         );
         margin-right: calc(
-            var(--admin-sidebar-rail-width) + var(--admin-gutter) + var(--admin-main-extra-left, 30px)
+            var(--hr-sidebar-rail-width) + var(--hr-gutter) + var(--hr-main-extra-left, 30px)
         );
     }
 }
-
-/* ---------- Page header: title left, primary actions right ---------- */
 
 .page-header,
 .client-header,
@@ -210,7 +177,7 @@ body > header.main-header ~ .admin-dashboard {
     justify-content: space-between;
     gap: 16px;
     flex-wrap: wrap;
-    margin-bottom: var(--admin-section-gap);
+    margin-bottom: var(--hr-section-gap);
 }
 
 .page-header h1,
@@ -219,27 +186,27 @@ body > header.main-header ~ .admin-dashboard {
 .client-header h1,
 .caretaker-header h1,
 .booking-header h1,
-body>.main-content:not(.admin-dashboard-page)>h1,
-body>main.main-content:not(.admin-dashboard-page)>h1,
+body>.main-content:not(.managerHome)>h1,
+body>main.main-content:not(.managerHome)>h1,
 body>.content>h1,
 body>main.content>h1,
 body>.payments-page>h1,
 body>.reports-container>h1,
-body > header.main-header ~ .main-content:not(.admin-dashboard-page) > h1,
-body > header.main-header ~ main.main-content:not(.admin-dashboard-page) > h1,
+body > header.main-header ~ .main-content:not(.managerHome) > h1,
+body > header.main-header ~ main.main-content:not(.managerHome) > h1,
 body > header.main-header ~ .content > h1,
 body > header.main-header ~ main.content > h1,
 body > header.main-header ~ .payments-page > h1,
 body > header.main-header ~ .reports-container > h1,
-body>.main-content:not(.admin-dashboard-page) h1.page-title,
-body > header.main-header ~ .main-content:not(.admin-dashboard-page) h1.page-title,
+body>.main-content:not(.managerHome) h1.page-title,
+body > header.main-header ~ .main-content:not(.managerHome) h1.page-title,
 .page-title {
     margin: 0;
     font-size: 1.625rem;
     font-weight: 700;
     line-height: 1.25;
     letter-spacing: -0.02em;
-    color: var(--admin-page-heading-color);
+    color: var(--hr-page-heading-color);
 }
 
 .payments-header h1,
@@ -247,7 +214,7 @@ body > header.main-header ~ .main-content:not(.admin-dashboard-page) h1.page-tit
 .booking-header h2 {
     font-size: 1.625rem;
     font-weight: 700;
-    color: var(--admin-page-heading-color);
+    color: var(--hr-page-heading-color);
     margin: 0 0 4px;
     position: relative;
     padding-left: 14px;
@@ -262,7 +229,7 @@ body > header.main-header ~ .main-content:not(.admin-dashboard-page) h1.page-tit
     bottom: 0.12em;
     width: 4px;
     border-radius: 4px;
-    background: var(--admin-heading-accent);
+    background: var(--hr-heading-accent);
 }
 
 .reports-header h2,
@@ -274,15 +241,15 @@ body > header.main-header ~ .main-content:not(.admin-dashboard-page) h1.page-tit
     margin-bottom: 0;
 }
 
-body>.main-content:not(.admin-dashboard-page) h2,
-body>main.main-content:not(.admin-dashboard-page) h2,
+body>.main-content:not(.managerHome) h2,
+body>main.main-content:not(.managerHome) h2,
 body>.content h2,
-body > header.main-header ~ .main-content:not(.admin-dashboard-page) h2,
-body > header.main-header ~ main.main-content:not(.admin-dashboard-page) h2,
+body > header.main-header ~ .main-content:not(.managerHome) h2,
+body > header.main-header ~ main.main-content:not(.managerHome) h2,
 body > header.main-header ~ .content h2 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--admin-text);
+    color: var(--hr-text);
     margin: 0 0 12px;
 }
 
@@ -290,7 +257,7 @@ body > header.main-header ~ .content h2 {
 .reports-header p {
     margin: 0;
     font-size: 14px;
-    color: var(--admin-muted);
+    color: var(--hr-muted);
 }
 
 .header-actions {
@@ -340,10 +307,8 @@ body > header.main-header ~ .content h2 {
     bottom: 0.12em;
     width: 4px;
     border-radius: 4px;
-    background: var(--admin-heading-accent);
+    background: var(--hr-heading-accent);
 }
-
-/* ---------- Buttons ---------- */
 
 .btn,
 .btn-add,
@@ -361,19 +326,19 @@ a.btn-cancel,
     gap: 8px;
     min-height: 40px;
     padding: 0 18px;
-    border-radius: var(--admin-radius-sm);
+    border-radius: var(--hr-radius-sm);
     border: 1px solid transparent;
-    font-family: var(--admin-font);
+    font-family: var(--hr-font);
     font-size: 14px;
     font-weight: 600;
     line-height: 1.2;
     text-decoration: none;
     cursor: pointer;
     transition:
-        background-color var(--admin-transition),
-        color var(--admin-transition),
-        border-color var(--admin-transition),
-        box-shadow var(--admin-transition),
+        background-color var(--hr-transition),
+        color var(--hr-transition),
+        border-color var(--hr-transition),
+        box-shadow var(--hr-transition),
         transform 0.15s ease;
 }
 
@@ -405,7 +370,7 @@ button[type="submit"]:not(.notif-btn):not(.sidebar-toggle):hover,
 button[type="submit"]:not(.notif-btn):not(.sidebar-toggle):not(.modal-close),
 .save-btn,
 .btn-save {
-    background: var(--admin-primary);
+    background: var(--hr-primary);
     color: #fff;
     border-color: transparent;
     box-shadow: 0 2px 8px rgba(30, 136, 229, 0.22);
@@ -419,7 +384,7 @@ button[type="submit"]:not(.notif-btn):not(.sidebar-toggle):not(.modal-close),
 button[type="submit"]:not(.notif-btn):not(.sidebar-toggle):hover,
 .save-btn:hover,
 .btn-save:hover {
-    background: var(--admin-primary-hover);
+    background: var(--hr-primary-hover);
     filter: none;
 }
 
@@ -428,9 +393,9 @@ button[type="submit"]:not(.notif-btn):not(.sidebar-toggle):hover,
 a.btn-cancel,
 .cancel-btn,
 .reset-btn {
-    background: var(--admin-surface);
-    color: var(--admin-primary);
-    border-color: var(--admin-border-strong);
+    background: var(--hr-surface);
+    color: var(--hr-primary);
+    border-color: var(--hr-border-strong);
 }
 
 .btn.secondary:hover,
@@ -438,8 +403,8 @@ a.btn-cancel,
 a.btn-cancel:hover,
 .cancel-btn:hover,
 .reset-btn:hover {
-    background: var(--admin-primary-soft);
-    border-color: var(--admin-primary);
+    background: var(--hr-primary-soft);
+    border-color: var(--hr-primary);
     box-shadow: none;
     filter: none;
 }
@@ -447,7 +412,7 @@ a.btn-cancel:hover,
 .btn.ghost,
 .btn-ghost {
     background: transparent;
-    color: var(--admin-text-secondary);
+    color: var(--hr-text-secondary);
     border-color: transparent;
     box-shadow: none;
 }
@@ -455,7 +420,7 @@ a.btn-cancel:hover,
 .btn.ghost:hover,
 .btn-ghost:hover {
     background: rgba(15, 23, 42, 0.05);
-    color: var(--admin-text);
+    color: var(--hr-text);
     box-shadow: none;
 }
 
@@ -464,12 +429,12 @@ a.btn-cancel:hover,
     min-height: 32px;
     padding: 0 12px;
     font-size: 13px;
-    border-radius: var(--admin-radius-sm);
+    border-radius: var(--hr-radius-sm);
 }
 
 .btn.approve,
 button.approve {
-    background: var(--admin-success);
+    background: var(--hr-success);
     color: #fff;
 }
 
@@ -481,7 +446,7 @@ button.approve:hover {
 
 .btn.reject,
 button.reject {
-    background: var(--admin-danger);
+    background: var(--hr-danger);
     color: #fff;
 }
 
@@ -501,40 +466,38 @@ button.reject:hover {
 .link-btn {
     background: none;
     border: none;
-    color: var(--admin-primary);
+    color: var(--hr-primary);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     padding: 4px 0;
-    font-family: var(--admin-font);
-    transition: color var(--admin-transition);
+    font-family: var(--hr-font);
+    transition: color var(--hr-transition);
 }
 
 .link-btn:hover {
-    color: var(--admin-primary-dark);
+    color: var(--hr-primary-dark);
     text-decoration: underline;
 }
 
-/* ---------- Cards & stat tiles ---------- */
-
-.admin-card,
+.hr-card,
 .card:not(.stat-card) {
-    background: var(--admin-surface-glass);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: 1px solid var(--admin-border);
-    border-radius: var(--admin-radius);
-    box-shadow: var(--admin-shadow);
+    background: var(--hr-surface-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--hr-border);
+    border-radius: var(--hr-radius);
+    box-shadow: var(--hr-shadow);
     overflow: hidden;
     transition:
-        box-shadow var(--admin-transition),
-        border-color var(--admin-transition),
+        box-shadow var(--hr-transition),
+        border-color var(--hr-transition),
         transform 0.2s ease;
 }
 
 .card:not(.stat-card):hover {
-    box-shadow: var(--admin-shadow-hover);
-    border-color: var(--admin-primary-muted, rgba(30, 136, 229, 0.2));
+    box-shadow: var(--hr-shadow-hover);
+    border-color: var(--hr-primary-muted, rgba(30, 136, 229, 0.2));
 }
 
 .card-header {
@@ -544,7 +507,7 @@ button.reject:hover {
     gap: 12px;
     flex-wrap: wrap;
     padding: 16px 20px;
-    border-bottom: 1px solid var(--admin-border);
+    border-bottom: 1px solid var(--hr-border);
     background: linear-gradient(180deg, rgba(248, 250, 252, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%);
 }
 
@@ -553,7 +516,7 @@ button.reject:hover {
     margin: 0;
     font-size: 1.0625rem;
     font-weight: 600;
-    color: var(--admin-text);
+    color: var(--hr-text);
 }
 
 .card-body {
@@ -583,22 +546,22 @@ button.reject:hover {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
     gap: 16px;
-    margin-bottom: var(--admin-section-gap);
+    margin-bottom: var(--hr-section-gap);
 }
 
 .stat-card,
 .stats-grid .stat-card {
-    background: var(--admin-surface);
-    border: 1px solid var(--admin-border);
-    border-radius: var(--admin-radius);
+    background: var(--hr-surface);
+    border: 1px solid var(--hr-border);
+    border-radius: var(--hr-radius);
     padding: 18px 20px;
-    box-shadow: var(--admin-shadow-xs);
+    box-shadow: var(--hr-shadow-xs);
     position: relative;
     overflow: hidden;
     transition:
         transform 0.2s ease,
-        box-shadow var(--admin-transition),
-        border-color var(--admin-transition);
+        box-shadow var(--hr-transition),
+        border-color var(--hr-transition);
 }
 
 .stat-card::before {
@@ -606,21 +569,21 @@ button.reject:hover {
     position: absolute;
     inset: 0 0 auto 0;
     height: 3px;
-    background: var(--admin-primary);
+    background: var(--hr-primary);
     opacity: 1;
 }
 
 .stat-card:hover,
 .card-hover:hover {
     transform: translateY(-2px);
-    box-shadow: var(--admin-shadow-hover);
+    box-shadow: var(--hr-shadow-hover);
     border-color: rgba(30, 136, 229, 0.25);
 }
 
 .stat-card-icon {
     font-size: 1.5rem;
     margin-bottom: 10px;
-    color: var(--admin-primary);
+    color: var(--hr-primary);
 }
 
 .stat-card-icon i {
@@ -630,14 +593,14 @@ button.reject:hover {
 .stat-card-label {
     font-size: 13px;
     font-weight: 500;
-    color: var(--admin-muted);
+    color: var(--hr-muted);
     margin-bottom: 6px;
 }
 
 .stat-card-value {
     font-size: 1.75rem;
     font-weight: 700;
-    color: var(--admin-text);
+    color: var(--hr-text);
     letter-spacing: -0.02em;
     line-height: 1.2;
 }
@@ -658,7 +621,7 @@ button.reject:hover {
     right: 0;
     top: 0;
     height: 3px;
-    background: var(--admin-primary);
+    background: var(--hr-primary);
     pointer-events: none;
 }
 
@@ -669,24 +632,21 @@ button.reject:hover {
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--admin-section-gap);
-    margin-top: var(--admin-section-gap);
+    gap: var(--hr-section-gap);
+    margin-top: var(--hr-section-gap);
 }
-
-/* ---------- Tables (premium, shared) ---------- */
 
 .table-container,
 .table-wrap,
 .table-panel {
-    background: var(--admin-surface);
-    border: 1px solid var(--admin-border);
-    border-radius: var(--admin-radius);
-    box-shadow: var(--admin-shadow);
+    background: var(--hr-surface);
+    border: 1px solid var(--hr-border);
+    border-radius: var(--hr-radius);
+    box-shadow: var(--hr-shadow);
     overflow-x: auto;
     overflow-y: visible;
 }
 
-/* Payments: avoid double chrome when .table-panel wraps .table-wrap */
 .table-panel {
     padding: 0;
 }
@@ -728,14 +688,14 @@ button.reject:hover {
 .booking-table thead th,
 .payments-table thead th,
 .complaint-table thead th {
-    background-color: var(--admin-table-header-bg);
+    background-color: var(--hr-table-header-bg);
     background-image: none;
-    color: var(--admin-table-header-text);
+    color: var(--hr-table-header-text);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.07em;
     text-transform: uppercase;
-    padding: var(--admin-table-th-py) var(--admin-table-th-px);
+    padding: var(--hr-table-th-py) var(--hr-table-th-px);
     text-align: left;
     border: none;
     white-space: nowrap;
@@ -758,12 +718,12 @@ button.reject:hover {
 .booking-table tbody td,
 .payments-table tbody td,
 .complaint-table tbody td {
-    padding: var(--admin-table-td-py) var(--admin-table-td-px);
+    padding: var(--hr-table-td-py) var(--hr-table-td-px);
     font-size: 14px;
-    color: var(--admin-text);
-    border-bottom: 1px solid var(--admin-border);
+    color: var(--hr-text);
+    border-bottom: 1px solid var(--hr-border);
     vertical-align: middle;
-    background: var(--admin-surface);
+    background: var(--hr-surface);
 }
 
 .main-content table tbody tr:last-child td,
@@ -788,7 +748,7 @@ button.reject:hover {
 .booking-table tbody tr:hover,
 .payments-table tbody tr:hover,
 .complaint-table tbody tr:hover {
-    background: var(--admin-primary-soft);
+    background: var(--hr-primary-soft);
 }
 
 .main-content table tbody tr:hover td,
@@ -796,7 +756,6 @@ button.reject:hover {
     background: transparent;
 }
 
-/* ---------- Table toolbar: filters visually attached to table ---------- */
 .filter-bar:has(+ .table-container),
 .filter-section:has(+ .table-container),
 .filter-section:has(+ .table-wrap),
@@ -817,7 +776,7 @@ button.reject:hover {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     border-bottom: none;
-    box-shadow: var(--admin-shadow-xs);
+    box-shadow: var(--hr-shadow-xs);
 }
 
 .filter-bar+.table-container,
@@ -839,17 +798,16 @@ button.reject:hover {
     margin-top: 0;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
-    border-top: 1px solid var(--admin-border);
+    border-top: 1px solid var(--hr-border);
 }
 
 .filters-panel+.table-panel {
     margin-top: 0;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
-    border-top: 1px solid var(--admin-border);
+    border-top: 1px solid var(--hr-border);
 }
 
-/* ---------- Row actions: compact icon buttons ---------- */
 td.actions,
 td.action-cell,
 .action-cell {
@@ -868,25 +826,25 @@ td.actions a,
     width: 36px;
     height: 36px;
     padding: 0;
-    border-radius: var(--admin-radius-sm);
-    border: 1px solid var(--admin-border);
+    border-radius: var(--hr-radius-sm);
+    border: 1px solid var(--hr-border);
     background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
-    color: var(--admin-text-secondary);
+    color: var(--hr-text-secondary);
     text-decoration: none;
     box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
     transition:
-        border-color var(--admin-transition),
-        color var(--admin-transition),
-        background var(--admin-transition),
-        box-shadow var(--admin-transition),
+        border-color var(--hr-transition),
+        color var(--hr-transition),
+        background var(--hr-transition),
+        box-shadow var(--hr-transition),
         transform 0.15s ease;
 }
 
 td.actions a:hover,
 .action-cell a:not(.btn):hover {
     border-color: rgba(30, 136, 229, 0.45);
-    color: var(--admin-primary);
-    background: var(--admin-primary-soft);
+    color: var(--hr-primary);
+    background: var(--hr-primary-soft);
     box-shadow: 0 4px 12px rgba(30, 136, 229, 0.15);
     transform: translateY(-1px);
 }
@@ -895,8 +853,8 @@ td.actions a[href*="delete"]:hover,
 td.actions a[onclick*="confirm"]:hover,
 .action-cell a[href*="delete"]:hover {
     border-color: rgba(220, 38, 38, 0.35);
-    color: var(--admin-danger);
-    background: var(--admin-danger-bg);
+    color: var(--hr-danger);
+    background: var(--hr-danger-bg);
     box-shadow: 0 4px 12px rgba(220, 38, 38, 0.12);
 }
 
@@ -919,24 +877,21 @@ td.actions i,
 }
 
 .text-muted {
-    color: var(--admin-muted);
+    color: var(--hr-muted);
 }
-
-/* ---------- Filters & search ---------- */
 
 .filter-bar,
 .filter-section,
 .filters-panel,
 .search-box {
-    background: var(--admin-surface);
-    border: 1px solid var(--admin-border);
-    border-radius: var(--admin-radius);
+    background: var(--hr-surface);
+    border: 1px solid var(--hr-border);
+    border-radius: var(--hr-radius);
     padding: 14px 16px;
-    margin-bottom: var(--admin-section-gap);
-    box-shadow: var(--admin-shadow-xs);
+    margin-bottom: var(--hr-section-gap);
+    box-shadow: var(--hr-shadow-xs);
 }
 
-/* Inline search in card toolbar — not a full-width filter panel */
 .card-header .search-box,
 .card-actions .search-box {
     padding: 0;
@@ -947,7 +902,6 @@ td.actions i,
     border-radius: 0;
 }
 
-/* Inline filter rows (feedback, reports header, etc.) */
 .filters-inline {
     display: flex;
     flex-wrap: wrap;
@@ -959,28 +913,26 @@ td.actions i,
 .filters-inline label {
     font-size: 13px;
     font-weight: 600;
-    color: var(--admin-text-secondary);
+    color: var(--hr-text-secondary);
 }
 
-/* Full-width filter toolbar (e.g. feedback tabs) */
 .main-content .filters.filters-inline {
     padding: 12px 16px;
-    background: var(--admin-surface);
-    border: 1px solid var(--admin-border);
-    border-radius: var(--admin-radius);
-    box-shadow: var(--admin-shadow-xs);
-    margin-bottom: var(--admin-section-gap);
+    background: var(--hr-surface);
+    border: 1px solid var(--hr-border);
+    border-radius: var(--hr-radius);
+    box-shadow: var(--hr-shadow-xs);
+    margin-bottom: var(--hr-section-gap);
 }
 
 .reports-container .header-actions .filters-inline {
     padding: 8px 12px;
-    background: var(--admin-surface);
-    border: 1px solid var(--admin-border);
-    border-radius: var(--admin-radius-sm);
-    box-shadow: var(--admin-shadow-xs);
+    background: var(--hr-surface);
+    border: 1px solid var(--hr-border);
+    border-radius: var(--hr-radius-sm);
+    box-shadow: var(--hr-shadow-xs);
 }
 
-/* Standalone filter rows (e.g. profile requests) — same chrome as filter-bar */
 .main-content .filter-row,
 .content .filter-row {
     display: flex;
@@ -988,11 +940,11 @@ td.actions i,
     align-items: center;
     gap: 12px 16px;
     padding: 12px 16px;
-    background: var(--admin-surface);
-    border: 1px solid var(--admin-border);
-    border-radius: var(--admin-radius);
-    margin-bottom: var(--admin-section-gap);
-    box-shadow: var(--admin-shadow-xs);
+    background: var(--hr-surface);
+    border: 1px solid var(--hr-border);
+    border-radius: var(--hr-radius);
+    margin-bottom: var(--hr-section-gap);
+    box-shadow: var(--hr-shadow-xs);
 }
 
 .filter-section {
@@ -1012,7 +964,7 @@ td.actions i,
 .filter-group label {
     font-size: 14px;
     font-weight: 600;
-    color: var(--admin-text-secondary);
+    color: var(--hr-text-secondary);
 }
 
 .search-box {
@@ -1025,7 +977,7 @@ td.actions i,
 .search-box i {
     position: absolute;
     left: 14px;
-    color: var(--admin-muted);
+    color: var(--hr-muted);
     font-size: 18px;
     pointer-events: none;
 }
@@ -1042,15 +994,15 @@ td.actions i,
     align-items: center;
     gap: 10px;
     padding: 10px 14px;
-    background: var(--admin-surface);
-    border: 1px solid var(--admin-border);
-    border-radius: var(--admin-radius);
-    margin-bottom: var(--admin-section-gap);
-    box-shadow: var(--admin-shadow-xs);
+    background: var(--hr-surface);
+    border: 1px solid var(--hr-border);
+    border-radius: var(--hr-radius);
+    margin-bottom: var(--hr-section-gap);
+    box-shadow: var(--hr-shadow-xs);
 }
 
 .search-wrapper i {
-    color: var(--admin-muted);
+    color: var(--hr-muted);
     font-size: 18px;
 }
 
@@ -1060,8 +1012,8 @@ td.actions i,
     border: none;
     background: transparent;
     font-size: 14px;
-    font-family: var(--admin-font);
-    color: var(--admin-text);
+    font-family: var(--hr-font);
+    color: var(--hr-text);
     outline: none;
 }
 
@@ -1069,17 +1021,17 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="r
 select,
 textarea,
 .form-input {
-    border: 1px solid var(--admin-border-strong);
-    border-radius: var(--admin-radius-sm);
+    border: 1px solid var(--hr-border-strong);
+    border-radius: var(--hr-radius-sm);
     min-height: 40px;
     padding: 8px 12px;
     font-size: 14px;
-    font-family: var(--admin-font);
-    background: var(--admin-surface);
-    color: var(--admin-text);
+    font-family: var(--hr-font);
+    background: var(--hr-surface);
+    color: var(--hr-text);
     transition:
-        border-color var(--admin-transition),
-        box-shadow var(--admin-transition);
+        border-color var(--hr-transition),
+        box-shadow var(--hr-transition);
 }
 
 input:focus,
@@ -1087,9 +1039,9 @@ select:focus,
 textarea:focus,
 .form-input:focus {
     outline: none;
-    border-color: var(--admin-accent-teal);
+    border-color: var(--hr-accent-teal);
     box-shadow:
-        0 0 0 3px var(--admin-primary-ring),
+        0 0 0 3px var(--hr-primary-ring),
         0 0 0 5px rgba(0, 191, 165, 0.1);
 }
 
@@ -1097,14 +1049,14 @@ textarea:focus,
 select {
     appearance: auto;
     -webkit-appearance: menulist;
-    background-color: var(--admin-surface);
-    color: var(--admin-text);
+    background-color: var(--hr-surface);
+    color: var(--hr-text);
 }
 
 select option,
 select optgroup {
-    background-color: var(--admin-surface);
-    color: var(--admin-text);
+    background-color: var(--hr-surface);
+    color: var(--hr-text);
 }
 
 /* Custom select component (replaces native popup to avoid OS-level glitches) */
@@ -1138,10 +1090,10 @@ select optgroup {
     width: 100%;
     min-height: 40px;
     padding: 8px 36px 8px 12px;
-    border: 1px solid var(--admin-border-strong);
-    border-radius: var(--admin-radius-sm);
-    background: var(--admin-surface);
-    color: var(--admin-text);
+    border: 1px solid var(--hr-border-strong);
+    border-radius: var(--hr-radius-sm);
+    background: var(--hr-surface);
+    color: var(--hr-text);
     font: inherit;
     text-align: left;
     display: flex;
@@ -1162,7 +1114,7 @@ select optgroup {
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--admin-muted);
+    color: var(--hr-muted);
     pointer-events: none;
     font-size: 12px;
 }
@@ -1175,9 +1127,9 @@ select optgroup {
     z-index: 3000;
     max-height: 220px;
     overflow-y: auto;
-    background: var(--admin-surface);
-    border: 1px solid var(--admin-border-strong);
-    border-radius: var(--admin-radius-sm);
+    background: var(--hr-surface);
+    border: 1px solid var(--hr-border-strong);
+    border-radius: var(--hr-radius-sm);
     box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
     display: none;
 }
@@ -1187,16 +1139,16 @@ select optgroup {
 }
 
 .sc-select.is-open .sc-select-trigger {
-    border-color: var(--admin-accent-teal);
-    box-shadow: 0 0 0 3px var(--admin-primary-ring);
+    border-color: var(--hr-accent-teal);
+    box-shadow: 0 0 0 3px var(--hr-primary-ring);
 }
 
 .sc-select-option {
     width: 100%;
     border: none;
-    border-bottom: 1px solid var(--admin-border);
-    background: var(--admin-surface);
-    color: var(--admin-text);
+    border-bottom: 1px solid var(--hr-border);
+    background: var(--hr-surface);
+    color: var(--hr-text);
     font: inherit;
     text-align: left;
     padding: 8px 12px;
@@ -1209,11 +1161,11 @@ select optgroup {
 
 .sc-select-option:hover,
 .sc-select-option.is-selected {
-    background: var(--admin-primary-soft);
+    background: var(--hr-primary-soft);
 }
 
 .sc-select-option.is-disabled {
-    color: var(--admin-muted);
+    color: var(--hr-muted);
     cursor: not-allowed;
 }
 
@@ -1226,7 +1178,6 @@ select optgroup {
     border-color: #e63946 !important;
     box-shadow: 0 0 0 1px rgba(230, 57, 70, 0.25);
 }
-/* ---------- Status pills ---------- */
 
 .status-pill,
 .status-badge {
@@ -1234,7 +1185,7 @@ select optgroup {
     align-items: center;
     justify-content: center;
     padding: 4px 10px;
-    border-radius: var(--admin-radius-full);
+    border-radius: var(--hr-radius-full);
     font-size: 12px;
     font-weight: 600;
     line-height: 1.2;
@@ -1244,34 +1195,33 @@ select optgroup {
 .status-approved,
 .status.completed,
 .status-paid {
-    background: var(--admin-success-bg);
-    color: var(--admin-success-text);
+    background: var(--hr-success-bg);
+    color: var(--hr-success-text);
 }
 
 .status-pending,
 .status.pending {
-    background: var(--admin-warning-bg);
-    color: var(--admin-warning-text);
+    background: var(--hr-warning-bg);
+    color: var(--hr-warning-text);
 }
 
 .status-rejected,
 .status.cancelled {
-    background: var(--admin-danger-bg);
-    color: var(--admin-danger-text);
+    background: var(--hr-danger-bg);
+    color: var(--hr-danger-text);
 }
 
 .status.ongoing,
 .status-active {
-    background: var(--admin-info-bg);
-    color: var(--admin-info-text);
+    background: var(--hr-info-bg);
+    color: var(--hr-info-text);
 }
 
-/* Legacy block status chips → button-like pills */
 .status {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--admin-radius-full);
+    border-radius: var(--hr-radius-full);
     font-size: 12px;
     font-weight: 600;
     text-transform: capitalize;
@@ -1280,7 +1230,7 @@ select optgroup {
     border: 1px solid transparent;
     box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
     transition:
-        box-shadow var(--admin-transition),
+        box-shadow var(--hr-transition),
         transform 0.15s ease;
 }
 
@@ -1290,40 +1240,39 @@ tbody .status:hover {
 }
 
 .status.pending {
-    background: var(--admin-warning-bg);
-    color: var(--admin-warning-text);
+    background: var(--hr-warning-bg);
+    color: var(--hr-warning-text);
     border-color: rgba(217, 119, 6, 0.22);
 }
 
 .status.approved {
-    background: var(--admin-success-bg);
-    color: var(--admin-success-text);
+    background: var(--hr-success-bg);
+    color: var(--hr-success-text);
     border-color: rgba(5, 150, 105, 0.22);
 }
 
 .status.rejected {
-    background: var(--admin-danger-bg);
-    color: var(--admin-danger-text);
+    background: var(--hr-danger-bg);
+    color: var(--hr-danger-text);
     border-color: rgba(220, 38, 38, 0.2);
 }
 
 .status.ongoing {
-    background: var(--admin-info-bg);
-    color: var(--admin-info-text);
+    background: var(--hr-info-bg);
+    color: var(--hr-info-text);
     border-color: rgba(29, 78, 216, 0.18);
 }
 
 .status.completed {
-    background: var(--admin-success-bg);
-    color: var(--admin-success-text);
+    background: var(--hr-success-bg);
+    color: var(--hr-success-text);
     border-color: rgba(5, 150, 105, 0.22);
 }
 
-/* Caretaker list & similar */
 .table .status.active,
 tbody .status.active {
-    background: var(--admin-success-bg);
-    color: var(--admin-success-text);
+    background: var(--hr-success-bg);
+    color: var(--hr-success-text);
     padding: 4px 12px;
     font-size: 12px;
     font-weight: 600;
@@ -1331,19 +1280,16 @@ tbody .status.active {
 
 .table .status.inactive,
 tbody .status.inactive {
-    background: var(--admin-danger-bg);
-    color: var(--admin-danger-text);
+    background: var(--hr-danger-bg);
+    color: var(--hr-danger-text);
     padding: 4px 12px;
     font-size: 12px;
     font-weight: 600;
 }
 
-/* ---------- Pagination ---------- */
-
 .pagination {
     margin-top: 18px;
-    /* Breathing room below page numbers inside table cards / shells */
-    margin-bottom: var(--admin-gutter, 24px);
+    margin-bottom: var(--hr-gutter, 24px);
     padding-bottom: 4px;
     display: flex;
     flex-wrap: wrap;
@@ -1352,11 +1298,10 @@ tbody .status.inactive {
     gap: 8px;
 }
 
-/* Pagination outside a padded card (e.g. sibling of table-container) */
 .main-content > .pagination,
 .content > .pagination,
 main.main-content > .pagination {
-    margin-bottom: calc(var(--admin-gutter, 24px) + 8px);
+    margin-bottom: calc(var(--hr-gutter, 24px) + 8px);
 }
 
 .pagination a,
@@ -1367,33 +1312,31 @@ main.main-content > .pagination {
     min-height: 36px;
     min-width: 36px;
     padding: 0 12px;
-    border-radius: var(--admin-radius-sm);
-    border: 1px solid var(--admin-border);
-    background: var(--admin-surface);
-    color: var(--admin-text-secondary);
+    border-radius: var(--hr-radius-sm);
+    border: 1px solid var(--hr-border);
+    background: var(--hr-surface);
+    color: var(--hr-text-secondary);
     font-size: 14px;
     font-weight: 500;
     text-decoration: none;
     transition:
-        background var(--admin-transition),
-        border-color var(--admin-transition),
-        color var(--admin-transition);
+        background var(--hr-transition),
+        border-color var(--hr-transition),
+        color var(--hr-transition);
 }
 
 .pagination a:hover {
-    border-color: var(--admin-primary);
-    color: var(--admin-primary);
-    background: var(--admin-primary-soft);
+    border-color: var(--hr-primary);
+    color: var(--hr-primary);
+    background: var(--hr-primary-soft);
 }
 
 .pagination a.active {
-    background: var(--admin-primary);
-    border-color: var(--admin-primary);
+    background: var(--hr-primary);
+    border-color: var(--hr-primary);
     color: #fff;
     box-shadow: 0 4px 12px rgba(30, 136, 229, 0.28);
 }
-
-/* ---------- Modals ---------- */
 
 .modal {
     display: none;
@@ -1412,22 +1355,22 @@ main.main-content > .pagination {
 }
 
 .modal-content {
-    background: var(--admin-surface);
+    background: var(--hr-surface);
     margin: auto;
     padding: 24px;
-    border-radius: var(--admin-radius);
+    border-radius: var(--hr-radius);
     max-width: 520px;
     width: 100%;
     position: relative;
-    border: 1px solid var(--admin-border);
-    box-shadow: var(--admin-shadow-hover);
+    border: 1px solid var(--hr-border);
+    box-shadow: var(--hr-shadow-hover);
 }
 
 .modal-content h3 {
     margin: 0 0 16px;
     font-size: 1.125rem;
     font-weight: 700;
-    color: var(--admin-text);
+    color: var(--hr-text);
 }
 
 .modal-content label {
@@ -1435,7 +1378,7 @@ main.main-content > .pagination {
     margin-bottom: 6px;
     font-weight: 600;
     font-size: 13px;
-    color: var(--admin-text-secondary);
+    color: var(--hr-text-secondary);
 }
 
 .modal-content input,
@@ -1452,15 +1395,14 @@ main.main-content > .pagination {
     flex-wrap: wrap;
 }
 
-/* Row detail modal (admin-table-details.js, ad_bookings.js) */
-.admin-row-detail-modal {
+.readModal {
     z-index: 2100;
     background: rgba(15, 23, 42, 0.52);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
 }
 
-.admin-row-detail-modal__content {
+.readPanel {
     max-width: min(560px, 100%);
     max-height: min(85vh, 720px);
     overflow: hidden;
@@ -1468,24 +1410,24 @@ main.main-content > .pagination {
     flex-direction: column;
     padding: 0;
     border: 1px solid rgba(30, 136, 229, 0.14);
-    border-radius: var(--admin-radius-lg, 16px);
+    border-radius: var(--hr-radius-lg, 16px);
     box-shadow:
         0 4px 6px rgba(15, 23, 42, 0.04),
         0 24px 48px rgba(15, 23, 42, 0.14),
         0 0 0 1px rgba(255, 255, 255, 0.06) inset;
-    background: linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, var(--admin-surface) 48%, #f8fafc 100%);
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, var(--hr-surface) 48%, #f8fafc 100%);
 }
 
-.admin-row-detail-modal__content::before {
+.readPanel::before {
     content: "";
     display: block;
     height: 3px;
     flex-shrink: 0;
-    background: var(--admin-heading-accent, linear-gradient(90deg, var(--admin-primary), var(--admin-accent-teal)));
-    border-radius: var(--admin-radius-lg, 16px) var(--admin-radius-lg, 16px) 0 0;
+    background: var(--hr-heading-accent, linear-gradient(90deg, var(--hr-primary), var(--hr-accent-teal)));
+    border-radius: var(--hr-radius-lg, 16px) var(--hr-radius-lg, 16px) 0 0;
 }
 
-.admin-row-detail-modal__close {
+.readClose {
     position: absolute;
     top: 14px;
     right: 14px;
@@ -1499,10 +1441,10 @@ main.main-content > .pagination {
     justify-content: center;
     font-size: 1.35rem;
     line-height: 1;
-    color: var(--admin-muted);
+    color: var(--hr-muted);
     background: rgba(248, 250, 252, 0.9);
-    border: 1px solid var(--admin-border);
-    border-radius: var(--admin-radius-sm, 8px);
+    border: 1px solid var(--hr-border);
+    border-radius: var(--hr-radius-sm, 8px);
     cursor: pointer;
     transition:
         background 0.2s ease,
@@ -1511,58 +1453,58 @@ main.main-content > .pagination {
         box-shadow 0.2s ease;
 }
 
-.admin-row-detail-modal__close:hover {
-    color: var(--admin-text);
+.readClose:hover {
+    color: var(--hr-text);
     background: #fff;
-    border-color: var(--admin-primary-muted);
-    box-shadow: var(--admin-shadow-xs);
+    border-color: var(--hr-primary-muted);
+    box-shadow: var(--hr-shadow-xs);
 }
 
-.admin-row-detail-modal__close i {
+.readClose i {
     font-size: 1.35rem;
     line-height: 1;
     display: block;
 }
 
-.admin-row-detail-modal__header {
+.readHead {
     display: flex;
     align-items: center;
     gap: 14px;
     padding: 22px 52px 18px 22px;
     flex-shrink: 0;
-    border-bottom: 1px solid var(--admin-border);
+    border-bottom: 1px solid var(--hr-border);
     background: linear-gradient(180deg, rgba(248, 250, 252, 0.65) 0%, transparent 100%);
 }
 
-.admin-row-detail-modal__header-icon {
+.readIcon {
     flex-shrink: 0;
     width: 44px;
     height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--admin-radius-sm, 8px);
-    background: var(--admin-primary-soft);
-    color: var(--admin-primary);
-    border: 1px solid var(--admin-primary-muted);
+    border-radius: var(--hr-radius-sm, 8px);
+    background: var(--hr-primary-soft);
+    color: var(--hr-primary);
+    border: 1px solid var(--hr-primary-muted);
     box-shadow: 0 2px 8px rgba(30, 136, 229, 0.12);
 }
 
-.admin-row-detail-modal__header-icon i {
+.readIcon i {
     font-size: 1.35rem;
 }
 
-.admin-row-detail-modal__content h3.admin-row-detail-modal__title {
+.readPanel h3.readTitle {
     margin: 0;
     padding: 0;
     font-size: 1.1875rem;
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.25;
-    color: var(--admin-page-heading-color, var(--admin-text));
+    color: var(--hr-page-heading-color, var(--hr-text));
 }
 
-.admin-row-detail-modal__dl {
+.pairList {
     display: grid;
     grid-template-columns: minmax(108px, 34%) 1fr;
     gap: 0;
@@ -1571,73 +1513,72 @@ main.main-content > .pagination {
     overflow-y: auto;
     flex: 1;
     min-height: 0;
-    border: 1px solid var(--admin-border);
-    border-radius: var(--admin-radius-sm, 8px);
-    background: var(--admin-surface);
+    border: 1px solid var(--hr-border);
+    border-radius: var(--hr-radius-sm, 8px);
+    background: var(--hr-surface);
     box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) inset;
 }
 
-.admin-row-detail-modal__dl dt {
+.pairList dt {
     margin: 0;
     padding: 11px 14px;
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: var(--admin-text-secondary);
+    color: var(--hr-text-secondary);
     background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-    border-bottom: 1px solid var(--admin-border);
-    border-right: 1px solid var(--admin-border);
+    border-bottom: 1px solid var(--hr-border);
+    border-right: 1px solid var(--hr-border);
     align-self: stretch;
 }
 
-.admin-row-detail-modal__dl dd {
+.pairList dd {
     margin: 0;
     padding: 11px 14px;
     font-size: 14px;
     font-weight: 500;
-    color: var(--admin-text);
+    color: var(--hr-text);
     word-break: break-word;
-    border-bottom: 1px solid var(--admin-border);
+    border-bottom: 1px solid var(--hr-border);
     background: #fff;
 }
 
-.admin-row-detail-modal__dl dt:last-of-type,
-.admin-row-detail-modal__dl dd:last-of-type {
+.pairList dt:last-of-type,
+.pairList dd:last-of-type {
     border-bottom: none;
 }
 
 @media (max-width: 480px) {
-    .admin-row-detail-modal__dl {
+    .pairList {
         grid-template-columns: 1fr;
     }
 
-    .admin-row-detail-modal__dl dt {
+    .pairList dt {
         border-right: none;
         padding-bottom: 6px;
     }
 
-    .admin-row-detail-modal__dl dd {
+    .pairList dd {
         padding-top: 0;
-        border-bottom: 1px solid var(--admin-border);
+        border-bottom: 1px solid var(--hr-border);
         padding-bottom: 14px;
         margin-bottom: 4px;
     }
 
-    .admin-row-detail-modal__dl dd:last-of-type {
+    .pairList dd:last-of-type {
         border-bottom: none;
         margin-bottom: 0;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .admin-row-detail-modal__close {
+    .readClose {
         transition: none;
     }
 }
 
-/* Wide tables: hide “extra” columns (see admin-table-details.js) */
-.admin-table--collapsed .admin-table-col--hidden {
+.hr-table--collapsed .hr-table-col--hidden {
     display: none !important;
 }
 
@@ -1651,8 +1592,8 @@ main.main-content > .pagination {
     gap: 8px;
 }
 
-button.btn.action-view-btn.action-view-btn--icon,
-button.action-view-btn.action-view-btn--icon {
+button.btn.iconBtn,
+button.iconBtn {
     flex-shrink: 0;
     width: 36px;
     min-width: 36px;
@@ -1662,74 +1603,68 @@ button.action-view-btn.action-view-btn--icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--admin-radius-sm, 8px);
-    color: var(--admin-primary);
+    border-radius: var(--hr-radius-sm, 8px);
+    color: var(--hr-primary);
     box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
 }
 
-button.action-view-btn.action-view-btn--icon i {
+button.iconBtn i {
     font-size: 1.25rem;
     line-height: 1;
 }
 
-.action-view-btn {
+.iconBtn {
     flex-shrink: 0;
 }
 
 @media print {
-    .admin-table--collapsed .admin-table-col--hidden {
+    .hr-table--collapsed .hr-table-col--hidden {
         display: table-cell !important;
     }
 
-    .action-view-btn {
+    .iconBtn {
         display: none !important;
     }
 }
 
-/* ---------- Utilities ---------- */
-
 .empty {
     text-align: center;
-    color: var(--admin-muted);
+    color: var(--hr-muted);
     padding: 24px 16px;
 }
 
-/* List footnote under .table-container (staff, announcements, etc.) */
 .table-list-meta {
     margin: 10px 0 0;
     font-size: 13px;
-    color: var(--admin-muted, #64748b);
+    color: var(--hr-muted, #64748b);
 }
 
-/* Logs & legacy pages: inner table shell */
 .content .container,
 .main-content .container:not(.settings-container) {
-    background: var(--admin-surface);
-    border: 1px solid var(--admin-border);
-    border-radius: var(--admin-radius);
-    box-shadow: var(--admin-shadow);
+    background: var(--hr-surface);
+    border: 1px solid var(--hr-border);
+    border-radius: var(--hr-radius);
+    box-shadow: var(--hr-shadow);
     overflow-x: auto;
     margin-top: 0;
     padding: 0;
 }
 
-/* Page title as h2 (feedback, etc.) */
 .main-content>h2:first-child {
     font-size: 1.625rem;
     font-weight: 700;
     line-height: 1.25;
-    color: var(--admin-text);
-    margin: 0 0 var(--admin-section-gap);
+    color: var(--hr-text);
+    margin: 0 0 var(--hr-section-gap);
     letter-spacing: -0.02em;
 }
 
-/* Tabs */
 .tabs {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
-    border-bottom: 1px solid var(--admin-border);
-    margin-bottom: var(--admin-section-gap);
+    border-bottom: 1px solid var(--hr-border);
+    margin-bottom: var(--hr-section-gap);
 }
 
 .tab-btn {
@@ -1738,37 +1673,36 @@ button.action-view-btn.action-view-btn--icon i {
     padding: 12px 18px;
     font-size: 14px;
     font-weight: 600;
-    font-family: var(--admin-font);
-    color: var(--admin-muted);
+    font-family: var(--hr-font);
+    color: var(--hr-muted);
     cursor: pointer;
-    border-radius: var(--admin-radius-sm) var(--admin-radius-sm) 0 0;
+    border-radius: var(--hr-radius-sm) var(--hr-radius-sm) 0 0;
     transition:
         color 0.2s ease,
         background 0.2s ease;
 }
 
 .tab-btn:hover {
-    color: var(--admin-text);
+    color: var(--hr-text);
     background: rgba(15, 23, 42, 0.04);
 }
 
 .tab-btn.active {
-    color: var(--admin-primary);
-    background: var(--admin-primary-soft);
-    box-shadow: inset 0 -3px 0 var(--admin-primary);
+    color: var(--hr-primary);
+    background: var(--hr-primary-soft);
+    box-shadow: inset 0 -3px 0 var(--hr-primary);
 }
 
 .tab-section h2 {
     font-size: 1.125rem;
     font-weight: 600;
-    color: var(--admin-text);
+    color: var(--hr-text);
     margin: 0 0 12px;
 }
 
-/* Flash alerts */
 .flash {
     padding: 12px 16px;
-    border-radius: var(--admin-radius-sm);
+    border-radius: var(--hr-radius-sm);
     margin-bottom: 14px;
     font-size: 14px;
     font-weight: 500;
@@ -1776,47 +1710,46 @@ button.action-view-btn.action-view-btn--icon i {
 }
 
 .flash.success {
-    background: var(--admin-success-bg);
-    color: var(--admin-success-text);
+    background: var(--hr-success-bg);
+    color: var(--hr-success-text);
     border-color: rgba(5, 150, 105, 0.2);
 }
 
 .flash.error {
-    background: var(--admin-danger-bg);
-    color: var(--admin-danger-text);
+    background: var(--hr-danger-bg);
+    color: var(--hr-danger-text);
     border-color: rgba(220, 38, 38, 0.15);
 }
 
 .flash-message.success {
     padding: 12px 16px;
-    border-radius: var(--admin-radius-sm);
+    border-radius: var(--hr-radius-sm);
     margin-bottom: 14px;
     font-size: 14px;
-    background: var(--admin-success-bg);
-    color: var(--admin-success-text);
+    background: var(--hr-success-bg);
+    color: var(--hr-success-text);
     border: 1px solid rgba(5, 150, 105, 0.2);
 }
 
 .flash-message.error {
     padding: 12px 16px;
-    border-radius: var(--admin-radius-sm);
+    border-radius: var(--hr-radius-sm);
     margin-bottom: 14px;
     font-size: 14px;
-    background: var(--admin-danger-bg);
-    color: var(--admin-danger-text);
+    background: var(--hr-danger-bg);
+    color: var(--hr-danger-text);
     border: 1px solid rgba(220, 38, 38, 0.15);
 }
 
-/* Auth-style forms (add/edit user, etc.) */
 .main-content .form-wrapper,
 .main-content .form-section {
     max-width: 640px;
     margin: 0 auto;
     width: 100%;
-    background: var(--admin-surface);
-    border: 1px solid var(--admin-border);
-    border-radius: var(--admin-radius);
-    box-shadow: var(--admin-shadow);
+    background: var(--hr-surface);
+    border: 1px solid var(--hr-border);
+    border-radius: var(--hr-radius);
+    box-shadow: var(--hr-shadow);
     padding: 28px 32px;
 }
 
@@ -1832,7 +1765,7 @@ button.action-view-btn.action-view-btn--icon i {
     margin: 0 0 24px;
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--admin-text);
+    color: var(--hr-text);
 }
 
 .form-grid {
@@ -1852,7 +1785,7 @@ button.action-view-btn.action-view-btn--icon i {
     margin-bottom: 6px;
     font-weight: 600;
     font-size: 13px;
-    color: var(--admin-text-secondary);
+    color: var(--hr-text-secondary);
 }
 
 .field input,
@@ -1886,9 +1819,9 @@ button.action-view-btn.action-view-btn--icon i {
 
 .error-message {
     padding: 12px 16px;
-    background: var(--admin-danger-bg);
-    color: var(--admin-danger-text);
-    border-radius: var(--admin-radius-sm);
+    background: var(--hr-danger-bg);
+    color: var(--hr-danger-text);
+    border-radius: var(--hr-radius-sm);
     margin-bottom: 16px;
     font-size: 14px;
     border: 1px solid rgba(220, 38, 38, 0.12);
@@ -1896,64 +1829,91 @@ button.action-view-btn.action-view-btn--icon i {
 
 .success-message {
     padding: 12px 16px;
-    background: var(--admin-success-bg);
-    color: var(--admin-success-text);
-    border-radius: var(--admin-radius-sm);
+    background: var(--hr-success-bg);
+    color: var(--hr-success-text);
+    border-radius: var(--hr-radius-sm);
     margin-bottom: 16px;
     font-size: 14px;
     border: 1px solid rgba(5, 150, 105, 0.15);
 }
 
-/* ---------- Responsive ---------- */
-
-/* Align with sidebar: drawer below 1024px; fixed rail from 1024px up */
 @media (max-width: 1023px) {
-    body>.main-content:not(.admin-dashboard-page),
-    body>main.main-content:not(.admin-dashboard-page),
-    body main.main-content:not(.admin-dashboard-page),
+    body>.main-content:not(.managerHome),
+    body>main.main-content:not(.managerHome),
+    body main.main-content:not(.managerHome),
     body>.content,
     body>main.content,
     body main.content,
     body>.payments-page,
     body>.reports-container,
-    body>.admin-dashboard,
-    body > header.main-header ~ .main-content:not(.admin-dashboard-page),
-    body > header.main-header ~ main.main-content:not(.admin-dashboard-page),
+    body>.widePage,
+    body > header.main-header ~ .main-content:not(.managerHome),
+    body > header.main-header ~ main.main-content:not(.managerHome),
     body > header.main-header ~ .content,
     body > header.main-header ~ main.content,
     body > header.main-header ~ .payments-page,
     body > header.main-header ~ .reports-container,
-    body > header.main-header ~ .admin-dashboard {
-        margin-left: calc(var(--admin-gutter) + var(--admin-main-extra-left, 30px));
-        margin-right: calc(var(--admin-gutter) + var(--admin-main-extra-left, 30px));
+    body > header.main-header ~ .widePage {
+        margin-left: calc(var(--hr-gutter) + var(--hr-main-extra-left, 30px));
+        margin-right: calc(var(--hr-gutter) + var(--hr-main-extra-left, 30px));
     }
 
     .dashboard-grid {
         grid-template-columns: 1fr;
     }
+
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-section .filter-group:not(.filter-group--actions) {
+        flex-direction: column;
+        align-items: stretch;
+        align-self: stretch;
+        width: 100%;
+        gap: 6px;
+    }
+
+    .filter-section .filter-group--actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        align-self: stretch;
+    }
+
+    .filter-section .filter-group .form-input,
+    .filter-section .filter-group input[type="date"],
+    .filter-section .filter-group input[type="search"],
+    .filter-section .filter-group input[type="text"] {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
 }
 
 @media (max-width: 900px) {
-    body>.main-content:not(.admin-dashboard-page),
-    body>main.main-content:not(.admin-dashboard-page),
-    body main.main-content:not(.admin-dashboard-page),
+    body>.main-content:not(.managerHome),
+    body>main.main-content:not(.managerHome),
+    body main.main-content:not(.managerHome),
     body>.content,
     body>main.content,
     body main.content,
     body>.payments-page,
     body>.reports-container,
-    body>.admin-dashboard,
-    body > header.main-header ~ .main-content:not(.admin-dashboard-page),
-    body > header.main-header ~ main.main-content:not(.admin-dashboard-page),
+    body>.widePage,
+    body > header.main-header ~ .main-content:not(.managerHome),
+    body > header.main-header ~ main.main-content:not(.managerHome),
     body > header.main-header ~ .content,
     body > header.main-header ~ main.content,
     body > header.main-header ~ .payments-page,
     body > header.main-header ~ .reports-container,
-    body > header.main-header ~ .admin-dashboard {
-        margin-top: var(--admin-header-height);
-        padding-top: var(--admin-main-top-gap, 24px);
-        margin-left: calc(16px + var(--admin-main-extra-left, 30px));
-        margin-right: calc(16px + var(--admin-main-extra-left, 30px));
+    body > header.main-header ~ .widePage {
+        margin-top: var(--hr-header-height);
+        padding-top: var(--hr-main-top-gap, 24px);
+        margin-left: calc(16px + var(--hr-main-extra-left, 30px));
+        margin-right: calc(16px + var(--hr-main-extra-left, 30px));
         margin-bottom: 16px;
     }
 
@@ -1974,11 +1934,6 @@ button.action-view-btn.action-view-btn--icon i {
     .header-actions {
         justify-content: flex-start;
     }
-
-    .filter-section {
-        flex-direction: column;
-        align-items: stretch;
-    }
 }
 
 @media (max-width: 600px) {
@@ -1988,7 +1943,6 @@ button.action-view-btn.action-view-btn--icon i {
     }
 }
 
-/* ---------- Admin form validation (shared) ---------- */
 .required-mark {
     color: #e63946;
     font-weight: 700;

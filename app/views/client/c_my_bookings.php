@@ -48,16 +48,16 @@ $myBookingsStatusFilterOptions = [
 ?>
 
 <?php if ($hasPendingAdvance): ?>
-<div id="advanceModal" class="modal show" role="dialog" aria-modal="true" aria-labelledby="advanceModalTitle">
-    <div class="modal-content" style="max-width:640px;">
-        <button type="button" class="close" onclick="document.getElementById('advanceModal').classList.remove('show')" aria-label="Close">&times;</button>
-        <h3 id="advanceModalTitle">Advance payments required</h3>
-        <p class="text-muted">Complete advance payment to keep these bookings active.</p>
-        <div class="advance-modal-list">
-            <?php require APPROOT . '/views/client/partials/advance_pending_booking_cards.php'; ?>
+    <div id="advanceModal" class="modal show" role="dialog" aria-modal="true" aria-labelledby="advanceModalTitle">
+        <div class="modal-content" style="max-width:640px;">
+            <button type="button" class="close" onclick="document.getElementById('advanceModal').classList.remove('show')" aria-label="Close">&times;</button>
+            <h3 id="advanceModalTitle">Advance payments required</h3>
+            <p class="text-muted">Complete advance payment to keep these bookings active.</p>
+            <div class="advance-modal-list">
+                <?php require APPROOT . '/views/client/partials/advance_pending_booking_cards.php'; ?>
+            </div>
         </div>
     </div>
-</div>
 <?php endif; ?>
 
 <main class="main-content admin-dashboard-page">
@@ -73,11 +73,11 @@ $myBookingsStatusFilterOptions = [
 
     <?php if (!empty($_SESSION['success'])): ?>
         <div class="flash success"><?= htmlspecialchars((string) $_SESSION['success']);
-        unset($_SESSION['success']); ?></div>
+                                    unset($_SESSION['success']); ?></div>
     <?php endif; ?>
     <?php if (!empty($_SESSION['error'])): ?>
         <div class="flash error"><?= htmlspecialchars((string) $_SESSION['error']);
-        unset($_SESSION['error']); ?></div>
+                                    unset($_SESSION['error']); ?></div>
     <?php endif; ?>
 
     <?php if (empty($bookings)): ?>
@@ -125,7 +125,7 @@ $myBookingsStatusFilterOptions = [
                                 <?php if ($bid > 0): ?>
                                     <div class="booking-actions-toolbar" role="group" aria-label="Actions for booking <?= $bid ?>">
                                         <button type="button" class="btn btn-icon secondary" title="View details" aria-label="View details for booking <?= $bid ?>"
-                                                onclick="SmartCareBookingDetail.open(<?= $bid ?>)">
+                                            onclick="SmartCareBookingDetail.open(<?= $bid ?>)">
                                             <i class="bx bx-show" aria-hidden="true"></i>
                                         </button>
                                         <?php if ($canPayAdvance): ?>
@@ -184,8 +184,8 @@ $myBookingsStatusFilterOptions = [
             $ctEmail = trim((string) ($b['caretaker_email'] ?? ''));
             $ctPhone = trim((string) ($b['caretaker_phone'] ?? ''));
             $bookingStatusRaw = (string) ($b['status'] ?? '');
-            $caregiverContactHiddenStages = ['Requested', 'Payment_Requested', 'Rejected'];
-            $showCaregiverContact = !in_array($bookingStatusRaw, $caregiverContactHiddenStages, true);
+            // Only show contact details for Accepted status
+            $showCaregiverContact = ($bookingStatusRaw === 'Accepted');
             ?>
             <template id="booking-detail-template-<?= $bid ?>">
                 <div class="booking-detail-panel">
@@ -197,15 +197,15 @@ $myBookingsStatusFilterOptions = [
                         <?php if ($showCaregiverContact && ($ctPhone !== '' || $ctEmail !== '')): ?>
                             <dt>Caregiver contact</dt>
                             <dd class="booking-detail-dd--multiline"><?php
-                            $lines = [];
-                            if ($ctPhone !== '') {
-                                $lines[] = 'Phone: ' . $ctPhone;
-                            }
-                            if ($ctEmail !== '') {
-                                $lines[] = 'Email: ' . $ctEmail;
-                            }
-                            echo htmlspecialchars(implode("\n", $lines));
-                            ?></dd>
+                                                                        $lines = [];
+                                                                        if ($ctPhone !== '') {
+                                                                            $lines[] = 'Phone: ' . $ctPhone;
+                                                                        }
+                                                                        if ($ctEmail !== '') {
+                                                                            $lines[] = 'Email: ' . $ctEmail;
+                                                                        }
+                                                                        echo htmlspecialchars(implode("\n", $lines));
+                                                                        ?></dd>
                         <?php endif; ?>
                         <dt>Service</dt>
                         <dd><?= htmlspecialchars((string) ($b['service_type'] ?? '')) ?></dd>
@@ -251,15 +251,15 @@ $myBookingsStatusFilterOptions = [
                         <?php if ($custHours > 0 || $custPrice > 0): ?>
                             <dt>Customization</dt>
                             <dd><?php
-                            $custBits = [];
-                            if ($custHours > 0) {
-                                $custBits[] = (int) $custHours . ' extra hours';
-                            }
-                            if ($custPrice > 0) {
-                                $custBits[] = 'LKR ' . number_format($custPrice, 2);
-                            }
-                            echo htmlspecialchars(implode(' · ', $custBits));
-                            ?></dd>
+                                $custBits = [];
+                                if ($custHours > 0) {
+                                    $custBits[] = (int) $custHours . ' extra hours';
+                                }
+                                if ($custPrice > 0) {
+                                    $custBits[] = 'LKR ' . number_format($custPrice, 2);
+                                }
+                                echo htmlspecialchars(implode(' · ', $custBits));
+                                ?></dd>
                         <?php endif; ?>
                         <dt>Total payment</dt>
                         <dd class="booking-detail-money">LKR <?= number_format($tp, 2) ?></dd>
@@ -278,15 +278,15 @@ $myBookingsStatusFilterOptions = [
                         <?php if ($advMonths > 0 || $totMonths > 0): ?>
                             <dt>Billing months</dt>
                             <dd><?php
-                            $moBits = [];
-                            if ($advMonths > 0) {
-                                $moBits[] = 'Advance covers: ' . (int) $advMonths . ' mo';
-                            }
-                            if ($totMonths > 0) {
-                                $moBits[] = 'Total plan: ' . (int) $totMonths . ' mo';
-                            }
-                            echo htmlspecialchars(implode(' · ', $moBits));
-                            ?></dd>
+                                $moBits = [];
+                                if ($advMonths > 0) {
+                                    $moBits[] = 'Advance covers: ' . (int) $advMonths . ' mo';
+                                }
+                                if ($totMonths > 0) {
+                                    $moBits[] = 'Total plan: ' . (int) $totMonths . ' mo';
+                                }
+                                echo htmlspecialchars(implode(' · ', $moBits));
+                                ?></dd>
                         <?php endif; ?>
                         <?php if ($svcDaysUsed > 0): ?>
                             <dt>Service days used</dt>
@@ -318,29 +318,30 @@ $myBookingsStatusFilterOptions = [
 
 <script src="<?= URLROOT ?>/public/js/client/booking-detail-modal.js"></script>
 <?php if (!empty($bookings)): ?>
-<script>
-(function () {
-    var sel = document.getElementById('myBookingsStatusFilter');
-    var table = document.getElementById('myBookingsTable');
-    var emptyRow = document.getElementById('myBookingsEmptyFilter');
-    if (!sel || !table || !emptyRow) {
-        return;
-    }
-    function applyFilter() {
-        var v = sel.value;
-        var rows = table.querySelectorAll('tbody tr[data-status]');
-        var visible = 0;
-        rows.forEach(function (tr) {
-            var show = !v || tr.getAttribute('data-status') === v;
-            tr.hidden = !show;
-            if (show) {
-                visible += 1;
+    <script>
+        (function() {
+            var sel = document.getElementById('myBookingsStatusFilter');
+            var table = document.getElementById('myBookingsTable');
+            var emptyRow = document.getElementById('myBookingsEmptyFilter');
+            if (!sel || !table || !emptyRow) {
+                return;
             }
-        });
-        emptyRow.hidden = visible > 0;
-    }
-    sel.addEventListener('change', applyFilter);
-})();
-</script>
+
+            function applyFilter() {
+                var v = sel.value;
+                var rows = table.querySelectorAll('tbody tr[data-status]');
+                var visible = 0;
+                rows.forEach(function(tr) {
+                    var show = !v || tr.getAttribute('data-status') === v;
+                    tr.hidden = !show;
+                    if (show) {
+                        visible += 1;
+                    }
+                });
+                emptyRow.hidden = visible > 0;
+            }
+            sel.addEventListener('change', applyFilter);
+        })();
+    </script>
 <?php endif; ?>
 <?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

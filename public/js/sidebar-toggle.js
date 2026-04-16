@@ -13,6 +13,9 @@
     'use strict';
 
     var STORAGE_KEY = 'adminSidebarCollapsed';
+    /** HR shell: body also gets .sidebarTucked (see hr-ui.css) */
+    var COLLAPSED_CLASS_ADMIN = 'admin-sidebar-collapsed';
+    var COLLAPSED_CLASS_HR = 'sidebarTucked';
     var INIT_FLAG = 'data-admin-sidebar-js-init';
 
     /**
@@ -39,14 +42,19 @@
     /**
      * Apply body class from localStorage (desktop only). Does not toggle.
      */
+    function setCollapsedClasses(body, collapsed) {
+        if (!body) return;
+        if (collapsed) {
+            body.classList.add(COLLAPSED_CLASS_ADMIN, COLLAPSED_CLASS_HR);
+        } else {
+            body.classList.remove(COLLAPSED_CLASS_ADMIN, COLLAPSED_CLASS_HR);
+        }
+    }
+
     function applyCollapsedFromStorage(body) {
         if (!body) return;
         if (isDesktop()) {
-            if (readCollapsedPref()) {
-                body.classList.add('admin-sidebar-collapsed');
-            } else {
-                body.classList.remove('admin-sidebar-collapsed');
-            }
+            setCollapsedClasses(body, readCollapsedPref());
         }
     }
 
@@ -124,7 +132,7 @@
         function syncToggleIcon() {
             if (!toggle) return;
             if (isDesktop()) {
-                var collapsed = body.classList.contains('admin-sidebar-collapsed');
+                var collapsed = body.classList.contains(COLLAPSED_CLASS_ADMIN) || body.classList.contains(COLLAPSED_CLASS_HR);
                 if (collapsed) {
                     toggle.innerHTML = '<i class="bx bx-menu"></i>';
                     toggle.setAttribute('aria-label', 'Expand sidebar');
@@ -172,8 +180,9 @@
 
             if (isDesktop()) {
                 closeMobileDrawer();
-                body.classList.toggle('admin-sidebar-collapsed');
-                saveCollapsedPref(body.classList.contains('admin-sidebar-collapsed'));
+                var next = !(body.classList.contains(COLLAPSED_CLASS_ADMIN) || body.classList.contains(COLLAPSED_CLASS_HR));
+                setCollapsedClasses(body, next);
+                saveCollapsedPref(next);
                 syncToggleIcon();
                 window.dispatchEvent(new Event('smartcare-sidebar-layout'));
             } else {

@@ -52,8 +52,8 @@ $paginationQuery = static function (int $p) use ($filters): string {
 };
 
 $hrPageTitle = 'Caregiver Management';
-$hrExtraCss = ['admin/ad_caretakers.css'];
-$hrBodyClass = 'admin-caretakers-page';
+$hrExtraCss = ['hr/hr_caretakers.css'];
+$hrBodyClass = 'carePage';
 $hrBodyData = [
     'urlroot' => URLROOT,
     'auto_open' => $autoOpen,
@@ -135,19 +135,19 @@ include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
                 </span>
               </td>
               <td class="actions">
-                <button type="button" class="btn secondary btn-sm action-view-btn action-view-btn--icon js-caretaker-detail"
+                <button type="button" class="btn secondary btn-sm iconBtn cgView"
                   data-caretaker="<?= hr_caretaker_public_json($caretaker) ?>"
                   aria-label="View caregiver details including qualifications" title="View details">
                   <i class="bx bx-show" aria-hidden="true"></i>
                 </button>
-                <button type="button" class="btn secondary btn-sm action-view-btn action-view-btn--icon js-caretaker-edit"
+                <button type="button" class="btn secondary btn-sm iconBtn cgEdit"
                   data-caretaker="<?= hr_caretaker_public_json($caretaker) ?>"
                   aria-label="Edit caregiver" title="Edit">
                   <i class="bx bx-edit" aria-hidden="true"></i>
                 </button>
                 <a href="<?php echo URLROOT; ?>/HRCaretakerCRUD/delete/<?php echo (int) $caretaker['id']; ?>"
                   onclick="return confirm('Are you sure you want to delete this caregiver?');" title="Delete"
-                  class="caretaker-action-delete"><i class="bx bx-trash" aria-hidden="true"></i></a>
+                  class="trashLink"><i class="bx bx-trash" aria-hidden="true"></i></a>
               </td>
             </tr>
           <?php endforeach; ?>
@@ -170,23 +170,23 @@ include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
 
 </main>
 
-<div id="caretakerDetailModal" class="modal admin-row-detail-modal" aria-hidden="true">
-  <div class="modal-content admin-row-detail-modal__content caretaker-detail-modal__content" role="dialog" aria-modal="true"
+<div id="caretakerDetailModal" class="modal readModal" aria-hidden="true">
+  <div class="modal-content readPanel narrowRead" role="dialog" aria-modal="true"
     aria-labelledby="caretakerDetailTitle">
-    <button type="button" class="modal-close admin-row-detail-modal__close" data-close-caretaker-modal aria-label="Close">
+    <button type="button" class="modal-close readClose" data-close-caretaker-modal aria-label="Close">
       <i class="bx bx-x" aria-hidden="true"></i>
     </button>
-    <header class="admin-row-detail-modal__header">
-      <span class="admin-row-detail-modal__header-icon" aria-hidden="true"><i class="bx bx-show"></i></span>
-      <h3 id="caretakerDetailTitle" class="admin-row-detail-modal__title">Caregiver details</h3>
+    <header class="readHead">
+      <span class="readIcon" aria-hidden="true"><i class="bx bx-show"></i></span>
+      <h3 id="caretakerDetailTitle" class="readTitle">Caregiver details</h3>
     </header>
-    <dl class="admin-row-detail-modal__dl" id="caretakerDetailDl"></dl>
+    <dl class="pairList" id="caretakerDetailDl"></dl>
   </div>
 </div>
 
-<div id="caretakerAddModal" class="modal caretaker-form-modal" aria-hidden="true">
-  <div class="modal-content caretaker-form-modal__content" role="dialog" aria-modal="true" aria-labelledby="caretakerAddTitle">
-    <button type="button" class="modal-close caretaker-form-modal__close" data-close-caretaker-modal aria-label="Close">
+<div id="caretakerAddModal" class="modal wideFormModal" aria-hidden="true">
+  <div class="modal-content wideFormPanel" role="dialog" aria-modal="true" aria-labelledby="caretakerAddTitle">
+    <button type="button" class="modal-close wideFormClose" data-close-caretaker-modal aria-label="Close">
       <i class="bx bx-x" aria-hidden="true"></i>
     </button>
     <h3 id="caretakerAddTitle">Add caregiver</h3>
@@ -209,9 +209,9 @@ include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
   </div>
 </div>
 
-<div id="caretakerEditModal" class="modal caretaker-form-modal" aria-hidden="true">
-  <div class="modal-content caretaker-form-modal__content" role="dialog" aria-modal="true" aria-labelledby="caretakerEditTitle">
-    <button type="button" class="modal-close caretaker-form-modal__close" data-close-caretaker-modal aria-label="Close">
+<div id="caretakerEditModal" class="modal wideFormModal" aria-hidden="true">
+  <div class="modal-content wideFormPanel" role="dialog" aria-modal="true" aria-labelledby="caretakerEditTitle">
+    <button type="button" class="modal-close wideFormClose" data-close-caretaker-modal aria-label="Close">
       <i class="bx bx-x" aria-hidden="true"></i>
     </button>
     <h3 id="caretakerEditTitle">Edit caregiver</h3>

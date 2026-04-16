@@ -102,7 +102,7 @@
             var dd = document.createElement('dd');
             dd.textContent = text;
             if (key === 'reason' || key === 'hr_note' || key === 'customization' || key === 'cancellation_reason') {
-                dd.className = 'change-request-detail-dd--multiline';
+                dd.className = 'ddBlock';
             }
             dl.appendChild(dt);
             dl.appendChild(dd);
@@ -170,7 +170,7 @@
         var urls = getEndpoints();
         var activeRequestId = null;
 
-        document.querySelectorAll('.js-change-detail').forEach(function (btn) {
+        document.querySelectorAll('.chView').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 fillDetailModal(parseRow(btn));
@@ -192,7 +192,7 @@
             });
         }
 
-        document.querySelectorAll('.js-change-approve').forEach(function (btn) {
+        document.querySelectorAll('.chOK').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 if (btn.disabled) {
@@ -210,7 +210,7 @@
             });
         });
 
-        document.querySelectorAll('.js-change-reject').forEach(function (btn) {
+        document.querySelectorAll('.chStop').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 if (btn.disabled) {

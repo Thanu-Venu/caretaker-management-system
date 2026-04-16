@@ -273,7 +273,12 @@
     display: block;
 }
 
+<<<<<<< HEAD
 /* Caretaker pages use shared shell spacing in caretaker-post-admin.css. */
 body {
     padding-top: 0;
 }
+=======
+/* Fixed header offset is applied on main via admin-ui (margin-top + padding-top).
+   Do not add body padding-top here — it doubled the vertical gap on caretaker pages. */
+>>>>>>> 1de7447a803ad4e6db33e06c5eaa671e707976aa
