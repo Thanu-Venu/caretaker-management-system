@@ -77,6 +77,7 @@
 
 html {
     -webkit-font-smoothing: antialiased;
+    color-scheme: light;
 }
 
 /* Admin shell uses fixed sidebar + wide grids; clip sub-pixel overflow at the viewport (charts, legends) */
@@ -519,8 +520,8 @@ button.reject:hover {
 .admin-card,
 .card:not(.stat-card) {
     background: var(--admin-surface-glass);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     border: 1px solid var(--admin-border);
     border-radius: var(--admin-radius);
     box-shadow: var(--admin-shadow);
@@ -1092,6 +1093,167 @@ textarea:focus,
         0 0 0 5px rgba(0, 191, 165, 0.1);
 }
 
+/* Native select baseline (stable across Chromium on Windows) */
+select {
+    appearance: auto;
+    -webkit-appearance: menulist;
+    background-color: var(--admin-surface);
+    color: var(--admin-text);
+}
+
+select option,
+select optgroup {
+    background-color: var(--admin-surface);
+    color: var(--admin-text);
+}
+
+/* Native date/time picker stability (Windows Chromium) */
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+    appearance: auto;
+    -webkit-appearance: auto;
+    color-scheme: light;
+    background-color: var(--admin-surface);
+    color: var(--admin-text);
+}
+
+/* Disable backdrop blur for date/time input contexts to prevent black-flash picker */
+.card:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.admin-card:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.filter-bar:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.filter-section:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.filters-panel:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.search-box:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.search-wrapper:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.modal:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+.modal-content:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+[class*="overlay"]:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+[id*="overlay"]:has(input[type="date"], input[type="time"], input[type="datetime-local"]),
+[id*="Overlay"]:has(input[type="date"], input[type="time"], input[type="datetime-local"]) {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Custom select component (replaces native popup to avoid OS-level glitches) */
+.sc-select {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+}
+
+/* Filter toolbars: keep selects compact instead of full-row width */
+.filter-bar .sc-select,
+.filter-section .sc-select,
+.filters-inline .sc-select,
+.search-box .sc-select {
+    width: clamp(140px, 18vw, 240px);
+    min-width: 140px;
+    flex: 0 1 auto;
+}
+
+.sc-select-native {
+    position: absolute !important;
+    inset: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.sc-select-trigger {
+    width: 100%;
+    min-height: 40px;
+    padding: 8px 36px 8px 12px;
+    border: 1px solid var(--admin-border-strong);
+    border-radius: var(--admin-radius-sm);
+    background: var(--admin-surface);
+    color: var(--admin-text);
+    font: inherit;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.sc-select-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sc-select-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--admin-muted);
+    pointer-events: none;
+    font-size: 12px;
+}
+
+.sc-select-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 4px);
+    z-index: 3000;
+    max-height: 220px;
+    overflow-y: auto;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border-strong);
+    border-radius: var(--admin-radius-sm);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+    display: none;
+}
+
+.sc-select.is-open .sc-select-menu {
+    display: block;
+}
+
+.sc-select.is-open .sc-select-trigger {
+    border-color: var(--admin-accent-teal);
+    box-shadow: 0 0 0 3px var(--admin-primary-ring);
+}
+
+.sc-select-option {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--admin-border);
+    background: var(--admin-surface);
+    color: var(--admin-text);
+    font: inherit;
+    text-align: left;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.sc-select-option:last-child {
+    border-bottom: none;
+}
+
+.sc-select-option:hover,
+.sc-select-option.is-selected {
+    background: var(--admin-primary-soft);
+}
+
+.sc-select-option.is-disabled {
+    color: var(--admin-muted);
+    cursor: not-allowed;
+}
+
+.sc-select.is-disabled .sc-select-trigger {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.sc-select.is-invalid .sc-select-trigger {
+    border-color: #e63946 !important;
+    box-shadow: 0 0 0 1px rgba(230, 57, 70, 0.25);
+}
 /* ---------- Status pills ---------- */
 
 .status-pill,
@@ -1270,7 +1432,7 @@ main.main-content > .pagination {
     justify-content: center;
     padding: 20px;
     background: rgba(15, 23, 42, 0.45);
-    backdrop-filter: blur(4px);
+    backdrop-filter: none;
 }
 
 .modal.show {
@@ -1322,8 +1484,8 @@ main.main-content > .pagination {
 .admin-row-detail-modal {
     z-index: 2100;
     background: rgba(15, 23, 42, 0.52);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
 }
 
 .admin-row-detail-modal__content {

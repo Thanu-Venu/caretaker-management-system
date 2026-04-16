@@ -1,83 +1,155 @@
-.caretaker-announcements-page {
-    padding: 12px 24px 24px;
-    background: var(--admin-bg, #f8fafc);
-    min-height: 100vh;
+/* Caretaker announcements — aligned with HR/client announcement pages (filters + table + pagination) */
+
+.ct-announcements-page {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
-.caretaker-announcements-page .page-header {
-    margin: 0 0 12px;
+.ct-announcements-page .page-header .page-title {
+    margin-bottom: 4px;
 }
 
-
-
-.caretaker-announcements-page .page-subtitle {
-    margin-top: 6px;
-    color: var(--admin-text-secondary, #334155);
+.ct-announcements-page .page-subtitle {
+    margin: 0 0 16px;
     font-size: 14px;
-}
-
-.caretaker-announcement-filters {
-    margin: 12px 0 18px;
-}
-
-.caretaker-announcements-table-wrap {
-    background: var(--admin-surface, #fff);
-    border: 1px solid var(--admin-border, #e2e8f0);
-    border-radius: var(--admin-radius, 12px);
-    overflow: hidden;
-}
-
-.caretaker-announcements-table {
-    width: 100%;
-}
-
-.caretaker-announcements-date {
-    white-space: nowrap;
-    color: var(--admin-text-secondary, #334155);
-    font-size: 13px;
-}
-
-.caretaker-announcements-title-text {
-    display: block;
-    color: var(--admin-text, #0f172a);
-    font-weight: 600;
-}
-
-.caretaker-announcements-by {
-    display: block;
-    margin-top: 4px;
     color: var(--admin-muted, #64748b);
-    font-size: 12px;
 }
 
-.caretaker-announcements-msg {
-    max-width: 44ch;
-    color: var(--admin-text-secondary, #334155);
-}
-
-.caretaker-announcements-audience {
-    white-space: nowrap;
-}
-
-.caretaker-announcements-pagination {
-    margin-top: 14px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
+.ct-announcement-filters {
+    margin-bottom: 16px;
     flex-wrap: wrap;
 }
 
-.caretaker-announcements-page-meta {
-    color: var(--admin-muted, #64748b);
-    font-size: 13px;
+.ct-announcement-filters .filter-group--grow {
+    flex: 1 1 200px;
+    min-width: 160px;
 }
 
-@media (max-width: 900px) {
-    .caretaker-announcements-page {
-        padding: 8px 16px 16px;
+.ct-announcement-filters .filter-group--grow .form-input {
+    width: 100%;
+    min-width: 0;
+}
+
+.ct-announcement-filters .filter-group--actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.ct-announcements-page .no-data {
+    text-align: center;
+    padding: 36px 16px;
+    color: var(--admin-muted, #64748b);
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    box-shadow: var(--admin-shadow-xs, 0 1px 2px rgba(15, 23, 42, 0.04));
+}
+
+.ct-announcements-table-wrap {
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    padding: 12px;
+    overflow-x: auto;
+    box-shadow: var(--admin-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+.ct-announcements-table {
+    min-width: 720px;
+}
+
+.ct-announcements-date {
+    white-space: nowrap;
+    width: 1%;
+}
+
+.ct-announcements-title {
+    min-width: 140px;
+    max-width: 220px;
+}
+
+.ct-announcements-title-text {
+    display: block;
+    font-weight: 600;
+    color: var(--admin-text, #0f172a);
+}
+
+.ct-announcements-by {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--admin-muted, #64748b);
+}
+
+.ct-announcements-msg {
+    max-width: 360px;
+    word-break: break-word;
+    color: var(--admin-text-secondary, #475569);
+    font-size: 14px;
+}
+
+.ct-announcements-audience {
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.ct-announcements-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.ct-announcements-page-meta {
+    font-size: 14px;
+    color: var(--admin-muted, #64748b);
+}
+
+@media (max-width: 1023px) {
+    .ct-announcement-filters {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
-    .caretaker-announcements-msg {
-        max-width: 30ch;
+    .ct-announcement-filters.filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ct-announcement-filters .filter-group:not(.filter-group--actions) {
+        flex-direction: column;
+        align-items: stretch;
+        align-self: stretch;
+        width: 100%;
+        gap: 6px;
+    }
+
+    .ct-announcement-filters .filter-group--actions {
+        margin-left: 0;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        align-self: stretch;
+    }
+
+    .ct-announcement-filters .filter-group .form-input,
+    .ct-announcement-filters .filter-group input[type="date"],
+    .ct-announcement-filters .filter-group input[type="search"] {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .ct-announcements-table-wrap {
+        max-width: 100%;
+        box-sizing: border-box;
     }
 }

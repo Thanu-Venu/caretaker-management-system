@@ -139,11 +139,6 @@
             }
             if (field.tagName === 'TEXTAREA' || (field.tagName === 'INPUT' && field.type !== 'file')) {
                 field.value = value != null ? String(value) : '';
-                return;
-            }
-            if (field.tagName === 'SELECT') {
-                field.value = value != null ? String(value) : '';
-                field.dispatchEvent(new Event('change', { bubbles: true }));
             }
         };
         set('name', d.name);
@@ -233,4 +228,50 @@
     bindDetailButtons();
     bindEditButtons();
     bindCloseTargets();
+
+    var deleteId = null;
+var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+var confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+function openDeleteModal(id) {
+    deleteId = id;
+    confirmDeleteModal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDeleteModal() {
+    confirmDeleteModal.classList.remove('show');
+    deleteId = null;
+    document.body.style.overflow = '';
+}
+
+// open modal
+document.querySelectorAll('.deleteCaretaker').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        openDeleteModal(this.getAttribute('data-id'));
+    });
+});
+
+// confirm delete
+confirmDeleteBtn.addEventListener('click', function () {
+    if (!deleteId) return;
+
+    window.location.href =
+        (document.body.getAttribute('data-caretaker-crud-base') || '') +
+        '/delete/' + deleteId;
+});
+
+// close modal
+document.querySelectorAll('[data-close-delete-modal]').forEach(function (btn) {
+    btn.addEventListener('click', closeDeleteModal);
+});
+
+// click outside modal
+confirmDeleteModal.addEventListener('click', function (e) {
+    if (e.target === confirmDeleteModal) {
+        closeDeleteModal();
+    }
+});
+    
 })();

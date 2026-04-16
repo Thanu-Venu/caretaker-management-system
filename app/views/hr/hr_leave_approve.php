@@ -109,7 +109,7 @@ $hasAffected = !empty($data['affected']);
 
             <div class="laFoot">
                 <button type="submit" class="btn primary" <?= !empty($data['error']) ? 'disabled' : '' ?>
-                    onclick="return confirm('Confirm: Approve this leave and assign the bookings to another caregiver?');">
+                    data-app-confirm="Approve this leave and reassign all affected bookings to the selected caregiver?">
                     <i class="bx bx-check" aria-hidden="true"></i> Approve leave
                 </button>
             </div>

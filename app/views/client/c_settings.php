@@ -9,6 +9,9 @@ require_once APPROOT . '/views/templates/client/c_sidebar.php';
 
 $settingsListUrl = URLROOT . '/public?url=client/c_settings';
 $profilePic = htmlspecialchars((string) ($user['profile_image'] ?? 'default.jpg'), ENT_QUOTES, 'UTF-8');
+$flash_success = $_SESSION['success'] ?? '';
+$flash_error = $_SESSION['error'] ?? '';
+unset($_SESSION['success'], $_SESSION['error']);
 ?>
 
 <main class="main-content">
@@ -16,25 +19,12 @@ $profilePic = htmlspecialchars((string) ($user['profile_image'] ?? 'default.jpg'
         <h1 class="page-title">Profile &amp; settings</h1>
     </header>
 
-    <?php if (!empty($_SESSION['success'])): ?>
-        <div class="flash-message success"><?= htmlspecialchars((string) $_SESSION['success'], ENT_QUOTES, 'UTF-8');
-        unset($_SESSION['success']); ?></div>
+    <?php if ($flash_success): ?>
+        <div class="flash-message success"><?= htmlspecialchars((string) $flash_success, ENT_QUOTES, 'UTF-8') ?></div>
     <?php endif; ?>
-    <?php if (!empty($_SESSION['error'])): ?>
-        <div class="flash-message error"><?= htmlspecialchars((string) $_SESSION['error'], ENT_QUOTES, 'UTF-8');
-        unset($_SESSION['error']); ?></div>
+    <?php if ($flash_error): ?>
+        <div class="flash-message error"><?= htmlspecialchars((string) $flash_error, ENT_QUOTES, 'UTF-8') ?></div>
     <?php endif; ?>
-
-    <?php
-    if (!empty($_SESSION['success'])) {
-        echo '<div style="background:#28a745; color:white; padding:10px; border-radius:5px; margin-bottom:15px;">' . htmlspecialchars($_SESSION['success']) . '</div>';
-        unset($_SESSION['success']);
-    }
-    if (!empty($_SESSION['error'])) {
-        echo '<div style="background:#dc3545; color:white; padding:10px; border-radius:5px; margin-bottom:15px;">' . htmlspecialchars($_SESSION['error']) . '</div>';
-        unset($_SESSION['error']);
-    }
-    ?>
 
     <div class="settings-container">
 

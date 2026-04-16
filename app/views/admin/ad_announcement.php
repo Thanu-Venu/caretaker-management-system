@@ -196,7 +196,7 @@ $editSubmitDisabled = !$hasEditDeepLink;
                     <i class="bx bx-edit" aria-hidden="true"></i>
                   </button>
                   <a href="<?= URLROOT ?>/AnnouncementCRUD/delete/<?= (int)($ann['id'] ?? 0) ?>"
-                    onclick="return confirm('Delete this announcement?');" title="Delete" aria-label="Delete announcement">
+                    data-app-confirm="Delete this announcement?" title="Delete" aria-label="Delete announcement">
                     <i class="bx bx-trash" aria-hidden="true"></i>
                   </a>
                 </td>

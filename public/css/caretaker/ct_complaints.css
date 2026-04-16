@@ -79,8 +79,16 @@ body {
   color: #b91c1c;
 }
 
-/* Card Style for Form */
-form {
+.content.complaint-container .complaints-past-heading {
+  margin: 0 0 20px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--admin-page-heading-color, #0f3555);
+  letter-spacing: -0.02em;
+}
+
+/* Card Style for main complaint form */
+#complaintForm {
   background: linear-gradient(155deg, rgba(255, 255, 255, 0.94) 0%, rgba(248, 250, 252, 0.88) 45%, rgba(240, 253, 250, 0.35) 100%);
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05); /* Match card */
@@ -94,13 +102,13 @@ form {
   margin-bottom: 30px;
 }
 
-form label {
+#complaintForm label {
   font-weight: 600;
   color: var(--complaint-text);
   font-size: 18px;
 }
 
-form select, form input, form textarea {
+#complaintForm select, #complaintForm input, #complaintForm textarea {
   padding: 12px 15px;
   border: 1px solid var(--complaint-border);
   border-radius: 10px;
@@ -110,15 +118,25 @@ form select, form input, form textarea {
   transition: border-color 0.2s ease;
 }
 
-form select:focus, form input:focus, form textarea:focus {
+#complaintForm select:focus, #complaintForm input:focus, #complaintForm textarea:focus {
   outline: none;
   border-color: var(--complaint-accent);
   box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
 }
 
-form textarea {
+#complaintForm textarea {
   resize: vertical;
   min-height: 100px;
+}
+
+.ct-page-filters {
+  margin: 0 0 16px;
+}
+
+.ct-page-filters .filter-group--actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
 }
 
 /* Button mimicking .add-btn from booking */
@@ -220,7 +238,7 @@ form textarea {
   h1, h2 {
     font-size: 24px;
   }
-  form {
+  #complaintForm {
     padding: 15px;
   }
   .complaint-table {
@@ -257,4 +275,12 @@ table {
     width: 100%;
     box-sizing: border-box;
   }
+}
+
+/* Caretaker table chrome: avoid double border with shared shell table container */
+.content.complaint-container .table-container {
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  margin-top: 0 !important;
 }

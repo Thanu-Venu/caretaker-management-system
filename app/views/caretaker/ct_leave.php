@@ -2,6 +2,10 @@
 $summary = $data['monthlySummary'] ?? ['limit' => 5, 'used' => 0, 'remaining' => 5, 'percentage' => 0, 'label' => '0 / 5 days used'];
 $success = $data['success'] ?? '';
 $warning = $data['warning'] ?? '';
+$leaveFilters = $data['filters'] ?? [];
+$leaveTypeOptions = $data['leaveTypeOptions'] ?? [];
+$selectedLeaveStatus = trim((string) ($leaveFilters['status'] ?? ''));
+$selectedLeaveType = trim((string) ($leaveFilters['leave_type'] ?? ''));
 ?>
 
 
@@ -39,22 +43,19 @@ $warning = $data['warning'] ?? '';
 <?php endif; ?>
 
     <main class="content">
-        <header class="page-header" style="margin-bottom: 24px; margin-top: -16px;">
-            <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
-                <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">Leave Requests</h1>
-
-                <div style="margin-left: auto;">
-        <?php if ((int)$summary['remaining'] <= 0): ?>
-            <button class="add-btn" onclick="alert('Your leave is finished for this month! You cannot request more leaves this month.');">
-                Request Leave
-            </button>
-        <?php else: ?>
-            <button class="add-btn"
-                onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">
-                Request Leave
-            </button>
-        <?php endif; ?>
-                </div>
+        <header class="page-header">
+            <h1 class="page-title">Leave Requests</h1>
+            <div class="header-actions">
+                <?php if ((int)$summary['remaining'] <= 0): ?>
+                    <button type="button" class="add-btn" onclick="alert('Your leave is finished for this month! You cannot request more leaves this month.');">
+                        Request Leave
+                    </button>
+                <?php else: ?>
+                    <button type="button" class="add-btn"
+                        onclick="window.location.href='<?php echo URLROOT; ?>/leaveCRUD/add'">
+                        Request Leave
+                    </button>
+                <?php endif; ?>
             </div>
         </header>
         <div class="booking">
@@ -85,6 +86,36 @@ $warning = $data['warning'] ?? '';
                     <div class="alert alert-warning"><?= htmlspecialchars($warning) ?></div>
                 <?php endif; ?>
 
+                <form class="filter-section filters-inline ct-page-filters" method="get" action="<?= htmlspecialchars(URLROOT . '/public', ENT_QUOTES, 'UTF-8') ?>">
+                    <input type="hidden" name="url" value="caretaker/ct_leave">
+                    <div class="filter-group">
+                        <label for="leaveStatusFilter">Status</label>
+                        <select id="leaveStatusFilter" name="leave_status">
+                            <option value="">All statuses</option>
+                            <?php foreach (['Pending', 'Approved', 'Rejected', 'Cancelled'] as $status): ?>
+                                <option value="<?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8') ?>" <?= strcasecmp($selectedLeaveStatus, $status) === 0 ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="leaveTypeFilter">Leave type</label>
+                        <select id="leaveTypeFilter" name="leave_type">
+                            <option value="">All types</option>
+                            <?php foreach ($leaveTypeOptions as $type): ?>
+                                <option value="<?= htmlspecialchars((string) $type, ENT_QUOTES, 'UTF-8') ?>" <?= strcasecmp($selectedLeaveType, (string) $type) === 0 ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars((string) $type, ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="filter-group filter-group--actions">
+                        <button type="submit" class="btn primary">Apply</button>
+                        <a class="btn ghost" href="<?= htmlspecialchars(URLROOT . '/public?url=caretaker/ct_leave', ENT_QUOTES, 'UTF-8') ?>">Reset</a>
+                    </div>
+                </form>
+
                 <div class="table-container">
                     <table>
                         <thead>
@@ -110,7 +141,7 @@ $warning = $data['warning'] ?? '';
                                                     <i class="bx bx-edit"></i>
                                                 </a> |
                                                 <a href="<?php echo URLROOT; ?>/LeaveCRUD/delete/<?php echo $leave['id']; ?>"
-                                                    onclick="return confirm('Cancel this leave request?');">
+                                                    data-app-confirm="Cancel this leave request?">
                                                     <i class="bx bx-trash"></i>
                                                 </a>
                                             <?php else: ?>
@@ -131,18 +162,6 @@ $warning = $data['warning'] ?? '';
             </div>
         </div>
     </main>
-            <script>
-                const searchInput = document.getElementById('searchInput');
-                if (searchInput) {
-                    searchInput.addEventListener('keyup', function() {
-                        const filter = this.value.toLowerCase();
-                        document.querySelectorAll('tbody tr').forEach(row => {
-                            row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
-                        });
-                    });
-                }
-            </script>
-
 </body>
 
 </html>

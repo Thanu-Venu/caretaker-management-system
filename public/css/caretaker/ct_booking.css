@@ -29,6 +29,16 @@ body {
   filter: brightness(1.05);
 }
 
+.ct-page-filters {
+  margin: 0 0 16px;
+}
+
+.ct-page-filters .filter-group--actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
 .top {
   display: flex;
   gap: 15px;
@@ -185,6 +195,10 @@ td[colspan] {
     overflow-x: auto;
   }
 
+  .ct-page-filters {
+    width: 100%;
+  }
+
   table {
     min-width: 700px;
   }
@@ -217,4 +231,12 @@ table {
     width: 100%;
     box-sizing: border-box;
   }
+}
+
+/* Caretaker table chrome: avoid double border with shared shell table container */
+.content.booking-container .table-container {
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  margin-top: 0 !important;
 }
