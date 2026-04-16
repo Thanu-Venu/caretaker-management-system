@@ -14,7 +14,7 @@ $selectedBookingTo = trim((string) ($bookingFilters['date_to'] ?? ''));
 ?>
 <main class="content booking-container">
     <header class="page-header" style="margin-bottom: 24px;">
-        <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">Bookings</h1>
+        <h1 class="page-title">Bookings</h1>
     </header>
     <form class="filter-section filters-inline ct-page-filters" method="get" action="<?= htmlspecialchars(URLROOT . '/public', ENT_QUOTES, 'UTF-8') ?>">
       <input type="hidden" name="url" value="caretaker/ct_booking">

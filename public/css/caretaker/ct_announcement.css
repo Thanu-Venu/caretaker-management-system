@@ -16,21 +16,9 @@
     color: var(--admin-muted, #64748b);
 }
 
-<<<<<<< HEAD
-.announcement-container .page-header {
-  margin-bottom: 24px;
-}
-
-.page-subtitle {
-  margin-top: 8px;
-  color: var(--announcement-muted);
-  font-size: 14px;
-  line-height: 1.6;
-=======
 .ct-announcement-filters {
     margin-bottom: 16px;
     flex-wrap: wrap;
->>>>>>> 1de7447a803ad4e6db33e06c5eaa671e707976aa
 }
 
 .ct-announcement-filters .filter-group--grow {
@@ -38,103 +26,7 @@
     min-width: 160px;
 }
 
-<<<<<<< HEAD
-.card:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-}
-
-.page-title {
-  font-size: 30px;
-  color: var(--announcement-accent);
-  letter-spacing: -0.02em;
-  margin: 0;
-  font-weight: 700;
-}
-
-.table-container {
-  overflow-x: auto;
-  border: 1px solid var(--announcement-border);
-  border-radius: 12px;
-  margin-top: 25px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-  overflow: hidden;
-  min-width: 760px;
-}
-
-thead th {
-  background-color: var(--announcement-accent);
-  color: #ffffff;
-}
-
-th,
-td {
-  padding: 16px 20px;
-  border-bottom: 1px solid #edf3f9;
-  text-align: left;
-}
-
-th {
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 15px;
-}
-
-td {
-  color: var(--announcement-text);
-  vertical-align: middle;
-}
-
-tbody tr {
-  transition: background-color 0.2s ease;
-}
-
-tbody tr:hover {
-  background-color: var(--announcement-hover);
-}
-
-/* Date Badge */
-.announcement-date {
-  font-size: 13px;
-  color: var(--announcement-accent-strong);
-  background: #e3f2fd;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-/* Role Tag */
-.role-tag {
-  background: linear-gradient(135deg, #1e88e5, #1565c0);
-  color: #ffffff;
-  padding: 6px 16px;
-  font-size: 13px;
-  border-radius: 20px;
-  font-weight: 600;
-  white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(30, 136, 229, 0.3);
-}
-
-@media (max-width: 1024px) {
-  .announcement-container {
-    padding: 16px;
-    width: calc(100% - 255px);
-  }
-}
-
-@media (max-width: 768px) {
-  .announcement-container {
-    margin-left: 0 !important;
-    padding: 16px;
-=======
 .ct-announcement-filters .filter-group--grow .form-input {
->>>>>>> 1de7447a803ad4e6db33e06c5eaa671e707976aa
     width: 100%;
     min-width: 0;
 }
@@ -216,7 +108,7 @@ tbody tr:hover {
 
 .ct-announcements-page-meta {
     font-size: 14px;
-    color: var(--admin-muted, #64748b);
+    color: #64748b;
 }
 
 @media (max-width: 1023px) {
