@@ -33,6 +33,32 @@ class UserModel
         return $this->accountLinkEnabled;
     }
 
+    /**
+     * Staff password policy (aligned with admin-form-validation passwordStrong).
+     *
+     * @return string|null Error message or null if valid.
+     */
+    public static function validatePasswordPolicy(string $password): ?string
+    {
+        if (strlen($password) < 8) {
+            return 'Password must be at least 8 characters long.';
+        }
+        if (!preg_match('/[A-Z]/', $password)) {
+            return 'Password must include at least one uppercase letter.';
+        }
+        if (!preg_match('/[a-z]/', $password)) {
+            return 'Password must include at least one lowercase letter.';
+        }
+        if (!preg_match('/[0-9]/', $password)) {
+            return 'Password must include at least one number.';
+        }
+        if (!preg_match('/[^A-Za-z0-9]/', $password)) {
+            return 'Password must include at least one special character.';
+        }
+
+        return null;
+    }
+
     // 🔹 Get all users
     public function getAllUsers()
     {
@@ -219,10 +245,19 @@ class UserModel
     // 🔹 Update user
     public function updateUser($id, $data)
     {
+        $newPassword = trim((string) ($data['new_password'] ?? ''));
+        $passwordHash = $newPassword !== '' ? password_hash($newPassword, PASSWORD_DEFAULT) : null;
+
         if (!$this->hasAccountLinking()) {
             $phone = $data['phone'] ?? '';
-            $stmt = $this->conn->prepare("UPDATE users SET username=?, email=?, role=?, status=?, phone=? WHERE id=?");
-            $stmt->bind_param("sssssi", $data['username'], $data['email'], $data['role'], $data['status'], $phone, $id);
+            if ($passwordHash !== null) {
+                $stmt = $this->conn->prepare("UPDATE users SET username=?, email=?, role=?, status=?, phone=?, password=? WHERE id=?");
+                $stmt->bind_param("ssssssi", $data['username'], $data['email'], $data['role'], $data['status'], $phone, $passwordHash, $id);
+            } else {
+                $stmt = $this->conn->prepare("UPDATE users SET username=?, email=?, role=?, status=?, phone=? WHERE id=?");
+                $stmt->bind_param("sssssi", $data['username'], $data['email'], $data['role'], $data['status'], $phone, $id);
+            }
+
             return $stmt->execute();
         }
 
@@ -237,8 +272,13 @@ class UserModel
             $roleLegacy = AccountModel::toLegacyRole($roleNormalized);
 
             $phone = $data['phone'] ?? '';
-            $stmt = $this->conn->prepare("UPDATE users SET username=?, email=?, role=?, status=?, phone=? WHERE id=?");
-            $stmt->bind_param("sssssi", $data['username'], $data['email'], $roleLegacy, $data['status'], $phone, $id);
+            if ($passwordHash !== null) {
+                $stmt = $this->conn->prepare("UPDATE users SET username=?, email=?, role=?, status=?, phone=?, password=? WHERE id=?");
+                $stmt->bind_param("ssssssi", $data['username'], $data['email'], $roleLegacy, $data['status'], $phone, $passwordHash, $id);
+            } else {
+                $stmt = $this->conn->prepare("UPDATE users SET username=?, email=?, role=?, status=?, phone=? WHERE id=?");
+                $stmt->bind_param("sssssi", $data['username'], $data['email'], $roleLegacy, $data['status'], $phone, $id);
+            }
             if (!$stmt->execute()) {
                 throw new Exception('Failed to update user profile');
             }
@@ -252,6 +292,14 @@ class UserModel
                     throw new Exception('Failed to update account');
                 }
                 $stmt->close();
+                if ($passwordHash !== null) {
+                    $stmt = $this->conn->prepare("UPDATE accounts SET password=? WHERE id=?");
+                    $stmt->bind_param("si", $passwordHash, $accountId);
+                    if (!$stmt->execute()) {
+                        throw new Exception('Failed to update account password');
+                    }
+                    $stmt->close();
+                }
             }
 
             $this->conn->commit();
