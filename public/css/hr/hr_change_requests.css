@@ -231,3 +231,13 @@ body {
         padding: 16px;
     }
 }
+
+#changeRejectSubmit {
+    background-color: #dc3545 !important; /* red */
+    color: #fff !important;
+    border: none !important;
+}
+
+#changeRejectSubmit:hover {
+    background-color: #b02a37 !important;
+}

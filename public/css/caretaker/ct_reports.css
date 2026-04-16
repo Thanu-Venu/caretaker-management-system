@@ -90,6 +90,13 @@
 }
 
 .report-table {
+<<<<<<< HEAD
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  overflow: hidden;
+=======
+>>>>>>> 1de7447a803ad4e6db33e06c5eaa671e707976aa
   min-width: 760px;
 }
 
@@ -106,9 +113,42 @@
   }
 }
 
+<<<<<<< HEAD
+@media (max-width: 760px) {
+  h1 {
+    font-size: 24px;
+  }
+  .report-summary .summary-cards {
+    flex-direction: column;
+  }
+  .card-wrapper {
+      padding: 15px;
+  }
+}
+
+
+/* =====================
+   Responsive Design & Table Fixes
+===================== */
+.table-container {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  min-width: 760px;
+}
+
+@media (max-width: 1024px) {
+  .content, .main-content {
+    padding: 16px;
+    width: calc(100% - 255px);
+    box-sizing: border-box;
+=======
 @media (max-width: 860px) {
   .summary-cards {
     grid-template-columns: 1fr;
+>>>>>>> 1de7447a803ad4e6db33e06c5eaa671e707976aa
   }
 }
 

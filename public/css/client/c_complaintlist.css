@@ -1,3 +1,24 @@
+/* Complaint status badge styles */
+.complaint-status {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: #f59e0b; /* Default: Pending - amber */
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+.complaint-status.resolved {
+  background: #22c55e;
+}
+.complaint-status.rejected {
+  background: #ef4444;
+}
+.complaint-status.inprogress {
+  background: #3b82f6;
+}
 /* Base layout mirrored from upcoming bookings page */
 .content {
   margin-left: 250px;

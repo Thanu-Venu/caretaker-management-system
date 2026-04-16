@@ -108,7 +108,7 @@
 
 .ct-announcements-page-meta {
     font-size: 14px;
-    color: var(--admin-muted, #64748b);
+    color: #64748b;
 }
 
 @media (max-width: 1023px) {

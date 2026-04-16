@@ -1,33 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartCare Dashboard</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_complaints.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-</head>
-<body>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
 <?php
 $complaintFilters = (isset($data['filters']) && is_array($data['filters'])) ? $data['filters'] : [];
 $complaintServiceOptions = (isset($data['serviceTypeOptions']) && is_array($data['serviceTypeOptions'])) ? $data['serviceTypeOptions'] : [];
 $complaintStatusOptions = (isset($data['statusOptions']) && is_array($data['statusOptions'])) ? $data['statusOptions'] : [];
 $selectedComplaintService = trim((string) ($complaintFilters['service_type'] ?? ''));
 $selectedComplaintStatus = trim((string) ($complaintFilters['status'] ?? ''));
+
+$caretakerPageTitle = 'Complaints - SmartCare';
+$caretakerExtraCss = ['caretaker/ct_complaints.css'];
+require_once APPROOT . '/views/templates/caretaker/caretaker_layout_head.php';
+include_once APPROOT . '/views/templates/caretaker/ct_header.php';
+include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
 ?>
-  <main class="content complaint-container">
+<main class="content complaint-container">
       <header class="page-header">
         <h1 class="page-title">Register a Complaint</h1>
       </header>
 
-  <form id="complaintForm" action="<?php echo URLROOT; ?>/caretaker/saveComplaint" method="POST">
+  <form id="complaintForm" action="<?php echo URLROOT; ?>/public/index.php?url=caretaker/saveComplaint" method="POST">
+    <input type="hidden" name="form_token" value="<?php echo htmlspecialchars($data['form_token'] ?? ''); ?>">
     <label for="clientName">Select Client</label>
    <select id="clientName" name="client_id" required>
     <option value="">-- Select Client --</option>
@@ -109,8 +99,8 @@ $selectedComplaintStatus = trim((string) ($complaintFilters['status'] ?? ''));
             </tr>
         </thead>
         <tbody id="complaintTableBody">
-            <?php if (!empty($data['resolvedComplaints'])): ?>
-                <?php foreach ($data['resolvedComplaints'] as $c): ?>
+            <?php if (!empty($data['complaints'])): ?>
+                <?php foreach ($data['complaints'] as $c): ?>
                     <tr>
                         <td><?= htmlspecialchars($c['client_name']) ?></td>
                         <td><?= htmlspecialchars($c['service_type']) ?></td>
@@ -130,7 +120,7 @@ $selectedComplaintStatus = trim((string) ($complaintFilters['status'] ?? ''));
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="5" style="text-align: center; color: var(--complaint-muted); padding: 24px;">No past complaints yet</td>
+                    <td colspan="5" style="text-align: center; color: var(--complaint-muted); padding: 24px;">No complaints yet</td>
                 </tr>
             <?php endif; ?>
         </tbody>
@@ -139,6 +129,15 @@ $selectedComplaintStatus = trim((string) ($complaintFilters['status'] ?? ''));
   </div>
 
 </main>
+
+<div id="successPopup" class="complaint-popup" style="display: none;">
+    <div class="complaint-popup__card">
+        <h3 class="complaint-popup__title">Success!</h3>
+        <p class="complaint-popup__message">Your complaint has been submitted successfully.</p>
+        <button class="complaint-popup__btn btn btn-primary" onclick="closeSuccessPopup()">Close</button>
+    </div>
+</div>
+
 <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_complaints.js"></script>
-</body>
-</html>
+
+<?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>

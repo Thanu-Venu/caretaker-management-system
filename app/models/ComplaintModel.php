@@ -6,7 +6,7 @@ class ComplaintModel
 {
     private $db;
 
-    public function __construct()
+   public function __construct()
     {
         $database = new Database();
         $this->db = $database->conn;
@@ -147,8 +147,18 @@ class ComplaintModel
             LEFT JOIN caretakers ct ON cc.caretaker_id = ct.id
             ORDER BY cc.created_at DESC";
 
+        error_log("SQL Query: " . $sql);
+        
         $result = $this->db->query($sql);
-        return $result->fetch_all(MYSQLI_ASSOC);
+        
+        if ($result) {
+            $complaints = $result->fetch_all(MYSQLI_ASSOC);
+            error_log("Query successful. Found " . count($complaints) . " caretaker complaints.");
+            return $complaints;
+        } else {
+            error_log("Query failed: " . $this->db->error);
+            return [];
+        }
     }
 
     // Update status for caretaker complaint
