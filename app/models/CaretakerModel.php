@@ -33,6 +33,29 @@ class CaretakerModel
         return $this->accountLinkEnabled;
     }
 
+    /**
+     * HR/admin caregiver password policy. Returns a user-facing error message or null if valid.
+     */
+    public static function validateCaretakerPassword(string $password): ?string
+    {
+        if (strlen($password) < 8) {
+            return 'Password must be at least 8 characters long.';
+        }
+        if (!preg_match('/[A-Z]/', $password)) {
+            return 'Password must include at least one uppercase letter.';
+        }
+        if (!preg_match('/[a-z]/', $password)) {
+            return 'Password must include at least one lowercase letter.';
+        }
+        if (!preg_match('/[0-9]/', $password)) {
+            return 'Password must include at least one number.';
+        }
+        if (!preg_match('/[^A-Za-z0-9]/', $password)) {
+            return 'Password must include at least one special character.';
+        }
+        return null;
+    }
+
     /** @return array */
     public function getCaretakers()
     {
@@ -453,6 +476,26 @@ AND NOT EXISTS (
 
         $sql .= ")";
 
+                // Also block caretakers who are currently occupied today in any active booking.
+                // This prevents other clients from seeing caregivers who are already working now.
+                $sql .= "
+AND NOT EXISTS (
+        SELECT 1 FROM bookings b2
+        WHERE b2.caretaker_id = c.id
+            AND LOWER(b2.status) IN (
+                'requested','payment_requested','advance_paid',
+                'accepted','approved','change_requested','reschedule_requested'
+            )
+            AND CURDATE() BETWEEN b2.booking_date AND (
+                CASE
+                        WHEN LOWER(b2.basis) = 'hourly' THEN b2.booking_date
+                        WHEN LOWER(b2.basis) = 'monthly' THEN DATE_SUB(DATE_ADD(b2.booking_date, INTERVAL GREATEST(b2.duration, 1) MONTH), INTERVAL 1 DAY)
+                        WHEN LOWER(b2.basis) = 'yearly' THEN DATE_SUB(DATE_ADD(b2.booking_date, INTERVAL GREATEST(b2.duration, 1) YEAR), INTERVAL 1 DAY)
+                        ELSE DATE_SUB(DATE_ADD(b2.booking_date, INTERVAL GREATEST(b2.duration, 1) DAY), INTERVAL 1 DAY)
+                END
+            )
+)";
+
         // prepare statement
         $stmt = $this->conn->prepare($sql);
 
@@ -743,10 +786,13 @@ public function getResolvedComplaintsByCaretaker($caretaker_id)
         "SELECT ct_complaints.*, clients.name AS client_name
          FROM ct_complaints
          JOIN clients ON ct_complaints.client_id = clients.id
-         WHERE ct_complaints.caretaker_id = ? 
-         AND ct_complaints.status = 'Resolved'
-         ORDER BY ct_complaints.service_date DESC"
+         WHERE ct_complaints.caretaker_id = ?
+         ORDER BY ct_complaints.complaint_id DESC, ct_complaints.service_date DESC"
     );
+
+    if (!$stmt) {
+        return [];
+    }
 
     $stmt->bind_param("i", $caretaker_id);
     $stmt->execute();

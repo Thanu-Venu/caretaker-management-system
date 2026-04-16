@@ -15,9 +15,16 @@
 <body>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
+<?php
+$complaintFilters = (isset($data['filters']) && is_array($data['filters'])) ? $data['filters'] : [];
+$complaintServiceOptions = (isset($data['serviceTypeOptions']) && is_array($data['serviceTypeOptions'])) ? $data['serviceTypeOptions'] : [];
+$complaintStatusOptions = (isset($data['statusOptions']) && is_array($data['statusOptions'])) ? $data['statusOptions'] : [];
+$selectedComplaintService = trim((string) ($complaintFilters['service_type'] ?? ''));
+$selectedComplaintStatus = trim((string) ($complaintFilters['status'] ?? ''));
+?>
   <main class="content complaint-container">
-      <header class="page-header" style="margin-bottom: 24px;">
-        <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">Register a Complaint</h1>
+      <header class="page-header">
+        <h1 class="page-title">Register a Complaint</h1>
       </header>
 
   <form id="complaintForm" action="<?php echo URLROOT; ?>/caretaker/saveComplaint" method="POST">
@@ -48,8 +55,6 @@
        <option value="Maid">Maid Service</option>
        <option value="Babysitter">Babysitting</option>
     </select>
-
-    </select>
   
 
     <label for="dateOfService">Date of Service</label>
@@ -62,7 +67,36 @@
   </form>
 
   <div class="card">
-    <h2 class="page-title" style="color: #1e88e5; font-size: 24px; font-weight: 600; margin-bottom: 20px;">Past Complaints</h2>
+    <h2 class="complaints-past-heading">Past Complaints</h2>
+    <form class="filter-section filters-inline ct-page-filters" method="get" action="<?= htmlspecialchars(URLROOT . '/public', ENT_QUOTES, 'UTF-8') ?>">
+        <input type="hidden" name="url" value="caretaker/ct_complaints">
+        <div class="filter-group">
+            <label for="complaintStatusFilter">Status</label>
+            <select id="complaintStatusFilter" name="complaint_status">
+                <option value="">All statuses</option>
+                <?php foreach ($complaintStatusOptions as $status): ?>
+                    <option value="<?= htmlspecialchars((string) $status, ENT_QUOTES, 'UTF-8') ?>" <?= strcasecmp($selectedComplaintStatus, (string) $status) === 0 ? 'selected' : '' ?>>
+                        <?= htmlspecialchars((string) $status, ENT_QUOTES, 'UTF-8') ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="complaintServiceFilter">Service</label>
+            <select id="complaintServiceFilter" name="complaint_service">
+                <option value="">All services</option>
+                <?php foreach ($complaintServiceOptions as $service): ?>
+                    <option value="<?= htmlspecialchars((string) $service, ENT_QUOTES, 'UTF-8') ?>" <?= strcasecmp($selectedComplaintService, (string) $service) === 0 ? 'selected' : '' ?>>
+                        <?= htmlspecialchars((string) $service, ENT_QUOTES, 'UTF-8') ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="filter-group filter-group--actions">
+            <button type="submit" class="btn primary">Apply</button>
+            <a class="btn ghost" href="<?= htmlspecialchars(URLROOT . '/public?url=caretaker/ct_complaints', ENT_QUOTES, 'UTF-8') ?>">Reset</a>
+        </div>
+    </form>
     <div class="table-container">
     <table class="complaint-table">
         <thead>
@@ -104,6 +138,7 @@
     </div>
   </div>
 
-</div>
+</main>
 <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_complaints.js"></script>
 </body>
+</html>

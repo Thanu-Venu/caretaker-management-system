@@ -189,11 +189,43 @@ class CaretakerController extends Controller
         $leaves = $leaveModel->getLeavesByUser($userId);
         $monthlySummary = $leaveModel->getCurrentMonthLeaveSummary($userId, true);
 
+        $filters = [
+            'status' => trim((string) ($_GET['leave_status'] ?? '')),
+            'leave_type' => trim((string) ($_GET['leave_type'] ?? '')),
+        ];
+
+        $leaveTypeOptions = [];
+        foreach ($leaves as $leave) {
+            $leaveType = trim((string) ($leave['leave_type'] ?? ''));
+            if ($leaveType !== '') {
+                $leaveTypeOptions[$leaveType] = true;
+            }
+        }
+        $leaveTypeOptions = array_keys($leaveTypeOptions);
+        sort($leaveTypeOptions, SORT_NATURAL | SORT_FLAG_CASE);
+
+        $leaves = array_values(array_filter($leaves, static function ($leave) use ($filters) {
+            $status = trim((string) ($leave['status'] ?? ''));
+            $leaveType = trim((string) ($leave['leave_type'] ?? ''));
+
+            if ($filters['status'] !== '' && strcasecmp($status, $filters['status']) !== 0) {
+                return false;
+            }
+
+            if ($filters['leave_type'] !== '' && strcasecmp($leaveType, $filters['leave_type']) !== 0) {
+                return false;
+            }
+
+            return true;
+        }));
+
         $this->view('caretaker/ct_leave', [
             'leaves' => $leaves,
             'monthlySummary' => $monthlySummary,
             'success' => $_SESSION['leave_success'] ?? '',
-            'warning' => $_SESSION['leave_warning'] ?? ''
+            'warning' => $_SESSION['leave_warning'] ?? '',
+            'filters' => $filters,
+            'leaveTypeOptions' => $leaveTypeOptions,
         ]);
 
         unset($_SESSION['leave_success'], $_SESSION['leave_warning']);
@@ -211,11 +243,54 @@ class CaretakerController extends Controller
         $upcoming = $caretakerModel->getUpcomingBookings($caretakerId);
         $past = $caretakerModel->getPastBookings($caretakerId);
 
+        $filters = [
+            'service_type' => trim((string) ($_GET['booking_service'] ?? '')),
+            'date_from' => trim((string) ($_GET['booking_from'] ?? '')),
+            'date_to' => trim((string) ($_GET['booking_to'] ?? '')),
+        ];
+
+        $serviceTypeOptions = [];
+        foreach (array_merge($ongoing, $upcoming, $past) as $booking) {
+            $serviceType = trim((string) ($booking['service_type'] ?? ''));
+            if ($serviceType !== '') {
+                $serviceTypeOptions[$serviceType] = true;
+            }
+        }
+        $serviceTypeOptions = array_keys($serviceTypeOptions);
+        sort($serviceTypeOptions, SORT_NATURAL | SORT_FLAG_CASE);
+
+        $filterBookings = static function (array $rows) use ($filters): array {
+            return array_values(array_filter($rows, static function ($booking) use ($filters) {
+                $serviceType = trim((string) ($booking['service_type'] ?? ''));
+                $bookingDate = (string) ($booking['booking_date'] ?? '');
+
+                if ($filters['service_type'] !== '' && strcasecmp($serviceType, $filters['service_type']) !== 0) {
+                    return false;
+                }
+
+                if ($filters['date_from'] !== '' && $bookingDate !== '' && $bookingDate < $filters['date_from']) {
+                    return false;
+                }
+
+                if ($filters['date_to'] !== '' && $bookingDate !== '' && $bookingDate > $filters['date_to']) {
+                    return false;
+                }
+
+                return true;
+            }));
+        };
+
+        $ongoing = $filterBookings($ongoing);
+        $upcoming = $filterBookings($upcoming);
+        $past = $filterBookings($past);
+
         // Just pass the booking_date and preferred_time as they are
         $this->view('caretaker/ct_booking', [
             'ongoing' => $ongoing,
             'upcoming' => $upcoming,
-            'past' => $past
+            'past' => $past,
+            'filters' => $filters,
+            'serviceTypeOptions' => $serviceTypeOptions,
         ]);
     }
 
@@ -345,10 +420,51 @@ class CaretakerController extends Controller
 public function ct_complaints()
 {
     $caretakerId = AuthSession::profileId();
+    $resolvedComplaints = $this->caretakerModel->getResolvedComplaintsByCaretaker($caretakerId);
+
+    $filters = [
+        'status' => trim((string) ($_GET['complaint_status'] ?? '')),
+        'service_type' => trim((string) ($_GET['complaint_service'] ?? '')),
+    ];
+
+    $serviceTypeOptions = [];
+    $statusOptions = [];
+    foreach ($resolvedComplaints as $complaint) {
+        $serviceType = trim((string) ($complaint['service_type'] ?? ''));
+        $status = trim((string) ($complaint['status'] ?? ''));
+        if ($serviceType !== '') {
+            $serviceTypeOptions[$serviceType] = true;
+        }
+        if ($status !== '') {
+            $statusOptions[$status] = true;
+        }
+    }
+    $serviceTypeOptions = array_keys($serviceTypeOptions);
+    $statusOptions = array_keys($statusOptions);
+    sort($serviceTypeOptions, SORT_NATURAL | SORT_FLAG_CASE);
+    sort($statusOptions, SORT_NATURAL | SORT_FLAG_CASE);
+
+    $resolvedComplaints = array_values(array_filter($resolvedComplaints, static function ($complaint) use ($filters) {
+        $status = trim((string) ($complaint['status'] ?? ''));
+        $serviceType = trim((string) ($complaint['service_type'] ?? ''));
+
+        if ($filters['status'] !== '' && strcasecmp($status, $filters['status']) !== 0) {
+            return false;
+        }
+
+        if ($filters['service_type'] !== '' && strcasecmp($serviceType, $filters['service_type']) !== 0) {
+            return false;
+        }
+
+        return true;
+    }));
 
     $data = [
         'clients' => $this->caretakerModel->getClients($caretakerId),
-        'resolvedComplaints' => $this->caretakerModel->getResolvedComplaintsByCaretaker($caretakerId)
+        'resolvedComplaints' => $resolvedComplaints,
+        'filters' => $filters,
+        'serviceTypeOptions' => $serviceTypeOptions,
+        'statusOptions' => $statusOptions,
     ];
 
     $this->view('caretaker/ct_complaints', $data);
@@ -380,25 +496,35 @@ public function addComplaint()
 }
 public function saveComplaint()
 {
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-        $data = [
-            'caretaker_id' => AuthSession::profileId(),
-            'client_id' => $_POST['client_id'],
-            'service_type' => $_POST['service_type'],
-            'service_date' => $_POST['service_date'],
-            'description' => $_POST['description']
-        ];
-
-        $this->caretakerModel->addComplaint($data);
-
-        echo "success";
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/caretaker/ct_complaints");
+        exit;
     }
+
+    $data = [
+        'caretaker_id' => AuthSession::profileId(),
+        'client_id' => $_POST['client_id'] ?? '',
+        'service_type' => $_POST['service_type'] ?? '',
+        'service_date' => $_POST['service_date'] ?? '',
+        'description' => $_POST['description'] ?? ''
+    ];
+
+    $ok = $this->caretakerModel->addComplaint($data);
+
+    if ($ok) {
+        $_SESSION['success'] = 'Complaint submitted successfully.';
+    } else {
+        $_SESSION['error'] = 'Failed to save complaint. Please try again.';
+    }
+
+    header("Location: " . URLROOT . "/caretaker/ct_complaints");
+    exit;
 }
     public function ct_reports()
     {
         $caretakerId = AuthSession::profileId();
         $services = $this->caretakerModel->getPastBookings($caretakerId);
+
         $this->view("caretaker/ct_reports", [
             'services' => $services
         ]);
@@ -517,9 +643,41 @@ public function saveComplaint()
         $feedbacks = $caretakerModel->getCaretakerFeedbacks($caretakerId);
         $avgRating = $caretakerModel->getAverageRating($caretakerId);
 
+        $filters = [
+            'service' => trim((string) ($_GET['feedback_service'] ?? '')),
+            'rating' => trim((string) ($_GET['feedback_rating'] ?? '')),
+        ];
+
+        $serviceOptions = [];
+        foreach ($feedbacks as $feedback) {
+            $service = trim((string) ($feedback['service'] ?? ''));
+            if ($service !== '') {
+                $serviceOptions[$service] = true;
+            }
+        }
+        $serviceOptions = array_keys($serviceOptions);
+        sort($serviceOptions, SORT_NATURAL | SORT_FLAG_CASE);
+
+        $feedbacks = array_values(array_filter($feedbacks, static function ($feedback) use ($filters) {
+            $service = trim((string) ($feedback['service'] ?? ''));
+            $rating = (string) ($feedback['rating'] ?? '');
+
+            if ($filters['service'] !== '' && strcasecmp($service, $filters['service']) !== 0) {
+                return false;
+            }
+
+            if ($filters['rating'] !== '' && $rating !== $filters['rating']) {
+                return false;
+            }
+
+            return true;
+        }));
+
         $this->view("caretaker/ct_reviews", [
             'feedbacks' => $feedbacks,
-            'avgRating' => $avgRating
+            'avgRating' => $avgRating,
+            'filters' => $filters,
+            'serviceOptions' => $serviceOptions,
         ]);
     }
 
@@ -555,8 +713,27 @@ public function saveComplaint()
     public function ct_announcement()
     {
         $announcementModel = $this->model('AnnouncementModel');
-        $announcements = $announcementModel->getCaretakerAnnouncements();
+        $perPage     = 15;
+        $currentPage = max(1, (int) ($_GET['page'] ?? 1));
+        $filters     = [
+            'for_caretaker_portal' => true,
+            'date_from'            => trim((string) ($_GET['date_from'] ?? '')),
+            'date_to'              => trim((string) ($_GET['date_to'] ?? '')),
+            'q'                    => trim((string) ($_GET['q'] ?? '')),
+        ];
+        $totalRecords = $announcementModel->countAnnouncementsFiltered($filters);
+        $totalPages   = $totalRecords > 0 ? (int) ceil($totalRecords / $perPage) : 1;
+        $currentPage  = max(1, min($currentPage, $totalPages));
+        $offset       = ($currentPage - 1) * $perPage;
+        $announcements = $announcementModel->getAnnouncementsFilteredPaged($filters, $perPage, $offset);
 
-        $this->view("caretaker/ct_announcement", $announcements);
+        $this->view('caretaker/ct_announcement', [
+            'announcements' => $announcements,
+            'filters'       => $filters,
+            'currentPage'   => $currentPage,
+            'totalPages'    => $totalPages,
+            'totalRecords'  => $totalRecords,
+            'perPage'       => $perPage,
+        ]);
     }
 }

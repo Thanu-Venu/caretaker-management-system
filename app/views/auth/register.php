@@ -49,22 +49,43 @@
         <div class="form-group">
           <label for="email">Email</label>
           <input type="email" id="email" name="email" required
+            pattern="^[A-Za-z0-9._%+-]+@gmail\.com$"
+            title="Please enter a valid Gmail address (example@gmail.com)."
             value="<?php echo htmlspecialchars($data['email'] ?? ''); ?>">
+          <small id="emailError" style="display:none; color:#d32f2f; margin-top:6px;">
+            Please enter a valid Gmail address (example@gmail.com).
+          </small>
         </div>
 
         <div class="form-group">
           <label for="phone">Phone number</label>
           <input type="tel" id="phone" name="phone" required
+            pattern="^\+?[0-9]{10,15}$"
+            title="Please enter a valid phone number with 10 to 15 digits."
             value="<?php echo htmlspecialchars($data['phone'] ?? ''); ?>">
+          <small id="phoneError" style="display:none; color:#d32f2f; margin-top:6px;">
+            Please enter a valid phone number with 10 to 15 digits.
+          </small>
         </div>
 
         <div class="form-group">
           <div class="input-box">
             <label>Password</label>
             <div class="password-wrapper">
-              <input type="password" id="password" name="password" required>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                minlength="8"
+                pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$"
+                title="Password must be at least 8 characters and include a letter, a number, and a special character."
+              >
               <i id="togglePassword" class='bx bx-hide' style="cursor:pointer;"></i>
             </div>
+            <small id="passwordError" style="display:none; color:#d32f2f; margin-top:6px;">
+              Password must be at least 8 characters and include a letter, a number, and a special character.
+            </small>
           </div>
         </div>
 
@@ -72,9 +93,20 @@
           <div class="input-box">
             <label>Confirm Password</label>
             <div class="password-wrapper">
-              <input type="password" id="confirmPassword" name="confirmPassword" required>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                required
+                minlength="8"
+                pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$"
+                title="Password must be at least 8 characters and include a letter, a number, and a special character."
+              >
               <i id="toggleConfirmPassword" class='bx bx-hide' style="cursor:pointer;"></i>
             </div>
+            <small id="confirmPasswordError" style="display:none; color:#d32f2f; margin-top:6px;">
+              Passwords do not match.
+            </small>
           </div>
         </div>
 
@@ -93,8 +125,14 @@
   </div>
 
 <script>
+const signupForm = document.getElementById('signupForm');
+const email = document.getElementById('email');
+const emailError = document.getElementById('emailError');
+const phone = document.getElementById('phone');
+const phoneError = document.getElementById('phoneError');
 const password = document.getElementById('password');
 const togglePassword = document.getElementById('togglePassword');
+const passwordError = document.getElementById('passwordError');
 
 togglePassword.addEventListener('click', function() {
     const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -105,12 +143,105 @@ togglePassword.addEventListener('click', function() {
 
 const confirmPassword = document.getElementById('confirmPassword');
 const toggleConfirm = document.getElementById('toggleConfirmPassword');
+const confirmPasswordError = document.getElementById('confirmPasswordError');
+const gmailRegex = /^[A-Za-z0-9._%+-]+@gmail\.com$/i;
+const phoneRegex = /^\+?[0-9]{10,15}$/;
+const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+function validateGmail() {
+    const value = email.value.trim();
+    const isValid = gmailRegex.test(value);
+
+    if (!isValid) {
+        email.setCustomValidity('Please enter a valid Gmail address (example@gmail.com).');
+        emailError.style.display = 'block';
+    } else {
+        email.setCustomValidity('');
+        emailError.style.display = 'none';
+    }
+
+    return isValid;
+}
+
+function validatePhone() {
+    const value = phone.value.trim();
+    const isValid = phoneRegex.test(value);
+
+    if (!isValid) {
+        phone.setCustomValidity('Please enter a valid phone number with 10 to 15 digits.');
+        phoneError.style.display = 'block';
+    } else {
+        phone.setCustomValidity('');
+        phoneError.style.display = 'none';
+    }
+
+    return isValid;
+}
+
+function validatePasswordRule() {
+    const value = password.value.trim();
+    const isValid = passwordRegex.test(value);
+
+    if (!isValid) {
+        password.setCustomValidity('Password must be at least 8 characters and include a letter, a number, and a special character.');
+        passwordError.style.display = 'block';
+    } else {
+        password.setCustomValidity('');
+        passwordError.style.display = 'none';
+    }
+
+    return isValid;
+}
+
+function validatePasswordMatch() {
+    const isMatch = password.value === confirmPassword.value;
+    const hasConfirmValue = confirmPassword.value.length > 0;
+
+    if (!isMatch && hasConfirmValue) {
+        confirmPassword.setCustomValidity('Passwords do not match.');
+        confirmPasswordError.style.display = 'block';
+    } else {
+        confirmPassword.setCustomValidity('');
+        confirmPasswordError.style.display = 'none';
+    }
+
+    return isMatch;
+}
 
 toggleConfirm.addEventListener('click', function() {
     const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
     confirmPassword.setAttribute('type', type);
     this.classList.toggle('bx-show');
     this.classList.toggle('bx-hide');
+});
+
+email.addEventListener('input', validateGmail);
+phone.addEventListener('input', validatePhone);
+password.addEventListener('input', function() {
+    validatePasswordRule();
+    validatePasswordMatch();
+});
+
+confirmPassword.addEventListener('input', validatePasswordMatch);
+
+signupForm.addEventListener('submit', function(event) {
+    const isEmailValid = validateGmail();
+    const isPhoneValid = validatePhone();
+    const isPasswordValid = validatePasswordRule();
+    const isConfirmValid = validatePasswordMatch();
+
+    if (!isEmailValid || !isPhoneValid || !isPasswordValid || !isConfirmValid) {
+        event.preventDefault();
+        if (!isEmailValid) {
+            email.reportValidity();
+        } else if (!isPhoneValid) {
+            phone.reportValidity();
+        } else if (!isPasswordValid) {
+            password.reportValidity();
+        } else {
+            confirmPassword.reportValidity();
+        }
+    }
 });
 </script>
 </body>

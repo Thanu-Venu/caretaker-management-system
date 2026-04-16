@@ -66,26 +66,21 @@ require_once APPROOT . '/views/templates/client/c_sidebar.php';
                                 <?php endif; ?>
                             </td>
 
-                            <td class="actions">
+                            <td class="actions booking-actions-cell">
+                                <div class="booking-actions-toolbar" role="group" aria-label="Actions for booking <?= $b['booking_id'] ?>">
+                                    <a class="btn tiny approve" href="<?= URLROOT ?>/client/c_contactCT?booking_id=<?= $b['booking_id'] ?>">Contact</a>
 
-                                <!-- View Contact Button -->
-                                <a class="action-btn contact-btn"
-                                   href="<?= URLROOT ?>/client/c_contactCT?booking_id=<?= (int)$b['booking_id'] ?>"
-                                   style="background-color:#1e88e5;color:#fff;padding:8px 12px;text-decoration:none;display:inline-block;margin-bottom:5px;border-radius:10px;font-weight:600;">
-                                    View Contact
-                                </a>
-
-                                <?php if (empty($b['rating'])): ?>
-                                    <button type="button"
-                                        class="feedback-btn"
-                                        data-booking-id="<?= $b['booking_id'] ?>"
-                                        data-caretaker-id="<?= $b['caretaker_id'] ?? '' ?>">
-                                        Give Feedback
-                                    </button>
-                                <?php else: ?>
-                                    <span class="done-text">Submitted</span>
-                                <?php endif; ?>
-
+                                    <?php if (empty($b['rating'])): ?>
+                                        <button type="button"
+                                            class="feedback-btn"
+                                            data-booking-id="<?= $b['booking_id'] ?>"
+                                            data-caretaker-id="<?= $b['caretaker_id'] ?? '' ?>">
+                                            Give Feedback
+                                        </button>
+                                    <?php else: ?>
+                                        <span class="done-text">Submitted</span>
+                                    <?php endif; ?>
+                                </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>

@@ -8,6 +8,10 @@ body {
   box-sizing: border-box;
   font-family: 'Poppins', Arial, sans-serif;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
 }
 
 .card {
@@ -20,6 +24,16 @@ body {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   margin-bottom: 30px;
+}
+
+.ct-page-filters {
+  margin: 0 0 14px;
+}
+
+.ct-page-filters .filter-group--actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
 }
 
 /* Table Layout */
@@ -86,6 +100,10 @@ td:nth-child(4) {
   .card {
     padding: 15px;
   }
+
+  .ct-page-filters {
+    width: 100%;
+  }
 }
 
 
@@ -116,4 +134,12 @@ table {
     width: 100%;
     box-sizing: border-box;
   }
+}
+
+/* Caretaker table chrome: avoid double border with shared shell table container */
+.content.reviews-container .table-container {
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  margin-top: 0 !important;
 }

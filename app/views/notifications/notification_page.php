@@ -123,12 +123,17 @@ if ($template_role === 'admin') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notifications — SmartCare</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
     <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/ad_notification.css">
 </head>
 <body>
     <?php include APPROOT . '/views/templates/' . $header_file; ?>
     <?php include APPROOT . '/views/templates/' . $sidebar_file; ?>
-    <main class="notif-page">
+    <main class="main-content notif-page">
 <?= $notifInnerHtml ?>
 
     </main>

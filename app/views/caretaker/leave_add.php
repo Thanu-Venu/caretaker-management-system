@@ -5,6 +5,8 @@ $warnings = $data['warnings'] ?? [];
 $summary = $data['monthlySummary'] ?? ['limit' => 5, 'used' => 0, 'remaining' => 5, 'percentage' => 0, 'label' => '0 / 5 days used'];
 $policy = $data['policy'] ?? ['advanceNoticeDays' => 3, 'maxPerRequest' => 7, 'monthlyLimit' => 5];
 $impact = $data['impact'] ?? [];
+$success = isset($_SESSION['leave_success']) ? (string)$_SESSION['leave_success'] : '';
+unset($_SESSION['leave_success']);
 ?>
 
 <!DOCTYPE html>
@@ -28,10 +30,23 @@ $impact = $data['impact'] ?? [];
 
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
+
+<?php if ($success): ?>
+    <div id="successMessage" class="success-message" style="background-color: #e3f2fd; color: #1565c0; padding: 14px 20px; margin: 20px auto; border-radius: 4px; font-weight: 500; width: fit-content; border-left: 4px solid #1e88e5; max-width: 90%;">
+        ✓ <?= htmlspecialchars($success) ?> All requests are submitted as Pending and require HR approval.
+    </div>
+    <script>
+        setTimeout(function() {
+            const msg = document.getElementById('successMessage');
+            if (msg) msg.style.display = 'none';
+        }, 5000);
+    </script>
+<?php endif; ?>
+
   <main class="main-content">
     <section class="leave-layout">
-      <header class="page-header" style="margin-bottom: 24px;">
-        <h1 class="page-title" style="color: #1e88e5; font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -0.02em;">Request Leave</h1>
+      <header class="page-header">
+        <h1 class="page-title">Request Leave</h1>
         <p style="color: #5b7288; margin-top: 5px; font-size: 14px;">All requests are submitted as <strong>Pending</strong> and require HR approval.</p>
       </header>
       <div class="leave-summary-card">
@@ -159,7 +174,8 @@ $impact = $data['impact'] ?? [];
       remainingThisMonth: <?= (int)$summary['remaining'] ?>
     };
     window.leavePreview = {
-      impactUrl: '<?= htmlspecialchars($data['impactPreviewUrl'] ?? (URLROOT . '/LeaveCRUD/impactPreview')) ?>'
+      impactUrl: '<?= htmlspecialchars($data['impactPreviewUrl'] ?? (URLROOT . '/LeaveCRUD/impactPreview')) ?>',
+      leaveId: null
     };
   </script>
   <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_leave.js"></script>

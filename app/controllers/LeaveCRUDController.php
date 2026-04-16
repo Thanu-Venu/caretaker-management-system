@@ -92,8 +92,8 @@ class LeaveCRUDController extends Controller
         if ($leaveType === 'Sick Leave') {
             // Sick leave allows immediate start (no advance notice needed)
             $duration = $this->leaveModel->calculateInclusiveDays($startDate, $endDate);
-            if ($duration > 5) {
-                $errors[] = 'Sick leave cannot exceed 5 days.';
+            if ($duration > LeaveModel::MAX_DAYS_PER_REQUEST) {
+                $errors[] = 'Sick leave cannot exceed ' . LeaveModel::MAX_DAYS_PER_REQUEST . ' days.';
             }
         } else {
             // Other leaves require advance notice
@@ -103,13 +103,13 @@ class LeaveCRUDController extends Controller
             }
 
             $duration = $this->leaveModel->calculateInclusiveDays($startDate, $endDate);
-            if ($duration > 5) {
-                $errors[] = 'A single leave request cannot exceed 5 days.';
+            if ($duration > LeaveModel::MAX_DAYS_PER_REQUEST) {
+                $errors[] = 'A single leave request cannot exceed ' . LeaveModel::MAX_DAYS_PER_REQUEST . ' days.';
             }
         }
 
         if ($this->leaveModel->hasOverlappingLeave($userId, $startDate, $endDate, ['Approved', 'Pending'], $excludeLeaveId)) {
-            $errors[] = 'This leave request overlaps with an existing approved leave.';
+            $errors[] = 'This leave request overlaps with an existing approved or pending leave.';
         }
 
         foreach ($this->monthSequenceBetween($startDate, $endDate) as $monthInfo) {
@@ -150,6 +150,56 @@ class LeaveCRUDController extends Controller
         ];
     }
 
+    private function computeMaxRequestableEndDate(int $userId, string $startDate, ?int $excludeLeaveId = null): ?string
+    {
+        if ($startDate === '') {
+            return null;
+        }
+
+        $today = date('Y-m-d');
+        if ($startDate < $today) {
+            return null;
+        }
+
+        $maxDays = LeaveModel::MAX_DAYS_PER_REQUEST;
+        $bestEnd = null;
+
+        for ($offset = 0; $offset < $maxDays; $offset++) {
+            $endDate = date('Y-m-d', strtotime($startDate . ' +' . $offset . ' day'));
+            $isValid = true;
+
+            foreach ($this->monthSequenceBetween($startDate, $endDate) as $monthInfo) {
+                $requestDaysInMonth = $this->leaveModel->getLeaveDaysWithinMonth(
+                    $startDate,
+                    $endDate,
+                    $monthInfo['year'],
+                    $monthInfo['month']
+                );
+
+                $usedInMonth = $this->leaveModel->getMonthlyLeaveUsage(
+                    $userId,
+                    $monthInfo['year'],
+                    $monthInfo['month'],
+                    true,
+                    $excludeLeaveId
+                );
+
+                if (($usedInMonth + $requestDaysInMonth) > LeaveModel::MONTHLY_LEAVE_LIMIT) {
+                    $isValid = false;
+                    break;
+                }
+            }
+
+            if (!$isValid) {
+                break;
+            }
+
+            $bestEnd = $endDate;
+        }
+
+        return $bestEnd;
+    }
+
     public function impactPreview()
     {
         $userId = $this->requireCaretaker();
@@ -163,19 +213,39 @@ class LeaveCRUDController extends Controller
 
         $startDate = trim($_POST['start_date'] ?? '');
         $endDate = trim($_POST['end_date'] ?? '');
+        $excludeLeaveId = isset($_POST['leave_id']) ? (int) $_POST['leave_id'] : null;
 
-        if ($startDate === '' || $endDate === '' || $endDate < $startDate) {
+        if ($startDate === '') {
             echo json_encode([
                 'ok' => true,
                 'hasImpact' => false,
                 'count' => 0,
                 'booking_ids' => [],
-                'service_dates' => []
+                'service_dates' => [],
+                'max_end_date' => null,
+                'start_month_used' => 0,
+                'start_month_remaining' => LeaveModel::MONTHLY_LEAVE_LIMIT,
+                'can_request' => false
             ]);
             return;
         }
 
-        $impact = $this->leaveModel->getActiveBookingImpactSummary($userId, $startDate, $endDate);
+        $startYear = (int) date('Y', strtotime($startDate));
+        $startMonth = (int) date('m', strtotime($startDate));
+        $usedInStartMonth = $this->leaveModel->getMonthlyLeaveUsage(
+            $userId,
+            $startYear,
+            $startMonth,
+            true,
+            $excludeLeaveId
+        );
+        $remainingInStartMonth = max(0, LeaveModel::MONTHLY_LEAVE_LIMIT - $usedInStartMonth);
+        $maxEndDate = $this->computeMaxRequestableEndDate($userId, $startDate, $excludeLeaveId);
+
+        $hasRange = ($endDate !== '' && $endDate >= $startDate);
+        $impact = $hasRange
+            ? $this->leaveModel->getActiveBookingImpactSummary($userId, $startDate, $endDate)
+            : ['count' => 0, 'booking_ids' => [], 'service_dates' => []];
         $message = '';
 
         if (($impact['count'] ?? 0) > 0) {
@@ -188,7 +258,11 @@ class LeaveCRUDController extends Controller
             'count' => (int)($impact['count'] ?? 0),
             'booking_ids' => $impact['booking_ids'] ?? [],
             'service_dates' => $impact['service_dates'] ?? [],
-            'message' => $message
+            'message' => $message,
+            'max_end_date' => $maxEndDate,
+            'start_month_used' => $usedInStartMonth,
+            'start_month_remaining' => $remainingInStartMonth,
+            'can_request' => ($maxEndDate !== null)
         ]);
     }
 
@@ -260,7 +334,7 @@ class LeaveCRUDController extends Controller
                 return;
             }
 
-            $_SESSION['leave_success'] = 'Leave request submitted successfully and sent to HR for approval. Status: Pending.';
+            $_SESSION['leave_success'] = 'Leave request submitted successfully and sent to HR for approval.';
 
             if (($validation['impact']['count'] ?? 0) > 0) {
                 $ids = implode(', ', $validation['impact']['booking_ids'] ?? []);

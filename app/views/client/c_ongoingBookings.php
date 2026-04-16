@@ -25,11 +25,11 @@ $ongoingStatusFilterOptions = [
 
     <?php if (!empty($_SESSION['success'])): ?>
         <div class="flash success"><?php echo htmlspecialchars((string) $_SESSION['success']);
-        unset($_SESSION['success']); ?></div>
+                                    unset($_SESSION['success']); ?></div>
     <?php endif; ?>
     <?php if (!empty($_SESSION['error'])): ?>
         <div class="flash error"><?php echo htmlspecialchars((string) $_SESSION['error']);
-        unset($_SESSION['error']); ?></div>
+                                    unset($_SESSION['error']); ?></div>
     <?php endif; ?>
 
     <?php if (empty($data['bookings'])): ?>
@@ -66,8 +66,8 @@ $ongoingStatusFilterOptions = [
                         $changedOnce = ((int) ($b['caretaker_changed_once'] ?? 0) === 1);
                         $isAccepted = ($status === 'accepted');
                         $isChangeRequested = ($status === 'change_requested');
-                        $advancePaidStatuses = ['advance_paid', 'accepted', 'reschedule_requested', 'change_requested'];
-                        $canViewContact = in_array($status, $advancePaidStatuses, true);
+                        // Only allow contact for Accepted status
+                        $canViewContact = ($status === 'accepted');
                         $statusDisplay = str_replace('_', ' ', (string) $b['status']);
                         $rawStatus = (string) $b['status'];
                         $caregiverChangeHint = '';
@@ -88,7 +88,7 @@ $ongoingStatusFilterOptions = [
                             <td class="booking-actions-cell">
                                 <div class="booking-actions-toolbar" role="group" aria-label="Actions for booking <?= $bid ?>">
                                     <button type="button" class="btn btn-icon secondary booking-detail-open" title="View full details" aria-label="View full details for booking <?= $bid ?>"
-                                            onclick="SmartCareBookingDetail.open(<?= $bid ?>)">
+                                        onclick="SmartCareBookingDetail.open(<?= $bid ?>)">
                                         <i class="bx bx-show" aria-hidden="true"></i>
                                     </button>
                                     <?php if ($canViewContact): ?>
@@ -252,48 +252,51 @@ $ongoingStatusFilterOptions = [
     </div>
 </main>
 
-<script>window.CLIENT_UPLOAD_BASE = "<?= URLROOT ?>/public/uploads/";</script>
+<script>
+    window.CLIENT_UPLOAD_BASE = "<?= URLROOT ?>/public/uploads/";
+</script>
 <script src="<?= URLROOT ?>/public/js/client/booking-detail-modal.js"></script>
 <script src="<?= URLROOT ?>/public/js/client/c_ongoingBookings.js"></script>
 <script>
-async function openChangeModal(bookingId) {
-    document.getElementById('changeBookingId').value = bookingId;
-    const res = await fetch('<?= URLROOT ?>/client/fetchAvailableCaretakers?booking_id=' + encodeURIComponent(bookingId));
-    const list = await res.json();
-    if (list.error) {
-        document.getElementById('noCaretakersMsg').textContent = list.error;
-        document.getElementById('caretakerGrid').innerHTML = '';
-    } else {
-        renderCaretakerCards(list);
+    async function openChangeModal(bookingId) {
+        document.getElementById('changeBookingId').value = bookingId;
+        const res = await fetch('<?= URLROOT ?>/client/fetchAvailableCaretakers?booking_id=' + encodeURIComponent(bookingId));
+        const list = await res.json();
+        if (list.error) {
+            document.getElementById('noCaretakersMsg').textContent = list.error;
+            document.getElementById('caretakerGrid').innerHTML = '';
+        } else {
+            renderCaretakerCards(list);
+        }
+        var m = document.getElementById('changeModal');
+        if (m) m.classList.add('show');
     }
-    var m = document.getElementById('changeModal');
-    if (m) m.classList.add('show');
-}
 </script>
 <?php if (!empty($data['bookings'])): ?>
-<script>
-(function () {
-    var sel = document.getElementById('ongoingBookingsStatusFilter');
-    var table = document.getElementById('ongoingBookingsTable');
-    var emptyRow = document.getElementById('ongoingBookingsEmptyFilter');
-    if (!sel || !table || !emptyRow) {
-        return;
-    }
-    function applyFilter() {
-        var v = sel.value;
-        var rows = table.querySelectorAll('tbody tr[data-status]');
-        var visible = 0;
-        rows.forEach(function (tr) {
-            var show = !v || tr.getAttribute('data-status') === v;
-            tr.hidden = !show;
-            if (show) {
-                visible += 1;
+    <script>
+        (function() {
+            var sel = document.getElementById('ongoingBookingsStatusFilter');
+            var table = document.getElementById('ongoingBookingsTable');
+            var emptyRow = document.getElementById('ongoingBookingsEmptyFilter');
+            if (!sel || !table || !emptyRow) {
+                return;
             }
-        });
-        emptyRow.hidden = visible > 0;
-    }
-    sel.addEventListener('change', applyFilter);
-})();
-</script>
+
+            function applyFilter() {
+                var v = sel.value;
+                var rows = table.querySelectorAll('tbody tr[data-status]');
+                var visible = 0;
+                rows.forEach(function(tr) {
+                    var show = !v || tr.getAttribute('data-status') === v;
+                    tr.hidden = !show;
+                    if (show) {
+                        visible += 1;
+                    }
+                });
+                emptyRow.hidden = visible > 0;
+            }
+            sel.addEventListener('change', applyFilter);
+        })();
+    </script>
 <?php endif; ?>
 <?php require_once APPROOT . '/views/templates/client/client_layout_close.php'; ?>

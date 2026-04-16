@@ -71,7 +71,6 @@ require_once APPROOT . '/views/templates/client/c_sidebar.php';
             </div>
         </header>
 
-        <p class="client-payments-lead" role="note">Start with the summary below, then use <strong>Pay now</strong> when payment is available, or <strong>View details</strong> for the full breakdown.</p>
 
         <div class="summary-grid" aria-label="Payment summary">
             <div class="summary-card">
@@ -130,16 +129,6 @@ require_once APPROOT . '/views/templates/client/c_sidebar.php';
                 </div>
             </div>
         </form>
-
-         <div class="filter-panel-top-actions">
-                    <div class="filter-field filter-field--search filter-field--search-top">
-                        <label for="pay-filter-search">Search</label>
-                        <input type="text" id="pay-filter-search" name="search" form="clientPaymentsFilters" placeholder="Booking number, caregiver, or service"
-                            value="<?= htmlspecialchars($filters['search'] ?? '') ?>">
-                    </div>
-
-                    <button type="submit" form="clientPaymentsFilters" class="btn primary">Search</button>
-                </div>
 
         <div class="payments-toolbar">
             <p class="client-payments-tabs-hint text-muted">Choose a tab to change which list you are looking at. Your filters apply to the tables below.</p>

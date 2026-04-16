@@ -80,7 +80,7 @@ $settingsListUrl = URLROOT . '/public?url=hr/hr_settings';
 
                 <div class="field">
                     <label for="settings-new-password">New password<span class="required-mark" aria-hidden="true">*</span></label>
-                    <input id="settings-new-password" type="password" name="new_password" placeholder="Min. 8 chars, upper, lower, number" required autocomplete="new-password">
+                    <input id="settings-new-password" type="password" name="new_password" placeholder="Min. 8 chars: upper, lower, number, symbol" required autocomplete="new-password">
                 </div>
 
                 <div class="field">

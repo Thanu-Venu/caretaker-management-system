@@ -25,9 +25,9 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
 <body>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-  <main class="content settings-container">
+  <main class="content">
     <section class="page-header settings-page-header">
-      <h1 class="page-title" style="color: #1e88e5; font-size: 28px; font-weight: 600; margin-bottom: 20px;">Profile &amp; Settings</h1>
+      <h1 class="page-title">Profile &amp; Settings</h1>
     </section>
 
     <?php if (!empty($data['latestProfileChangeRequest'])): 
@@ -64,6 +64,7 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
         <h3>Profile Details</h3>
         <div class="profile-body">
             <img
+            id="profile_image"
             src="<?= URLROOT ?>/public/uploads/<?= $user['profile_image'] ?: 'default.jpg' ?>"
             alt="Profile"
             onerror="this.src='<?= URLROOT ?>/public/uploads/default.jpg';">
@@ -72,22 +73,22 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
             <div class="pro-section">
                 <div class="field">
                     <label for="name">Full Name</label>
-                    <input type="text" id="name" name="name" placeholder="Sarah Johnson" value="<?= htmlspecialchars($user['name']); ?>" <?= $isProfileRequestPending ? 'readonly' : '' ?>>
+                    <input type="text" id="name" name="name" placeholder="Sarah Johnson" value="<?= htmlspecialchars($user['name']); ?>" <?= $isProfileRequestPending ? 'readonly' : '' ?> required>
                 </div>
 
                 <div class="field">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email']); ?>" <?= $isProfileRequestPending ? 'readonly' : '' ?>>
+                    <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email']); ?>" <?= $isProfileRequestPending ? 'readonly' : '' ?> required>
                 </div>
 
                 <div class="field">
                     <label for="phone">Phone Number</label>
-                    <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($user['phone']); ?>" <?= $isProfileRequestPending ? 'readonly' : '' ?>>
+                    <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($user['phone']); ?>" <?= $isProfileRequestPending ? 'readonly' : '' ?> required>
                 </div>
 
                 <div class="field">
                     <label for="experience">Experience</label>
-                    <input type="text" id="experience" name="experience" value="<?= htmlspecialchars($user['experience'] ?? ''); ?>" <?= $isProfileRequestPending ? 'readonly' : '' ?>>
+                    <input type="text" id="experience" name="experience" value="<?= htmlspecialchars($user['experience'] ?? ''); ?>" <?= $isProfileRequestPending ? 'readonly' : '' ?> required>
                 </div>
 
                 <div class="field">
@@ -97,7 +98,7 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
 
                 <div class="field">
                     <label for="qualifications">Qualifications</label>
-                    <input type="text" id="qualifications" name="qualifications" value="<?= htmlspecialchars($user['qualifications'] ?? ''); ?>" <?= $isProfileRequestPending ? 'readonly' : '' ?>>
+                    <input type="text" id="qualifications" name="qualifications" value="<?= htmlspecialchars($user['qualifications'] ?? ''); ?>" <?= $isProfileRequestPending ? 'readonly' : '' ?> required>
                 </div>
 
                 <div class="form-actions">
@@ -136,9 +137,9 @@ $isProfileRequestPending = !empty($data['latestProfileChangeRequest']) &&
       </section>
 
     </div>
-  </div>
+  </main>
 
-  <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_setting.js"></script>
+  <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_settings.js"></script>
 </body>
 
 </html>
