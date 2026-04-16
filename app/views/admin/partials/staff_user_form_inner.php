@@ -29,7 +29,23 @@ $val = static function (string $key, string $default = '') use ($u): string {
   <?php if ($mode === 'add'): ?>
     <div class="field">
       <label for="<?= $fp ?>-password">Password<span class="required-mark" aria-hidden="true">*</span></label>
-      <input id="<?= $fp ?>-password" type="password" name="password" required placeholder="Min. 8 chars, upper, lower, number" autocomplete="new-password">
+      <div class="password-input-wrap">
+        <input id="<?= $fp ?>-password" type="password" name="password" required placeholder="eg:Thanushya#28" autocomplete="new-password">
+        <button type="button" class="password-toggle" aria-label="Show password" tabindex="0">
+          <i class="bx bx-hide" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  <?php else: ?>
+    <div class="field">
+      <label for="<?= $fp ?>-new-password">New password</label>
+      <div class="password-input-wrap">
+        <input id="<?= $fp ?>-new-password" type="password" name="new_password" autocomplete="new-password" >
+        <button type="button" class="password-toggle" aria-label="Show password" tabindex="0">
+          <i class="bx bx-hide" aria-hidden="true"></i>
+        </button>
+      </div>
+      <p class="field-hint">Optional. Leave blank to keep the current password.</p>
     </div>
   <?php endif; ?>
 
