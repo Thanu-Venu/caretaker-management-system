@@ -32,6 +32,7 @@ $complaintsList = $data['complaints'] ?? ($complaints ?? []);
                     <th>Category</th>
                     <th>Description</th>
                     <th>Registered</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -50,6 +51,18 @@ $complaintsList = $data['complaints'] ?? ($complaints ?? []);
                                 <?php else: ?>
                                     <?= htmlspecialchars((string) ($complaint['complaint_date'] ?? '')) ?>
                                 <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php
+                                    $status = strtolower((string)($complaint['status'] ?? 'pending'));
+                                    $statusClass = 'complaint-status';
+                                    if ($status === 'resolved') $statusClass .= ' resolved';
+                                    elseif ($status === 'rejected') $statusClass .= ' rejected';
+                                    elseif ($status === 'in progress' || $status === 'inprogress') $statusClass .= ' inprogress';
+                                ?>
+                                <span class="<?= $statusClass ?>">
+                                    <?= ucfirst($status) ?>
+                                </span>
                             </td>
                         </tr>
                     <?php endforeach; ?>

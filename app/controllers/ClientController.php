@@ -244,7 +244,7 @@ class ClientController extends Controller
         $clientModel = $this->model('ClientModel');
         $clientId = AuthSession::profileId();
 
-        $bookingId = $_POST['booking_Id'];
+        $bookingId = $_POST['booking_id'];
 
         // Validate booking ownership (prevents IDOR)
         $this->assertBookingOwnership($bookingId, $clientId, URLROOT . "/client/c_pastBookings");
@@ -273,6 +273,16 @@ class ClientController extends Controller
         ];
 
         $clientModel->addFeedback($data);
+
+        // Notify caretaker about new feedback
+        $notifModel = $this->model('NotificationModel');
+        $notifModel->addNotification(
+            $caretakerId,
+            'caretaker',
+            'New Feedback Received',
+            'You have received new feedback from a client.',
+            URLROOT . '/caretaker/feedback_list'
+        );
 
         $_SESSION['success'] = "Feedback submitted successfully!";
         header("Location: " . URLROOT . "/client/c_pastBookings");
