@@ -48,7 +48,10 @@ class HrLeaveController extends Controller
     // HR leave list
     public function index()
     {
-        $this->requireManager();
+        if (!isset($_SESSION['user'])) {
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
 
         $perPage = 10;
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -76,7 +79,10 @@ class HrLeaveController extends Controller
     // Show approve screen (choose replacement + see affected bookings)
     public function approve_form($leaveId)
     {
-        $this->requireManager(); // or your Manager check
+        if (!isset($_SESSION['user'])) {
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
 
         $leaveId = (int)$leaveId;
         $leave = $this->leaveModel->getLeaveById($leaveId);
@@ -112,7 +118,10 @@ class HrLeaveController extends Controller
     // POST: approve + reassign
     public function approve_submit()
     {
-        $this->requireManager();
+        if (!isset($_SESSION['user'])) {
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: " . URLROOT . "/HrLeave/index");
@@ -143,10 +152,13 @@ class HrLeaveController extends Controller
         exit;
     }
 
-    // Reject (legacy GET — kept for old links)
+    // Reject (legacy GET - kept for old links)
     public function reject($leaveId)
     {
-        $this->requireManager();
+        if (!isset($_SESSION['user'])) {
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
         $leave = $this->leaveModel->getLeaveById((int) $leaveId);
         if (!$leave || $leave->status !== 'Pending') {
             header("Location: " . URLROOT . "/HrLeave/index");
@@ -173,7 +185,10 @@ class HrLeaveController extends Controller
     /** POST: reject with HR note (preferred from leave list UI). */
     public function reject_submit()
     {
-        $this->requireManager();
+        if (!isset($_SESSION['user'])) {
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: " . URLROOT . "/HrLeave/index");
