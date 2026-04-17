@@ -1,0 +1,311 @@
+/* Caretaker Ongoing Bookings Page Styles */
+.ongoing-bookings {
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.bookings-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+}
+
+.booking-card.ongoing {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    background: white;
+    transition: box-shadow 0.2s ease;
+}
+
+.booking-card.ongoing:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.booking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.booking-info h3 {
+    margin: 0;
+    color: #2d3748;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.booking-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+}
+
+.progress-bar {
+    width: 120px;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #38b2ac, #319795);
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 0.75rem;
+    color: #718096;
+    font-weight: 500;
+}
+
+.booking-content {
+    margin-bottom: 1.5rem;
+}
+
+.client-info h4 {
+    margin: 0 0 0.5rem 0;
+    color: #2d3748;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.client-contact,
+.client-phone {
+    color: #718096;
+    font-size: 0.875rem;
+    margin: 0.25rem 0;
+}
+
+.service-details {
+    margin: 1rem 0;
+}
+
+.service-type {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.75rem;
+}
+
+.service-icon {
+    font-size: 1.25rem;
+}
+
+.schedule {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.schedule > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4a5568;
+    font-size: 0.875rem;
+}
+
+.schedule .icon {
+    font-size: 1rem;
+}
+
+.location-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4a5568;
+    font-size: 0.875rem;
+    margin: 1rem 0;
+}
+
+.special-notes {
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+    margin: 1rem 0;
+}
+
+.special-notes strong {
+    color: #4a5568;
+    font-size: 0.875rem;
+}
+
+.special-notes p {
+    margin: 0.5rem 0 0 0;
+    color: #718096;
+    font-size: 0.875rem;
+}
+
+.booking-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.btn {
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-success {
+    background: #38a169;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #2f855a;
+}
+
+.btn-primary {
+    background: #3182ce;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2c5282;
+}
+
+.btn-warning {
+    background: #d69e2e;
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #b7791f;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #4a5568;
+    border: 1px solid #cbd5e0;
+}
+
+.btn-outline:hover {
+    background: #f7fafc;
+    border-color: #a0aec0;
+}
+
+.service-timeline {
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    padding: 1rem;
+}
+
+.service-timeline h5 {
+    margin: 0 0 1rem 0;
+    color: #4a5568;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.timeline-item {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-marker {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #cbd5e0;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.timeline-item.completed .timeline-marker {
+    background: #38a169;
+}
+
+.timeline-item.active .timeline-marker {
+    background: #3182ce;
+}
+
+.timeline-item.pending .timeline-marker {
+    background: #cbd5e0;
+}
+
+.timeline-content {
+    flex: 1;
+}
+
+.timeline-content strong {
+    display: block;
+    color: #4a5568;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.timeline-content p {
+    margin: 0;
+    color: #718096;
+    font-size: 0.75rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: #718096;
+    margin-bottom: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .bookings-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .booking-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .booking-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+}

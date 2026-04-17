@@ -80,7 +80,7 @@ if (!empty($_SESSION['user']['profile_image'])) {
                     <i class="fa-solid fa-user" aria-hidden="true"></i>
                     <span>Profile &amp; settings</span>
                 </a>
-                <a href="<?= URLROOT ?>/index.php?url=auth/logout" class="profile-menu-item profile-menu-item--logout" role="menuitem">
+                <a href="<?= URLROOT ?>/public/?url=auth/logout" class="profile-menu-item profile-menu-item--logout" role="menuitem">
                     <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
                     <span>Logout</span>
                 </a>

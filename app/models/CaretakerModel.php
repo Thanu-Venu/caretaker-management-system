@@ -520,7 +520,6 @@ AND NOT EXISTS (
             JOIN clients c ON c.id = b.client_id
             WHERE b.caretaker_id = ? 
               AND b.status IN ('Accepted', 'Payment_Requested', 'Advance_Paid')
-              AND b.booking_date > CURDATE()
             ORDER BY b.booking_date ASC";
 
         $stmt = $this->conn->prepare($sql);
@@ -999,7 +998,7 @@ public function getComplaintsByCaretaker($caretaker_id)
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    // Fetch bookings for FullCalendar
+   // Fetch bookings for FullCalendar
     public function getScheduleByCaretaker($caretakerId)
     {
         // Select additional fields so the frontend modal can show payment/location/duration
@@ -1042,5 +1041,23 @@ public function getComplaintsByCaretaker($caretaker_id)
         }
 
         return $events;
+    }
+
+    // Get replacement cover assignments for caretaker
+    public function getReplacementCoverAssignments($caretakerId)
+    {
+        $sql = "SELECT DISTINCT br.reassignment_id, br.start_date, br.end_date, b.client_id, c.name as client_name, 
+                        b.service_type, b.preferred_time, b.service_location, b.status, br.covered_for_caretaker_name
+                        FROM booking_reassignments br
+                        JOIN bookings b ON br.booking_id = b.id
+                        JOIN clients c ON c.id = b.client_id
+                        WHERE br.new_caretaker_id = ?
+                        AND b.status IN ('Accepted', 'Payment_Requested', 'Advance_Paid')
+                        AND b.booking_date > CURDATE()
+                        ORDER BY br.start_date ASC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 }

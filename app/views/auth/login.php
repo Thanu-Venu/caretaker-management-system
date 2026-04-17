@@ -29,7 +29,7 @@
                     <?php echo htmlspecialchars($data['error']); ?>
                 </div>
             <?php endif; ?>
-            <form action="http://localhost/CMA/public/?url=auth/login" method="POST">
+            <form action="<?php echo URLROOT; ?>/public/?url=auth/login" method="POST">
                 <div class="input-box">
                     <label>Email Address</label>
                     <input type="text" name="email" required>
@@ -52,9 +52,9 @@
                 <button type="submit" class="btn">Sign in</button>
             </form>
 
-            <p class="signup">Don't have an account? <a href="http://localhost/CMA/public/?url=auth/register">Sign up
+            <p class="signup">Don't have an account? <a href="<?php echo URLROOT; ?>/public/?url=auth/register">Sign up
                     here</a></p>
-            <a href="/CMA/public/" class="back-home">← Back to Home</a>
+            <a href="<?php echo URLROOT; ?>/public/" class="back-home">← Back to Home</a>
         </div>
     </div>
 
