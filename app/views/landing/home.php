@@ -131,7 +131,7 @@ $mheroSlides = [
             </h1>
             <p class="mhero-lead">We deliver reliable elder care, babysitting, and home support — coordinated by our office, flexible plans, and help when you need it.</p>
             <div class="mhero-actions">
-              <a class="mhero-btn mhero-btn--dark animate" href="#contact">Request care <i class='bx bx-right-arrow-alt' aria-hidden="true"></i></a>
+              <a class="mhero-btn mhero-btn--dark animate" href="<?php echo URLROOT; ?>/public/index.php?url=auth/login">Request care <i class='bx bx-right-arrow-alt' aria-hidden="true"></i></a>
               <a class="mhero-btn mhero-btn--ghost animate" href="#about">Learn more</a>
             </div>
           </div>
