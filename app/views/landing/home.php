@@ -591,54 +591,46 @@ $mheroSlides = [
   </section>
 
   <!-- TESTIMONIALS -->
+  <?php
+  $landingTestimonials = (isset($landingTestimonials) && is_array($landingTestimonials)) ? $landingTestimonials : [];
+  ?>
   <section class="testimonials" data-scroll-reveal data-reveal-stagger="122" aria-label="Testimonials">
     <div class="container">
       <h2 class="section-title animate">What Families Say</h2>
       <p class="section-sub animate">Real experiences from families who used SmartCare services.</p>
 
+      <?php if (empty($landingTestimonials)): ?>
+        <p class="t-empty animate">Client reviews will appear here after families submit feedback for completed visits.</p>
+      <?php else: ?>
       <div class="t-grid">
+        <?php foreach ($landingTestimonials as $t):
+          $tName = trim((string) ($t['client_name'] ?? ''));
+          $tLoc = trim((string) ($t['location'] ?? ''));
+          $tQuote = trim((string) ($t['quote'] ?? ''));
+          $tRating = (int) ($t['rating'] ?? 0);
+          $tRating = max(1, min(5, $tRating));
+          $tImg = (string) ($t['image_url'] ?? '');
+          $starsFilled = str_repeat('★', $tRating);
+          $starsEmpty = str_repeat('☆', 5 - $tRating);
+          ?>
         <div class="t-card animate">
           <div class="t-head">
             <div class="t-user">
-              <div class="avatar avatar-photo" aria-hidden="true"><img src="https://i.pravatar.cc/80?img=32" alt="" width="40" height="40" loading="lazy" decoding="async"></div>
+              <div class="avatar avatar-photo" aria-hidden="true">
+                <img src="<?= htmlspecialchars($tImg, ENT_QUOTES, 'UTF-8'); ?>" alt="" width="40" height="40" loading="lazy" decoding="async">
+              </div>
               <div>
-                <b>Olivia Bennett</b>
-                <small>Colombo</small>
+                <b><?= htmlspecialchars($tName !== '' ? $tName : 'SmartCare client', ENT_QUOTES, 'UTF-8'); ?></b>
+                <small><?= htmlspecialchars($tLoc !== '' ? $tLoc : 'Sri Lanka', ENT_QUOTES, 'UTF-8'); ?></small>
               </div>
             </div>
-            <div class="stars">★★★★★</div>
+            <div class="stars" aria-label="<?= $tRating; ?> out of 5 stars"><?= $starsFilled . $starsEmpty; ?></div>
           </div>
-          <p>“SmartCare assigned a kind, reliable elder carer quickly. The office kept us informed and support was helpful.”</p>
+          <p>“<?= htmlspecialchars($tQuote, ENT_QUOTES, 'UTF-8'); ?>”</p>
         </div>
-
-        <div class="t-card animate">
-          <div class="t-head">
-            <div class="t-user">
-              <div class="avatar avatar-photo" aria-hidden="true"><img src="https://i.pravatar.cc/80?img=12" alt="" width="40" height="40" loading="lazy" decoding="async"></div>
-              <div>
-                <b>Liam Harper</b>
-                <small>Gampaha</small>
-              </div>
-            </div>
-            <div class="stars">★★★★☆</div>
-          </div>
-          <p>“The sitter from SmartCare was excellent and attentive. We felt safe leaving our child in her care.”</p>
-        </div>
-
-        <div class="t-card animate">
-          <div class="t-head">
-            <div class="t-user">
-              <div class="avatar avatar-photo" aria-hidden="true"><img src="https://i.pravatar.cc/80?img=45" alt="" width="40" height="40" loading="lazy" decoding="async"></div>
-              <div>
-                <b>Sofia James</b>
-                <small>Kandy</small>
-              </div>
-            </div>
-            <div class="stars">★★★★★</div>
-          </div>
-          <p>“Home support through SmartCare was a lifesaver—the helper kept everything clean and meals on time.”</p>
-        </div>
+        <?php endforeach; ?>
       </div>
+      <?php endif; ?>
     </div>
   </section>
 
@@ -826,14 +818,6 @@ $mheroSlides = [
         }, MHERO_AUTO_MS);
       }
 
-      let autoSlide = null;
-
-function startAutoSlide() {
-  autoSlide = setInterval(() => {
-    applySlide(cur + 1);
-  }, 4000); // change speed here (4000ms = 4s)
-}
-
       function applySlide(index, opts = {}) {
         const initial = Boolean(opts.initial);
         cur = (index + slides.length) % slides.length;
@@ -895,8 +879,10 @@ function startAutoSlide() {
         startMheroAuto();
       }
 
-      prev.addEventListener("click", () => mheroNav(-1));
-      next.addEventListener("click", () => mheroNav(1));
+      const mheroPrev = document.getElementById("mheroPagerPrev");
+      const mheroNext = document.getElementById("mheroPagerNext");
+      mheroPrev?.addEventListener("click", () => mheroNav(-1));
+      mheroNext?.addEventListener("click", () => mheroNav(1));
       pager?.addEventListener("keydown", (e) => {
         if (e.key === "ArrowLeft") {
           e.preventDefault();
