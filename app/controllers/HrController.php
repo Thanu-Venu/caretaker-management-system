@@ -124,6 +124,14 @@ class HrController extends Controller
         // client complaints (from complaints table)
         $clientComplaints = $this->complaintModel->getAllComplaints();
 
+        // Debug: Check if data is loaded
+        error_log("CT Complaints count: " . count($ctComplaints));
+        error_log("Client Complaints count: " . count($clientComplaints));
+        
+        if (!empty($ctComplaints)) {
+            error_log("First CT Complaint: " . print_r($ctComplaints[0], true));
+        }
+
         $this->view("hr/hr_complaint", [
             'ct_complaints' => $ctComplaints,
             'complaints'    => $clientComplaints

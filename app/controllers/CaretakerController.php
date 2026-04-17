@@ -466,12 +466,17 @@ public function ct_complaints()
         return true;
     }));
 
+    // Generate form token to prevent duplicate submissions
+    $formToken = bin2hex(random_bytes(32));
+    $_SESSION['complaint_form_token'] = $formToken;
+
     $data = [
         'clients' => $this->caretakerModel->getClients($caretakerId),
         'resolvedComplaints' => $resolvedComplaints,
         'filters' => $filters,
         'serviceTypeOptions' => $serviceTypeOptions,
         'statusOptions' => $statusOptions,
+        'form_token' => $formToken,
     ];
 
     $this->view('caretaker/ct_complaints', $data);
@@ -505,6 +510,18 @@ public function saveComplaint()
 {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
+        // Check for duplicate submission using session token
+        $formToken = $_POST['form_token'] ?? '';
+        $sessionToken = $_SESSION['complaint_form_token'] ?? '';
+        
+        if (!$formToken || $formToken !== $sessionToken) {
+            echo "error";
+            exit;
+        }
+        
+        // Clear the token to prevent reuse
+        unset($_SESSION['complaint_form_token']);
+
         $data = [
             'caretaker_id' => AuthSession::profileId(),
             'client_id' => $_POST['client_id'],
@@ -513,9 +530,13 @@ public function saveComplaint()
             'description' => $_POST['description']
         ];
 
-        $this->caretakerModel->addComplaint($data);
+        $result = $this->caretakerModel->addComplaint($data);
 
-        echo "success";
+        if ($result) {
+            echo "success";
+        } else {
+            echo "error";
+        }
     }
 }
     public function ct_reports()

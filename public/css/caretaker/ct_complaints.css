@@ -20,6 +20,64 @@ body {
   box-sizing: border-box;
   font-family: 'Poppins', Arial, sans-serif;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.complaint-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: calc(var(--admin-header-height, 52px) + 20px) 16px 16px;
+  background: rgba(15, 23, 42, 0.4);
+}
+
+.complaint-popup__card {
+  width: min(560px, 100%);
+  border-radius: 14px;
+  border: 1px solid #d8e6f4;
+  background: #fff;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.18);
+  padding: 22px;
+}
+
+.complaint-popup__title {
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f3555;
+}
+
+.complaint-popup__message {
+  margin: 0;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.complaint-popup__btn {
+  margin-top: 16px;
+}
+
+.complaint-popup.is-success .complaint-popup__card {
+  border-color: #9fe7bf;
+}
+
+.complaint-popup.is-success .complaint-popup__title {
+  color: #0f766e;
+}
+
+.complaint-popup.is-error .complaint-popup__card {
+  border-color: #f5c6cb;
+}
+
+.complaint-popup.is-error .complaint-popup__title {
+  color: #b91c1c;
+}
 }
 
 .content.complaint-container .complaints-past-heading {
