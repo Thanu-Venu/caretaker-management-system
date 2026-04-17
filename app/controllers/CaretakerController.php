@@ -119,6 +119,20 @@ class CaretakerController extends Controller
             'rating' => (float)($caretaker['rating'] ?? 0)
         ];
 
+        // Prepare leave dates for calendar
+        $leaveDates = [];
+        foreach ($leaves as $leave) {
+            if (strtolower($leave['status']) === 'approved') {
+                $start = new DateTime($leave['start_date']);
+                $end = new DateTime($leave['end_date']);
+                $current = clone $start;
+                while ($current <= $end) {
+                    $leaveDates[] = $current->format('Y-m-d');
+                    $current->modify('+1 day');
+                }
+            }
+        }
+
         // Pass everything to view
         $this->view("caretaker/ct_dashboard", [
             'caretaker' => $caretaker,
@@ -127,6 +141,7 @@ class CaretakerController extends Controller
             'latestProfileChangeRequest' => $latestProfileChangeRequest,
             'leaveMonthlySummary' => $leaveMonthlySummary,
             'workingDates' => array_keys($workingDateSet),
+            'leaveDates' => $leaveDates,
             'monthlyStats' => $monthlyStats,
             'calendarYear' => (int)$today->format('Y'),
             'calendarMonth' => (int)$today->format('n')
@@ -327,7 +342,32 @@ class CaretakerController extends Controller
 
     public function ct_schedule()
     {
-        $this->view("caretaker/ct_schedule");
+        $userId = AuthSession::profileId();
+        
+        // Get leaves for calendar display
+        $leaves = $this->leaveModel->getLeavesByUser($userId);
+        
+        // Prepare leave dates for calendar
+        $leaveDates = [];
+        foreach ($leaves as $leave) {
+            if (strtolower($leave['status']) === 'approved') {
+                $start = new DateTime($leave['start_date']);
+                $end = new DateTime($leave['end_date']);
+                $current = clone $start;
+                while ($current <= $end) {
+                    $leaveDates[] = $current->format('Y-m-d');
+                    $current->modify('+1 day');
+                }
+            }
+        }
+        
+        $today = new DateTime(date('Y-m-d'));
+        
+        $this->view("caretaker/ct_schedule", [
+            'leaveDates' => $leaveDates,
+            'calendarYear' => (int)$today->format('Y'),
+            'calendarMonth' => (int)$today->format('n')
+        ]);
     }
 
     public function getScheduleEvents()
@@ -336,8 +376,47 @@ class CaretakerController extends Controller
 
         $caretakerId = AuthSession::profileId();
         $bookings = $this->caretakerModel->getAllActiveBookings($caretakerId);
+        
+        // Get approved leave dates and reassignments first
+        $leaves = $this->leaveModel->getLeavesByUser($caretakerId);
+        $leaveDates = [];
+        $reassignedDates = [];
+        
+        // Collect leave dates
+        foreach ($leaves as $leave) {
+            if (strtolower($leave['status']) === 'approved') {
+                $start = new DateTime($leave['start_date']);
+                $end = new DateTime($leave['end_date']);
+                $current = clone $start;
+                while ($current <= $end) {
+                    $leaveDates[$current->format('Y-m-d')] = $leave;
+                    $current->modify('+1 day');
+                }
+            }
+        }
+        
+        // Collect reassigned dates from booking_reassignments table
+        $reassignmentsSql = "SELECT DISTINCT br.start_date, br.end_date 
+                            FROM booking_reassignments br 
+                            WHERE br.old_caretaker_id = ?";
+        $reassignStmt = $this->caretakerModel->conn->prepare($reassignmentsSql);
+        $reassignStmt->bind_param("i", $caretakerId);
+        $reassignStmt->execute();
+        $reassignResult = $reassignStmt->get_result();
+        
+        while ($row = $reassignResult->fetch_assoc()) {
+            $start = new DateTime($row['start_date']);
+            $end = new DateTime($row['end_date']);
+            $current = clone $start;
+            while ($current <= $end) {
+                $reassignedDates[$current->format('Y-m-d')] = true;
+                $current->modify('+1 day');
+            }
+        }
 
         $events = [];
+        
+        // Add booking events (only for dates without approved leave)
         foreach ($bookings as $booking) {
             // Format duration display
             $durationText = $booking['duration'] . ' ' . ucfirst($booking['basis']);
@@ -392,6 +471,14 @@ class CaretakerController extends Controller
             $eventId = 0;
 
             while ($currentDate <= $inclusiveEndDate) {
+                $currentDateStr = $currentDate->format('Y-m-d');
+                
+                // Skip booking events on leave dates or reassigned dates
+                if (isset($leaveDates[$currentDateStr]) || isset($reassignedDates[$currentDateStr])) {
+                    $currentDate->modify('+1 day');
+                    continue;
+                }
+                
                 $dateRange = $startDate->format('Y-m-d');
                 if ($startDate->format('Y-m-d') !== $inclusiveEndDate->format('Y-m-d')) {
                     $dateRange .= ' to ' . $inclusiveEndDate->format('Y-m-d');
@@ -418,8 +505,8 @@ class CaretakerController extends Controller
                 $events[] = [
                     'id' => $booking['booking_id'] . '_' . $eventId,
                     'title' => $booking['client_name'] . ' - ' . $booking['service_type'],
-                    'start' => $currentDate->format('Y-m-d'),
-                    'end' => $currentDate->format('Y-m-d'), // Single day event
+                    'start' => $currentDateStr,
+                    'end' => $currentDateStr, // Single day event
                     'allDay' => true,
                     'backgroundColor' => $backgroundColor,
                     'borderColor' => $borderColor,
@@ -431,13 +518,34 @@ class CaretakerController extends Controller
                         'dateRange' => $dateRange,
                         'location' => $booking['service_location'],
                         'status' => $booking['status'],
-                        'bookingId' => $booking['booking_id']
+                        'bookingId' => $booking['booking_id'],
+                        'eventType' => 'booking'
                     ]
                 ];
 
                 $currentDate->modify('+1 day');
                 $eventId++;
             }
+        }
+        
+        // Add leave events
+        foreach ($leaveDates as $date => $leave) {
+            $events[] = [
+                'id' => 'leave_' . $leave['id'] . '_' . $date,
+                'title' => 'Leave',
+                'start' => $date,
+                'end' => $date,
+                'allDay' => true,
+                'backgroundColor' => '#ffebee',
+                'borderColor' => '#ef9a9a',
+                'textColor' => '#c62828',
+                'extendedProps' => [
+                    'eventType' => 'leave',
+                    'leaveType' => $leave['leave_type'],
+                    'reason' => $leave['reason'],
+                    'leaveId' => $leave['id']
+                ]
+            ];
         }
 
         echo json_encode($events);

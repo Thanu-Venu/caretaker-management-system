@@ -592,6 +592,7 @@ AND NOT EXISTS (
         $updateStmt->close();
 
         // Get only bookings that caretaker should see in schedule (from assignment until completion)
+        // Exclude bookings that have been reassigned to another caretaker
         $sql = "SELECT
                 b.id AS booking_id,
                 b.booking_date,
@@ -612,10 +613,17 @@ AND NOT EXISTS (
             JOIN clients c ON c.id = b.client_id
             WHERE b.caretaker_id = ?
             AND b.status IN ('Payment_Requested', 'Advance_Paid', 'Accepted', 'Completed')
+            AND NOT EXISTS (
+                SELECT 1 
+                FROM booking_reassignments br 
+                WHERE br.booking_id = b.id 
+                AND br.old_caretaker_id = ?
+                AND CURDATE() BETWEEN br.start_date AND br.end_date
+            )
             ORDER BY b.booking_date ASC";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $caretakerId);
+        $stmt->bind_param("ii", $caretakerId, $caretakerId);
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
