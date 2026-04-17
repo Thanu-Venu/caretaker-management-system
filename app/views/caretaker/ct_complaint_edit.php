@@ -56,4 +56,29 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
 
 </main>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const clientSelect = document.getElementById('clientName');
+    const serviceTypeSelect = document.getElementById('serviceType');
+    const dateOfServiceInput = document.getElementById('dateOfService');
+    
+    clientSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const serviceType = selectedOption.getAttribute('data-service');
+        const bookingDate = selectedOption.getAttribute('data-booking-date');
+        const bookingTime = selectedOption.getAttribute('data-time');
+        
+        // Auto-fill service type
+        if (serviceType) {
+            serviceTypeSelect.value = serviceType;
+        }
+        
+        // Auto-fill date of service
+        if (bookingDate) {
+            dateOfServiceInput.value = bookingDate;
+        }
+    });
+});
+</script>
+
 <?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>
