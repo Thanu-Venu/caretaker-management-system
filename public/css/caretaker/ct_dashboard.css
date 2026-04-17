@@ -1,184 +1,452 @@
-/* Caretaker dashboard - layout matching client dashboard structure */
+/* Caretaker dashboard — layout and styling matching client dashboard structure */
 
 .main-content.admin-dashboard-page.caretaker-dashboard-page {
-    margin-left: calc(
-        var(--admin-sidebar-width, 260px) + var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px)
-    );
+    margin-left: calc(var(--admin-sidebar-width, 260px) + var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px));
     margin-right: calc(var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px));
     margin-top: var(--admin-header-height, 60px);
     margin-bottom: 24px;
     padding-top: 24px;
     min-width: 0;
     overflow-x: clip;
-    background: #f8fafc;
 }
 
 @media (min-width: 1024px) {
     body.admin-sidebar-collapsed > .main-content.admin-dashboard-page.caretaker-dashboard-page,
     body.admin-sidebar-collapsed > header.main-header ~ .main-content.admin-dashboard-page.caretaker-dashboard-page {
-        margin-left: calc(
-            var(--admin-sidebar-rail-width, 72px) * 2 + var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px)
-        );
-        margin-right: calc(
-            var(--admin-sidebar-rail-width, 72px) + var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px)
-        );
+        margin-left: calc(var(--admin-sidebar-rail-width, 72px) * 2 + var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px));
+        margin-right: calc(var(--admin-sidebar-rail-width, 72px) + var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px));
     }
 }
 
-.caretaker-dashboard-page .dashboard-layout {
-    max-width: none;
-    width: 100%;
+.caretaker-dashboard {
     margin: 0;
-    padding-left: 0;
-    padding-right: 0;
-}
-
-.caretaker-dashboard-page .dashboard-layout {
+    padding: 0;
+    flex: 1;
+    background-color: transparent; 
     display: flex;
     flex-direction: column;
     gap: 22px;
 }
 
-.caretaker-dashboard-page .page-header {
-    background: white;
-    border-radius: 18px;
-    padding: 18px 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.caretaker-dashboard-page .dashboard-review-badges {
-    background: white;
-    border-radius: 18px;
-    padding: 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.caretaker-dashboard-page .dashboard-review-badges__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
-    margin-top: 16px;
-}
-
-.caretaker-dashboard-page .dashboard-review-badge {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 16px;
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.2s ease;
-}
-
-.caretaker-dashboard-page .dashboard-review-badge:hover {
-    border-color: #cbd5e1;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.caretaker-dashboard-page .dashboard-review-badge__label {
-    font-size: 12px;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
-}
-
-.caretaker-dashboard-page .dashboard-review-badge__value {
-    font-size: 24px;
-    font-weight: 600;
-    color: #1e293b;
-    margin-bottom: 4px;
-}
-
-.caretaker-dashboard-page .dashboard-review-badge__hint {
-    font-size: 13px;
-    color: #64748b;
-    margin-bottom: 8px;
-}
-
-.caretaker-dashboard-page .dashboard-review-badge__cta {
-    font-size: 12px;
-    color: #3b82f6;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.caretaker-dashboard-page .dashboard-overview-charts__grid {
-    width: 100%;
-    margin: 0;
-    align-items: stretch;
-}
-
-.caretaker-dashboard-page .ct-overview-grid > .dashboard-chart-card {
-    min-width: 0;
-}
-
-/* Give table card more room on wide displays. */
-@media (min-width: 1101px) {
-  .caretaker-dashboard-page .ct-overview-grid {
-    grid-template-columns: minmax(0, 1.65fr) minmax(0, 1.25fr) !important;
-  }
-}
-
-.caretaker-dashboard-page .dashboard-page-header {
-  margin-bottom: 24px;
-}
-
-.caretaker-dashboard-page .dashboard-review-badges,
-.caretaker-dashboard-page .dashboard-shortcut-tiles,
-.caretaker-dashboard-page .dashboard-stats,
-.caretaker-dashboard-page .dashboard-overview-charts {
-  margin-bottom: 24px;
-}
-
-.caretaker-dashboard-page .card-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.caretaker-dashboard-page .table-container {
-  overflow-x: auto;
-}
-
-.caretaker-dashboard-page .table {
-  width: 100%;
-  min-width: 820px;
+/* ===================== Hero Section ===================== */
+.caretaker-dashboard-hero {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    min-height: 410px;
+    background-image:
+        linear-gradient(105deg, rgba(24, 119, 204, 0.84) 0%, rgba(62, 164, 222, 0.62) 52%, rgba(35, 169, 165, 0.56) 100%),
+        url('../../images/hero.png');
+    background-size: cover;
+    background-position: 56% 22%;
+    box-shadow: 0 22px 48px rgba(15, 23, 42, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.26);
 }
 
 @media (max-width: 1023px) {
-  .caretaker-dashboard-page .dashboard-layout {
-    padding-left: clamp(10px, 3vw, 18px);
-    padding-right: clamp(10px, 3vw, 18px);
-  }
+    .caretaker-dashboard-hero {  background-position: center; }
 }
 
-@media (max-width: 767px) {
-  .caretaker-dashboard-page .dashboard-layout {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
+.caretaker-dashboard-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(7, 44, 79, 0.26) 0%, rgba(7, 44, 79, 0.03) 62%);
+    pointer-events: none;
+}
 
-  .caretaker-dashboard-page .dashboard-stats.stats-grid,
-  .caretaker-dashboard-page .dashboard-shortcut-tiles__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.caretaker-dashboard-hero__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: inherit;
+    padding: clamp(1.6rem, 2.8vw, 2.6rem) clamp(1.1rem, 2.8vw, 2.8rem);
+    gap: 1.8rem;
+}
 
-  .caretaker-dashboard-page .dashboard-review-badges {
-    padding-left: 0;
-  }
+.caretaker-dashboard-hero__intro {
+    width: min(100%, 58rem);
+    text-align: center;
+}
 
-  .caretaker-dashboard-page .dashboard-review-badges::before {
-    display: none;
-  }
+.caretaker-dashboard-hero__title {
+    margin: 0 0 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.12rem;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.caretaker-dashboard-hero__greeting {
+    font-size: clamp(1.15rem, 2.3vw, 1.55rem);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.88);
+    letter-spacing: 0.02em;
+    text-shadow: 0 1px 14px rgba(15, 23, 42, 0.35);
+}
+
+.caretaker-dashboard-hero__name {
+    font-size: clamp(2rem, 4.8vw, 3.2rem);
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 2px 24px rgba(15, 23, 42, 0.35);
+}
+
+.caretaker-dashboard-hero__lead {
+    margin: 0 auto 1.45rem;
+    font-size: clamp(1rem, 1.6vw, 1.28rem);
+    line-height: 1.6;
+    color: rgba(248, 250, 252, 0.94);
+    max-width: 46rem;
+}
+
+.caretaker-dashboard-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.65rem;
+    margin-bottom: 1.2rem;
+}
+
+/* Hero CTAs */
+.caretaker-dashboard-hero__btn-primary,
+.caretaker-dashboard-hero__btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 52px;
+    padding: 0 1.35rem;
+    font-size: 0.98rem;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: var(--admin-radius);
+    transition: all 0.2s ease;
+}
+
+.caretaker-dashboard-hero .caretaker-dashboard-hero__btn-primary.btn {
+    background: #fff !important;
+    color: #0f3555 !important;
+    border: 1px solid rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 2px 14px rgba(15, 23, 42, 0.12);
+}
+
+.caretaker-dashboard-hero .caretaker-dashboard-hero__btn-primary.btn:hover {
+    background: #f8fafc !important;
+    color: #0a2744 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 22px rgba(15, 23, 42, 0.16);
+}
+
+.caretaker-dashboard-hero .caretaker-dashboard-hero__btn-secondary.btn.secondary {
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, 0.55) !important;
+}
+
+.caretaker-dashboard-hero .caretaker-dashboard-hero__btn-secondary.btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.22) !important;
+    border-color: rgba(255, 255, 255, 0.9) !important;
+    transform: translateY(-2px);
+}
+
+.caretaker-dashboard-hero__highlights {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.7rem;
+}
+
+.caretaker-dashboard-hero__highlight-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.7rem 0.82rem;
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.17);
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    backdrop-filter: blur(5px);
+    text-align: left;
+}
+
+.caretaker-dashboard-hero__highlight-link {
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.caretaker-dashboard-hero__highlight-link:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.55);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+}
+
+.caretaker-dashboard-scroll-target {
+    scroll-margin-top: calc(var(--admin-header-height, 60px) + 18px);
+}
+
+.caretaker-dashboard-hero__highlight-item i {
+    font-size: 1.1rem;
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.22);
+    flex-shrink: 0;
+}
+
+.caretaker-dashboard-hero__highlight-value {
+    margin: 0.1rem 0 0;
+    font-size: 1.02rem;
+    color: #fff;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* ===================== Stats Cards ===================== */
+.stats-cards {
+    --stats-card-min-width: 190px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--stats-card-min-width)), 1fr));
+    gap: clamp(12px, 1.2vw, 18px);
+    margin-bottom: 30px;
+}
+
+@media (min-width: 1400px) {
+    .stats-cards { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+.stats-cards h2 {
+    grid-column: 1 / -1;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.stats-cards .card {
+    background: #fff;
+    padding: 22px 16px;
+    min-width: 0;
+    border-radius: 18px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    transition: all 0.35s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.stats-cards .card:hover {
+    transform: translateY(-10px) scale(1.02);
+    background: linear-gradient(145deg, #e3f2fd, #ffffff);
+}
+
+.stats-cards h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 10px 0 4px;
+    color: #111;
+}
+
+.stats-cards p {
+    font-size: 13px;
+    color: #777;
+    margin: 0;
+}
+
+.action1 i {
+    font-size: 22px;
+    padding: 10px;
+    border-radius: 14px;
+    background: #e3f2fd;
+    color: #0d89ec;
+    transition: transform 0.3s;
+}
+
+.action1 i:hover { transform: scale(1.1); }
+
+/* ===================== Quick Actions ===================== */
+.quick-actions {
+    margin-bottom: 30px;
+}
+
+.quick-actions h2 {
+    margin: 0 0 16px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--admin-text);
+}
+
+.quick-actions .actions {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.quick-actions .action {
+    background: var(--admin-surface-glass, #fff);
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: var(--admin-radius, 12px);
+    min-width: 100px;
+    min-height: 180px;
+    box-shadow: var(--admin-shadow, 0 1px 3px rgba(0,0,0,0.1));
+    padding: 16px 14px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 24px;
+    transition: transform 0.2s ease, box-shadow 0.2s;
+}
+
+.quick-actions .action:hover {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-color: #90caf9;
+    transform: translateY(-2px);
+}
+
+.quick-actions .action > i {
+    font-size: 1.25rem;
+    color: var(--admin-primary, #1e88e5);
+    margin: 0;
+    display: block;
+}
+
+.quick-actions .action h3 { margin: 0; width: 100%; display: flex; justify-content: center; }
+
+.quick-actions .action p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--admin-muted, #64748b);
+    min-height: 34px;
+}
+
+.quick-actions .action .main-btn {
+    width: 100%;
+    max-width: 190px;
+    min-height: 40px;
+    padding: 8px 10px;
+    font-size: 13px;
+    background: #1e88e5;
+    color: #fff;
+    border: 1px solid #1e88e5;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.quick-actions .action .main-btn:hover {
+    background: #1565c0;
+    transform: translateY(-1px);
+}
+
+/* ===================== Recent Bookings ===================== */
+.recent-bookings h2 {
+    margin: 0 0 16px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--admin-text);
+}
+
+.caretaker-dashboard-recent .booking {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    background: #fff;
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.caretaker-dashboard-recent .booking h3 {
+    margin: 0 0 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--admin-text);
+}
+
+.caretaker-dashboard-recent .booking p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--admin-muted, #64748b);
+}
+
+.caretaker-dashboard-recent .booking i {
+    color: #1e88e5;
+}
+
+.caretaker-dashboard-recent .booking .status {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.caretaker-dashboard-recent .booking .status.accepted {
+    background: #eaf7ef;
+    color: #1f7a3f;
+    border-color: #b8e5c8;
+}
+
+.booking .btn {
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.booking .btn:hover {
+    background: #1565c0 !important;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1023px) {
+    .main-content.admin-dashboard-page.caretaker-dashboard-page {
+        margin-left: calc(var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px));
+        margin-right: calc(var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px));
+        padding-top: 18px;
+    }
+}
+
+@media (max-width: 900px) {
+    .main-content.admin-dashboard-page.caretaker-dashboard-page {
+        margin-left: calc(16px + var(--admin-main-extra-left, 16px));
+        margin-right: calc(16px + var(--admin-main-extra-left, 16px));
+        padding-top: 14px;
+    }
+}
+
+@media (max-width: 899px) {
+    .quick-actions .actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .caretaker-dashboard-hero { min-height: 380px; }
+    .caretaker-dashboard-hero__highlights { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 639px) {
+    .caretaker-dashboard-hero { min-height: clamp(260px, 64vw, 360px); border-radius: 10px; }
+    .quick-actions .actions { grid-template-columns: 1fr; }
+    .stats-cards { --stats-card-min-width: 150px; }
+    .caretaker-dashboard-hero__highlights { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 479px) {
-  .caretaker-dashboard-page .dashboard-stats.stats-grid,
-  .caretaker-dashboard-page .dashboard-shortcut-tiles__grid {
-    grid-template-columns: 1fr;
-  }
+    .caretaker-dashboard-hero__actions { flex-direction: column; }
+    .stats-cards { grid-template-columns: 1fr; }
 }

@@ -155,7 +155,4 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
     });
   </script>
 
-
-</body>
-
-</html>
+<?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>
