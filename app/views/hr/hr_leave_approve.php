@@ -112,6 +112,10 @@ $hasAffected = !empty($data['affected']);
                     onclick="return confirm('Approve this leave and reassign all affected bookings to the selected caregiver?');">
                     <i class="bx bx-check" aria-hidden="true"></i> Approve leave
                 </button>
+                <button type="button" class="btn danger" id="rejectLeaveBtn"
+                    onclick="showRejectModal()">
+                    <i class="bx bx-x" aria-hidden="true"></i> Reject leave
+                </button>
             </div>
         </form>
     </div>
@@ -183,6 +187,47 @@ $hasAffected = !empty($data['affected']);
         </div>
     </div>
 </div>
+
+<!-- Reject Modal -->
+<div id="rejectLeaveModal" class="modal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="rejectModalTitle">
+        <div class="modal-header">
+            <h3 id="rejectModalTitle">Reject Leave Request</h3>
+            <button type="button" class="modal-close" onclick="hideRejectModal()" aria-label="Close">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+        <form method="POST" action="<?= URLROOT ?>/HrLeave/reject_submit">
+            <input type="hidden" name="leave_id" value="<?= (int) $data['leave']->id ?>">
+            <div class="modal-body">
+                <p>Are you sure you want to reject this leave request?</p>
+                <div class="field">
+                    <label for="reject_reason">Rejection reason *</label>
+                    <textarea id="reject_reason" name="hr_note" class="form-input" rows="4" required 
+                        placeholder="Please provide a reason for rejecting this leave request..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn secondary" onclick="hideRejectModal()">Cancel</button>
+                <button type="submit" class="btn danger">
+                    <i class="bx bx-x" aria-hidden="true"></i> Reject Leave
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function showRejectModal() {
+    document.getElementById('rejectLeaveModal').classList.add('show');
+    document.getElementById('rejectLeaveModal').setAttribute('aria-hidden', 'false');
+}
+
+function hideRejectModal() {
+    document.getElementById('rejectLeaveModal').classList.remove('show');
+    document.getElementById('rejectLeaveModal').setAttribute('aria-hidden', 'true');
+}
+</script>
 
 <script defer src="<?= URLROOT ?>/public/js/hr/hr_leave_approve.js"></script>
 <?php include_once APPROOT . '/views/templates/hr/hr_layout_close.php'; ?>

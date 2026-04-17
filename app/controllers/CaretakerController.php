@@ -34,6 +34,13 @@ class CaretakerController extends Controller
         }
 
         $_SESSION['user'] = $user;
+        
+        // Prevent redirect loops - only redirect if not already on a caretaker page
+        $currentUrl = $_SERVER['REQUEST_URI'] ?? '';
+        if (strpos($currentUrl, 'caretaker') === false) {
+            header("Location: index.php?url=caretaker/ct_dashboard");
+            exit;
+        }
     }
 
     public function ct_dashboard()

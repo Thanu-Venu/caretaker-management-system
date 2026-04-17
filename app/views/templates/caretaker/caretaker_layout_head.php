@@ -1,6 +1,6 @@
 <?php
 /**
- * Caretaker shell — shared document head for consistent caretaker pages.
+ * Caretaker shell - shared document head for consistent caretaker pages.
  * Before including:
  * - $caretakerPageTitle (string)
  * - $caretakerExtraCss (array paths under public/css/)

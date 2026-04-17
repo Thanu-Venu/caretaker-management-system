@@ -1,6 +1,6 @@
 <?php
 $caretakerPageTitle = 'Dashboard - SmartCare';
-$caretakerExtraCss = ['admin/ad_dashboard.css', 'caretaker/ct_dashboard.css'];
+$caretakerExtraCss = ['caretaker/ct_dashboard.css'];
 require_once APPROOT . '/views/templates/caretaker/caretaker_layout_head.php';
 include_once APPROOT . '/views/templates/caretaker/ct_header.php';
 include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';

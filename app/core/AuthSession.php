@@ -27,7 +27,6 @@ class AuthSession
         if (!empty($_SESSION['user']) && is_array($_SESSION['user'])) {
             $roleRaw = $_SESSION['role'] ?? ($_SESSION['user']['role'] ?? '');
             $role = self::normalizeRole((string)$roleRaw);
-
             $_SESSION['account_id'] = isset($_SESSION['account_id'])
                 ? (int)$_SESSION['account_id']
                 : (int)($_SESSION['user']['account_id'] ?? 0);
@@ -37,6 +36,8 @@ class AuthSession
             $_SESSION['name'] = $_SESSION['name'] ?? ($_SESSION['user']['name'] ?? ($_SESSION['user']['username'] ?? ''));
             $_SESSION['email'] = $_SESSION['email'] ?? ($_SESSION['user']['email'] ?? '');
             $_SESSION['role'] = $role;
+            // Ensure role is also set in the expected format for caretaker
+            $_SESSION['user']['role'] = $role;
             $_SESSION['logged_in'] = true;
 
             self::syncLegacyShape();

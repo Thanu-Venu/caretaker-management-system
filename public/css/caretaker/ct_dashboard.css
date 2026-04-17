@@ -1,31 +1,119 @@
-/* Caretaker dashboard overrides.
-   Keep shared dashboard design from ad_dashboard.css,
-   but make caretaker page full width like client dashboard. */
-
-body {
-  background: #f8fafc;
-}
+/* Caretaker dashboard - layout matching client dashboard structure */
 
 .main-content.admin-dashboard-page.caretaker-dashboard-page {
-  overflow-x: clip;
+    margin-left: calc(
+        var(--admin-sidebar-width, 260px) + var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px)
+    );
+    margin-right: calc(var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px));
+    margin-top: var(--admin-header-height, 60px);
+    margin-bottom: 24px;
+    padding-top: 24px;
+    min-width: 0;
+    overflow-x: clip;
+    background: #f8fafc;
+}
+
+@media (min-width: 1024px) {
+    body.admin-sidebar-collapsed > .main-content.admin-dashboard-page.caretaker-dashboard-page,
+    body.admin-sidebar-collapsed > header.main-header ~ .main-content.admin-dashboard-page.caretaker-dashboard-page {
+        margin-left: calc(
+            var(--admin-sidebar-rail-width, 72px) * 2 + var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px)
+        );
+        margin-right: calc(
+            var(--admin-sidebar-rail-width, 72px) + var(--admin-gutter, 24px) + var(--admin-main-extra-left, 16px)
+        );
+    }
 }
 
 .caretaker-dashboard-page .dashboard-layout {
-  max-width: none;
-  width: 100%;
-  margin: 0;
-  padding-left: clamp(10px, 1.8vw, 24px);
-  padding-right: clamp(10px, 1.8vw, 24px);
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.caretaker-dashboard-page .dashboard-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.caretaker-dashboard-page .page-header {
+    background: white;
+    border-radius: 18px;
+    padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.caretaker-dashboard-page .dashboard-review-badges {
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.caretaker-dashboard-page .dashboard-review-badges__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.caretaker-dashboard-page .dashboard-review-badge {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+}
+
+.caretaker-dashboard-page .dashboard-review-badge:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.caretaker-dashboard-page .dashboard-review-badge__label {
+    font-size: 12px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.caretaker-dashboard-page .dashboard-review-badge__value {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.caretaker-dashboard-page .dashboard-review-badge__hint {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.caretaker-dashboard-page .dashboard-review-badge__cta {
+    font-size: 12px;
+    color: #3b82f6;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .caretaker-dashboard-page .dashboard-overview-charts__grid {
-  width: 100%;
-  margin: 0;
-  align-items: stretch;
+    width: 100%;
+    margin: 0;
+    align-items: stretch;
 }
 
 .caretaker-dashboard-page .ct-overview-grid > .dashboard-chart-card {
-  min-width: 0;
+    min-width: 0;
 }
 
 /* Give table card more room on wide displays. */

@@ -112,14 +112,6 @@ function hr_leave_page_url(int $p): string
                                         <i class="bx bx-check" aria-hidden="true"></i>
                                     </span>
                                 <?php endif; ?>
-                                <button type="button"
-                                    class="btn secondary btn-sm iconBtn lvReject"
-                                    data-leave-id="<?= (int) ($leave['id'] ?? 0) ?>"
-                                    title="Reject leave"
-                                    aria-label="Reject leave request"
-                                    <?= $pendingActions ? '' : 'disabled' ?>>
-                                    <i class="bx bx-x" aria-hidden="true"></i>
-                                </button>
                             </td>
                         </tr>
                     <?php endforeach; ?>

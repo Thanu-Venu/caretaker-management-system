@@ -99,7 +99,7 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
         initialView: 'dayGridMonth',
         height: 'auto',
         events: {
-          url: "<?= URLROOT ?>/public/?url=Caretaker/getScheduleEvents",
+          url: "<?= URLROOT ?>/public/?url=caretaker/getScheduleEvents",
           method: "GET"
         },
         eventClick: function(info) {

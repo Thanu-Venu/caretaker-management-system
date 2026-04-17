@@ -3,11 +3,10 @@ class Database
 {
     public $conn;
 
-    public function __construct()
-    {
+    public function __construct() {
         $host = "localhost";
         $user = "root";
-        $pass = "";
+        $pass = ""; // No password for local XAMPP setup
         $dbname = "smartcare";
 
         $this->conn = new mysqli($host, $user, $pass, $dbname);
