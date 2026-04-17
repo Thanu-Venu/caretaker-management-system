@@ -39,6 +39,18 @@ class AuthController extends Controller
                 return;
             }
 
+            $pwErr = UserModel::validatePasswordPolicy($password);
+            if ($pwErr !== null) {
+                $this->view("auth/register", [
+                    'firstName' => $_POST['firstName'] ?? '',
+                    'lastName' => $_POST['lastName'] ?? '',
+                    'email' => $_POST['email'] ?? '',
+                    'phone' => $_POST['phone'] ?? '',
+                    'error' => $pwErr,
+                ]);
+                return;
+            }
+
             $data = [
                 'name' => $_POST['firstName'] . ' ' . $_POST['lastName'],
                 'email' => $_POST['email'],
