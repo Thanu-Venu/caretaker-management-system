@@ -10,6 +10,9 @@ include_once APPROOT . '/views/templates/hr/hr_header.php';
 include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
 
 $hasAffected = !empty($data['affected']);
+$approveConfirmMsg = !$hasAffected
+    ? 'Approve this leave request?'
+    : 'Approve this leave? If you pick a replacement caregiver, affected bookings will be recorded for reassignment. If you leave replacement blank, the leave will still be approved and each affected client will be notified (with an apology) that no replacement could be assigned for those dates.';
 ?>
 
 <main class="main-content laPage">
@@ -86,8 +89,8 @@ $hasAffected = !empty($data['affected']);
 
             <div class="field full">
                 <label for="replacement_caretaker_id">Replacement caregiver</label>
-                <select id="replacement_caretaker_id" name="replacement_caretaker_id" class="form-input" <?= $hasAffected ? 'required' : '' ?>>
-                    <option value="">— <?= $hasAffected ? 'Required' : 'Optional' ?> —</option>
+                <select id="replacement_caretaker_id" name="replacement_caretaker_id" class="form-input">
+                    <option value="">— <?= $hasAffected ? 'Optional (recommended)' : 'Optional' ?> —</option>
                     <?php foreach ($data['caretakers'] as $ct): ?>
                         <option value="<?= (int) $ct['id'] ?>">
                             <?= htmlspecialchars((string) $ct['name'], ENT_QUOTES, 'UTF-8') ?> (ID: <?= (int) $ct['id'] ?>)
@@ -97,19 +100,19 @@ $hasAffected = !empty($data['affected']);
             </div>
 
             <?php if (!$hasAffected): ?>
-                <p class="laHint">No bookings affected — replacement not required.</p>
+                <p class="laHint">No active bookings overlap this leave — replacement is optional.</p>
             <?php else: ?>
-                <p class="laHint">Bookings are affected by this leave. Select a replacement caregiver to reassign all affected bookings. Click <strong>Impact &amp; usage</strong> to review details.</p>
+                <p class="laHint">Active bookings overlap this leave. <strong>Recommended:</strong> choose a replacement caregiver so reassignment records are created and the replacement is notified. If you cannot assign someone, you may still approve; affected clients will be notified automatically with an apology and next steps. Use the HR note to add context for clients and the caregiver.</p>
             <?php endif; ?>
 
             <div class="field full">
-                <label for="hr_note">HR note (optional)</label>
+                <label for="hr_note">HR note (optional; shown to caregiver; also included in client messages when bookings overlap)</label>
                 <textarea id="hr_note" name="hr_note" class="form-input" rows="3" placeholder="Add a note (optional)…"></textarea>
             </div>
 
             <div class="laFoot">
                 <button type="submit" class="btn primary" <?= !empty($data['error']) ? 'disabled' : '' ?>
-                    data-app-confirm="Approve this leave and reassign all affected bookings to the selected caregiver?">
+                    data-app-confirm="<?= htmlspecialchars($approveConfirmMsg, ENT_QUOTES, 'UTF-8') ?>">
                     <i class="bx bx-check" aria-hidden="true"></i> Approve leave
                 </button>
                 <button type="button" class="btn danger" id="rejectLeaveBtn"
@@ -134,7 +137,7 @@ $hasAffected = !empty($data['affected']);
         <div class="laScroll">
             <?php if (!empty($impact['count'])): ?>
                 <div class="impact-banner impact-banner--in-modal">
-                    This leave overlaps active bookings. Assign a replacement before approving.
+                    This leave overlaps active bookings. Assign a replacement if you can; otherwise you may still approve and clients will be notified.
                     <br>
                     Affected bookings: <strong><?= (int) $impact['count'] ?></strong>
                     <?php if (!empty($impact['booking_ids'])): ?>

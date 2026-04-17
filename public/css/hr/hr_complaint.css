@@ -9,6 +9,20 @@ body {
     min-width: 0;
 }
 
+/*
+ * HR shell sets main to overflow-x: clip and .table-container to overflow-x: auto.
+ * Per CSS, non-visible overflow-x forces overflow-y to behave like auto, which clips
+ * native <select> dropdowns and can add an inner scrollbar. Complaints need visible overflow.
+ */
+main.main-content.issuesPage {
+    overflow-x: visible;
+    overflow-y: visible;
+}
+
+.issuesPage .table-container.issueWrap {
+    overflow: visible;
+}
+
 .page-header {
     margin-bottom: 16px;
 }
@@ -69,14 +83,19 @@ body {
     border: 1px solid var(--hr-border, #e2e8f0);
     border-radius: var(--hr-radius, 12px);
     padding: 12px;
-    overflow-x: auto;
     box-shadow: var(--hr-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+/* Beat hr-ui `.table-container .table` border-collapse: separate (header/body drift). */
+.issuesPage .table-container .issueTable {
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 
 .issueTable {
     width: 100%;
-    border-collapse: collapse;
-    min-width: 720px;
+    table-layout: fixed;
+    min-width: 0;
 }
 
 .issueTable th,
@@ -85,7 +104,45 @@ body {
     text-align: left;
     border-bottom: 1px solid #eef2f7;
     font-size: 14px;
-    vertical-align: middle;
+    vertical-align: top;
+}
+
+/* Shared 7-column grid — bias width to status + details; date shows full timestamp. */
+.issueTable th:nth-child(1),
+.issueTable td:nth-child(1) {
+    width: 3.5rem;
+}
+
+.issueTable th:nth-child(2),
+.issueTable td:nth-child(2),
+.issueTable th:nth-child(3),
+.issueTable td:nth-child(3) {
+    width: 13%;
+    word-wrap: break-word;
+}
+
+.issueTable th:nth-child(4),
+.issueTable td:nth-child(4) {
+    width: 11%;
+    word-wrap: break-word;
+}
+
+.issueTable th:nth-child(5),
+.issueTable td:nth-child(5) {
+    width: 18%;
+}
+
+.issueTable th:nth-child(6),
+.issueTable td:nth-child(6) {
+    width: 14%;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.issueTable th:nth-child(7),
+.issueTable td:nth-child(7) {
+    width: 26%;
+    min-width: 17rem;
 }
 
 .issueTable thead th {
@@ -96,32 +153,42 @@ body {
 }
 
 .issueDetails {
-    max-width: 220px;
+    max-width: none;
     word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .issueStatus {
-    min-width: 200px;
+    min-width: 0;
 }
 
 .issueForm,
 .issueCtForm {
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
     gap: 8px;
     margin-top: 8px;
 }
 
+.issueForm .issuePickRow,
+.issueCtForm .issuePickRow {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
 .issuePick {
-    min-width: 130px;
-    flex: 1;
-    max-width: 200px;
+    flex: 1 1 auto;
+    min-width: 12rem;
+    max-width: none;
 }
 
 .issueSave {
     flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .issueAct {
@@ -159,14 +226,23 @@ body {
     color: #065f46;
 }
 
+.issuePill.closed {
+    background: #e2e8f0;
+    color: #334155;
+}
+
 .issuePill.pending {
     background: #fff3cd;
     color: #856404;
 }
 
 @media (max-width: 900px) {
-    .issueForm,
-    .issueCtForm {
-        flex-wrap: wrap;
+    .issuePickRow {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .issueSave {
+        width: 100%;
     }
 }

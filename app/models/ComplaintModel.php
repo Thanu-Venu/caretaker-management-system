@@ -161,6 +161,23 @@ class ComplaintModel
         }
     }
 
+    /** Single caregiver complaint row (for notifications after status change). */
+    public function getCaretakerComplaintById(int $complaint_id): ?array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT cc.complaint_id, cc.caretaker_id, cc.client_id, cc.service_type, cc.service_date, cc.description, cc.status,
+                    c.name AS client_name, ct.name AS caretaker_name
+             FROM ct_complaints cc
+             LEFT JOIN clients c ON cc.client_id = c.id
+             LEFT JOIN caretakers ct ON cc.caretaker_id = ct.id
+             WHERE cc.complaint_id = ?"
+        );
+        $stmt->bind_param("i", $complaint_id);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        return $row ?: null;
+    }
+
     // Update status for caretaker complaint
     public function updateCaretakerComplaintStatus($complaint_id, $status)
     {

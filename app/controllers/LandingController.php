@@ -6,6 +6,10 @@ class LandingController extends Controller
     {
         $landingModel = $this->model('LandingModel');
         $landingMetrics = $landingModel->getPublicMetrics();
-        $this->view('landing/home', ['landingMetrics' => $landingMetrics]);
+        $landingTestimonials = $landingModel->getPublicTestimonials(12);
+        $this->view('landing/home', [
+            'landingMetrics' => $landingMetrics,
+            'landingTestimonials' => $landingTestimonials,
+        ]);
     }
 }

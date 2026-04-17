@@ -2432,6 +2432,18 @@ footer .footer-links.animate-right.show {
   border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
+.testimonials .t-empty {
+  margin: 18px 0 0;
+  padding: 20px 18px;
+  text-align: center;
+  color: rgba(15, 23, 42, 0.62);
+  font-size: 1.02rem;
+  line-height: 1.55;
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px dashed rgba(15, 23, 42, 0.12);
+  border-radius: var(--radius);
+}
+
 .t-grid {
   margin-top: 18px;
   display: grid;

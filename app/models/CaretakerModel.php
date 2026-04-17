@@ -1,5 +1,6 @@
 <?php
 require_once APPROOT . '/core/Database.php';
+require_once APPROOT . '/core/PasswordPolicy.php';
 require_once APPROOT . '/models/AccountModel.php';
 
 class CaretakerModel
@@ -38,22 +39,7 @@ class CaretakerModel
      */
     public static function validateCaretakerPassword(string $password): ?string
     {
-        if (strlen($password) < 8) {
-            return 'Password must be at least 8 characters long.';
-        }
-        if (!preg_match('/[A-Z]/', $password)) {
-            return 'Password must include at least one uppercase letter.';
-        }
-        if (!preg_match('/[a-z]/', $password)) {
-            return 'Password must include at least one lowercase letter.';
-        }
-        if (!preg_match('/[0-9]/', $password)) {
-            return 'Password must include at least one number.';
-        }
-        if (!preg_match('/[^A-Za-z0-9]/', $password)) {
-            return 'Password must include at least one special character.';
-        }
-        return null;
+        return PasswordPolicy::validateStrong($password);
     }
 
     /** @return array */
@@ -496,6 +482,47 @@ AND NOT EXISTS (
             )
 )";
 
+        // Leave replacement cover: caregiver is busy as new_caretaker_id for overlapping dates/slots
+        $sql .= "
+AND NOT EXISTS (
+    SELECT 1 FROM booking_reassignments br
+    INNER JOIN bookings rb ON rb.id = br.booking_id
+    WHERE br.new_caretaker_id = c.id
+      AND LOWER(rb.status) IN (
+        'requested','payment_requested','advance_paid',
+        'accepted','approved','change_requested','reschedule_requested'
+      )
+      AND br.start_date <= ?
+      AND br.end_date >= ?
+      AND (
+          LOWER(rb.basis) <> 'hourly'
+          OR (
+              ? <
+              CASE rb.preferred_time
+                  WHEN 'Morning (8am - 12pm)' THEN '12:00:00'
+                  WHEN 'Evening (1pm - 5pm)'  THEN '17:00:00'
+                  WHEN 'Night (6pm - 10pm)'   THEN '22:00:00'
+                  WHEN 'Full Time (8am - 5pm)' THEN '17:00:00'
+              END
+              AND
+              ? >
+              CASE rb.preferred_time
+                  WHEN 'Morning (8am - 12pm)' THEN '08:00:00'
+                  WHEN 'Evening (1pm - 5pm)'  THEN '13:00:00'
+                  WHEN 'Night (6pm - 10pm)'   THEN '18:00:00'
+                  WHEN 'Full Time (8am - 5pm)' THEN '08:00:00'
+              END
+          )
+      )";
+
+        if ($excludeBookingId !== null) {
+            $sql .= "
+      AND br.booking_id != ?";
+        }
+
+        $sql .= "
+)";
+
         // prepare statement
         $stmt = $this->conn->prepare($sql);
 
@@ -505,6 +532,14 @@ AND NOT EXISTS (
         $values = array_merge($values, [$endDate, $startDate, $searchStart, $searchEnd]);
 
         // Add exclusion param if rescheduling
+        if ($excludeBookingId !== null) {
+            $types .= "i";
+            $values[] = $excludeBookingId;
+        }
+
+        $types .= "ssss";
+        $values = array_merge($values, [$endDate, $startDate, $searchStart, $searchEnd]);
+
         if ($excludeBookingId !== null) {
             $types .= "i";
             $values[] = $excludeBookingId;
@@ -692,7 +727,83 @@ AND NOT EXISTS (
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
+    /**
+     * Leave-approved replacement windows: rows where this caregiver is new_caretaker_id.
+     * Dates cover_start_date / cover_end_date are the reassignment overlap only (not full booking span).
+     */
+    public function getReplacementCoverAssignments(int $caretakerId): array
+    {
+        if ($caretakerId <= 0) {
+            return [];
+        }
 
+        $sql = "SELECT
+                b.id AS booking_id,
+                br.id AS reassignment_id,
+                br.start_date AS cover_start_date,
+                br.end_date AS cover_end_date,
+                br.start_date AS booking_date,
+                b.preferred_time,
+                b.basis,
+                b.duration,
+                b.service_type,
+                b.status AS booking_status,
+                CONCAT(
+                    b.district, ', ',
+                    b.street, ', ',
+                    b.address_line1, ', ',
+                    b.address_line2, ', ',
+                    b.postal_code
+                ) AS service_location,
+                c.name AS client_name,
+                oc.name AS covered_for_caretaker_name,
+                1 AS is_replacement_cover
+            FROM booking_reassignments br
+            INNER JOIN bookings b ON b.id = br.booking_id
+            INNER JOIN clients c ON c.id = b.client_id
+            LEFT JOIN caretakers oc ON oc.id = br.old_caretaker_id
+            WHERE br.new_caretaker_id = ?
+              AND b.status NOT IN ('Rejected', 'Cancelled')
+            ORDER BY br.start_date ASC, br.id ASC";
+
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            return [];
+        }
+        $stmt->bind_param('i', $caretakerId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    /**
+     * Split replacement cover rows into ongoing / upcoming / past by cover dates vs today.
+     *
+     * @return array{ongoing: array, upcoming: array, past: array}
+     */
+    public function getReplacementCoverAssignmentsByTab(int $caretakerId): array
+    {
+        $today = date('Y-m-d');
+        $ongoing = [];
+        $upcoming = [];
+        $past = [];
+
+        foreach ($this->getReplacementCoverAssignments($caretakerId) as $row) {
+            $s = (string) ($row['cover_start_date'] ?? '');
+            $e = (string) ($row['cover_end_date'] ?? '');
+            if ($s === '' || $e === '') {
+                continue;
+            }
+            if ($e < $today) {
+                $past[] = $row;
+            } elseif ($s > $today) {
+                $upcoming[] = $row;
+            } else {
+                $ongoing[] = $row;
+            }
+        }
+
+        return ['ongoing' => $ongoing, 'upcoming' => $upcoming, 'past' => $past];
+    }
 
     // Get approved bookings with client details
     public function getApprovedBookingsWithClientDetails($caretakerId)
@@ -750,7 +861,16 @@ public function getClients($caretaker_id)
             bookings.id AS booking_id,
             bookings.booking_date,
             bookings.preferred_time,
-            bookings.service_type
+            bookings.service_type,
+            bookings.basis,
+            bookings.duration,
+            CASE
+                WHEN bookings.basis = 'Hourly' THEN bookings.booking_date
+                WHEN bookings.basis = 'Daily' THEN DATE_ADD(bookings.booking_date, INTERVAL (GREATEST(bookings.duration, 1) - 1) DAY)
+                WHEN bookings.basis = 'Monthly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) MONTH), INTERVAL 1 DAY)
+                WHEN bookings.basis = 'Yearly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) YEAR), INTERVAL 1 DAY)
+                ELSE bookings.booking_date
+            END AS booking_end_date
          FROM bookings
          JOIN clients ON bookings.client_id = clients.id
          WHERE bookings.caretaker_id = ?
@@ -772,11 +892,73 @@ public function getClients($caretaker_id)
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
+    /**
+     * Active booking for caregiver complaint (must match getClients eligibility rules).
+     *
+     * @return array<string, mixed>|null
+     */
+    public function getActiveBookingForCaretakerComplaint(int $caretakerId, int $bookingId): ?array
+    {
+        if ($caretakerId <= 0 || $bookingId <= 0) {
+            return null;
+        }
+
+        $sql = "SELECT
+            bookings.id AS booking_id,
+            clients.id AS client_id,
+            clients.name AS client_name,
+            bookings.booking_date,
+            bookings.basis,
+            bookings.duration,
+            CASE
+                WHEN bookings.basis = 'Hourly' THEN bookings.booking_date
+                WHEN bookings.basis = 'Daily' THEN DATE_ADD(bookings.booking_date, INTERVAL (GREATEST(bookings.duration, 1) - 1) DAY)
+                WHEN bookings.basis = 'Monthly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) MONTH), INTERVAL 1 DAY)
+                WHEN bookings.basis = 'Yearly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) YEAR), INTERVAL 1 DAY)
+                ELSE bookings.booking_date
+            END AS booking_end_date
+         FROM bookings
+         JOIN clients ON bookings.client_id = clients.id
+         WHERE bookings.id = ?
+           AND bookings.caretaker_id = ?
+           AND bookings.status IN ('Accepted', 'Advance_Paid', 'Change_Requested', 'Reschedule_Requested')
+           AND CURDATE() BETWEEN bookings.booking_date AND (
+            CASE
+                WHEN bookings.basis = 'Hourly' THEN bookings.booking_date
+                WHEN bookings.basis = 'Daily' THEN DATE_ADD(bookings.booking_date, INTERVAL (GREATEST(bookings.duration, 1) - 1) DAY)
+                WHEN bookings.basis = 'Monthly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) MONTH), INTERVAL 1 DAY)
+                WHEN bookings.basis = 'Yearly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) YEAR), INTERVAL 1 DAY)
+                ELSE bookings.booking_date
+            END
+         )";
+
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            return null;
+        }
+        $stmt->bind_param("ii", $bookingId, $caretakerId);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        return $row ?: null;
+    }
+
+    public static function complaintServiceDateInBookingRange(string $serviceDate, string $bookingStart, string $bookingEnd): bool
+    {
+        if ($serviceDate === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $serviceDate)) {
+            return false;
+        }
+        if ($bookingStart === '' || $bookingEnd === '') {
+            return false;
+        }
+
+        return $serviceDate >= $bookingStart && $serviceDate <= $bookingEnd;
+    }
+
     public function addComplaint($data)
     {
         $stmt = $this->conn->prepare(
             "INSERT INTO ct_complaints (client_id, caretaker_id, service_type, service_date, description, status)
-         VALUES (?, ?, ?, ?, ?, 'Pending')"
+         VALUES (?, ?, ?, ?, ?, 'Open')"
         );
 
         $stmt->bind_param(
