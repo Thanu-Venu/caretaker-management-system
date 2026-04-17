@@ -258,11 +258,11 @@ class LeaveModel
             . "Time: {$data['start_time']} - {$data['end_time']}\n"
             . "Reason: {$data['reason']}";
         // Notify Manager
-        $managerLink = URLROOT . "/hr/hr_leave";
+        $managerLink = URLROOT . "/public?url=hr/hr_leave";
         $this->notifyRoleUsers("Manager", $title, $message, $managerLink);
 
         // Notify Admin
-        $adminLink = URLROOT . "/admin/ad_leave";
+        $adminLink = URLROOT . "/public?url=admin/ad_leave";
         $this->notifyRoleUsers("admin", $title, $message, $adminLink);
         return true;
     }
@@ -554,7 +554,7 @@ class LeaveModel
                 . "Note: " . (trim($hrNote) !== '' ? $hrNote : '—');
 
             // Change this link to your caretaker leave page route
-            $link  = URLROOT . "/caretaker/ct_leave";
+            $link  = URLROOT . "/public?url=caretaker/ct_leave";
 
             // If you already have notifyUser(), use it.
             // If not, this is the direct insert.
@@ -571,13 +571,13 @@ class LeaveModel
                 $replacementMessage = "You have been assigned as a replacement caretaker.\n"
                     . "Leave period: {$leaveStart} to {$leaveEnd}.\n"
                     . "Please review your updated schedule.";
-                $replacementLink = URLROOT . '/caretaker/ct_booking';
+                $replacementLink = URLROOT . '/public?url=caretaker/ct_booking';
                 $this->notifyUser((int)$replacementId, 'caretaker', $replacementTitle, $replacementMessage, $replacementLink);
 
                 $hrTitle = 'Leave Reassignment Completed';
                 $hrMessage = "Leave ID {$leaveId} was approved with replacement caretaker ID {$replacementId}.\n"
                     . 'Affected bookings: ' . count($affected);
-                $this->notifyRoleUsers('Manager', $hrTitle, $hrMessage, URLROOT . '/HrLeave/index');
+                $this->notifyRoleUsers('Manager', $hrTitle, $hrMessage, URLROOT . '/public?url=hr/hr_leave');
             }
 
             return [
