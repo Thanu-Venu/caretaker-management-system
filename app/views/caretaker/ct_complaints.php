@@ -109,10 +109,13 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
                         <td>
                             <?php
                                 $statusClass = 'status';
-                                if ($c['status'] == 'Pending' || $c['status'] == 'Open') $statusClass .= ' pending';
-                                elseif ($c['status'] == 'Resolved' || $c['status'] == 'Closed') $statusClass .= ' resolved';
-                                elseif ($c['status'] == 'Rejected') $statusClass .= ' rejected';
-                                elseif ($c['status'] == 'InProgress' || $c['status'] == 'In Progress') $statusClass .= ' InProgress';
+                                if ($c['status'] === 'Open') {
+                                    $statusClass .= ' pending';
+                                } elseif ($c['status'] === 'Resolved' || $c['status'] === 'Closed') {
+                                    $statusClass .= ' resolved';
+                                } elseif ($c['status'] === 'In Progress') {
+                                    $statusClass .= ' InProgress';
+                                }
                             ?>
                             <span class="<?= $statusClass ?>"><?= htmlspecialchars($c['status']) ?></span>
                         </td>

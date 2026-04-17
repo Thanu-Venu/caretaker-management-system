@@ -11,16 +11,18 @@ $selectedFeedbackService = trim((string) ($feedbackFilters['service'] ?? ''));
 $selectedFeedbackRating = trim((string) ($feedbackFilters['rating'] ?? ''));
 ?>
 <main class="content reviews-container">
-  <header class="page-header">
-    <h1 class="page-title">
-        Client Feedback &amp; Ratings
-        <?php if (isset($data['avgRating']) && $data['avgRating'] > 0): ?>
-            <span style="font-size: 20px; color: #f39c12; margin-left: 15px;">
-                Average: ⭐ <?= number_format($data['avgRating'], 1) ?>
-            </span>
-        <?php endif; ?>
-    </h1>
-  </header>  
+  <header class="page-header reviews-page-header">
+    <h1 class="page-title">Client Feedback &amp; Ratings</h1>
+    <?php if (isset($data['avgRating']) && (float) $data['avgRating'] > 0): ?>
+      <div class="reviews-avg-badge" role="status" aria-label="Average client rating">
+        <span class="reviews-avg-badge__label">Average rating</span>
+        <span class="reviews-avg-badge__value">
+          <i class="bx bxs-star" aria-hidden="true"></i>
+          <?= htmlspecialchars(number_format((float) $data['avgRating'], 1), ENT_QUOTES, 'UTF-8') ?>
+        </span>
+      </div>
+    <?php endif; ?>
+  </header>
   <div class="card">
     <form class="filter-section filters-inline ct-page-filters" method="get" action="<?= htmlspecialchars(URLROOT . '/public', ENT_QUOTES, 'UTF-8') ?>">
       <input type="hidden" name="url" value="caretaker/ct_reviews">
