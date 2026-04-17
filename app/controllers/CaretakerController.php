@@ -43,6 +43,19 @@ class CaretakerController extends Controller
         }
     }
 
+    /** Caregiver complaint form uses fetch() and expects plain-text body `success` or `error`. */
+    private function complaintSaveIsAjax(): bool
+    {
+        return !empty($_POST['complaint_ajax']);
+    }
+
+    private function complaintSaveAjaxReply(bool $ok): void
+    {
+        header('Content-Type: text/plain; charset=utf-8');
+        echo $ok ? 'success' : 'error';
+        exit;
+    }
+
     public function ct_dashboard()
     {
         $userId = AuthSession::profileId();
@@ -580,6 +593,8 @@ class CaretakerController extends Controller
 public function ct_complaints()
 {
     $caretakerId = AuthSession::profileId();
+    $caretakerProfile = $this->caretakerModel->getCaretakerById($caretakerId) ?: [];
+    $caretakerServiceType = trim((string) ($caretakerProfile['service_type'] ?? ''));
     $complaints = $this->caretakerModel->getComplaintsByCaretaker($caretakerId);
 
     $filters = [
@@ -630,6 +645,7 @@ public function ct_complaints()
         'serviceTypeOptions' => $serviceTypeOptions,
         'statusOptions' => $statusOptions,
         'form_token' => $formToken,
+        'caretaker_service_type' => $caretakerServiceType,
     ];
 
     $this->view('caretaker/ct_complaints', $data);
@@ -645,18 +661,36 @@ public function ct_complaints()
 public function addComplaint()
 {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $caretakerId = AuthSession::profileId();
+        $profile = $this->caretakerModel->getCaretakerById($caretakerId) ?: [];
+        $serviceType = trim((string) ($profile['service_type'] ?? ''));
+        if ($serviceType === '') {
+            return;
+        }
+
+        $bookingId = (int) ($_POST['booking_id'] ?? 0);
+        $booking = $this->caretakerModel->getActiveBookingForCaretakerComplaint($caretakerId, $bookingId);
+        if (!$booking) {
+            return;
+        }
+        $serviceDate = trim((string) ($_POST['service_date'] ?? ''));
+        if (!CaretakerModel::complaintServiceDateInBookingRange(
+            $serviceDate,
+            (string) $booking['booking_date'],
+            (string) $booking['booking_end_date']
+        )) {
+            return;
+        }
 
         $data = [
-            'caretaker_id' => AuthSession::profileId(),
-            'client_id' => $_POST['client_id'], // 
-            'service_type' => $_POST['service_type'],
-            'service_date' => $_POST['service_date'], // 
-            'description' => $_POST['description']
+            'caretaker_id' => $caretakerId,
+            'client_id' => (int) $booking['client_id'],
+            'service_type' => $serviceType,
+            'service_date' => $serviceDate,
+            'description' => $_POST['description'],
         ];
 
         $this->caretakerModel->addComplaint($data);
-
-     
     }
 }
 public function saveComplaint()
@@ -666,12 +700,50 @@ public function saveComplaint()
         exit;
     }
 
+    $ajax = $this->complaintSaveIsAjax();
+    $caretakerId = AuthSession::profileId();
+    $profile = $this->caretakerModel->getCaretakerById($caretakerId) ?: [];
+    $serviceType = trim((string) ($profile['service_type'] ?? ''));
+    if ($serviceType === '') {
+        $_SESSION['error'] = 'Your caregiver profile has no service type. Please contact support or update your profile.';
+        if ($ajax) {
+            $this->complaintSaveAjaxReply(false);
+        }
+        header("Location: " . URLROOT . "/caretaker/ct_complaints");
+        exit;
+    }
+
+    $bookingId = (int) ($_POST['booking_id'] ?? 0);
+    $booking = $this->caretakerModel->getActiveBookingForCaretakerComplaint($caretakerId, $bookingId);
+    if (!$booking) {
+        $_SESSION['error'] = 'Invalid or expired booking selection.';
+        if ($ajax) {
+            $this->complaintSaveAjaxReply(false);
+        }
+        header("Location: " . URLROOT . "/caretaker/ct_complaints");
+        exit;
+    }
+
+    $serviceDate = trim((string) ($_POST['service_date'] ?? ''));
+    if (!CaretakerModel::complaintServiceDateInBookingRange(
+        $serviceDate,
+        (string) $booking['booking_date'],
+        (string) $booking['booking_end_date']
+    )) {
+        $_SESSION['error'] = 'Choose a date within the selected booking period.';
+        if ($ajax) {
+            $this->complaintSaveAjaxReply(false);
+        }
+        header("Location: " . URLROOT . "/caretaker/ct_complaints");
+        exit;
+    }
+
     $data = [
-        'caretaker_id' => AuthSession::profileId(),
-        'client_id' => $_POST['client_id'] ?? '',
-        'service_type' => $_POST['service_type'] ?? '',
-        'service_date' => $_POST['service_date'] ?? '',
-        'description' => $_POST['description'] ?? ''
+        'caretaker_id' => $caretakerId,
+        'client_id' => (int) $booking['client_id'],
+        'service_type' => $serviceType,
+        'service_date' => $serviceDate,
+        'description' => $_POST['description'] ?? '',
     ];
 
     $ok = $this->caretakerModel->addComplaint($data);
@@ -680,6 +752,10 @@ public function saveComplaint()
         $_SESSION['success'] = 'Complaint submitted successfully.';
     } else {
         $_SESSION['error'] = 'Failed to save complaint. Please try again.';
+    }
+
+    if ($ajax) {
+        $this->complaintSaveAjaxReply($ok);
     }
 
     header("Location: " . URLROOT . "/caretaker/ct_complaints");

@@ -861,7 +861,16 @@ public function getClients($caretaker_id)
             bookings.id AS booking_id,
             bookings.booking_date,
             bookings.preferred_time,
-            bookings.service_type
+            bookings.service_type,
+            bookings.basis,
+            bookings.duration,
+            CASE
+                WHEN bookings.basis = 'Hourly' THEN bookings.booking_date
+                WHEN bookings.basis = 'Daily' THEN DATE_ADD(bookings.booking_date, INTERVAL (GREATEST(bookings.duration, 1) - 1) DAY)
+                WHEN bookings.basis = 'Monthly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) MONTH), INTERVAL 1 DAY)
+                WHEN bookings.basis = 'Yearly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) YEAR), INTERVAL 1 DAY)
+                ELSE bookings.booking_date
+            END AS booking_end_date
          FROM bookings
          JOIN clients ON bookings.client_id = clients.id
          WHERE bookings.caretaker_id = ?
@@ -882,6 +891,68 @@ public function getClients($caretaker_id)
 
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
+
+    /**
+     * Active booking for caregiver complaint (must match getClients eligibility rules).
+     *
+     * @return array<string, mixed>|null
+     */
+    public function getActiveBookingForCaretakerComplaint(int $caretakerId, int $bookingId): ?array
+    {
+        if ($caretakerId <= 0 || $bookingId <= 0) {
+            return null;
+        }
+
+        $sql = "SELECT
+            bookings.id AS booking_id,
+            clients.id AS client_id,
+            clients.name AS client_name,
+            bookings.booking_date,
+            bookings.basis,
+            bookings.duration,
+            CASE
+                WHEN bookings.basis = 'Hourly' THEN bookings.booking_date
+                WHEN bookings.basis = 'Daily' THEN DATE_ADD(bookings.booking_date, INTERVAL (GREATEST(bookings.duration, 1) - 1) DAY)
+                WHEN bookings.basis = 'Monthly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) MONTH), INTERVAL 1 DAY)
+                WHEN bookings.basis = 'Yearly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) YEAR), INTERVAL 1 DAY)
+                ELSE bookings.booking_date
+            END AS booking_end_date
+         FROM bookings
+         JOIN clients ON bookings.client_id = clients.id
+         WHERE bookings.id = ?
+           AND bookings.caretaker_id = ?
+           AND bookings.status IN ('Accepted', 'Advance_Paid', 'Change_Requested', 'Reschedule_Requested')
+           AND CURDATE() BETWEEN bookings.booking_date AND (
+            CASE
+                WHEN bookings.basis = 'Hourly' THEN bookings.booking_date
+                WHEN bookings.basis = 'Daily' THEN DATE_ADD(bookings.booking_date, INTERVAL (GREATEST(bookings.duration, 1) - 1) DAY)
+                WHEN bookings.basis = 'Monthly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) MONTH), INTERVAL 1 DAY)
+                WHEN bookings.basis = 'Yearly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) YEAR), INTERVAL 1 DAY)
+                ELSE bookings.booking_date
+            END
+         )";
+
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            return null;
+        }
+        $stmt->bind_param("ii", $bookingId, $caretakerId);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        return $row ?: null;
+    }
+
+    public static function complaintServiceDateInBookingRange(string $serviceDate, string $bookingStart, string $bookingEnd): bool
+    {
+        if ($serviceDate === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $serviceDate)) {
+            return false;
+        }
+        if ($bookingStart === '' || $bookingEnd === '') {
+            return false;
+        }
+
+        return $serviceDate >= $bookingStart && $serviceDate <= $bookingEnd;
+    }
 
     public function addComplaint($data)
     {
