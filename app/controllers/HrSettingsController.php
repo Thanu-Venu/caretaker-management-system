@@ -115,6 +115,13 @@ class HrSettingsController extends Controller
                 exit();
             }
 
+            $pwErr = UserModel::validatePasswordPolicy($newPassword);
+            if ($pwErr !== null) {
+                $_SESSION['flash_error'] = $pwErr;
+                header('Location: ' . URLROOT . '/public?url=hr/hr_settings');
+                exit();
+            }
+
             $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
             $this->userModel->updatePassword($userId, $hashedPassword);
 
