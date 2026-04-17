@@ -254,11 +254,19 @@ class CaretakerController extends Controller
         $upcoming = $caretakerModel->getUpcomingBookings($caretakerId);
         $past = $caretakerModel->getPastBookings($caretakerId);
 
+        // Debug: Log initial booking counts and details
+        error_log("Initial booking counts - Ongoing: " . count($ongoing) . ", Upcoming: " . count($upcoming) . ", Past: " . count($past));
+        error_log("Ongoing bookings: " . json_encode(array_map(function($b) { return ['id' => $b['booking_id'], 'date' => $b['booking_date'], 'status' => $b['status']]; }, $ongoing)));
+        error_log("Upcoming bookings: " . json_encode(array_map(function($b) { return ['id' => $b['booking_id'], 'date' => $b['booking_date'], 'status' => $b['status']]; }, $upcoming)));
+
         $filters = [
             'service_type' => trim((string) ($_GET['booking_service'] ?? '')),
             'date_from' => trim((string) ($_GET['booking_from'] ?? '')),
             'date_to' => trim((string) ($_GET['booking_to'] ?? '')),
         ];
+
+        // Debug: Log applied filters
+        error_log("Applied filters: " . print_r($filters, true));
 
         $serviceTypeOptions = [];
         foreach (array_merge($ongoing, $upcoming, $past) as $booking) {
@@ -279,12 +287,21 @@ class CaretakerController extends Controller
                     return false;
                 }
 
-                if ($filters['date_from'] !== '' && $bookingDate !== '' && $bookingDate < $filters['date_from']) {
-                    return false;
+                // Convert dates to proper format for comparison
+                if ($filters['date_from'] !== '' && $bookingDate !== '') {
+                    $fromDate = DateTime::createFromFormat('Y-m-d', $filters['date_from']);
+                    $bookingDateTime = DateTime::createFromFormat('Y-m-d', $bookingDate);
+                    if ($fromDate && $bookingDateTime && $bookingDateTime < $fromDate) {
+                        return false;
+                    }
                 }
 
-                if ($filters['date_to'] !== '' && $bookingDate !== '' && $bookingDate > $filters['date_to']) {
-                    return false;
+                if ($filters['date_to'] !== '' && $bookingDate !== '') {
+                    $toDate = DateTime::createFromFormat('Y-m-d', $filters['date_to']);
+                    $bookingDateTime = DateTime::createFromFormat('Y-m-d', $bookingDate);
+                    if ($toDate && $bookingDateTime && $bookingDateTime > $toDate) {
+                        return false;
+                    }
                 }
 
                 return true;
@@ -294,6 +311,9 @@ class CaretakerController extends Controller
         $ongoing = $filterBookings($ongoing);
         $upcoming = $filterBookings($upcoming);
         $past = $filterBookings($past);
+
+        // Debug: Log filtered booking counts
+        error_log("Filtered booking counts - Ongoing: " . count($ongoing) . ", Upcoming: " . count($upcoming) . ", Past: " . count($past));
 
         // Just pass the booking_date and preferred_time as they are
         $this->view('caretaker/ct_booking', [
