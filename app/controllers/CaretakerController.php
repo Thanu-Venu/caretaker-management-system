@@ -3,7 +3,7 @@
 class CaretakerController extends Controller
 {
 
-    private $leaveModel;
+    private $leaveModel;    //models (database handling classes)
     private $caretakerModel;
     private $clientModel;
     private $complaintModel;
@@ -11,22 +11,26 @@ class CaretakerController extends Controller
 
     public function __construct()
     {
-        if (session_status() === PHP_SESSION_NONE)
+        if (session_status() === PHP_SESSION_NONE) // Starts a session if it isn’t already started , Needed to access login information
+
             session_start();
 
         if (!AuthSession::hasRole('caretaker')) {
-            header("Location: index.php?url=auth/login");
+            header("Location: index.php?url=auth/login");        // If the user is not a caretaker, Redirect them to the login page , Stop the script using exit
+
+
             exit;
         }
 
-        $this->leaveModel = $this->model('LeaveModel');
-        $this->caretakerModel = $this->model('CaretakerModel'); // lowercase property
+        //create model object ($this -> property = model object)
+        $this->leaveModel = $this->model('LeaveModel');  // load the database handle model
+        $this->caretakerModel = $this->model('CaretakerModel'); 
         $this->clientModel = $this->model("ClientModel");
         $this->complaintModel = $this->model("ComplaintModel");
         $this->profileChangeRequestModel = $this->model("ProfileChangeRequestModel");
 
-        // Revalidate caretaker from DB
-        $user = $this->caretakerModel->getCaretakerById(AuthSession::profileId()); // lowercase usage
+        // Revalidate caretaker from DB (check if the user is still a caretaker)
+        $user = $this->caretakerModel->getCaretakerById(AuthSession::profileId()); 
         if (!$user) {
             session_destroy();
             header("Location: index.php?url=auth/login");
@@ -760,5 +764,111 @@ public function saveComplaint()
             'totalRecords'  => $totalRecords,
             'perPage'       => $perPage,
         ]);
+    }
+
+    // Edit caretaker complaint - show edit form
+    public function editComplaint($complaint_id = null)
+    {
+        if (!AuthSession::hasRole('caretaker')) {
+            echo "<script>alert('Unauthorized'); window.location.href='/CMA/public/index.php?url=auth/login';</script>";
+            exit;
+        }
+
+        $complaint_id = (int) $complaint_id;
+        $caretaker_id = AuthSession::profileId();
+
+        require_once APPROOT . '/models/ComplaintModel.php';
+        $complaintModel = new ComplaintModel();
+        
+        $complaint = $complaintModel->getCaretakerComplaintById($complaint_id);
+        
+        if (!$complaint || $complaint['caretaker_id'] != $caretaker_id) {
+            echo "<script>alert('Complaint not found or unauthorized'); window.location.href='/CMA/public/index.php?url=caretaker/ct_complaints';</script>";
+            exit;
+        }
+
+        if ($complaint['status'] !== 'Pending') {
+            echo "<script>alert('Only pending complaints can be edited'); window.location.href='/CMA/public/index.php?url=caretaker/ct_complaints';</script>";
+            exit;
+        }
+
+        // Get clients for dropdown (including past bookings)
+        $clients = $this->caretakerModel->getAllBookedClients($caretaker_id);
+        
+        // Check if clients are available
+        if (empty($clients)) {
+            echo "<script>alert('No clients found. You need to have at least one booking to edit complaints.'); window.location.href='/CMA/public/index.php?url=caretaker/ct_complaints';</script>";
+            exit;
+        }
+
+        $this->view('caretaker/ct_complaint_edit', [
+            'complaint' => $complaint,
+            'clients' => $clients
+        ]);
+    }
+
+    // Update caretaker complaint
+    public function updateComplaint()
+    {
+        if (!AuthSession::hasRole('caretaker') || $_SERVER['REQUEST_METHOD'] != 'POST') {
+            echo "<script>alert('Unauthorized'); window.location.href='/CMA/public/index.php?url=auth/login';</script>";
+            exit;
+        }
+
+        $complaint_id = (int) $_POST['complaint_id'];
+        $service_type = trim($_POST['service_type']);
+        $service_date = trim($_POST['service_date']);
+        $description = trim($_POST['description']);
+
+        if (empty($service_type) || empty($service_date) || empty($description)) {
+            echo "<script>alert('All fields are required'); window.history.back();</script>";
+            exit;
+        }
+
+        require_once APPROOT . '/models/ComplaintModel.php';
+        $complaintModel = new ComplaintModel();
+        
+        $result = $complaintModel->updateCaretakerComplaint($complaint_id, $service_type, $service_date, $description);
+
+        if ($result) {
+            echo "<script>alert('Complaint updated successfully!'); window.location.href='/CMA/public/index.php?url=caretaker/ct_complaints';</script>";
+        } else {
+            echo "<script>alert('Failed to update complaint or complaint is no longer pending'); window.history.back();</script>";
+        }
+    }
+
+    // Delete caretaker complaint
+    public function deleteComplaint($complaint_id = null)
+    {
+        if (!AuthSession::hasRole('caretaker')) {
+            echo "<script>alert('Unauthorized'); window.location.href='/CMA/public/index.php?url=auth/login';</script>";
+            exit;
+        }
+
+        $complaint_id = (int) $complaint_id;
+        $caretaker_id = AuthSession::profileId();
+
+        require_once APPROOT . '/models/ComplaintModel.php';
+        $complaintModel = new ComplaintModel();
+        
+        $complaint = $complaintModel->getCaretakerComplaintById($complaint_id);
+        
+        if (!$complaint || $complaint['caretaker_id'] != $caretaker_id) {
+            echo "<script>alert('Complaint not found or unauthorized'); window.location.href='/CMA/public/index.php?url=caretaker/ct_complaints';</script>";
+            exit;
+        }
+
+        if ($complaint['status'] !== 'Pending') {
+            echo "<script>alert('Only pending complaints can be deleted'); window.location.href='/CMA/public/index.php?url=caretaker/ct_complaints';</script>";
+            exit;
+        }
+
+        $result = $complaintModel->deleteCaretakerComplaint($complaint_id);
+
+        if ($result) {
+            echo "<script>alert('Complaint deleted successfully!'); window.location.href='/CMA/public/index.php?url=caretaker/ct_complaints';</script>";
+        } else {
+            echo "<script>alert('Failed to delete complaint'); window.location.href='/CMA/public/index.php?url=caretaker/ct_complaints';</script>";
+        }
     }
 }

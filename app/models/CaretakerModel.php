@@ -729,6 +729,30 @@ public function getClients($caretaker_id)
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
+// Get all clients that caretaker has had bookings with (including past bookings)
+public function getAllBookedClients($caretaker_id)
+{
+    $stmt = $this->conn->prepare(
+        "SELECT DISTINCT 
+            clients.id AS client_id, 
+            clients.name AS client_name,
+            bookings.id AS booking_id,
+            bookings.booking_date,
+            bookings.preferred_time,
+            bookings.service_type
+         FROM bookings
+         JOIN clients ON bookings.client_id = clients.id
+         WHERE bookings.caretaker_id = ?
+         AND bookings.status NOT IN ('Requested', 'Rejected', 'Cancelled')
+         ORDER BY bookings.booking_date DESC"
+    );
+
+    $stmt->bind_param("i", $caretaker_id);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
     public function addComplaint($data)
     {
         $stmt = $this->conn->prepare(
