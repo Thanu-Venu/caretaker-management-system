@@ -67,12 +67,15 @@ include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
                                     </span>
                                     <form method="POST" action="<?= htmlspecialchars(URLROOT . '/public/index.php?url=Complaint/updateStatus', ENT_QUOTES, 'UTF-8') ?>" class="issueForm">
                                         <input type="hidden" name="Id" value="<?= (int) ($c['Id'] ?? 0) ?>">
-                                        <select name="status" class="form-input issuePick" aria-label="Update status">
-                                            <option value="Open" <?= $status === 'Open' ? 'selected' : '' ?>>Open</option>
-                                            <option value="In Progress" <?= $status === 'In Progress' ? 'selected' : '' ?>>In progress</option>
-                                            <option value="Resolved" <?= $status === 'Resolved' ? 'selected' : '' ?>>Resolved</option>
-                                        </select>
-                                        <button type="submit" class="btn secondary btn-sm issueSave">Update</button>
+                                        <div class="issuePickRow">
+                                            <select name="status" class="form-input issuePick" aria-label="Update status">
+                                                <option value="Open" <?= $status === 'Open' ? 'selected' : '' ?>>Open</option>
+                                                <option value="In Progress" <?= $status === 'In Progress' ? 'selected' : '' ?>>In Progress</option>
+                                                <option value="Resolved" <?= $status === 'Resolved' ? 'selected' : '' ?>>Resolved</option>
+                                                <option value="Closed" <?= $status === 'Closed' ? 'selected' : '' ?>>Closed</option>
+                                            </select>
+                                            <button type="submit" class="btn secondary btn-sm issueSave">Update</button>
+                                        </div>
                                     </form>
                                 </td>
                             </tr>
@@ -95,7 +98,7 @@ include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
                         <th>ID</th>
                         <th>Caregiver</th>
                         <th>Client</th>
-                        <th>Category</th>
+                        <th>Service</th>
                         <th>Details</th>
                         <th>Date</th>
                         <th>Status</th>
@@ -121,12 +124,15 @@ include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
                                     </span>
                                     <form method="POST" action="<?= htmlspecialchars(URLROOT . '/public/index.php?url=Complaint/updateCaretakerComplaintStatus', ENT_QUOTES, 'UTF-8') ?>" class="issueForm">
                                         <input type="hidden" name="complaint_id" value="<?= (int) ($c['complaint_id'] ?? 0) ?>">
-                                        <select name="status" class="form-input issuePick" aria-label="Update status">
-                                            <option value="Pending" <?= $status === 'Pending' ? 'selected' : '' ?>>Pending</option>
-                                            <option value="In Progress" <?= $status === 'In Progress' ? 'selected' : '' ?>>In progress</option>
-                                            <option value="Resolved" <?= $status === 'Resolved' ? 'selected' : '' ?>>Resolved</option>
-                                        </select>
-                                        <button type="submit" class="btn secondary btn-sm issueSave">Update</button>
+                                        <div class="issuePickRow">
+                                            <select name="status" class="form-input issuePick" aria-label="Update status">
+                                                <option value="Open" <?= $status === 'Open' ? 'selected' : '' ?>>Open</option>
+                                                <option value="In Progress" <?= $status === 'In Progress' ? 'selected' : '' ?>>In Progress</option>
+                                                <option value="Resolved" <?= $status === 'Resolved' ? 'selected' : '' ?>>Resolved</option>
+                                                <option value="Closed" <?= $status === 'Closed' ? 'selected' : '' ?>>Closed</option>
+                                            </select>
+                                            <button type="submit" class="btn secondary btn-sm issueSave">Update</button>
+                                        </div>
                                     </form>
                                 </td>
                             </tr>
