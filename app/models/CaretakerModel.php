@@ -710,7 +710,17 @@ public function getClients($caretaker_id)
             bookings.service_type
          FROM bookings
          JOIN clients ON bookings.client_id = clients.id
-         WHERE bookings.caretaker_id = ?"
+         WHERE bookings.caretaker_id = ?
+         AND bookings.status IN ('Accepted', 'Advance_Paid', 'Change_Requested', 'Reschedule_Requested')
+         AND CURDATE() BETWEEN bookings.booking_date AND (
+            CASE
+                WHEN bookings.basis = 'Hourly' THEN bookings.booking_date
+                WHEN bookings.basis = 'Daily' THEN DATE_ADD(bookings.booking_date, INTERVAL (GREATEST(bookings.duration, 1) - 1) DAY)
+                WHEN bookings.basis = 'Monthly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) MONTH), INTERVAL 1 DAY)
+                WHEN bookings.basis = 'Yearly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) YEAR), INTERVAL 1 DAY)
+                ELSE bookings.booking_date
+            END
+         )"
     );
 
     $stmt->bind_param("i", $caretaker_id);
@@ -737,15 +747,14 @@ public function getClients($caretaker_id)
 
         return $stmt->execute();
     }
-public function getResolvedComplaintsByCaretaker($caretaker_id)
+public function getComplaintsByCaretaker($caretaker_id)
 {
     $stmt = $this->conn->prepare(
         "SELECT ct_complaints.*, clients.name AS client_name
          FROM ct_complaints
          JOIN clients ON ct_complaints.client_id = clients.id
          WHERE ct_complaints.caretaker_id = ? 
-         AND ct_complaints.status = 'Resolved'
-         ORDER BY ct_complaints.service_date DESC"
+         ORDER BY ct_complaints.created_at DESC"
     );
 
     $stmt->bind_param("i", $caretaker_id);

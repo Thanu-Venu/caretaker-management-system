@@ -427,7 +427,7 @@ class CaretakerController extends Controller
 public function ct_complaints()
 {
     $caretakerId = AuthSession::profileId();
-    $resolvedComplaints = $this->caretakerModel->getResolvedComplaintsByCaretaker($caretakerId);
+    $complaints = $this->caretakerModel->getComplaintsByCaretaker($caretakerId);
 
     $filters = [
         'status' => trim((string) ($_GET['complaint_status'] ?? '')),
@@ -436,7 +436,7 @@ public function ct_complaints()
 
     $serviceTypeOptions = [];
     $statusOptions = [];
-    foreach ($resolvedComplaints as $complaint) {
+    foreach ($complaints as $complaint) {
         $serviceType = trim((string) ($complaint['service_type'] ?? ''));
         $status = trim((string) ($complaint['status'] ?? ''));
         if ($serviceType !== '') {
@@ -451,7 +451,7 @@ public function ct_complaints()
     sort($serviceTypeOptions, SORT_NATURAL | SORT_FLAG_CASE);
     sort($statusOptions, SORT_NATURAL | SORT_FLAG_CASE);
 
-    $resolvedComplaints = array_values(array_filter($resolvedComplaints, static function ($complaint) use ($filters) {
+    $complaints = array_values(array_filter($complaints, static function ($complaint) use ($filters) {
         $status = trim((string) ($complaint['status'] ?? ''));
         $serviceType = trim((string) ($complaint['service_type'] ?? ''));
 
@@ -472,7 +472,7 @@ public function ct_complaints()
 
     $data = [
         'clients' => $this->caretakerModel->getClients($caretakerId),
-        'resolvedComplaints' => $resolvedComplaints,
+        'complaints' => $complaints,
         'filters' => $filters,
         'serviceTypeOptions' => $serviceTypeOptions,
         'statusOptions' => $statusOptions,
@@ -495,9 +495,9 @@ public function addComplaint()
 
         $data = [
             'caretaker_id' => AuthSession::profileId(),
-            'client_id' => $_POST['client_id'], // ✅ CHANGE THIS
+            'client_id' => $_POST['client_id'], // 
             'service_type' => $_POST['service_type'],
-            'service_date' => $_POST['service_date'], // ✅ CHANGE THIS
+            'service_date' => $_POST['service_date'], // 
             'description' => $_POST['description']
         ];
 
@@ -533,6 +533,17 @@ public function saveComplaint()
         $result = $this->caretakerModel->addComplaint($data);
 
         if ($result) {
+            // Notify admins about new caretaker complaint
+            require_once APPROOT . '/models/NotificationModel.php';
+            $notificationModel = new NotificationModel();
+            
+            $caretakerName = $_SESSION['user']['name'] ?? 'Unknown Caretaker';
+            $notificationModel->notifyAdmins(
+                "New Caretaker Complaint",
+                "A new complaint was submitted by caretaker {$caretakerName}.",
+                URLROOT . "/public/index.php?url=hr/hr_complaint"
+            );
+            
             echo "success";
         } else {
             echo "error";
