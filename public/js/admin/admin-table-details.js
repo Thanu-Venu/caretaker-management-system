@@ -8,8 +8,8 @@
     'use strict';
 
     /** Total th count above this triggers collapse (6 = five data + Actions, unchanged). */
-    var MAX_TOTAL_COLS = 6;
-    var VISIBLE_DATA_SLOTS = 4;
+    var MAX_TOTAL_COLS = 9;
+    var VISIBLE_DATA_SLOTS = 6;
 
     function isActionHeader(text) {
         return /^(action|actions)$/i.test(String(text || '').trim());

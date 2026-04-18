@@ -19,8 +19,7 @@ $mheroSlides = [
   <title>SmartCare</title>
   <?php include_once APPROOT . '/views/partials/smartcare_favicon.php'; ?>
 
-  <!-- Icons + fonts (display + UI): swap URLs for self-hosted files if needed -->
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href="<?= URLROOT ?>/public/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <?php $ppMoriFontBase = rtrim(URLROOT, '/') . '/public/fonts/'; ?>
   <style>

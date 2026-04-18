@@ -667,8 +667,13 @@ class LeaveModel
                         . $bookingList
                         . "\n\nNew caregiver: {$replacementName}\n"
                         . "Previous caregiver: {$caretakerName}\n"
-                        . 'Your usual caregiver is on approved leave during the dates above; the new caregiver will cover only those dates for each listed booking.';
-                    $this->notifyUser((int) $clientId, 'client', $clientTitle, $clientMessage, $clientBookingsLink);
+                        . 'Your usual caregiver is on approved leave during the dates above; the new caregiver will cover only those dates for each listed booking.'
+                        . "\n\nOpen this notification to view your temporary caregiver's phone and email.";
+                    $firstBid = (int) ($clientBookings[0]['id'] ?? 0);
+                    $clientLink = $firstBid > 0
+                        ? (URLROOT . '/client/c_replacementCaregiverContact/' . $firstBid)
+                        : $clientBookingsLink;
+                    $this->notifyUser((int) $clientId, 'client', $clientTitle, $clientMessage, $clientLink);
                 }
 
                 $hrTitle = 'Leave approved with reassignment';

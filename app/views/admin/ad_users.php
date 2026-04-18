@@ -92,7 +92,7 @@ if ($openModal === 'add') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Staff Roles and Access Control</title>
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link href="<?= URLROOT ?>/public/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_users.css">
 </head>
 

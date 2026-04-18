@@ -382,7 +382,7 @@ class RecurringPaymentService
             'caretaker',
             'Booking Cancelled',
             $caretakerMessage,
-            "http://localhost/CMA/caretaker/ct_booking"
+            'http://localhost/CMA/caretaker/ct_booking?booking_id=' . (int) $bookingId . '&tab=cancelled'
         );
     }
 

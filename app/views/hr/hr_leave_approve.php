@@ -66,14 +66,6 @@ $approveConfirmMsg = !$hasAffected
                 <span class="label">Total days</span>
                 <span class="value"><?= (int) $usage['request_days'] ?> day(s)</span>
             </div>
-            <div class="info-row">
-                <span class="label">Time</span>
-                <span class="value">
-                    <?= htmlspecialchars((string) ($data['leave']->start_time ?? ''), ENT_QUOTES, 'UTF-8') ?>
-                    <?= ($data['leave']->start_time && $data['leave']->end_time) ? '→' : '' ?>
-                    <?= htmlspecialchars((string) ($data['leave']->end_time ?? ''), ENT_QUOTES, 'UTF-8') ?>
-                </span>
-            </div>
             <div class="info-row info-row--wide">
                 <span class="label">Reason</span>
                 <span class="value value--multiline"><?= nl2br(htmlspecialchars((string) $data['leave']->reason, ENT_QUOTES, 'UTF-8')) ?></span>

@@ -77,8 +77,8 @@ $buildAnnPageUrl = static function (int $page) use ($df, $dt, $fq): string {
     <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
     <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
     <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/vendor/font-awesome/css/all.min.css">
+    <link href="<?= URLROOT ?>/public/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
 </head>
 
 <body>

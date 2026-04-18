@@ -60,8 +60,8 @@ $paginationQuery = static function (int $p) use ($filters): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Caregiver Management</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_caretakers.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/vendor/font-awesome/css/all.min.css">
+  <link href="<?= URLROOT ?>/public/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
 </head>
 
 <body class="admin-caretakers-page" data-urlroot="<?php echo htmlspecialchars(URLROOT, ENT_QUOTES, 'UTF-8'); ?>"

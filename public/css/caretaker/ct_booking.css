@@ -161,6 +161,20 @@ tbody tr:hover {
   border: 1px solid #c3e6cb;
 }
 
+.status-badge.status-cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  font-variant-numeric: tabular-nums;
+}
+
+td.ct-cancel-reason {
+  max-width: 220px;
+  font-size: 13px;
+  color: #475569;
+  word-break: break-word;
+}
+
 td[colspan] {
   text-align: center;
   color: var(--booking-muted);

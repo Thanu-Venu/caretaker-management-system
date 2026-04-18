@@ -11,6 +11,10 @@ $bookingServiceOptions = (isset($data['serviceTypeOptions']) && is_array($data['
 $selectedBookingService = trim((string) ($bookingFilters['service_type'] ?? ''));
 $selectedBookingFrom = trim((string) ($bookingFilters['date_from'] ?? ''));
 $selectedBookingTo = trim((string) ($bookingFilters['date_to'] ?? ''));
+$selectedBookingTab = trim((string) ($_GET['tab'] ?? ''));
+$ctBookingActiveTab = in_array($selectedBookingTab, ['ongoing', 'upcoming', 'past', 'cancelled'], true)
+    ? $selectedBookingTab
+    : 'ongoing';
 ?>
 <main class="content booking-container">
     <header class="page-header" style="margin-bottom: 24px;">
@@ -18,6 +22,7 @@ $selectedBookingTo = trim((string) ($bookingFilters['date_to'] ?? ''));
     </header>
     <form class="filter-section filters-inline ct-page-filters" method="get" action="<?= htmlspecialchars(URLROOT . '/public', ENT_QUOTES, 'UTF-8') ?>">
       <input type="hidden" name="url" value="caretaker/ct_booking">
+      <input type="hidden" name="tab" id="ctBookingTabInput" value="<?= htmlspecialchars($ctBookingActiveTab, ENT_QUOTES, 'UTF-8') ?>">
       <div class="filter-group">
         <label for="bookingServiceFilter">Service</label>
         <select id="bookingServiceFilter" name="booking_service">
@@ -44,15 +49,16 @@ $selectedBookingTo = trim((string) ($bookingFilters['date_to'] ?? ''));
         </form>
         <?php $selectedBookingId = isset($_GET['booking_id']) ? (int)$_GET['booking_id'] : null; ?>
         <div class="top">
-          <button class="top-button active" onclick="switchTab('ongoing', event)">Ongoing Bookings</button>
-          <button class="top-button" onclick="switchTab('upcoming', event)">Upcoming Bookings</button>
-          <button class="top-button" onclick="switchTab('past', event)">Past Bookings</button>
+          <button class="top-button<?= $ctBookingActiveTab === 'ongoing' ? ' active' : '' ?>" onclick="switchTab('ongoing', event)">Ongoing Bookings</button>
+          <button class="top-button<?= $ctBookingActiveTab === 'upcoming' ? ' active' : '' ?>" onclick="switchTab('upcoming', event)">Upcoming Bookings</button>
+          <button class="top-button<?= $ctBookingActiveTab === 'past' ? ' active' : '' ?>" onclick="switchTab('past', event)">Past Bookings</button>
+          <button class="top-button<?= $ctBookingActiveTab === 'cancelled' ? ' active' : '' ?>" onclick="switchTab('cancelled', event)">Cancelled Bookings</button>
         </div>
 
       <div class="card">
         <!-- Ongoing -->
         <div class="table-container">
-        <div id="ongoing" class="tab-content active">
+        <div id="ongoing" class="tab-content<?= $ctBookingActiveTab === 'ongoing' ? ' active' : '' ?>">
           <table>
             <thead>
               <tr>
@@ -91,7 +97,7 @@ $selectedBookingTo = trim((string) ($bookingFilters['date_to'] ?? ''));
         </div>
 
         <!-- Upcoming -->
-        <div id="upcoming" class="tab-content">
+        <div id="upcoming" class="tab-content<?= $ctBookingActiveTab === 'upcoming' ? ' active' : '' ?>">
           <table>
             <thead>
               <tr>
@@ -155,7 +161,7 @@ $selectedBookingTo = trim((string) ($bookingFilters['date_to'] ?? ''));
         </div>
 
         <!-- Past -->
-        <div id="past" class="tab-content">
+        <div id="past" class="tab-content<?= $ctBookingActiveTab === 'past' ? ' active' : '' ?>">
           <table>
             <thead>
               <tr>
@@ -186,6 +192,47 @@ $selectedBookingTo = trim((string) ($bookingFilters['date_to'] ?? ''));
               <?php else : ?>
                 <tr>
                   <td colspan="4">No past bookings</td>
+                </tr>
+              <?php endif; ?>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Cancelled -->
+        <div id="cancelled" class="tab-content<?= $ctBookingActiveTab === 'cancelled' ? ' active' : '' ?>">
+          <table>
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Service</th>
+                <th>Location</th>
+                <th>Date / Time</th>
+                <th>Cancelled</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php if (!empty($data['cancelled'])) : ?>
+                <?php foreach ($data['cancelled'] as $b) : ?>
+                  <?php $isSelected = ($selectedBookingId && (int)$b['booking_id'] === $selectedBookingId); ?>
+                  <tr class="booking-row<?= $isSelected ? ' highlight' : '' ?>" data-booking-id="<?= (int)$b['booking_id'] ?>">
+                    <td><?= htmlspecialchars((string) ($b['client_name'] ?? '')) ?></td>
+                    <td><?= htmlspecialchars((string) ($b['service_type'] ?? '')) ?></td>
+                    <td><?= htmlspecialchars((string) ($b['service_location'] ?? '')) ?></td>
+                    <td><?= htmlspecialchars((string) ($b['booking_date'] ?? ''), ENT_QUOTES, 'UTF-8') ?> — <?= htmlspecialchars((string) ($b['preferred_time'] ?? ''), ENT_QUOTES, 'UTF-8') ?></td>
+                    <td>
+                      <?php
+                      $cancelledAt = trim((string) ($b['cancelled_at'] ?? ''));
+                      $cancelledLabel = $cancelledAt !== '' ? substr($cancelledAt, 0, 10) : '—';
+                      ?>
+                      <span class="status-badge status-cancelled"><?= htmlspecialchars($cancelledLabel) ?></span>
+                    </td>
+                    <td class="ct-cancel-reason"><?= htmlspecialchars(trim((string) ($b['cancellation_reason'] ?? '')) !== '' ? (string) $b['cancellation_reason'] : '—') ?></td>
+                  </tr>
+                <?php endforeach; ?>
+              <?php else : ?>
+                <tr>
+                  <td colspan="6">No cancelled bookings</td>
                 </tr>
               <?php endif; ?>
             </tbody>

@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const impactIds = document.getElementById('impactIds');
     const leaveTypeInput = document.getElementById('leave_type');
     const impactIdsLine = document.getElementById('impactIdsLine');
+    const impactBookingList = document.getElementById('impactBookingList');
 
     if (!form || !startInput || !endInput) {
         return;
@@ -255,6 +256,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (impactIdsLine) {
             impactIdsLine.hidden = true;
         }
+        if (impactBookingList) {
+            impactBookingList.innerHTML = '';
+            impactBookingList.hidden = true;
+        }
     }
 
     function renderImpactPreview(data) {
@@ -269,10 +274,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
         bookingImpactPreview.hidden = false;
         impactCount.textContent = String(data.count || 0);
-        impactMessage.textContent = data.message || 'Warning: active bookings detected in this leave period.';
+        impactMessage.textContent = data.message
+            || 'You have scheduled bookings in this leave period. HR may arrange cover if your leave is approved.';
+
+        if (impactBookingList) {
+            if (Array.isArray(data.service_dates) && data.service_dates.length > 0) {
+                impactBookingList.innerHTML = data.service_dates.map((row) => {
+                    const id = row.booking_id ?? row.bookingId ?? '—';
+                    const s = row.start_date ?? '';
+                    const e = row.end_date ?? s;
+                    const range = (e && e !== s) ? `${s} → ${e}` : s;
+                    return `<li>Booking #${id}${range ? ` — ${range}` : ''}</li>`;
+                }).join('');
+                impactBookingList.hidden = false;
+            } else {
+                impactBookingList.innerHTML = '';
+                impactBookingList.hidden = true;
+            }
+        }
 
         if (Array.isArray(data.booking_ids) && data.booking_ids.length > 0 && impactIds && impactIdsLine) {
-            impactIds.textContent = data.booking_ids.join(', ');
+            impactIds.textContent = data.booking_ids.map((id) => `#${id}`).join(', ');
             impactIdsLine.hidden = false;
         } else if (impactIdsLine) {
             impactIdsLine.hidden = true;
