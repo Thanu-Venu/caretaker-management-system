@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>SmartCare Login</title>
+    <?php include_once APPROOT . '/views/partials/smartcare_favicon.php'; ?>
     <link rel="stylesheet" href="/CMA/public/css/login.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>

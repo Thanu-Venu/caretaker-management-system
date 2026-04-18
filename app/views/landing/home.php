@@ -17,6 +17,7 @@ $mheroSlides = [
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>SmartCare</title>
+  <?php include_once APPROOT . '/views/partials/smartcare_favicon.php'; ?>
 
   <!-- Icons + fonts (display + UI): swap URLs for self-hosted files if needed -->
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
