@@ -9,6 +9,7 @@
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <!-- Legacy CSS (keep for now during migration) -->
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/admin/ad_dashboard.css">
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/shared/staff_dashboard_hero.css">
   <!-- Design System Override (ensures consistency) -->
 </head>
 
@@ -26,6 +27,7 @@
   $rsc = (int) ($review['staffCount'] ?? 0);
   $rfc = (int) ($review['feedbackCount'] ?? 0);
   $totalCollected = (float) (($data['stats']['totalCollected'] ?? 0));
+  $adminDisplayName = trim((string) ($_SESSION['user']['username'] ?? 'Admin'));
   ?>
 
   <!-- Main Content with new design system -->
@@ -33,38 +35,59 @@
 
     <div class="dashboard-layout">
 
-    <!-- Page header: title + breadcrumb (Velonic-style toolbar) -->
-    <header class="page-header dashboard-page-header">
-      <div class="dashboard-page-header__row">
-        <div class="dashboard-page-header__text">
-          <h1 class="page-title dashboard-page-header__title">
-            <span class="dashboard-page-header__greeting">Welcome back,</span>
-            <span class="dashboard-page-header__name"><?= htmlspecialchars($_SESSION['user']['username'] ?? 'Admin') ?></span>
+    <section class="staff-dashboard-hero staff-dashboard-hero--admin" aria-labelledby="adminDashboardHeroTitle">
+      <div class="staff-dashboard-hero__content">
+        <div class="staff-dashboard-hero__intro">
+          <p class="staff-dashboard-hero__eyebrow">Admin console</p>
+          <h1 id="adminDashboardHeroTitle" class="staff-dashboard-hero__title">
+            <span class="staff-dashboard-hero__greeting">Welcome back,</span>
+            <span class="staff-dashboard-hero__name"><?= htmlspecialchars($adminDisplayName, ENT_QUOTES, 'UTF-8') ?></span>
           </h1>
+          <p class="staff-dashboard-hero__lead">Oversee bookings, clients, caregivers, and payments — clear the queues that need a decision and keep operations running smoothly.</p>
+
+          <div class="staff-dashboard-hero__actions" role="group" aria-label="Primary admin actions">
+            <a class="btn staff-dashboard-hero__btn-primary" href="<?= URLROOT ?>/public?url=admin/ad_bookings">
+              <i class="bx bx-calendar" aria-hidden="true"></i>
+              <span>Bookings</span>
+            </a>
+            <a class="btn secondary staff-dashboard-hero__btn-secondary" href="<?= URLROOT ?>/admin/ad_payments">
+              <i class="bx bx-wallet" aria-hidden="true"></i>
+              <span>Payments</span>
+            </a>
+          </div>
+
+          <div class="staff-dashboard-hero__highlights" aria-label="Jump to dashboard sections">
+            <a class="staff-dashboard-hero__highlight-item staff-dashboard-hero__highlight-link" href="#adminReviewSection">
+              <i class="bx bx-error-circle" aria-hidden="true"></i>
+              <div>
+                <p class="staff-dashboard-hero__highlight-value">Needs attention</p>
+              </div>
+            </a>
+            <a class="staff-dashboard-hero__highlight-item staff-dashboard-hero__highlight-link" href="#adminStatsSection">
+              <i class="bx bx-grid-alt" aria-hidden="true"></i>
+              <div>
+                <p class="staff-dashboard-hero__highlight-value">KPI overview</p>
+              </div>
+            </a>
+            <a class="staff-dashboard-hero__highlight-item staff-dashboard-hero__highlight-link" href="#adminOverviewSection">
+              <i class="bx bx-pie-chart-alt-2" aria-hidden="true"></i>
+              <div>
+                <p class="staff-dashboard-hero__highlight-value">Status charts</p>
+              </div>
+            </a>
+            <a class="staff-dashboard-hero__highlight-item staff-dashboard-hero__highlight-item--support staff-dashboard-hero__highlight-link" href="#adminAnalyticsSection">
+              <i class="bx bx-line-chart" aria-hidden="true"></i>
+              <div>
+                <p class="staff-dashboard-hero__highlight-value">Trends &amp; engagement</p>
+              </div>
+            </a>
+          </div>
         </div>
-        <nav class="dashboard-breadcrumb" aria-label="Breadcrumb">
-          <ol class="dashboard-breadcrumb__list">
-            <li><a href="<?= URLROOT ?>/public?url=admin/ad_dashboard">SmartCare</a></li>
-            <li><span class="dashboard-breadcrumb__sep" aria-hidden="true">/</span> Admin</li>
-            <li><span class="dashboard-breadcrumb__sep" aria-hidden="true">/</span> <span class="dashboard-breadcrumb__current">Dashboard</span></li>
-          </ol>
-        </nav>
       </div>
-      <div class="dashboard-page-header__toolbar">
-        <time class="dashboard-page-header__date" datetime="<?= date('c') ?>"><?= htmlspecialchars(date('l, j F Y')) ?></time>
-        <nav class="dashboard-quick-actions" aria-label="Quick links">
-          <a href="<?= URLROOT ?>/public?url=admin/ad_bookings" class="dashboard-quick-actions__link dashboard-quick-actions__link--primary"><i class="bx bx-calendar" aria-hidden="true"></i><span>Bookings</span></a>
-          <a href="<?= URLROOT ?>/public?url=admin/ad_clients" class="dashboard-quick-actions__link"><i class="bx bx-group" aria-hidden="true"></i><span>Clients</span></a>
-          <a href="<?= URLROOT ?>/CaretakerCRUD/list" class="dashboard-quick-actions__link"><i class="bx bx-user-circle" aria-hidden="true"></i><span>Caregivers</span></a>
-          <a href="<?= URLROOT ?>/admin/ad_payments" class="dashboard-quick-actions__link"><i class="bx bx-wallet" aria-hidden="true"></i><span>Payments</span></a>
-          <a href="<?= URLROOT ?>/public?url=admin/ad_leave" class="dashboard-quick-actions__link"><i class="bx bx-calendar-x" aria-hidden="true"></i><span>Leave</span></a>
-          <a href="<?= URLROOT ?>/public?url=admin/ad_reports" class="dashboard-quick-actions__link"><i class="bx bx-bar-chart" aria-hidden="true"></i><span>Reports</span></a>
-        </nav>
-      </div>
-    </header>
+    </section>
 
     <!-- HR-style review badges: counts that need attention -->
-    <section class="dashboard-review-badges" aria-label="Quick review — needs attention">
+    <section id="adminReviewSection" class="dashboard-review-badges staff-dashboard-scroll-target" aria-label="Quick review — needs attention">
       <h2 class="dashboard-review-badges__heading">Quick review</h2>
       <div class="dashboard-review-badges__grid">
         <a href="<?= URLROOT ?>/admin/ad_payments?status=pending" class="dashboard-review-badge dashboard-review-badge--payments">
@@ -134,7 +157,7 @@
     </section>
 
     <!-- KPI strip — SmartCare palette (Velonic-style coloured tiles) -->
-    <div class="stats-grid dashboard-stats">
+    <div id="adminStatsSection" class="stats-grid dashboard-stats staff-dashboard-scroll-target">
       <div class="stat-card card-hover dashboard-stat dashboard-stat--blue">
         <div class="stat-card-icon">
           <i class='bx bx-user-circle' aria-hidden="true"></i>
@@ -183,7 +206,7 @@
 
 
     <!-- Overview charts (replaces recent activity table) -->
-    <section class="dashboard-overview-charts" aria-label="Overview charts">
+    <section id="adminOverviewSection" class="dashboard-overview-charts staff-dashboard-scroll-target" aria-label="Overview charts">
       <h2 class="dashboard-overview-charts__heading">Overview</h2>
       <div class="dashboard-overview-charts__grid">
         <div class="card dashboard-chart-card">
@@ -220,7 +243,7 @@
     </section>
 
     <!-- Analytics Section -->
-    <div class="dashboard-analytics-grid">
+    <div id="adminAnalyticsSection" class="dashboard-analytics-grid staff-dashboard-scroll-target">
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">Booking Statistics</h3>

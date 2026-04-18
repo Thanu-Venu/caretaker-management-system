@@ -223,6 +223,17 @@
     z-index: 1990;
 }
 
+/* Native <select> menus can still leak clicks onto this layer (Windows Chromium). See c_find.js */
+#popupOverlay.popup-overlay--suspend {
+    pointer-events: none !important;
+}
+
+/* SmartCare custom date/time — align with other popup fields */
+#searchPopup .sc-date-trigger,
+#searchPopup .sc-time-trigger {
+    min-height: 42px;
+}
+
 #searchPopup {
     display: none;
     position: fixed;
