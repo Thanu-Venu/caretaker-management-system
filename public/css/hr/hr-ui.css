@@ -1410,9 +1410,18 @@ main.main-content > .pagination {
 }
 
 .modal-content input,
-.modal-content select {
+.modal-content select,
+.modal-content textarea {
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     margin-bottom: 14px;
+}
+
+.modal-content textarea {
+    min-width: 0;
+    resize: vertical;
+    min-height: 5.5rem;
 }
 
 .modal-buttons {
@@ -1818,8 +1827,10 @@ button.iconBtn i {
 
 .field input,
 .field select,
+.field textarea,
 .form-section input:not([type="checkbox"]):not([type="radio"]),
 .form-section select,
+.form-section textarea,
 .user-form input,
 .user-form select,
 .user-form textarea,
@@ -1827,6 +1838,14 @@ button.iconBtn i {
 .caretaker-form select,
 .caretaker-form textarea {
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.field textarea,
+.form-section textarea {
+    min-width: 0;
+    resize: vertical;
 }
 
 .field.full {

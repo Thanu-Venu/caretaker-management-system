@@ -54,7 +54,7 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
                     </div>
                 </div>
 <br>
-                <?php if (!empty($warnings)): ?>
+                <?php if (!empty($warning)): ?>
                     <div class="alert alert-warning"><?= htmlspecialchars($warning) ?></div>
                 <?php endif; ?>
 

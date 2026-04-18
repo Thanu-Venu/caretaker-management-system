@@ -139,6 +139,21 @@
     background: var(--admin-primary-soft, rgba(30, 136, 229, 0.08));
 }
 
+/* Notification rows are links — override browser default (blue + underline) */
+.notif-dropdown li a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+}
+
+.notif-dropdown li a:hover,
+.notif-dropdown li a:focus,
+.notif-dropdown li a:visited,
+.notif-dropdown li a:active {
+    color: inherit;
+    text-decoration: none;
+}
+
 .notif-dropdown li small {
     color: var(--admin-muted, #64748b);
     display: block;

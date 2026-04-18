@@ -82,10 +82,11 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
       <?php endif; ?>
 
       <div class="booking-impact-box booking-impact-preview" id="bookingImpactPreview" hidden>
-        <h3>This leave affects active bookings</h3>
+        <h3>Booking overlap</h3>
         <p id="impactMessage"></p>
-        <p>Affected bookings: <strong id="impactCount">0</strong></p>
-        <p id="impactIdsLine" hidden>Booking IDs: <span id="impactIds"></span></p>
+        <p>Overlapping bookings: <strong id="impactCount">0</strong></p>
+        <ul id="impactBookingList" class="impact-booking-list" hidden></ul>
+        <p id="impactIdsLine" hidden>Ref: <span id="impactIds"></span></p>
       </div>
 
       <form method="POST" action="<?php echo URLROOT; ?>/LeaveCRUD/edit/<?php echo (int)$leave->id; ?>" id="leaveRequestForm">

@@ -54,8 +54,10 @@ if (!empty($_SESSION['user']['profile_image'])) {
                     <?php else: ?>
                         <?php foreach ($notifications as $n): ?>
                             <li style="<?= $n['is_read'] == 0 ? 'font-weight:bold;' : '' ?>">
-                                <?= htmlspecialchars((string) ($n['title'] ?? '')) ?><br>
-                                <small><?= htmlspecialchars((string) ($n['message'] ?? '')) ?></small>
+                                <a href="<?= URLROOT ?>/notification/open/<?= (int) ($n['id'] ?? 0) ?>">
+                                    <?= htmlspecialchars((string) ($n['title'] ?? '')) ?><br>
+                                    <small><?= htmlspecialchars((string) ($n['message'] ?? '')) ?></small>
+                                </a>
                             </li>
                         <?php endforeach; ?>
                     <?php endif; ?>

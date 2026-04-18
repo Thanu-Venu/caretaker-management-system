@@ -52,6 +52,19 @@ class LeaveCRUDController extends Controller
         return array_replace_recursive($defaults, $overrides);
     }
 
+    /** User-facing note when leave dates overlap assigned bookings */
+    private function bookingOverlapClientMessage(int $count): string
+    {
+        if ($count <= 0) {
+            return '';
+        }
+        if ($count === 1) {
+            return 'You have 1 scheduled booking in this leave period. HR may arrange a replacement caregiver if your leave is approved.';
+        }
+
+        return "You have {$count} scheduled bookings in this leave period. HR may arrange replacement cover if your leave is approved.";
+    }
+
     private function monthSequenceBetween(string $startDate, string $endDate): array
     {
         $months = [];
@@ -140,7 +153,7 @@ class LeaveCRUDController extends Controller
 
         $impact = $this->leaveModel->getActiveBookingImpactSummary($userId, $startDate, $endDate);
         if (($impact['count'] ?? 0) > 0) {
-            $warnings[] = 'Warning: You have active bookings during the selected leave period. HR may need to assign a replacement caretaker before approving this leave request.';
+            $warnings[] = $this->bookingOverlapClientMessage((int) $impact['count']);
         }
 
         return [
@@ -222,6 +235,7 @@ class LeaveCRUDController extends Controller
                 'count' => 0,
                 'booking_ids' => [],
                 'service_dates' => [],
+                'range_is_provisional' => false,
                 'max_end_date' => null,
                 'start_month_used' => 0,
                 'start_month_remaining' => LeaveModel::MONTHLY_LEAVE_LIMIT,
@@ -242,22 +256,30 @@ class LeaveCRUDController extends Controller
         $remainingInStartMonth = max(0, LeaveModel::MONTHLY_LEAVE_LIMIT - $usedInStartMonth);
         $maxEndDate = $this->computeMaxRequestableEndDate($userId, $startDate, $excludeLeaveId);
 
-        $hasRange = ($endDate !== '' && $endDate >= $startDate);
-        $impact = $hasRange
-            ? $this->leaveModel->getActiveBookingImpactSummary($userId, $startDate, $endDate)
-            : ['count' => 0, 'booking_ids' => [], 'service_dates' => []];
-        $message = '';
-
-        if (($impact['count'] ?? 0) > 0) {
-            $message = 'Warning: You have active bookings during this leave period. HR may need to assign a replacement caretaker before approval.';
+        // Until an end date is chosen, check overlap for the start day only so the caregiver sees an early note.
+        if ($endDate !== '' && $endDate < $startDate) {
+            $impact = ['count' => 0, 'booking_ids' => [], 'service_dates' => []];
+            $rangeIsProvisional = false;
+            $count = 0;
+            $message = '';
+        } else {
+            $rangeEnd = ($endDate !== '' && $endDate >= $startDate) ? $endDate : $startDate;
+            $rangeIsProvisional = ($endDate === '');
+            $impact = $this->leaveModel->getActiveBookingImpactSummary($userId, $startDate, $rangeEnd);
+            $count = (int) ($impact['count'] ?? 0);
+            $message = $count > 0 ? $this->bookingOverlapClientMessage($count) : '';
+            if ($rangeIsProvisional && $count > 0) {
+                $message .= ' Add your end date to see overlap across the full leave range.';
+            }
         }
 
         echo json_encode([
             'ok' => true,
-            'hasImpact' => (($impact['count'] ?? 0) > 0),
-            'count' => (int)($impact['count'] ?? 0),
+            'hasImpact' => ($count > 0),
+            'count' => $count,
             'booking_ids' => $impact['booking_ids'] ?? [],
             'service_dates' => $impact['service_dates'] ?? [],
+            'range_is_provisional' => $rangeIsProvisional,
             'message' => $message,
             'max_end_date' => $maxEndDate,
             'start_month_used' => $usedInStartMonth,
@@ -337,9 +359,12 @@ class LeaveCRUDController extends Controller
             $_SESSION['leave_success'] = 'Leave request submitted successfully and sent to HR for approval.';
 
             if (($validation['impact']['count'] ?? 0) > 0) {
-                $ids = implode(', ', $validation['impact']['booking_ids'] ?? []);
-                $_SESSION['leave_warning'] = 'Warning: You have active bookings during this leave period ('
-                    . (int)$validation['impact']['count'] . ' affected). Booking IDs: ' . $ids;
+                $n = (int) $validation['impact']['count'];
+                $idParts = array_map(static function ($id) {
+                    return '#' . (int) $id;
+                }, $validation['impact']['booking_ids'] ?? []);
+                $_SESSION['leave_warning'] = $this->bookingOverlapClientMessage($n)
+                    . (!empty($idParts) ? ' Ref: ' . implode(', ', $idParts) : '');
             }
 
             header("Location: " . URLROOT . "/LeaveCRUD/index");

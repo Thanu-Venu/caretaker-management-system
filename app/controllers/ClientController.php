@@ -932,6 +932,11 @@ class ClientController extends Controller
 
                 $_SESSION['success'] = 'Booking cancelled successfully. ';
 
+                $fee = (float) ($refundCalculation['cancellation_fee'] ?? 0);
+                if ($fee > 0) {
+                    $_SESSION['success'] .= 'A cancellation fee of LKR ' . number_format($fee, 2) . ' was applied. ';
+                }
+
                 if ($refundCalculation['refund_amount'] > 0) {
                     $_SESSION['success'] .= 'A refund of LKR ' . number_format($refundCalculation['refund_amount'], 2) .
                         ' will be processed after HR approval.';
@@ -993,6 +998,11 @@ class ClientController extends Controller
             "Service: {$booking['service_type']}\n" .
             "Booking Date: {$booking['booking_date']}\n\n";
 
+        $fee = (float) ($refundCalculation['cancellation_fee'] ?? 0);
+        if ($fee > 0) {
+            $clientMessage .= "Cancellation fee applied: LKR " . number_format($fee, 2) . "\n\n";
+        }
+
         if ($refundAmount > 0) {
             $clientMessage .= "Refund Amount: LKR " . number_format($refundAmount, 2) . "\n" .
                 "Your refund is pending HR approval and will be processed shortly.";
@@ -1019,7 +1029,7 @@ class ClientController extends Controller
             'caretaker',
             'Booking Cancelled',
             $caretakerMessage,
-            URLROOT . "/caretaker/ct_bookings"
+            URLROOT . '/caretaker/ct_booking?booking_id=' . (int) $bookingId . '&tab=cancelled'
         );
 
         // Notify HR
@@ -1868,6 +1878,33 @@ class ClientController extends Controller
         }
     }
 
+    /**
+     * Contact details for a temporary (leave cover) caregiver — only when a booking_reassignments row exists for this client's booking.
+     */
+    public function c_replacementCaregiverContact($bookingId = null)
+    {
+        $bookingId = (int) ($bookingId ?? ($_GET['booking_id'] ?? 0));
+        $clientId = AuthSession::profileId();
+
+        if ($bookingId <= 0) {
+            $_SESSION['error'] = 'Invalid booking reference.';
+            header('Location: ' . URLROOT . '/client/c_myBookings');
+            exit;
+        }
+
+        $detail = $this->clientModel->getReplacementCaretakerForBooking($bookingId, $clientId);
+        if (!$detail) {
+            $_SESSION['error'] = 'No replacement caregiver is on file for this booking, or you do not have access.';
+            header('Location: ' . URLROOT . '/client/c_myBookings');
+            exit;
+        }
+
+        $booking = $this->clientModel->getBookingById($bookingId);
+        $this->view('client/c_replacementCaregiverContact', [
+            'detail' => $detail,
+            'booking' => $booking,
+        ]);
+    }
 
     public function c_contactCT()
     {

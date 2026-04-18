@@ -51,15 +51,20 @@ require_once APPROOT . '/views/templates/client/c_sidebar.php';
                                 <span class="status completed">Completed</span>
                             </td>
 
-                            <td>
+                            <td class="past-booking-feedback-cell">
                                 <?php if (!empty($b['rating'])): ?>
-                                    <div class="rating-stars">
-                                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                                            <span class="<?= $i <= (int)$b['rating'] ? 'star-filled' : 'star-empty' ?>">★</span>
-                                        <?php endfor; ?>
-                                    </div>
-                                    <div class="feedback-mini">
-                                        <?= htmlspecialchars($b['feedback'] ?? '') ?>
+                                    <div class="past-booking-feedback-inner">
+                                        <div class="rating-stars">
+                                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                                <span class="<?= $i <= (int)$b['rating'] ? 'star-filled' : 'star-empty' ?>">★</span>
+                                            <?php endfor; ?>
+                                        </div>
+                                        <?php
+                                        $fbText = trim((string) ($b['feedback'] ?? ''));
+                                        ?>
+                                        <div class="feedback-mini"<?= $fbText !== '' ? ' title="' . htmlspecialchars($fbText, ENT_QUOTES, 'UTF-8') . '"' : '' ?>>
+                                            <?= htmlspecialchars($fbText) ?>
+                                        </div>
                                     </div>
                                 <?php else: ?>
                                     <span class="no-feedback">No feedback yet</span>

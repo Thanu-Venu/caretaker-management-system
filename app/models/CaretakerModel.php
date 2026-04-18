@@ -707,6 +707,44 @@ AND NOT EXISTS (
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
+    /** Bookings assigned to this caretaker that were cancelled */
+    public function getCancelledBookingsForCaretaker(int $caretakerId): array
+    {
+        if ($caretakerId <= 0) {
+            return [];
+        }
+
+        $sql = "SELECT
+                b.id AS booking_id,
+                b.booking_date,
+                b.preferred_time,
+                b.basis,
+                b.duration,
+                b.service_type,
+                b.status,
+                b.cancellation_reason,
+                b.cancelled_at,
+                CONCAT(
+                    b.district, ', ',
+                    b.street, ', ',
+                    b.address_line1, ', ',
+                    b.address_line2, ', ',
+                    b.postal_code
+                ) AS service_location,
+                c.name AS client_name
+            FROM bookings b
+            JOIN clients c ON c.id = b.client_id
+            WHERE b.caretaker_id = ?
+              AND LOWER(TRIM(b.status)) = 'cancelled'
+            ORDER BY COALESCE(b.cancelled_at, b.booking_date) DESC, b.booking_date DESC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('i', $caretakerId);
+        $stmt->execute();
+
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
     /**
      * Leave-approved replacement windows: rows where this caregiver is new_caretaker_id.
      * Dates cover_start_date / cover_end_date are the reassignment overlap only (not full booking span).

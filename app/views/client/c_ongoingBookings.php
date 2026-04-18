@@ -205,6 +205,7 @@ $ongoingStatusFilterOptions = [
         <div class="modal-content">
             <button type="button" class="close" onclick="closeCancelModal()" aria-label="Close">&times;</button>
             <h3 id="ongoingCancelTitle">Cancel booking</h3>
+            <?php require_once APPROOT . '/views/client/partials/cancel_fee_notice.php'; ?>
             <form method="POST" action="<?= URLROOT ?>/client/cancelBooking">
                 <input type="hidden" name="booking_id" id="cancelBookingId">
                 <div class="field">

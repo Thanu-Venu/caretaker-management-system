@@ -70,19 +70,20 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
 
         <?php if (!empty($impact['count'])): ?>
           <div class="booking-impact-box">
-            <h3>This leave affects active bookings</h3>
-            <p>Affected bookings: <strong><?= (int)$impact['count'] ?></strong></p>
+            <h3>Booking overlap</h3>
+            <p>You have <strong><?= (int)$impact['count'] ?></strong> scheduled booking<?= (int)$impact['count'] === 1 ? '' : 's' ?> in this leave period. HR may arrange replacement cover if your request is approved.</p>
             <?php if (!empty($impact['booking_ids'])): ?>
-              <p>Booking IDs: <?= htmlspecialchars(implode(', ', $impact['booking_ids'])) ?></p>
+              <p class="impact-ref">Ref: <?php foreach ($impact['booking_ids'] as $i => $bid): ?><?= $i > 0 ? ', ' : '' ?>#<?= (int)$bid ?><?php endforeach; ?></p>
             <?php endif; ?>
           </div>
         <?php endif; ?>
 
         <div class="booking-impact-box booking-impact-preview" id="bookingImpactPreview" hidden>
-          <h3>This leave affects active bookings</h3>
+          <h3>Booking overlap</h3>
           <p id="impactMessage"></p>
-          <p>Affected bookings: <strong id="impactCount">0</strong></p>
-          <p id="impactIdsLine" hidden>Booking IDs: <span id="impactIds"></span></p>
+          <p>Overlapping bookings: <strong id="impactCount">0</strong></p>
+          <ul id="impactBookingList" class="impact-booking-list" hidden></ul>
+          <p id="impactIdsLine" hidden>Ref: <span id="impactIds"></span></p>
         </div>
 
         <form method="POST" action="<?php echo URLROOT; ?>/leaveCRUD/add" id="leaveRequestForm">

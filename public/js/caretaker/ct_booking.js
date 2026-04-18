@@ -27,6 +27,11 @@ function setActiveTab(tabName) {
 function switchTab(tabName, event) {
   setActiveTab(tabName);
 
+  const tabField = document.getElementById("ctBookingTabInput");
+  if (tabField) {
+    tabField.value = tabName;
+  }
+
   if (event && event.target) {
     event.target.classList.add("active");
   }

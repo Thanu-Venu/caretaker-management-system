@@ -95,7 +95,8 @@
 .filter-panel {
     margin-top: var(--admin-section-gap, 20px);
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    /* Four visible columns: status, from, to, actions (hidden tab input is not a grid item). */
+    grid-template-columns: minmax(12rem, 1.35fr) minmax(10rem, 1fr) minmax(10rem, 1fr) auto;
     gap: 12px 14px;
     align-items: end;
     background: var(--admin-surface, #fff);
@@ -103,7 +104,9 @@
     border-radius: var(--admin-radius, 12px);
     padding: 16px;
     box-shadow: var(--admin-shadow-xs, 0 1px 2px rgba(15, 23, 42, 0.05));
-    width: fit-content;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .filter-field {
@@ -132,6 +135,23 @@
 
 .filter-field--actions .reset-btn:hover {
     background: #f9f9f9;
+}
+
+.filter-field--actions {
+    justify-self: end;
+}
+
+.filter-actions-btns {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-actions-btns .btn,
+.filter-actions-btns .reset-btn {
+    white-space: nowrap;
 }
 
 /* ===== SEARCH ===== */
@@ -299,6 +319,14 @@ tr.full-payment:hover {
 @media (max-width: 768px) {
     .filter-panel {
         grid-template-columns: 1fr;
+    }
+
+    .filter-field--actions {
+        justify-self: stretch;
+    }
+
+    .filter-actions-btns {
+        justify-content: flex-start;
     }
 
     .filter-panel-top-actions {

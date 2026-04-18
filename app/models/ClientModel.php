@@ -456,6 +456,45 @@ class ClientModel
         return $stmt->get_result()->fetch_assoc();
     }
 
+    /**
+     * Leave-approval replacement (cover) caregiver for a booking, only if the booking belongs to the client.
+     */
+    public function getReplacementCaretakerForBooking(int $bookingId, int $clientId): ?array
+    {
+        $sql = "SELECT br.id AS reassignment_id,
+                    br.booking_id,
+                    br.old_caretaker_id,
+                    br.new_caretaker_id,
+                    br.start_date AS cover_start_date,
+                    br.end_date AS cover_end_date,
+                    br.note AS hr_note,
+                    ct.name,
+                    ct.email,
+                    ct.phone,
+                    ct.service_type,
+                    ct.location,
+                    ct.profile_image,
+                    ct.experience,
+                    ct.qualifications,
+                    oc.name AS previous_caretaker_name
+                FROM booking_reassignments br
+                INNER JOIN bookings b ON b.id = br.booking_id
+                INNER JOIN caretakers ct ON ct.id = br.new_caretaker_id
+                LEFT JOIN caretakers oc ON oc.id = br.old_caretaker_id
+                WHERE br.booking_id = ? AND b.client_id = ?
+                ORDER BY br.id DESC
+                LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            return null;
+        }
+        $stmt->bind_param('ii', $bookingId, $clientId);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        return $row ?: null;
+    }
+
     public function getUpcomingBookings($clientId)
     {
         // Keep booking status aligned with approved advance payments.

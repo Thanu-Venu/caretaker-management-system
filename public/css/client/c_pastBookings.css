@@ -1,8 +1,17 @@
-/* Past bookings — stars + feedback snippet (tables use admin-ui) */
+/* Past bookings — stars + feedback snippet (tables use .client-table) */
 
-.main-content .bookings-data-table td.booking-actions-cell {
+.main-content .client-table td.booking-actions-cell {
     display: table-cell;
     vertical-align: middle;
+}
+
+.main-content .client-table td.past-booking-feedback-cell {
+    vertical-align: middle;
+    max-width: 15rem;
+}
+
+.past-booking-feedback-inner {
+    min-width: 0;
 }
 
 .booking-actions-toolbar {
@@ -71,7 +80,20 @@
 
 .feedback-mini {
     font-size: 13px;
-    max-width: 220px;
+    line-height: 1.45;
+    max-width: 100%;
+    margin: 0;
+    word-break: break-word;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+}
+
+.no-feedback {
+    color: var(--admin-muted, #64748b);
+    font-size: 13px;
 }
 
 .feedback-done-label {

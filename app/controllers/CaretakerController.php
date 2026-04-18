@@ -282,6 +282,7 @@ class CaretakerController extends Controller
         $ongoing = $caretakerModel->getOngoingBookings($caretakerId);
         $upcoming = $caretakerModel->getUpcomingBookings($caretakerId);
         $past = $caretakerModel->getPastBookings($caretakerId);
+        $cancelled = $caretakerModel->getCancelledBookingsForCaretaker($caretakerId);
 
         $repTabs = $caretakerModel->getReplacementCoverAssignmentsByTab($caretakerId);
         $ongoing = array_merge($ongoing, $repTabs['ongoing']);
@@ -295,7 +296,7 @@ class CaretakerController extends Controller
         ];
 
         $serviceTypeOptions = [];
-        foreach (array_merge($ongoing, $upcoming, $past) as $booking) {
+        foreach (array_merge($ongoing, $upcoming, $past, $cancelled) as $booking) {
             $serviceType = trim((string) ($booking['service_type'] ?? ''));
             if ($serviceType !== '') {
                 $serviceTypeOptions[$serviceType] = true;
@@ -329,6 +330,7 @@ class CaretakerController extends Controller
         $ongoing = $filterBookings($ongoing);
         $upcoming = $filterBookings($upcoming);
         $past = $filterBookings($past);
+        $cancelled = $filterBookings($cancelled);
 
         $sortBookingsAsc = static function (array $a, array $b): int {
             $da = (string) ($a['cover_start_date'] ?? $a['booking_date'] ?? '');
@@ -343,12 +345,14 @@ class CaretakerController extends Controller
         usort($ongoing, $sortBookingsAsc);
         usort($upcoming, $sortBookingsAsc);
         usort($past, $sortPastDesc);
+        usort($cancelled, $sortPastDesc);
 
         // Just pass the booking_date and preferred_time as they are
         $this->view('caretaker/ct_booking', [
             'ongoing' => $ongoing,
             'upcoming' => $upcoming,
             'past' => $past,
+            'cancelled' => $cancelled,
             'filters' => $filters,
             'serviceTypeOptions' => $serviceTypeOptions,
         ]);
