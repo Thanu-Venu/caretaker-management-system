@@ -225,5 +225,57 @@ class ComplaintModel
         $result = $stmt->get_result();
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+
+    // Get single caretaker complaint by ID
+    public function getCaretakerComplaintById($complaint_id)
+    {
+        $stmt = $this->db->prepare("
+        SELECT cc.complaint_id, cc.caretaker_id, cc.client_id, cc.service_type, cc.service_date, cc.description, cc.status,
+               c.name AS client_name, ct.name AS caretaker_name
+        FROM ct_complaints cc
+        LEFT JOIN clients c ON cc.client_id = c.id
+        LEFT JOIN caretakers ct ON cc.caretaker_id = ct.id
+        WHERE cc.complaint_id = ?
+    ");
+        $stmt->bind_param("i", $complaint_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result ? $result->fetch_assoc() : null;
+    }
+
+    // Update caretaker complaint (only if pending)
+    public function updateCaretakerComplaint($complaint_id, $service_type, $service_date, $description)
+    {
+        $stmt = $this->db->prepare("
+        UPDATE ct_complaints 
+        SET service_type = ?, service_date = ?, description = ? 
+        WHERE complaint_id = ? AND status = 'Pending'
+        ");
+        $stmt->bind_param("sssi", $service_type, $service_date, $description, $complaint_id);
+        return $stmt->execute();
+    }
+
+    // Delete caretaker complaint (only if pending)
+    public function deleteCaretakerComplaint($complaint_id)
+    {
+        $stmt = $this->db->prepare("
+        DELETE FROM ct_complaints 
+        WHERE complaint_id = ? AND status = 'Pending'
+        ");
+        $stmt->bind_param("i", $complaint_id);
+        return $stmt->execute();
+    }
+
+    // Create caretaker complaint
+    public function createCaretakerComplaint($caretaker_id, $client_id, $service_type, $service_date, $description)
+    {
+        $status = "Pending";
+        $stmt = $this->db->prepare("
+        INSERT INTO ct_complaints (caretaker_id, client_id, service_type, service_date, description, status)
+        VALUES (?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->bind_param("iissss", $caretaker_id, $client_id, $service_type, $service_date, $description, $status);
+        return $stmt->execute();
+    }
 }
 ?>

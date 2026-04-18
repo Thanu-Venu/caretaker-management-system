@@ -438,3 +438,125 @@ table {
   border-radius: 0 !important;
   margin-top: 0 !important;
 }
+
+/* Action Buttons - Match Leave Request Style */
+.complaint-table td a {
+  color: #1e88e5;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.complaint-table td a:hover {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.complaint-table td a i {
+  font-size: 18px;
+}
+
+.complaint-table td a:active {
+  transform: scale(0.95);
+}
+
+/* Locked status styling */
+.complaint-table td span[style*="color: gray"] {
+  color: #999 !important;
+  font-style: italic;
+  font-size: 12px;
+}
+
+/* Form Actions and Cancel Button */
+.form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+  align-items: center;
+}
+
+.btn-cancel {
+  background: linear-gradient(135deg, #6c757d, #5a6268);
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  padding: 12px 24px;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.btn-cancel:hover {
+  background: linear-gradient(135deg, #5a6268, #495057);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(108, 117, 125, 0.45);
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* Edit Form Styling - Match Original Complaint Form */
+#complaintEditForm {
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.94) 0%, rgba(248, 250, 252, 0.88) 45%, rgba(240, 253, 250, 0.35) 100%);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+  width: 100%;
+  max-width: none;
+}
+
+#complaintEditForm label {
+  font-weight: 600;
+  color: var(--complaint-text);
+  font-size: 18px;
+}
+
+#complaintEditForm select, 
+#complaintEditForm input, 
+#complaintEditForm textarea {
+  padding: 12px 15px;
+  border: 1px solid var(--complaint-border);
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--complaint-text);
+  background: #fff;
+  transition: border-color 0.2s ease;
+  width: 100%;
+}
+
+#complaintEditForm select:focus, 
+#complaintEditForm input:focus, 
+#complaintEditForm textarea:focus {
+  outline: none;
+  border-color: var(--complaint-accent);
+  box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+}
+
+#complaintEditForm textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Ensure form actions are properly styled */
+#complaintEditForm .form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+  align-items: center;
+  justify-content: flex-start;
+}
