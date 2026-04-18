@@ -1,5 +1,60 @@
 /* Past bookings — stars + feedback snippet (tables use admin-ui) */
 
+.main-content .bookings-data-table td.booking-actions-cell {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.booking-actions-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.booking-actions-toolbar .btn.tiny,
+.booking-actions-toolbar .feedback-btn,
+.booking-actions-toolbar .done-text {
+    white-space: nowrap;
+}
+
+.booking-actions-toolbar .btn.tiny.approve {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    text-decoration: none;
+    min-height: 36px;
+    min-width: 96px;
+    padding: 8px 18px;
+    line-height: 1;
+}
+
+.booking-actions-toolbar .feedback-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-height: 36px;
+    padding: 8px 14px;
+    border: 1px solid #2563eb;
+    border-radius: var(--admin-radius-sm, 8px);
+    background: #2563eb;
+    color: #fff;
+    font: inherit;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.booking-actions-toolbar .feedback-btn:hover,
+.booking-actions-toolbar .feedback-btn:focus {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    outline: none;
+}
+
 .rating-stars {
     font-size: 1rem;
     letter-spacing: 2px;
@@ -35,4 +90,9 @@
 .stars span:focus {
     color: #f59e0b;
     outline: none;
+}
+
+/* Highlight selected stars in feedback modal */
+.stars span.active {
+    color: #f59e0b;
 }

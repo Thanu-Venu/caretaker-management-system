@@ -94,7 +94,7 @@ body {
 .summary-label {
     display: block;
     margin: 0;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 600;
     color: var(--hr-text-secondary, #334155);
     line-height: 1.3;
@@ -114,12 +114,12 @@ body {
     background: var(--hr-surface, #fff);
     border: 1px solid var(--hr-border, #e2e8f0);
     border-radius: var(--hr-radius, 12px);
-    padding: 16px 14px 20px;
+    padding: 8px 6px 12px;
     box-shadow: var(--hr-shadow, 0 1px 3px rgba(15, 23, 42, 0.06));
 }
 
 #calendar {
-    min-height: 640px;
+    min-height: 100px;
 }
 
 /* FullCalendar — match admin table header (blue bar, light controls) */
@@ -184,7 +184,7 @@ body {
 }
 
 .fc .fc-daygrid-day-frame {
-    min-height: 96px;
+    min-height: 8px;
     position: relative;
 }
 
@@ -198,12 +198,12 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
-    margin-top: 4px;
-    padding: 0 4px 6px;
+    margin-top: 2px;
+    padding: 0 2px 4px;
 }
 
 .day-badge {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     border-radius: var(--hr-radius-full, 9999px);
     padding: 2px 7px;

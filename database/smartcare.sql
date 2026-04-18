@@ -871,7 +871,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (4,1,'Thanushya Venugoban','thanu28@gmail.com','$2y$10$M85ZBJZ91pFPi3sWwEgLiudhJxFdC.2sGhJwPrMcW0EUVHQKkzOhO','admin','Active','','697045605c41b.jpg','2026-01-21 03:17:05'),(5,2,'nanduni','nanduni@gmail.com','$2y$10$yTeb45tZN4DneyGv7KeciujsHSsJrR2ZgiGOUpwubZVMF3ni5iCPi','Manager','Active','0773607650','697048f0bb99b.jpg','2026-01-21 03:32:23');
+INSERT INTO `users` VALUES (4,1,'Thanushya Venugoban','thanu28@gmail.com','$2y$10$M85ZBJZ91pFPi3sWwEgLiudhJxFdC.2sGhJwPrMcW0EUVHQKkzOhO','admin','Active','','697045605c41b.jpg','2026-01-21 03:17:05'),(5,2,'Nanduni Amasha','nanduni@gmail.com','$2y$10$yTeb45tZN4DneyGv7KeciujsHSsJrR2ZgiGOUpwubZVMF3ni5iCPi','Manager','Active','0773607650','697048f0bb99b.jpg','2026-01-21 03:32:23');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 

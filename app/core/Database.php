@@ -6,7 +6,7 @@ class Database
     public function __construct() {
         $host = "localhost";
         $user = "root";
-        $pass = ""; // No password for local XAMPP setup
+        $pass = "";
         $dbname = "smartcare";
 
         $this->conn = new mysqli($host, $user, $pass, $dbname);

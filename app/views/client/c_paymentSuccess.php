@@ -18,18 +18,17 @@ $paymentId = $data['payment_id'] ?? null;
         <p class="payment-success__lead text-muted">Thank you. We have received your payment and updated your booking status.</p>
 
         <div class="payment-success__meta" role="status" aria-live="polite">
-            
-            <p class="payment-success__meta-note">After HR approves this payment, you can view your caregiver details.</p>
+            <p class="payment-success__meta-note">The Continue button will show your current or before-caretaker details for now. After HR approves this payment, you can view the updated caretaker details.</p>
         </div>
 
         <ul class="payment-success__next-steps" aria-label="What happens next">
             <li>Our team will continue processing your booking workflow.</li>
             <li>You can review full payment details and due dates at any time.</li>
-            <li>Need assistance? Contact your assigned caregiver from the next page.</li>
+            <li>Need assistance? Use Continue to view the before-caregiver contact details until HR approval is completed.</li>
         </ul>
 
         <div class="header-actions payment-success-actions">
-            <a class="btn" href="<?= URLROOT ?>/client/c_contactCT<?= $paymentId ? ('?payment_id=' . urlencode((string) $paymentId)) : '' ?>">Continue</a>
+            <a class="btn" href="<?= URLROOT ?>/client/c_upcomingBookings">Continue</a>
             <a class="btn secondary" href="<?= URLROOT ?>/client/payments">View payments</a>
             <a class="btn secondary" href="<?= URLROOT ?>/public?url=client/c_dashboard">Back to dashboard</a>
         </div>
