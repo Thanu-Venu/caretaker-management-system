@@ -610,7 +610,81 @@ AND NOT EXISTS (
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    
+    // ================= DASHBOARD STATISTICS ================= */
+
+    /**
+     * Get count of upcoming bookings for this caretaker
+     */
+    public function getUpcomingBookingsCount($caretakerId)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT COUNT(*) as count
+             FROM bookings 
+             WHERE caretaker_id = ? 
+             AND booking_date >= CURDATE()
+             AND status IN ('Accepted', 'Payment_Requested', 'Advance_Paid')"
+        );
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        
+        return (int)($result['count'] ?? 0);
+    }
+
+    /**
+     * Get count of working days this month for this caretaker
+     */
+    public function getWorkingDaysThisMonth($caretakerId)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT COUNT(DISTINCT booking_date) as working_days
+             FROM bookings 
+             WHERE caretaker_id = ? 
+             AND MONTH(booking_date) = MONTH(CURDATE())
+             AND YEAR(booking_date) = YEAR(CURDATE())
+             AND status IN ('Accepted', 'Payment_Requested', 'Advance_Paid', 'Completed')"
+        );
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        
+        return (int)($result['working_days'] ?? 0);
+    }
+
+    /**
+     * Get count of pending leave requests for this caretaker
+     */
+    public function getPendingLeavesCount($caretakerId)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT COUNT(*) as count
+             FROM leaves 
+             WHERE user_id = ? AND status = 'Pending'"
+        );
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        
+        return (int)($result['count'] ?? 0);
+    }
+
+    /**
+     * Get total reviews count for a caretaker
+     */
+    public function getTotalReviewsCount($caretakerId)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT COUNT(f.id) as total_reviews
+             FROM feedbacks f
+             JOIN bookings b ON f.booking_id = b.id
+             WHERE b.caretaker_id = ? AND f.rating > 0"
+        );
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        
+        return (int)($result['total_reviews'] ?? 0);
+    }
 
     public function getAllActiveBookings($caretakerId)
     {

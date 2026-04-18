@@ -45,7 +45,14 @@ class CaretakerController extends Controller
             // Get caretaker details
             $caretaker = $this->caretakerModel->getCaretakerById($userId);
             
-            // Simple data for now
+            // Fetch dashboard statistics from database
+            $averageRating = $this->caretakerModel->getAverageRating($userId);
+            $totalReviews = $this->caretakerModel->getTotalReviewsCount($userId);
+            $upcomingBookings = $this->caretakerModel->getUpcomingBookingsCount($userId);
+            $workingDays = $this->caretakerModel->getWorkingDaysThisMonth($userId);
+            $pendingLeaves = $this->caretakerModel->getPendingLeavesCount($userId);
+            
+            // Dashboard data with real statistics
             $data = [
                 'caretaker' => $caretaker,
                 'leaves' => [],
@@ -53,12 +60,19 @@ class CaretakerController extends Controller
                 'latestProfileChangeRequest' => null,
                 'leaveMonthlySummary' => [],
                 'workingDates' => [],
+                'dashboardStats' => [
+                    'average_rating' => $averageRating,
+                    'total_reviews' => $totalReviews,
+                    'upcoming_bookings' => $upcomingBookings,
+                    'working_days' => $workingDays,
+                    'pending_leaves' => $pendingLeaves
+                ],
                 'monthlyStats' => [
                     'is_available' => true,
-                    'active_bookings' => 0,
-                    'working_days' => 0,
+                    'active_bookings' => $upcomingBookings,
+                    'working_days' => $workingDays,
                     'completed_bookings' => 0,
-                    'rating' => 0
+                    'rating' => $averageRating
                 ],
                 'calendarYear' => (int)date('Y'),
                 'calendarMonth' => (int)date('n')

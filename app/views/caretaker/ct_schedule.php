@@ -105,8 +105,11 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
             console.log('Leave event data:', props); // Debug log
             document.querySelector('.modal-header h3').textContent = 'Leave Details';
             document.getElementById('clientName').textContent = 'Leave (You)';
-            document.getElementById('leaveype').textContent = props.leave_type || '-';
-            document.getElementById('leaveate').textContent = info.event.startStr.split('T')[0];
+            document.getElementById('serviceType').textContent = props.leave_type || '-';
+            document.getElementById('bookingTime').textContent = 'All Day';
+            document.getElementById('bookingDate').textContent = info.event.startStr.split('T')[0];
+            document.getElementById('serviceDuration').textContent = '-';
+            document.getElementById('serviceLocation').textContent = props.reason || 'No reason provided';
           } else {
             // Handle booking events
             document.querySelector('.modal-header h3').textContent = 'Booking Details';

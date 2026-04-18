@@ -81,7 +81,7 @@
 .modal-card {
   background: #fff;
   border-radius: 12px;
-  max-width: 900px;
+  max-width: 600px;
   margin: 80px auto;
   padding: 20px;
   animation: slideUp 0.3s ease-in-out;
@@ -364,19 +364,11 @@
 
 /* Event styling (if you later add events) */
 .fc-event {
-  background: #3498db !important;
-  border: none !important;
-  color: #fff !important;
-  border-radius: 6px;
-  padding: 4px 6px;
-  font-size: 13px;
-}
-
-.fc-event {
   border-radius: 6px !important;
   padding: 2px 4px !important;
   font-size: 12px !important;
   font-weight: 500;
+  color: #fff !important;
 }
 
 /* Status badges */
@@ -506,7 +498,7 @@ table {
     padding: 0;
     border-radius: 16px;
     width: 90%;
-    max-width: 1500px !important;
+    max-width: 700px !important;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     animation: modalSlideIn 0.3s ease-out;
 }
