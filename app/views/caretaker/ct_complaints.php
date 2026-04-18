@@ -130,7 +130,6 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
                 <th>Date</th>
                 <th>Description</th>
                 <th>Status</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody id="complaintTableBody">
@@ -154,24 +153,11 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
                             ?>
                             <span class="<?= $statusClass ?>"><?= htmlspecialchars($c['status']) ?></span>
                         </td>
-                        <td>
-                            <?php if ($c['status'] == 'Pending'): ?>
-                                <a href="<?= URLROOT ?>/public/index.php?url=caretaker/editComplaint/<?= $c['complaint_id'] ?>">
-                                    <i class="bx bx-edit"></i>
-                                </a> |
-                                <a href="<?= URLROOT ?>/public/index.php?url=caretaker/deleteComplaint/<?= $c['complaint_id'] ?>"
-                                   onclick="return confirm('Are you sure you want to delete this complaint?');">
-                                    <i class="bx bx-trash"></i>
-                                </a>
-                            <?php else: ?>
-                                <span style="color: gray; font-style: italic;">Locked</span>
-                            <?php endif; ?>
-                        </td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="6" style="text-align: center; color: var(--complaint-muted); padding: 24px;">No complaints yet</td>
+                    <td colspan="5" style="text-align: center; color: var(--complaint-muted); padding: 24px;">No complaints yet</td>
                 </tr>
             <?php endif; ?>
         </tbody>
