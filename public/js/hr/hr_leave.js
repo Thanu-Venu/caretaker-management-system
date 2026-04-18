@@ -11,8 +11,7 @@
         ['leave_type', 'Leave type'],
         ['start_date', 'Start date'],
         ['end_date', 'End date'],
-        ['start_time', 'Start time'],
-        ['end_time', 'End time'],
+       
         ['request_days', 'Total days (request, month overlap)'],
         ['monthly_used_before_request', 'Monthly leave used before (days)'],
         ['monthly_used_after_request', 'Monthly leave after request (days)'],

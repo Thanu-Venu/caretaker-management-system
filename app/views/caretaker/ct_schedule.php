@@ -96,40 +96,30 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
           method: "GET"
         },
         eventClick: function(info) {
-          // Populate modal with booking or leave details
+          // Populate modal with booking details only (leave events disabled)
           const props = info.event.extendedProps;
           const isLeave = props.type === 'leave';
 
+          // Only show popup for booking events, not leave events
           if (isLeave) {
-            // Handle leave events
-            console.log('Leave event data:', props); // Debug log
-            document.querySelector('.modal-header h3').textContent = 'Leave Details';
-            document.getElementById('clientName').textContent = 'Leave (You)';
-            document.getElementById('serviceType').textContent = props.leave_type || '-';
-            document.getElementById('bookingTime').textContent = 'All Day';
-            document.getElementById('bookingDate').textContent = info.event.startStr.split('T')[0];
-            document.getElementById('serviceDuration').textContent = '-';
-            document.getElementById('serviceLocation').textContent = props.reason || 'No reason provided';
-          } else {
-            // Handle booking events
-            document.querySelector('.modal-header h3').textContent = 'Booking Details';
-            document.getElementById('clientName').textContent = props.client || '-';
-            document.getElementById('serviceType').textContent = props.service || '-';
-            document.getElementById('bookingTime').textContent = props.time || '-';
-            document.getElementById('bookingDate').textContent = props.dateRange || info.event.startStr.split('T')[0] || '-';
-            document.getElementById('serviceDuration').textContent = props.duration || '-';
-            document.getElementById('serviceLocation').textContent = props.location || '-';
+            return; // Do nothing for leave events - no popup
           }
+
+          // Handle booking events
+          document.querySelector('.modal-header h3').textContent = 'Booking Details';
+          document.getElementById('clientName').textContent = props.client || '-';
+          document.getElementById('serviceType').textContent = props.service || '-';
+          document.getElementById('bookingTime').textContent = props.time || '-';
+          document.getElementById('bookingDate').textContent = props.dateRange || info.event.startStr.split('T')[0] || '-';
+          document.getElementById('serviceDuration').textContent = props.duration || '-';
+          document.getElementById('serviceLocation').textContent = props.location || '-';
 
           // Format status with badge styling
           const statusEl = document.getElementById('bookingStatus');
           let statusClass = '';
           let statusText = '';
 
-          if (isLeave) {
-            statusClass = 'status-approved-leave';
-            statusText = 'Approved Leave';
-          } else if (props.status === 'Completed') {
+          if (props.status === 'Completed') {
             statusClass = 'status-completed';
             statusText = 'Completed';
           } else if (props.status === 'Accepted') {
