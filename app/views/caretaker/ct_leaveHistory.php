@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
 $caretakerPageTitle = 'Leave History - SmartCare';
 $caretakerExtraCss = ['caretaker/ct_leaveHistory.css'];
@@ -6,25 +5,6 @@ require_once APPROOT . '/views/templates/caretaker/caretaker_layout_head.php';
 include_once APPROOT . '/views/templates/caretaker/ct_header.php';
 include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
 ?>
-=======
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_leaveHistory.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-</head>
-<body>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
->>>>>>> 1de7447a803ad4e6db33e06c5eaa671e707976aa
 <main class="content leavehistory-container">
   <header class="page-header">
     <h1 class="page-title">Leave History</h1>
@@ -50,7 +30,7 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
     <span id="pageInfo"></span>
     <button id="nextPage" class="btn">Next</button>
   </div>
-</div>
+</main>
 <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_leaveHistory.js"></script>
 
 <?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>
