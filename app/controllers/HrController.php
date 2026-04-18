@@ -372,12 +372,17 @@ class HrController extends Controller
     {
         try {
             $start = new DateTime($date);
+            $basis = strtolower(trim((string) $basis));
+            // Hourly: duration is hours, not days — overlap is on the booking calendar day only.
+            if ($basis === 'hourly') {
+                return $start->format('Y-m-d');
+            }
             if ($basis === 'monthly') {
                 $start->modify('+' . $duration . ' month -1 day');
             } elseif ($basis === 'yearly') {
                 $start->modify('+' . $duration . ' year -1 day');
             } else {
-                $start->modify('+' . ($duration - 1) . ' day');
+                $start->modify('+' . (max(1, (int) $duration) - 1) . ' day');
             }
             return $start->format('Y-m-d');
         } catch (Exception $e) {

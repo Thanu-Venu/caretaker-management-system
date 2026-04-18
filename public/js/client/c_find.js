@@ -15,17 +15,12 @@ const timeOptions = {
     "Morning (8am - 12pm)",
     "Evening (1pm - 5pm)",
   ],
-  "Disability Support": [
-    "Full Time (8am - 5pm)",
-    "Morning (8am - 12pm)",
-    "Evening (1pm - 5pm)",
-  ],
 };
 
 const serviceOptions = {
   "Elder Care": ["Monthly", "Yearly"],
   Babysitter: ["Daily", "Monthly", "Yearly"],
-  Maid: ["Hourly", "Daily", "Monthly", "Yearly"]
+  Maid: ["Hourly", "Daily", "Monthly", "Yearly"],
 };
 
 // utility ensures preferredTimeSelect is a <select>; replaces input if present
@@ -45,7 +40,7 @@ function ensureTimeSelect() {
   return select;
 }
 
-/** Re-scan for date/time inputs and wrap with SmartCare.CustomDateTime (see public/js/common/custom-datetime.js). */
+/** Re-scan for date inputs and wrap with SmartCare.CustomDateTime; time inputs stay native (see public/js/common/custom-datetime.js). */
 function refreshFindPopupDateTime(scopeRoot) {
   const root = scopeRoot || document.getElementById("searchPopup") || document;
   if (window.SmartCare && window.SmartCare.CustomDateTime && typeof window.SmartCare.CustomDateTime.init === "function") {
@@ -159,7 +154,7 @@ function updateDurationLimits(basis) {
 }
 
 window.onload = function () {
-  // Set Start Date window: today to today + 4 days
+  // Earliest start: 4 days from today; latest: 1 year ahead (native date input max)
   const startDateInput = document.querySelector('input[name="start_date"]');
   if (!startDateInput) {
     return;
@@ -167,7 +162,10 @@ window.onload = function () {
   const today = new Date();
 
   const minDate = new Date(today);
-  minDate.setDate(today.getDate() + 4); // +4 days
+  minDate.setDate(today.getDate() + 4);
+
+  const maxDate = new Date(today);
+  maxDate.setFullYear(maxDate.getFullYear() + 1);
 
   const formatDate = (d) => {
     let month = "" + (d.getMonth() + 1);
@@ -208,7 +206,6 @@ if (basisFilter) {
     const service = serviceSelect ? serviceSelect.value : "";
     const labelEl = document.getElementById("preferredTimeLabel");
     let timeSelect = document.getElementById("preferredTimeSelect");
-    // if maid/hourly we switch to time input
     if (service === "Maid" && basis === "Hourly") {
       if (labelEl) labelEl.textContent = "Start Time";
       const container = document.getElementById("timeContainer");
