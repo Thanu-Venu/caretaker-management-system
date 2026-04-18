@@ -6,17 +6,19 @@ include_once APPROOT . '/views/templates/caretaker/ct_header.php';
 include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
 ?>
 <?php
-  // Use real dashboard statistics from database
-  $upcomingCount = (int)($data['dashboardStats']['upcoming_bookings'] ?? 0);
-  $pendingLeaveCount = (int)($data['dashboardStats']['pending_leaves'] ?? 0);
-  $workingDays = (int)($data['dashboardStats']['working_days'] ?? 0);
-  $rating = number_format((float)($data['dashboardStats']['average_rating'] ?? 0), 1);
-  $totalReviews = (int)($data['dashboardStats']['total_reviews'] ?? 0);
-  
+  $upcomingCount = count($data['upcoming'] ?? []);
+  $pendingLeaveCount = 0;
+  foreach ($data['leaves'] ?? [] as $leave) {
+      if (strtolower($leave['status'] ?? '') === 'pending') {
+          $pendingLeaveCount++;
+      }
+  }
   $profileRequestPending = !empty($data['latestProfileChangeRequest']) && (($data['latestProfileChangeRequest']['status'] ?? '') === 'Pending');
   $activeBookings = (int)($data['monthlyStats']['active_bookings'] ?? 0);
   $completedBookings = (int)($data['monthlyStats']['completed_bookings'] ?? 0);
+  $workingDays = (int)($data['monthlyStats']['working_days'] ?? 0);
   $availability = !empty($data['monthlyStats']['is_available']);
+  $rating = number_format((float)($data['monthlyStats']['rating'] ?? 0), 1);
   $availabilityLabel = $availability ? "Visible to clients" : "Hidden from clients";
 ?>
 
@@ -104,7 +106,7 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
                     <i class='bx bx-star'></i>
                 </div>
                 <h3><?= $rating ?></h3>
-                <p>Average Rating (<?= $totalReviews ?> reviews)</p>
+                <p>Average Rating</p>
             </div>
             <div class="card">
                 <div class="action1">

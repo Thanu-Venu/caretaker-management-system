@@ -1,11 +1,12 @@
-
+<<<<<<< HEAD
 <?php
 $caretakerPageTitle = 'Leave History - SmartCare';
 $caretakerExtraCss = ['caretaker/ct_leaveHistory.css'];
 require_once APPROOT . '/views/templates/caretaker/caretaker_layout_head.php';
 include_once APPROOT . '/views/templates/caretaker/ct_header.php';
 include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
-
+?>
+=======
 <!DOCTYPE html>
 <html lang="en">
 <head>

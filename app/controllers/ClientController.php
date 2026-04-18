@@ -1799,50 +1799,6 @@ class ClientController extends Controller
         $this->view("client/c_settings", ['user' => $user]);
     }
 
-    public function caretakerDetails($caretakerId = null)
-    {
-        // Only clients can access this page
-        if (!AuthSession::hasRole('client')) {
-            header("Location: " . URLROOT . "/auth/login");
-            exit;
-        }
-
-        if ($caretakerId === null) {
-            $_SESSION['error'] = "Caretaker ID required";
-            header("Location: " . URLROOT . "/client/c_dashboard");
-            exit;
-        }
-
-        $caretakerId = (int)$caretakerId;
-        $clientId = AuthSession::profileId();
-        
-        // Get caretaker details
-        $caretakerModel = $this->model('CaretakerModel');
-        $caretakerDetails = $caretakerModel->getCaretakerById($caretakerId);
-        
-        if (!$caretakerDetails) {
-            $_SESSION['error'] = "Caretaker not found";
-            header("Location: " . URLROOT . "/client/c_dashboard");
-            exit;
-        }
-
-        // Get service period from query parameters (set by notification)
-        $servicePeriod = [
-            'start_date' => $_GET['start_date'] ?? date('Y-m-d'),
-            'end_date' => $_GET['end_date'] ?? date('Y-m-d', strtotime('+7 days'))
-        ];
-
-        // Get affected bookings for this client with this caretaker
-        $affectedBookings = $this->clientModel->getClientBookingsForCaretaker($clientId, $caretakerId);
-
-        $this->view("client/caretaker_details", [
-            'caretaker' => $caretakerDetails,
-            'service_period' => $servicePeriod,
-            'affected_bookings' => $affectedBookings,
-            'client_id' => $clientId
-        ]);
-    }
-
     public function editClientDetails()
     {
         if (!AuthSession::hasRole('client')) {
