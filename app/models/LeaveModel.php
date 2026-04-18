@@ -51,26 +51,13 @@ class LeaveModel
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    /**
-     * Approved leave periods for caregiver schedule (FullCalendar / JSON).
-     *
-     * @return list<array<string, mixed>>
-     */
-    public function getApprovedLeavesForSchedule(int $userId): array
+    public function getLeavesByStatusAndUser($status, $userId)
     {
-        if ($userId <= 0) {
-            return [];
-        }
         $stmt = $this->conn->prepare(
-            "SELECT id, leave_type, start_date, end_date, start_time, end_time, reason, status
-             FROM leaves
-             WHERE user_id = ?
-               AND LOWER(TRIM(status)) = 'approved'
-             ORDER BY start_date ASC, id ASC"
+            "SELECT * FROM leaves WHERE status=? AND user_id=? ORDER BY start_date DESC"
         );
-        $stmt->bind_param('i', $userId);
+        $stmt->bind_param("si", $status, $userId);
         $stmt->execute();
-
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -647,9 +634,17 @@ class LeaveModel
 
                 $byClient = [];
                 foreach ($affected as $booking) {
-                    $cid = (int) ($booking['client_id'] ?? 0);
-                    if ($cid > 0) {
-                        $byClient[$cid][] = $booking;
+                    $clientId = (int)($booking['client_id'] ?? 0);
+                    if ($clientId > 0 && !isset($uniqueClients[$clientId])) {
+                        $uniqueClients[$clientId] = true;
+
+                        $clientTitle = 'Your Caregiver Has Been Changed';
+                        $clientMessage = "Your caregiver has been reassigned for your service.\n"
+                            . "New caregiver: {$replacementName}\n"
+                            . "Service period: {$leaveStart} to {$leaveEnd}\n"
+                            . "Your service will continue uninterrupted.";
+                        $clientLink = URLROOT . '/client/caretakerDetails/' . $replacementId . '?start_date=' . urlencode($leaveStart) . '&end_date=' . urlencode($leaveEnd);
+                        $this->notifyUser($clientId, 'client', $clientTitle, $clientMessage, $clientLink);
                     }
                 }
                 foreach ($byClient as $clientId => $clientBookings) {

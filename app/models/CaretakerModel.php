@@ -651,7 +651,6 @@ AND NOT EXISTS (
             JOIN clients c ON c.id = b.client_id
             WHERE b.caretaker_id = ? 
               AND b.status IN ('Accepted', 'Payment_Requested', 'Advance_Paid')
-              AND b.booking_date > CURDATE()
             ORDER BY b.booking_date ASC";
 
         $stmt = $this->conn->prepare($sql);
@@ -699,7 +698,82 @@ AND NOT EXISTS (
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    // Get All Active Bookings for Schedule Calendar
+    // ================= DASHBOARD STATISTICS ================= */
+
+    /**
+     * Get count of upcoming bookings for this caretaker
+     */
+    public function getUpcomingBookingsCount($caretakerId)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT COUNT(*) as count
+             FROM bookings 
+             WHERE caretaker_id = ? 
+             AND booking_date >= CURDATE()
+             AND status IN ('Accepted', 'Payment_Requested', 'Advance_Paid')"
+        );
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        
+        return (int)($result['count'] ?? 0);
+    }
+
+    /**
+     * Get count of working days this month for this caretaker
+     */
+    public function getWorkingDaysThisMonth($caretakerId)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT COUNT(DISTINCT booking_date) as working_days
+             FROM bookings 
+             WHERE caretaker_id = ? 
+             AND MONTH(booking_date) = MONTH(CURDATE())
+             AND YEAR(booking_date) = YEAR(CURDATE())
+             AND status IN ('Accepted', 'Payment_Requested', 'Advance_Paid', 'Completed')"
+        );
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        
+        return (int)($result['working_days'] ?? 0);
+    }
+
+    /**
+     * Get count of pending leave requests for this caretaker
+     */
+    public function getPendingLeavesCount($caretakerId)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT COUNT(*) as count
+             FROM leaves 
+             WHERE user_id = ? AND status = 'Pending'"
+        );
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        
+        return (int)($result['count'] ?? 0);
+    }
+
+    /**
+     * Get total reviews count for a caretaker
+     */
+    public function getTotalReviewsCount($caretakerId)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT COUNT(f.id) as total_reviews
+             FROM feedbacks f
+             JOIN bookings b ON f.booking_id = b.id
+             WHERE b.caretaker_id = ? AND f.rating > 0"
+        );
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        
+        return (int)($result['total_reviews'] ?? 0);
+    }
+
     public function getAllActiveBookings($caretakerId)
     {
         // Update old accepted bookings to completed first
@@ -723,6 +797,7 @@ AND NOT EXISTS (
         $updateStmt->close();
 
         // Get only bookings that caretaker should see in schedule (from assignment until completion)
+        // Exclude bookings that have been reassigned to another caretaker
         $sql = "SELECT
                 b.id AS booking_id,
                 b.booking_date,
@@ -743,10 +818,17 @@ AND NOT EXISTS (
             JOIN clients c ON c.id = b.client_id
             WHERE b.caretaker_id = ?
             AND b.status IN ('Payment_Requested', 'Advance_Paid', 'Accepted', 'Completed')
+            AND NOT EXISTS (
+                SELECT 1 
+                FROM booking_reassignments br 
+                WHERE br.booking_id = b.id 
+                AND br.old_caretaker_id = ?
+                AND CURDATE() BETWEEN br.start_date AND br.end_date
+            )
             ORDER BY b.booking_date ASC";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $caretakerId);
+        $stmt->bind_param("ii", $caretakerId, $caretakerId);
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
@@ -945,67 +1027,29 @@ public function getClients($caretaker_id)
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
-    /**
-     * Active booking for caregiver complaint (must match getClients eligibility rules).
-     *
-     * @return array<string, mixed>|null
-     */
-    public function getActiveBookingForCaretakerComplaint(int $caretakerId, int $bookingId): ?array
-    {
-        if ($caretakerId <= 0 || $bookingId <= 0) {
-            return null;
-        }
-
-        $sql = "SELECT
-            bookings.id AS booking_id,
-            clients.id AS client_id,
+// Get all clients that caretaker has had bookings with (including past bookings)
+public function getAllBookedClients($caretaker_id)
+{
+    $stmt = $this->conn->prepare(
+        "SELECT DISTINCT 
+            clients.id AS client_id, 
             clients.name AS client_name,
+            bookings.id AS booking_id,
             bookings.booking_date,
-            bookings.basis,
-            bookings.duration,
-            CASE
-                WHEN bookings.basis = 'Hourly' THEN bookings.booking_date
-                WHEN bookings.basis = 'Daily' THEN DATE_ADD(bookings.booking_date, INTERVAL (GREATEST(bookings.duration, 1) - 1) DAY)
-                WHEN bookings.basis = 'Monthly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) MONTH), INTERVAL 1 DAY)
-                WHEN bookings.basis = 'Yearly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) YEAR), INTERVAL 1 DAY)
-                ELSE bookings.booking_date
-            END AS booking_end_date
+            bookings.preferred_time,
+            bookings.service_type
          FROM bookings
          JOIN clients ON bookings.client_id = clients.id
-         WHERE bookings.id = ?
-           AND bookings.caretaker_id = ?
-           AND bookings.status IN ('Accepted', 'Advance_Paid', 'Change_Requested', 'Reschedule_Requested')
-           AND CURDATE() BETWEEN bookings.booking_date AND (
-            CASE
-                WHEN bookings.basis = 'Hourly' THEN bookings.booking_date
-                WHEN bookings.basis = 'Daily' THEN DATE_ADD(bookings.booking_date, INTERVAL (GREATEST(bookings.duration, 1) - 1) DAY)
-                WHEN bookings.basis = 'Monthly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) MONTH), INTERVAL 1 DAY)
-                WHEN bookings.basis = 'Yearly' THEN DATE_SUB(DATE_ADD(bookings.booking_date, INTERVAL GREATEST(bookings.duration, 1) YEAR), INTERVAL 1 DAY)
-                ELSE bookings.booking_date
-            END
-         )";
+         WHERE bookings.caretaker_id = ?
+         AND bookings.status NOT IN ('Requested', 'Rejected', 'Cancelled')
+         ORDER BY bookings.booking_date DESC"
+    );
 
-        $stmt = $this->conn->prepare($sql);
-        if (!$stmt) {
-            return null;
-        }
-        $stmt->bind_param("ii", $bookingId, $caretakerId);
-        $stmt->execute();
-        $row = $stmt->get_result()->fetch_assoc();
-        return $row ?: null;
-    }
+    $stmt->bind_param("i", $caretaker_id);
+    $stmt->execute();
 
-    public static function complaintServiceDateInBookingRange(string $serviceDate, string $bookingStart, string $bookingEnd): bool
-    {
-        if ($serviceDate === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $serviceDate)) {
-            return false;
-        }
-        if ($bookingStart === '' || $bookingEnd === '') {
-            return false;
-        }
-
-        return $serviceDate >= $bookingStart && $serviceDate <= $bookingEnd;
-    }
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
 
     public function addComplaint($data)
     {
@@ -1251,7 +1295,7 @@ public function getComplaintsByCaretaker($caretaker_id)
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    // Fetch bookings for FullCalendar
+   // Fetch bookings for FullCalendar
     public function getScheduleByCaretaker($caretakerId)
     {
         // Select additional fields so the frontend modal can show payment/location/duration
@@ -1294,5 +1338,87 @@ public function getComplaintsByCaretaker($caretaker_id)
         }
 
         return $events;
+    }
+
+    // Get replacement cover assignments for caretaker
+    public function getReplacementCoverAssignments($caretakerId)
+    {
+        $sql = "SELECT DISTINCT br.reassignment_id, br.start_date, br.end_date, b.client_id, c.name as client_name, 
+                        b.service_type, b.preferred_time, b.service_location, b.status, br.covered_for_caretaker_name
+                        FROM booking_reassignments br
+                        JOIN bookings b ON br.booking_id = b.id
+                        JOIN clients c ON c.id = b.client_id
+                        WHERE br.new_caretaker_id = ?
+                        AND b.status IN ('Accepted', 'Payment_Requested', 'Advance_Paid')
+                        AND b.booking_date > CURDATE()
+                        ORDER BY br.start_date ASC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $caretakerId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    // Get single caretaker complaint by ID
+    public function getComplaintById($complaint_id)
+    {
+        $complaint_id = (int)$complaint_id;
+        $stmt = $this->conn->prepare("
+            SELECT cc.complaint_id, cc.caretaker_id, cc.client_id, cc.service_type, cc.service_date, cc.description, cc.status,
+                   c.name AS client_name, ct.name AS caretaker_name
+            FROM ct_complaints cc
+            LEFT JOIN clients c ON cc.client_id = c.id
+            LEFT JOIN caretakers ct ON cc.caretaker_id = ct.id
+            WHERE cc.complaint_id = ?
+        ");
+        $stmt->bind_param("i", $complaint_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result ? $result->fetch_assoc() : null;
+    }
+
+    // Update caretaker complaint
+    public function updateComplaint($complaint_id, $data)
+    {
+        $complaint_id = (int)$complaint_id;
+        $client_id = (int)$data['client_id'];
+        $description = $data['complaint'];
+        $service_type = $data['type'] ?? 'service';
+        
+        $stmt = $this->conn->prepare("
+            UPDATE ct_complaints 
+            SET client_id = ?, description = ?, service_type = ?
+            WHERE complaint_id = ? AND status = 'Pending'
+        ");
+        $stmt->bind_param("issi", $client_id, $description, $service_type, $complaint_id);
+        return $stmt->execute();
+    }
+
+    // Get clients by caretaker for dropdown
+    public function getClientsByCaretaker($caretaker_id)
+    {
+        $caretaker_id = (int)$caretaker_id;
+        $stmt = $this->conn->prepare("
+            SELECT DISTINCT c.id, c.name 
+            FROM clients c
+            JOIN bookings b ON c.id = b.client_id
+            WHERE b.caretaker_id = ?
+            ORDER BY c.name ASC
+        ");
+        $stmt->bind_param("i", $caretaker_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+    }
+
+    // Delete caretaker complaint (only if pending)
+    public function deleteComplaint($complaint_id)
+    {
+        $complaint_id = (int)$complaint_id;
+        $stmt = $this->conn->prepare("
+            DELETE FROM ct_complaints 
+            WHERE complaint_id = ? AND status = 'Pending'
+        ");
+        $stmt->bind_param("i", $complaint_id);
+        return $stmt->execute();
     }
 }
