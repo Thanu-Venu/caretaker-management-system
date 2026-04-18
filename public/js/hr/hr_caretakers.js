@@ -139,6 +139,11 @@
             }
             if (field.tagName === 'TEXTAREA' || (field.tagName === 'INPUT' && field.type !== 'file')) {
                 field.value = value != null ? String(value) : '';
+                return;
+            }
+            if (field.tagName === 'SELECT') {
+                field.value = value != null ? String(value) : '';
+                field.dispatchEvent(new Event('change', { bubbles: true }));
             }
         };
         set('name', d.name);

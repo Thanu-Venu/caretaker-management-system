@@ -5,13 +5,6 @@ class HrModel
 {
     private $conn;
 
-    private const TIME_RANGE_MAP = [
-        "Morning (8am - 12pm)" => ["08:00:00", "12:00:00"],
-        "Evening (1pm - 5pm)" => ["13:00:00", "17:00:00"],
-        "Night (6pm - 10pm)" => ["18:00:00", "22:00:00"],
-        "Full Time (8am - 5pm)" => ["08:00:00", "17:00:00"]
-    ];
-
     public function __construct()
     {
         $db = new Database();
@@ -323,16 +316,6 @@ class HrModel
         return $stmt->get_result()->fetch_assoc();
     }
 
-    private function getTimeRangeFromBookingTime($timeString): array
-    {
-        return self::TIME_RANGE_MAP[$timeString] ?? ["00:00:00", "23:59:59"];
-    }
-
-    private function rangesOverlap(string $startA, string $endA, string $startB, string $endB): bool
-    {
-        return ($startA < $endB) && ($endA > $startB);
-    }
-
     /**
      * Returns first conflicting booking for assigned caretaker, or null if available.
      */
@@ -407,34 +390,9 @@ class HrModel
             return null;
         }
 
-        $targetBasis = strtolower(trim((string)$target['basis']));
-        [$targetStartTime, $targetEndTime] = $this->getTimeRangeFromBookingTime((string)($target['preferred_time'] ?? ''));
-
-        foreach ($candidates as $candidate) {
-            $candidateBasis = strtolower(trim((string)$candidate['basis']));
-
-            // Any non-hourly conflicting booking blocks availability.
-            if ($candidateBasis !== 'hourly') {
-                return $candidate;
-            }
-
-            // Hourly vs non-hourly: check target time window overlap with hourly booking.
-            if ($targetBasis !== 'hourly') {
-                [$candidateStartTime, $candidateEndTime] = $this->getTimeRangeFromBookingTime((string)($candidate['preferred_time'] ?? ''));
-                if ($this->rangesOverlap($targetStartTime, $targetEndTime, $candidateStartTime, $candidateEndTime)) {
-                    return $candidate;
-                }
-                continue;
-            }
-
-            // Hourly vs hourly: check time overlap.
-            [$candidateStartTime, $candidateEndTime] = $this->getTimeRangeFromBookingTime((string)($candidate['preferred_time'] ?? ''));
-            if ($this->rangesOverlap($targetStartTime, $targetEndTime, $candidateStartTime, $candidateEndTime)) {
-                return $candidate;
-            }
-        }
-
-        return null;
+        // Date-range overlap is resolved in SQL. Hourly bookings block the full calendar day
+        // (including HH:MM preferred_time), so the first overlapping row is a conflict.
+        return $candidates[0];
     }
 
     public function getPaymentSummary(): array

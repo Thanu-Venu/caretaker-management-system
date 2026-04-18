@@ -928,7 +928,8 @@ class LeaveModel
                 FROM leaves l
                 JOIN caretakers c ON l.user_id = c.id
                 LEFT JOIN caretakers rpl ON l.replacement_caretaker_id = rpl.id
-                ORDER BY l.start_date DESC
+                ORDER BY CASE WHEN LOWER(TRIM(l.status)) = 'pending' THEN 0 ELSE 1 END,
+                         l.start_date DESC
                 LIMIT $limit OFFSET $offset";
 
         $result = $this->conn->query($sql);

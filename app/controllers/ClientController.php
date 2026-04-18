@@ -6,7 +6,6 @@ require_once APPROOT . '/models/UserModel.php';
 class ClientController extends Controller
 {
     private $clientModel;
-    private $serviceOptions;
 
     public function __construct()
     {
@@ -28,14 +27,6 @@ class ClientController extends Controller
 
         // Update session with latest data
         $_SESSION['user'] = $user;
-
-        // <-- ADD THIS
-        $this->serviceOptions = [
-            "Elder Care" => ["Hourly", "Daily", "Monthly", "Yearly"],
-            "Babysitter" => ["Hourly", "Daily", "Monthly", "Yearly"],
-            "Maid" => ["Hourly", "Daily", "Monthly", "Yearly"],
-            "Disability Support" => ["Hourly", "Daily", "Monthly", "Yearly"]
-        ];
     }
 
     /**
@@ -1347,7 +1338,6 @@ class ClientController extends Controller
             'elder care' => 'Elder Care',
             'babysitter' => 'Babysitter',
             'maid' => 'Maid',
-            'disability support' => 'Disability Support',
         ];
         $serviceType = $serviceTypeMap[strtolower($serviceTypeRaw)] ?? $serviceTypeRaw;
         // Pre-fill data from GET parameters (from search popup)
@@ -1376,7 +1366,6 @@ class ClientController extends Controller
                 "Elder Care" => ["Monthly", "Yearly"],
                 "Babysitter" => ["Daily", "Monthly", "Yearly"],
                 "Maid"       => ["Hourly", "Daily", "Monthly", "Yearly"],
-                "Disability Support" => ["Hourly", "Daily", "Monthly", "Yearly"],
             ],
             'total_payment'  => $total_payment // <-- automatically calculated
         ];
@@ -1466,7 +1455,6 @@ class ClientController extends Controller
             "Elder Care" => ["Monthly", "Yearly"],
             "Babysitter" => ["Daily", "Monthly", "Yearly"],
             "Maid"       => ["Hourly", "Daily", "Monthly", "Yearly"],
-            "Disability Support" => ["Hourly", "Daily", "Monthly", "Yearly"],
         ];
 
         if (!isset($allowed[$service_type]) || !in_array($basis, $allowed[$service_type], true)) {

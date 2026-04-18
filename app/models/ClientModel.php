@@ -284,18 +284,6 @@ class ClientModel
 
     /* ===================== BOOKINGS ===================== */
 
-    private function getTimeRangeFromString($timeString)
-    {
-        $map = [
-            "Morning (8am - 12pm)" => ["08:00:00", "12:00:00"],
-            "Evening (1pm - 5pm)"  => ["13:00:00", "17:00:00"],
-            "Night (6pm - 10pm)"   => ["18:00:00", "22:00:00"],
-            "Full Time (8am - 5pm)" => ["08:00:00", "17:00:00"]
-        ];
-
-        return $map[$timeString] ?? ["00:00:00", "23:59:59"];
-    }
-
     private function calculateBookingEndDate($bookingDate, $basis, $duration)
     {
         try {
@@ -336,7 +324,6 @@ class ClientModel
 
         $startDate = (string)$bookingDate;
         $endDate = $this->calculateBookingEndDate($startDate, $basis, $duration);
-        [$searchStart, $searchEnd] = $this->getTimeRangeFromString((string)$preferredTime);
 
         $sql = "SELECT b.id
                 FROM bookings b
@@ -345,36 +332,15 @@ class ClientModel
                     'requested','payment_requested','advance_paid',
                     'accepted','approved','change_requested','reschedule_requested'
                   )
-                  AND b.booking_date <= ?
+                  AND COALESCE(b.service_start_date, b.booking_date) <= ?
                   AND (
                         CASE
-                            WHEN LOWER(b.basis) = 'hourly' THEN b.booking_date
-                            WHEN LOWER(b.basis) = 'monthly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) MONTH), INTERVAL 1 DAY)
-                            WHEN LOWER(b.basis) = 'yearly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) YEAR), INTERVAL 1 DAY)
-                            ELSE DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) DAY), INTERVAL 1 DAY)
+                            WHEN LOWER(b.basis) = 'hourly' THEN COALESCE(b.service_start_date, b.booking_date)
+                            WHEN LOWER(b.basis) = 'monthly' THEN DATE_SUB(DATE_ADD(COALESCE(b.service_start_date, b.booking_date), INTERVAL GREATEST(b.duration, 1) MONTH), INTERVAL 1 DAY)
+                            WHEN LOWER(b.basis) = 'yearly' THEN DATE_SUB(DATE_ADD(COALESCE(b.service_start_date, b.booking_date), INTERVAL GREATEST(b.duration, 1) YEAR), INTERVAL 1 DAY)
+                            ELSE DATE_SUB(DATE_ADD(COALESCE(b.service_start_date, b.booking_date), INTERVAL GREATEST(b.duration, 1) DAY), INTERVAL 1 DAY)
                         END
                   ) >= ?
-                  AND (
-                        LOWER(?) <> 'hourly'
-                        OR LOWER(b.basis) <> 'hourly'
-                        OR (
-                            ? < CASE b.preferred_time
-                                WHEN 'Morning (8am - 12pm)' THEN '12:00:00'
-                                WHEN 'Evening (1pm - 5pm)' THEN '17:00:00'
-                                WHEN 'Night (6pm - 10pm)' THEN '22:00:00'
-                                WHEN 'Full Time (8am - 5pm)' THEN '17:00:00'
-                                ELSE '23:59:59'
-                            END
-                            AND
-                            ? > CASE b.preferred_time
-                                WHEN 'Morning (8am - 12pm)' THEN '08:00:00'
-                                WHEN 'Evening (1pm - 5pm)' THEN '13:00:00'
-                                WHEN 'Night (6pm - 10pm)' THEN '18:00:00'
-                                WHEN 'Full Time (8am - 5pm)' THEN '08:00:00'
-                                ELSE '00:00:00'
-                            END
-                        )
-                  )
                 LIMIT 1";
 
         $stmt = $this->conn->prepare($sql);
@@ -382,9 +348,9 @@ class ClientModel
             return false;
         }
 
-        $normalizedBasis = strtolower(trim((string)$basis));
-        // True overlap: existing_start <= requested_end AND existing_end >= requested_start
-        $stmt->bind_param("isssss", $fieldId, $endDate, $startDate, $normalizedBasis, $searchStart, $searchEnd);
+        // True overlap: existing_start <= requested_end AND existing_end >= requested_start.
+        // Hourly bookings block the full day (including HH:MM preferred_time).
+        $stmt->bind_param("iss", $fieldId, $endDate, $startDate);
         $stmt->execute();
         $row = $stmt->get_result()->fetch_assoc();
         $stmt->close();

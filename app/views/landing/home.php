@@ -102,7 +102,7 @@ $mheroSlides = [
         <a class="mhero-book" href="#contact" aria-label="Book appointment"><span class="mhero-book-label mhero-book-label--full">Book appointment</span><span class="mhero-book-label mhero-book-label--short">Book</span> <i class='bx bx-right-arrow-alt' aria-hidden="true"></i></a>
         <a class="mhero-icon" href="tel:+94700000000" aria-label="Call"><i class='bx bxs-phone' aria-hidden="true"></i></a>
         <a class="mhero-icon" href="https://wa.me/94700000000" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class='bx bxl-whatsapp' aria-hidden="true"></i></a>
-        <a class="mhero-icon" href="http://localhost/CMA/app/views/auth/login.php" aria-label="Login"><i class='bx bxs-lock-alt' aria-hidden="true"></i></a>
+        <a class="mhero-icon" href="<?= htmlspecialchars(URLROOT, ENT_QUOTES, 'UTF-8') ?>/public/?url=auth/login" aria-label="Login"><i class='bx bxs-lock-alt' aria-hidden='true'></i></a>
         <button type="button" class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><i class='bx bx-menu' aria-hidden="true"></i></button>
       </div>
     </div>

@@ -1,30 +1,28 @@
 /**
- * SmartCare custom date/time
- * Replaces native date/time popups with DOM pickers to avoid
+ * SmartCare custom date picker
+ * Replaces native date inputs with a DOM calendar to avoid
  * Chromium/Windows popup paint glitches in overlays and modals.
+ * Time fields use the browser native picker.
  */
 (function () {
     'use strict';
 
     var ENHANCED_ATTR = 'data-sc-dt-enhanced';
     var DATE_ROOT_CLASS = 'sc-date';
-    var TIME_ROOT_CLASS = 'sc-time';
 
     function ensureStyles() {
         if (document.getElementById('sc-custom-datetime-styles')) return;
         var style = document.createElement('style');
         style.id = 'sc-custom-datetime-styles';
         style.textContent =
-            '.sc-date,.sc-time{position:relative;width:100%;min-width:0}' +
+            '.sc-date{position:relative;width:100%;min-width:0}' +
             '.sc-dt-native{position:absolute!important;inset:0!important;opacity:0!important;pointer-events:none!important;margin:0!important;width:100%!important;height:100%!important}' +
-            '.sc-date-trigger,.sc-time-trigger{width:100%;min-height:40px;padding:8px 36px 8px 12px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#0f172a;font:inherit;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}' +
-            '.sc-date.is-open .sc-date-trigger,.sc-time.is-open .sc-time-trigger{border-color:#1e88e5;box-shadow:0 0 0 3px rgba(30,136,229,.22)}' +
+            '.sc-date-trigger{width:100%;min-height:40px;padding:8px 36px 8px 12px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#0f172a;font:inherit;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}' +
+            '.sc-date.is-open .sc-date-trigger{border-color:#1e88e5;box-shadow:0 0 0 3px rgba(30,136,229,.22)}' +
             '.sc-dt-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}' +
             '.sc-dt-arrow{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#64748b;pointer-events:none;font-size:12px}' +
-            '.sc-date-panel,.sc-time-menu{position:absolute;left:0;top:calc(100% + 4px);z-index:3200;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 10px 24px rgba(15,23,42,.14);display:none}' +
-            '.sc-date-panel{width:min(320px,100%)}' +
-            '.sc-time-menu{left:0;right:0}' +
-            '.sc-date.is-open .sc-date-panel,.sc-time.is-open .sc-time-menu{display:block}' +
+            '.sc-date-panel{position:absolute;left:0;top:calc(100% + 4px);z-index:3200;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 10px 24px rgba(15,23,42,.14);display:none;width:min(320px,100%)}' +
+            '.sc-date.is-open .sc-date-panel{display:block}' +
             '.sc-date-head{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-bottom:1px solid #e2e8f0}' +
             '.sc-date-nav{border:1px solid #e2e8f0;background:#fff;border-radius:6px;min-width:26px;height:26px;line-height:1;cursor:pointer;color:#334155}' +
             '.sc-date-month{font-weight:600;color:#0f172a;font-size:12px}' +
@@ -35,12 +33,8 @@
             '.sc-date-day.is-out{color:#94a3b8}' +
             '.sc-date-day.is-selected{background:#1e88e5;color:#fff}' +
             '.sc-date-day:disabled{color:#94a3b8;background:#f8fafc;cursor:not-allowed}' +
-            '.sc-time-menu{max-height:220px;overflow:auto}' +
-            '.sc-time-option{width:100%;border:none;border-bottom:1px solid #e2e8f0;background:#fff;color:#0f172a;font:inherit;text-align:left;padding:8px 12px;cursor:pointer}' +
-            '.sc-time-option:last-child{border-bottom:none}' +
-            '.sc-time-option:hover,.sc-time-option.is-selected{background:rgba(30,136,229,.09)}' +
-            '.sc-date.is-disabled .sc-date-trigger,.sc-time.is-disabled .sc-time-trigger{opacity:.7;cursor:not-allowed}' +
-            '.sc-date.is-invalid .sc-date-trigger,.sc-time.is-invalid .sc-time-trigger{border-color:#e63946!important;box-shadow:0 0 0 1px rgba(230,57,70,.25)}';
+            '.sc-date.is-disabled .sc-date-trigger{opacity:.7;cursor:not-allowed}' +
+            '.sc-date.is-invalid .sc-date-trigger{border-color:#e63946!important;box-shadow:0 0 0 1px rgba(230,57,70,.25)}';
         document.head.appendChild(style);
     }
 
@@ -49,7 +43,7 @@
         if (input.hasAttribute(ENHANCED_ATTR)) return false;
         if (input.dataset.nativePicker === 'true') return false;
         if (input.readOnly) return false;
-        return input.type === 'date' || input.type === 'time';
+        return input.type === 'date';
     }
 
     function toIsoDate(dateObj) {
@@ -76,27 +70,11 @@
         return dt.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' });
     }
 
-    function parseTimeToMinutes(value) {
-        var m = String(value || '').match(/^(\d{2}):(\d{2})(?::\d{2})?$/);
-        if (!m) return null;
-        var hh = Number(m[1]);
-        var mm = Number(m[2]);
-        if (hh < 0 || hh > 23 || mm < 0 || mm > 59) return null;
-        return hh * 60 + mm;
-    }
-
-    function minutesToTime(minutes) {
-        var m = Math.max(0, Math.min(1439, Number(minutes || 0)));
-        var hh = String(Math.floor(m / 60)).padStart(2, '0');
-        var mm = String(m % 60).padStart(2, '0');
-        return hh + ':' + mm;
-    }
-
     function closeAll(exceptRoot) {
-        document.querySelectorAll('.' + DATE_ROOT_CLASS + '.is-open,.' + TIME_ROOT_CLASS + '.is-open').forEach(function (root) {
+        document.querySelectorAll('.' + DATE_ROOT_CLASS + '.is-open').forEach(function (root) {
             if (exceptRoot && root === exceptRoot) return;
             root.classList.remove('is-open');
-            var trigger = root.querySelector('.sc-date-trigger,.sc-time-trigger');
+            var trigger = root.querySelector('.sc-date-trigger');
             if (trigger) trigger.setAttribute('aria-expanded', 'false');
         });
     }
@@ -110,17 +88,17 @@
             function (e) {
                 var invalid = null;
                 form.querySelectorAll('input.sc-dt-native[data-sc-required="1"]').forEach(function (inp) {
-                    var root = inp.closest('.' + DATE_ROOT_CLASS + ',.' + TIME_ROOT_CLASS);
+                    var root = inp.closest('.' + DATE_ROOT_CLASS);
                     if (root) root.classList.remove('is-invalid');
                     if (!invalid && String(inp.value || '').trim() === '') invalid = inp;
                 });
                 if (!invalid) return;
 
                 e.preventDefault();
-                var badRoot = invalid.closest('.' + DATE_ROOT_CLASS + ',.' + TIME_ROOT_CLASS);
+                var badRoot = invalid.closest('.' + DATE_ROOT_CLASS);
                 if (badRoot) {
                     badRoot.classList.add('is-invalid');
-                    var trg = badRoot.querySelector('.sc-date-trigger,.sc-time-trigger');
+                    var trg = badRoot.querySelector('.sc-date-trigger');
                     if (trg) trg.focus();
                 }
             },
@@ -313,163 +291,17 @@
         syncFromNative();
     }
 
-    function enhanceTimeInput(input) {
-        input.setAttribute(ENHANCED_ATTR, '1');
-        input.classList.add('sc-dt-native');
-
-        if (input.required) {
-            input.dataset.scRequired = '1';
-            input.required = false;
-        }
-
-        var root = document.createElement('div');
-        root.className = TIME_ROOT_CLASS;
-        if (input.disabled) root.classList.add('is-disabled');
-
-        var trigger = document.createElement('button');
-        trigger.type = 'button';
-        trigger.className = 'sc-time-trigger';
-        trigger.setAttribute('aria-haspopup', 'listbox');
-        trigger.setAttribute('aria-expanded', 'false');
-
-        var label = document.createElement('span');
-        label.className = 'sc-dt-label';
-        trigger.appendChild(label);
-
-        var arrow = document.createElement('span');
-        arrow.className = 'sc-dt-arrow';
-        arrow.innerHTML = '&#9662;';
-        trigger.appendChild(arrow);
-
-        var menu = document.createElement('div');
-        menu.className = 'sc-time-menu';
-        menu.setAttribute('role', 'listbox');
-
-        var parent = input.parentNode;
-        parent.insertBefore(root, input);
-        root.appendChild(input);
-        root.appendChild(trigger);
-        root.appendChild(menu);
-
-        function computeStepMinutes() {
-            var stepRaw = String(input.step || '').trim();
-            var stepSec = Number(stepRaw);
-            if (!isFinite(stepSec) || stepSec <= 0) return 30;
-            var mins = Math.round(stepSec / 60);
-            return Math.max(1, mins);
-        }
-
-        function rebuildOptions() {
-            menu.innerHTML = '';
-            var min = parseTimeToMinutes(input.min);
-            var max = parseTimeToMinutes(input.max);
-            var start = min !== null ? min : 0;
-            var end = max !== null ? max : 23 * 60 + 59;
-            var step = computeStepMinutes();
-            var selected = String(input.value || '');
-
-            for (var m = start; m <= end; m += step) {
-                var value = minutesToTime(m);
-                var btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'sc-time-option';
-                btn.dataset.value = value;
-                btn.textContent = value;
-                if (value === selected) btn.classList.add('is-selected');
-                btn.disabled = !!input.disabled;
-                btn.addEventListener('click', function (e) {
-                    input.value = e.currentTarget.dataset.value || '';
-                    input.dispatchEvent(new Event('input', { bubbles: true }));
-                    input.dispatchEvent(new Event('change', { bubbles: true }));
-                    root.classList.remove('is-invalid');
-                    closeAll();
-                    trigger.focus();
-                });
-                menu.appendChild(btn);
-            }
-
-            if (selected && !menu.querySelector('.sc-time-option[data-value="' + selected + '"]')) {
-                var extra = document.createElement('button');
-                extra.type = 'button';
-                extra.className = 'sc-time-option is-selected';
-                extra.dataset.value = selected;
-                extra.textContent = selected;
-                extra.addEventListener('click', function () {
-                    closeAll();
-                    trigger.focus();
-                });
-                menu.insertBefore(extra, menu.firstChild);
-            }
-        }
-
-        function syncFromNative() {
-            var fallback = input.getAttribute('placeholder') || 'Select time';
-            label.textContent = String(input.value || '').trim() || fallback;
-            root.classList.toggle('is-disabled', !!input.disabled);
-            rebuildOptions();
-        }
-
-        function openMenu() {
-            if (input.disabled) return;
-            closeAll(root);
-            root.classList.add('is-open');
-            trigger.setAttribute('aria-expanded', 'true');
-            var selectedBtn = menu.querySelector('.sc-time-option.is-selected');
-            if (selectedBtn) selectedBtn.scrollIntoView({ block: 'nearest' });
-        }
-
-        trigger.addEventListener('click', function (e) {
-            e.preventDefault();
-            if (root.classList.contains('is-open')) {
-                closeAll();
-            } else {
-                openMenu();
-            }
-        });
-
-        trigger.addEventListener('keydown', function (e) {
-            if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                openMenu();
-            }
-            if (e.key === 'Escape') closeAll();
-        });
-
-        input.addEventListener('change', syncFromNative);
-        input.addEventListener('input', syncFromNative);
-
-        if (typeof MutationObserver !== 'undefined') {
-            var observer = new MutationObserver(function () {
-                syncFromNative();
-            });
-            observer.observe(input, {
-                attributes: true,
-                attributeFilter: ['value', 'min', 'max', 'step', 'disabled', 'readonly', 'placeholder']
-            });
-        }
-
-        if (input.form) {
-            bindRequiredValidation(input.form);
-            input.form.addEventListener('reset', function () {
-                setTimeout(syncFromNative, 0);
-            });
-        }
-
-        syncFromNative();
-    }
-
     function init(scopeRoot) {
         ensureStyles();
         var scope = scopeRoot || document;
         scope.querySelectorAll('input').forEach(function (input) {
             if (!isEnhanceable(input)) return;
-            if (input.type === 'date') enhanceDateInput(input);
-            if (input.type === 'time') enhanceTimeInput(input);
+            enhanceDateInput(input);
         });
     }
 
     document.addEventListener('click', function (e) {
-        if (!e.target.closest('.' + DATE_ROOT_CLASS + ',.' + TIME_ROOT_CLASS)) {
+        if (!e.target.closest('.' + DATE_ROOT_CLASS)) {
             closeAll();
         }
     });

@@ -18,7 +18,6 @@ $timeOptions = [
     'Elder Care' => ['Full Time (8am - 5pm)', 'Morning (8am - 12pm)', 'Evening (1pm - 5pm)', 'Night (6pm - 10pm)'],
     'Babysitter' => ['Full Time (8am - 5pm)', 'Morning (8am - 12pm)', 'Evening (1pm - 5pm)'],
     'Maid' => ['Full Time (8am - 5pm)', 'Morning (8am - 12pm)', 'Evening (1pm - 5pm)', 'Night (6pm - 10pm)'],
-    'Disability Support' => ['Full Time (8am - 5pm)', 'Morning (8am - 12pm)', 'Evening (1pm - 5pm)', 'Night (6pm - 10pm)'],
 ];
 ?>
 

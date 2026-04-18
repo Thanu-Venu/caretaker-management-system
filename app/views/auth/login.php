@@ -1,3 +1,9 @@
+<?php
+// Allow this file to load when linked directly (must not bypass public/index.php for POST login).
+if (!defined('APPROOT')) {
+    require_once dirname(dirname(__DIR__)) . '/config/config.php';
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
