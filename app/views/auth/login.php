@@ -52,15 +52,10 @@
                             id="loginPassword"
                             name="password"
                             required
-                            minlength="8"
-                            pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$"
-                            title="Password must be at least 8 characters and include a letter, a number, and a special character."
+                            autocomplete="current-password"
                         >
                         <i id="toggleLoginPassword" class='bx bx-hide' style="cursor:pointer;"></i>
                     </div>
-                    <small id="loginPasswordError" style="display:none; color:#d32f2f; margin-top:6px;">
-                        Password must be at least 8 characters and include a letter, a number, and a special character.
-                    </small>
                 </div>
 
                 <div class="options">
@@ -86,10 +81,8 @@
             const loginEmailError = document.getElementById('loginEmailError');
             const loginPassword = document.getElementById('loginPassword');
             const toggleLogin = document.getElementById('toggleLoginPassword');
-            const loginPasswordError = document.getElementById('loginPasswordError');
 
             const gmailRegex = /^[A-Za-z0-9._%+-]+@gmail\.com$/i;
-            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 
             function validateLoginEmail() {
                 const value = loginEmail.value.trim();
@@ -107,18 +100,8 @@
             }
 
             function validateLoginPassword() {
-                const value = loginPassword.value.trim();
-                const isValid = passwordRegex.test(value);
-
-                if (!isValid) {
-                    loginPassword.setCustomValidity('Password must be at least 8 characters and include a letter, a number, and a special character.');
-                    loginPasswordError.style.display = 'block';
-                } else {
-                    loginPassword.setCustomValidity('');
-                    loginPasswordError.style.display = 'none';
-                }
-
-                return isValid;
+                loginPassword.setCustomValidity('');
+                return true;
             }
 
             toggleLogin.addEventListener('click', function () {
@@ -141,15 +124,10 @@
 
             loginForm.addEventListener('submit', function (event) {
                 const isEmailValid = validateLoginEmail();
-                const isPasswordValid = validateLoginPassword();
 
-                if (!isEmailValid || !isPasswordValid) {
+                if (!isEmailValid) {
                     event.preventDefault();
-                    if (!isEmailValid) {
-                        loginEmail.reportValidity();
-                    } else {
-                        loginPassword.reportValidity();
-                    }
+                    loginEmail.reportValidity();
                 }
             });
         });

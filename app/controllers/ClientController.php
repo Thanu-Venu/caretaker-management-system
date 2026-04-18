@@ -1,6 +1,7 @@
 <?php
 
 require_once APPROOT . '/core/PayHereHelper.php';
+require_once APPROOT . '/models/UserModel.php';
 
 class ClientController extends Controller
 {
@@ -1329,7 +1330,7 @@ class ClientController extends Controller
             exit;
         }
 
-        $caretaker = (array) $caretaker;
+        $caretaker = $caretakerModel->mergeFeedbackAverageIntoCaretakerRow((array) $caretaker);
 
         // Normalize incoming basis values from search flow (e.g., "hourly" -> "Hourly").
         $rawBasis = trim((string)($_GET['basis'] ?? ''));
@@ -1601,6 +1602,8 @@ class ClientController extends Controller
             die("Caretaker not found");
         }
 
+        $caretaker = $caretakerModel->mergeFeedbackAverageIntoCaretakerRow($caretaker);
+
         $allowedBookingKeys = ['service_type', 'basis', 'duration', 'date', 'time', 'customization_hours', 'customization_apply'];
         $bookingContext = [];
         foreach ($allowedBookingKeys as $key) {
@@ -1796,6 +1799,50 @@ class ClientController extends Controller
         $this->view("client/c_settings", ['user' => $user]);
     }
 
+    public function caretakerDetails($caretakerId = null)
+    {
+        // Only clients can access this page
+        if (!AuthSession::hasRole('client')) {
+            header("Location: " . URLROOT . "/auth/login");
+            exit;
+        }
+
+        if ($caretakerId === null) {
+            $_SESSION['error'] = "Caretaker ID required";
+            header("Location: " . URLROOT . "/client/c_dashboard");
+            exit;
+        }
+
+        $caretakerId = (int)$caretakerId;
+        $clientId = AuthSession::profileId();
+        
+        // Get caretaker details
+        $caretakerModel = $this->model('CaretakerModel');
+        $caretakerDetails = $caretakerModel->getCaretakerById($caretakerId);
+        
+        if (!$caretakerDetails) {
+            $_SESSION['error'] = "Caretaker not found";
+            header("Location: " . URLROOT . "/client/c_dashboard");
+            exit;
+        }
+
+        // Get service period from query parameters (set by notification)
+        $servicePeriod = [
+            'start_date' => $_GET['start_date'] ?? date('Y-m-d'),
+            'end_date' => $_GET['end_date'] ?? date('Y-m-d', strtotime('+7 days'))
+        ];
+
+        // Get affected bookings for this client with this caretaker
+        $affectedBookings = $this->clientModel->getClientBookingsForCaretaker($clientId, $caretakerId);
+
+        $this->view("client/caretaker_details", [
+            'caretaker' => $caretakerDetails,
+            'service_period' => $servicePeriod,
+            'affected_bookings' => $affectedBookings,
+            'client_id' => $clientId
+        ]);
+    }
+
     public function editClientDetails()
     {
         if (!AuthSession::hasRole('client')) {
@@ -1861,8 +1908,9 @@ class ClientController extends Controller
                 exit();
             }
 
-            if (strlen($new) < 8) {
-                $_SESSION['error'] = 'New password must be at least 8 characters.';
+            $pwErr = UserModel::validatePasswordPolicy($new);
+            if ($pwErr !== null) {
+                $_SESSION['error'] = $pwErr;
                 header('Location: ' . URLROOT . '/client/c_settings');
                 exit();
             }

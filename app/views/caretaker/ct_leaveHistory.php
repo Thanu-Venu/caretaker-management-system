@@ -1,3 +1,11 @@
+
+<?php
+$caretakerPageTitle = 'Leave History - SmartCare';
+$caretakerExtraCss = ['caretaker/ct_leaveHistory.css'];
+require_once APPROOT . '/views/templates/caretaker/caretaker_layout_head.php';
+include_once APPROOT . '/views/templates/caretaker/ct_header.php';
+include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +23,7 @@
 <body>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
 <?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
+>>>>>>> 1de7447a803ad4e6db33e06c5eaa671e707976aa
 <main class="content leavehistory-container">
   <header class="page-header">
     <h1 class="page-title">Leave History</h1>
@@ -42,4 +51,5 @@
   </div>
 </div>
 <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_leaveHistory.js"></script>
-</body>
+
+<?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>

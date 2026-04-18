@@ -15,10 +15,11 @@ class CaretakerController extends Controller
             session_start();
 
         if (!AuthSession::hasRole('caretaker')) {
-            header("Location: index.php?url=auth/login");
+            header("Location: " . URLROOT . "/public/?url=auth/login");
             exit;
         }
 
+    
         $this->leaveModel = $this->model('LeaveModel');
         $this->caretakerModel = $this->model('CaretakerModel'); // lowercase property
         $this->clientModel = $this->model("ClientModel");
@@ -29,97 +30,72 @@ class CaretakerController extends Controller
         $user = $this->caretakerModel->getCaretakerById(AuthSession::profileId()); // lowercase usage
         if (!$user) {
             session_destroy();
-            header("Location: index.php?url=auth/login");
+            header("Location: " . URLROOT . "/public/?url=auth/login");
             exit;
         }
 
         $_SESSION['user'] = $user;
     }
 
+    /** Caregiver complaint form uses fetch() and expects plain-text body `success` or `error`. */
+    private function complaintSaveIsAjax(): bool
+    {
+        return !empty($_POST['complaint_ajax']);
+    }
+
+    private function complaintSaveAjaxReply(bool $ok): void
+    {
+        header('Content-Type: text/plain; charset=utf-8');
+        echo $ok ? 'success' : 'error';
+        exit;
+    }
+
     public function ct_dashboard()
     {
-        $userId = AuthSession::profileId();
-
-        // Get caretaker details
-        $caretakerModel = $this->model('CaretakerModel');
-        $caretaker = $caretakerModel->getCaretakerById($userId);
-        
-        $avgRating = $caretakerModel->getAverageRating($userId);
-        if ($caretaker) {
-            $caretaker['rating'] = $avgRating;
+        try {
+            $userId = AuthSession::profileId();
+            
+            // Get caretaker details
+            $caretaker = $this->caretakerModel->getCaretakerById($userId);
+            
+            // Fetch dashboard statistics from database
+            $averageRating = $this->caretakerModel->getAverageRating($userId);
+            $totalReviews = $this->caretakerModel->getTotalReviewsCount($userId);
+            $upcomingBookings = $this->caretakerModel->getUpcomingBookingsCount($userId);
+            $workingDays = $this->caretakerModel->getWorkingDaysThisMonth($userId);
+            $pendingLeaves = $this->caretakerModel->getPendingLeavesCount($userId);
+            
+            // Dashboard data with real statistics
+            $data = [
+                'caretaker' => $caretaker,
+                'leaves' => [],
+                'upcoming' => [],
+                'latestProfileChangeRequest' => null,
+                'leaveMonthlySummary' => [],
+                'workingDates' => [],
+                'dashboardStats' => [
+                    'average_rating' => $averageRating,
+                    'total_reviews' => $totalReviews,
+                    'upcoming_bookings' => $upcomingBookings,
+                    'working_days' => $workingDays,
+                    'pending_leaves' => $pendingLeaves
+                ],
+                'monthlyStats' => [
+                    'is_available' => true,
+                    'active_bookings' => $upcomingBookings,
+                    'working_days' => $workingDays,
+                    'completed_bookings' => 0,
+                    'rating' => $averageRating
+                ],
+                'calendarYear' => (int)date('Y'),
+                'calendarMonth' => (int)date('n')
+            ];
+            
+            $this->view("caretaker/ct_dashboard", $data);
+        } catch (Exception $e) {
+            echo "Error in dashboard: " . $e->getMessage();
+            exit;
         }
-
-        // Leaves
-        $leaves = $this->leaveModel->getLeavesByUser($userId);
-        $leaveMonthlySummary = $this->leaveModel->getCurrentMonthLeaveSummary($userId, true);
-
-        // Upcoming Bookings
-        $upcoming = $caretakerModel->getUpcomingBookings($userId);
-
-        // Latest profile change request status
-        $latestProfileChangeRequest = $this->profileChangeRequestModel->getLatestRequestByCaretaker($userId);
-
-        // Active + completed bookings for calendar/stats computation
-        $allBookings = $caretakerModel->getAllActiveBookings($userId);
-
-        $monthStart = new DateTime(date('Y-m-01'));
-        $monthEnd = new DateTime(date('Y-m-t'));
-        $today = new DateTime(date('Y-m-d'));
-
-        $workingDaysThisMonth = 0;
-        $activeBookingsThisMonth = 0;
-        $completedThisMonth = 0;
-        $workingDateSet = [];
-
-        foreach ($allBookings as $booking) {
-            $start = new DateTime($booking['booking_date']);
-            $end = $this->getBookingInclusiveEndDate($booking);
-            $status = $booking['status'] ?? '';
-
-            if ($status === 'Accepted' && $start <= $monthEnd && $end >= $monthStart) {
-                $activeBookingsThisMonth++;
-            }
-
-            if ($status === 'Completed' && $end >= $monthStart && $end <= $monthEnd) {
-                $completedThisMonth++;
-            }
-
-            $overlapStart = $start > $monthStart ? clone $start : clone $monthStart;
-            $overlapEnd = $end < $monthEnd ? clone $end : clone $monthEnd;
-
-            if ($overlapStart <= $overlapEnd) {
-                $workingDaysThisMonth += (int)$overlapStart->diff($overlapEnd)->format('%a') + 1;
-
-                $cursor = clone $overlapStart;
-                while ($cursor <= $overlapEnd) {
-                    $workingDateSet[$cursor->format('Y-m-d')] = true;
-                    $cursor->modify('+1 day');
-                }
-            }
-        }
-
-        $isCurrentlyAvailable = (($caretaker['status'] ?? 'Active') === 'Active');
-
-        $monthlyStats = [
-            'is_available' => $isCurrentlyAvailable,
-            'active_bookings' => $activeBookingsThisMonth,
-            'working_days' => $workingDaysThisMonth,
-            'completed_bookings' => $completedThisMonth,
-            'rating' => (float)($caretaker['rating'] ?? 0)
-        ];
-
-        // Pass everything to view
-        $this->view("caretaker/ct_dashboard", [
-            'caretaker' => $caretaker,
-            'leaves' => $leaves,
-            'upcoming' => $upcoming,
-            'latestProfileChangeRequest' => $latestProfileChangeRequest,
-            'leaveMonthlySummary' => $leaveMonthlySummary,
-            'workingDates' => array_keys($workingDateSet),
-            'monthlyStats' => $monthlyStats,
-            'calendarYear' => (int)$today->format('Y'),
-            'calendarMonth' => (int)$today->format('n')
-        ]);
     }
 
     public function updateAvailabilityStatus()
@@ -243,6 +219,11 @@ class CaretakerController extends Controller
         $upcoming = $caretakerModel->getUpcomingBookings($caretakerId);
         $past = $caretakerModel->getPastBookings($caretakerId);
 
+        $repTabs = $caretakerModel->getReplacementCoverAssignmentsByTab($caretakerId);
+        $ongoing = array_merge($ongoing, $repTabs['ongoing']);
+        $upcoming = array_merge($upcoming, $repTabs['upcoming']);
+        $past = array_merge($past, $repTabs['past']);
+
         $filters = [
             'service_type' => trim((string) ($_GET['booking_service'] ?? '')),
             'date_from' => trim((string) ($_GET['booking_from'] ?? '')),
@@ -262,17 +243,18 @@ class CaretakerController extends Controller
         $filterBookings = static function (array $rows) use ($filters): array {
             return array_values(array_filter($rows, static function ($booking) use ($filters) {
                 $serviceType = trim((string) ($booking['service_type'] ?? ''));
-                $bookingDate = (string) ($booking['booking_date'] ?? '');
+                $rangeStart = (string) ($booking['cover_start_date'] ?? $booking['booking_date'] ?? '');
+                $rangeEnd = (string) ($booking['cover_end_date'] ?? $booking['booking_date'] ?? '');
 
                 if ($filters['service_type'] !== '' && strcasecmp($serviceType, $filters['service_type']) !== 0) {
                     return false;
                 }
 
-                if ($filters['date_from'] !== '' && $bookingDate !== '' && $bookingDate < $filters['date_from']) {
+                if ($filters['date_from'] !== '' && $rangeEnd !== '' && $rangeEnd < $filters['date_from']) {
                     return false;
                 }
 
-                if ($filters['date_to'] !== '' && $bookingDate !== '' && $bookingDate > $filters['date_to']) {
+                if ($filters['date_to'] !== '' && $rangeStart !== '' && $rangeStart > $filters['date_to']) {
                     return false;
                 }
 
@@ -283,6 +265,20 @@ class CaretakerController extends Controller
         $ongoing = $filterBookings($ongoing);
         $upcoming = $filterBookings($upcoming);
         $past = $filterBookings($past);
+
+        $sortBookingsAsc = static function (array $a, array $b): int {
+            $da = (string) ($a['cover_start_date'] ?? $a['booking_date'] ?? '');
+            $db = (string) ($b['cover_start_date'] ?? $b['booking_date'] ?? '');
+            return strcmp($da, $db);
+        };
+        $sortPastDesc = static function (array $a, array $b): int {
+            $ea = (string) ($a['cover_end_date'] ?? $a['booking_date'] ?? '');
+            $eb = (string) ($b['cover_end_date'] ?? $b['booking_date'] ?? '');
+            return strcmp($eb, $ea);
+        };
+        usort($ongoing, $sortBookingsAsc);
+        usort($upcoming, $sortBookingsAsc);
+        usort($past, $sortPastDesc);
 
         // Just pass the booking_date and preferred_time as they are
         $this->view('caretaker/ct_booking', [
@@ -305,6 +301,12 @@ class CaretakerController extends Controller
 
         $caretakerId = AuthSession::profileId();
         $bookings = $this->caretakerModel->getAllActiveBookings($caretakerId);
+        $replacementCovers = $this->caretakerModel->getReplacementCoverAssignments($caretakerId);
+
+        // Get approved leaves for the caretaker
+        require_once APPROOT . '/models/LeaveModel.php';
+        $leaveModel = new LeaveModel();
+        $approvedLeaves = $leaveModel->getLeavesByStatusAndUser('Approved', $caretakerId);
 
         $events = [];
         foreach ($bookings as $booking) {
@@ -341,19 +343,22 @@ class CaretakerController extends Controller
                 $inclusiveEndDate->modify('+' . ($duration - 1) . ' day');
             }
 
-            // Set color based on status
-            $backgroundColor = '#4CAF50'; // green for accepted
-            $borderColor = '#45a049';
+            // Set all bookings to blue color
+            $backgroundColor = '#007bff'; // blue for all bookings
+            $borderColor = '#0056b3';
 
-            if ($booking['status'] === 'Completed') {
-                $backgroundColor = '#6c757d'; // gray for completed
-                $borderColor = '#5a6268';
-            } elseif ($booking['status'] === 'Payment_Requested') {
-                $backgroundColor = '#ffc107'; // yellow for payment requested
-                $borderColor = '#e0a800';
-            } elseif ($booking['status'] === 'Advance_Paid') {
-                $backgroundColor = '#17a2b8'; // blue for advance paid
-                $borderColor = '#138496';
+            $bookingStatus = (string) ($booking['status'] ?? '');
+            $bookingCalClasses = ['ct-cal-booking'];
+            if ($bookingStatus === 'Completed') {
+                $bookingCalClasses[] = 'ct-cal-booking--completed';
+            } elseif ($bookingStatus === 'Payment_Requested') {
+                $bookingCalClasses[] = 'ct-cal-booking--payment';
+            } elseif ($bookingStatus === 'Advance_Paid') {
+                $bookingCalClasses[] = 'ct-cal-booking--advance';
+            } elseif ($bookingStatus === 'Change_Requested' || $bookingStatus === 'Reschedule_Requested') {
+                $bookingCalClasses[] = 'ct-cal-booking--change';
+            } else {
+                $bookingCalClasses[] = 'ct-cal-booking--accepted';
             }
 
             // Create individual events for each day in the booking period
@@ -392,6 +397,7 @@ class CaretakerController extends Controller
                     'allDay' => true,
                     'backgroundColor' => $backgroundColor,
                     'borderColor' => $borderColor,
+                    'classNames' => $bookingCalClasses,
                     'extendedProps' => [
                         'client' => $booking['client_name'],
                         'service' => $booking['service_type'],
@@ -409,6 +415,39 @@ class CaretakerController extends Controller
             }
         }
 
+        // Add approved leave events in orange color
+        foreach ($approvedLeaves as $leave) {
+            $startDate = new DateTime($leave['start_date']);
+            $endDate = new DateTime($leave['end_date']);
+            
+            // Create individual events for each day of the leave
+            $currentDate = clone $startDate;
+            while ($currentDate <= $endDate) {
+                $events[] = [
+                    'id' => 'leave_' . $leave['id'] . '_' . $currentDate->format('Ymd'),
+                    'title' => 'Leave - ' . htmlspecialchars($leave['leave_type']),
+                    'start' => $currentDate->format('Y-m-d'),
+                    'end' => $currentDate->format('Y-m-d'),
+                    'allDay' => true,
+                    'backgroundColor' => '#FF8C00', // orange color for leaves
+                    'borderColor' => '#FF6600',
+                    'extendedProps' => [
+                        'type' => 'leave',
+                        'leave_type' => $leave['leave_type'],
+                        'reason' => htmlspecialchars($leave['reason']),
+                        'leave_id' => $leave['id'],
+                        'start_time' => $leave['start_time'],
+                        'end_time' => $leave['end_time']
+                    ]
+                ];
+                
+                $currentDate->modify('+1 day');
+            }
+        }
+
+        // Debug: Log final events
+        error_log('Final events: ' . print_r($events, true));
+        
         echo json_encode($events);
         exit;
     }
@@ -420,7 +459,9 @@ class CaretakerController extends Controller
 public function ct_complaints()
 {
     $caretakerId = AuthSession::profileId();
-    $resolvedComplaints = $this->caretakerModel->getResolvedComplaintsByCaretaker($caretakerId);
+    $caretakerProfile = $this->caretakerModel->getCaretakerById($caretakerId) ?: [];
+    $caretakerServiceType = trim((string) ($caretakerProfile['service_type'] ?? ''));
+    $complaints = $this->caretakerModel->getComplaintsByCaretaker($caretakerId);
 
     $filters = [
         'status' => trim((string) ($_GET['complaint_status'] ?? '')),
@@ -429,7 +470,7 @@ public function ct_complaints()
 
     $serviceTypeOptions = [];
     $statusOptions = [];
-    foreach ($resolvedComplaints as $complaint) {
+    foreach ($complaints as $complaint) {
         $serviceType = trim((string) ($complaint['service_type'] ?? ''));
         $status = trim((string) ($complaint['status'] ?? ''));
         if ($serviceType !== '') {
@@ -444,7 +485,7 @@ public function ct_complaints()
     sort($serviceTypeOptions, SORT_NATURAL | SORT_FLAG_CASE);
     sort($statusOptions, SORT_NATURAL | SORT_FLAG_CASE);
 
-    $resolvedComplaints = array_values(array_filter($resolvedComplaints, static function ($complaint) use ($filters) {
+    $complaints = array_values(array_filter($complaints, static function ($complaint) use ($filters) {
         $status = trim((string) ($complaint['status'] ?? ''));
         $serviceType = trim((string) ($complaint['service_type'] ?? ''));
 
@@ -459,12 +500,18 @@ public function ct_complaints()
         return true;
     }));
 
+    // Generate form token to prevent duplicate submissions
+    $formToken = bin2hex(random_bytes(32));
+    $_SESSION['complaint_form_token'] = $formToken;
+
     $data = [
         'clients' => $this->caretakerModel->getClients($caretakerId),
-        'resolvedComplaints' => $resolvedComplaints,
+        'complaints' => $complaints,
         'filters' => $filters,
         'serviceTypeOptions' => $serviceTypeOptions,
         'statusOptions' => $statusOptions,
+        'form_token' => $formToken,
+        'caretaker_service_type' => $caretakerServiceType,
     ];
 
     $this->view('caretaker/ct_complaints', $data);
@@ -480,18 +527,36 @@ public function ct_complaints()
 public function addComplaint()
 {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $caretakerId = AuthSession::profileId();
+        $profile = $this->caretakerModel->getCaretakerById($caretakerId) ?: [];
+        $serviceType = trim((string) ($profile['service_type'] ?? ''));
+        if ($serviceType === '') {
+            return;
+        }
+
+        $bookingId = (int) ($_POST['booking_id'] ?? 0);
+        $booking = $this->caretakerModel->getActiveBookingForCaretakerComplaint($caretakerId, $bookingId);
+        if (!$booking) {
+            return;
+        }
+        $serviceDate = trim((string) ($_POST['service_date'] ?? ''));
+        if (!CaretakerModel::complaintServiceDateInBookingRange(
+            $serviceDate,
+            (string) $booking['booking_date'],
+            (string) $booking['booking_end_date']
+        )) {
+            return;
+        }
 
         $data = [
-            'caretaker_id' => AuthSession::profileId(),
-            'client_id' => $_POST['client_id'], // ✅ CHANGE THIS
-            'service_type' => $_POST['service_type'],
-            'service_date' => $_POST['service_date'], // ✅ CHANGE THIS
-            'description' => $_POST['description']
+            'caretaker_id' => $caretakerId,
+            'client_id' => (int) $booking['client_id'],
+            'service_type' => $serviceType,
+            'service_date' => $serviceDate,
+            'description' => $_POST['description'],
         ];
 
         $this->caretakerModel->addComplaint($data);
-
-     
     }
 }
 public function saveComplaint()
@@ -501,12 +566,50 @@ public function saveComplaint()
         exit;
     }
 
+    $ajax = $this->complaintSaveIsAjax();
+    $caretakerId = AuthSession::profileId();
+    $profile = $this->caretakerModel->getCaretakerById($caretakerId) ?: [];
+    $serviceType = trim((string) ($profile['service_type'] ?? ''));
+    if ($serviceType === '') {
+        $_SESSION['error'] = 'Your caregiver profile has no service type. Please contact support or update your profile.';
+        if ($ajax) {
+            $this->complaintSaveAjaxReply(false);
+        }
+        header("Location: " . URLROOT . "/caretaker/ct_complaints");
+        exit;
+    }
+
+    $bookingId = (int) ($_POST['booking_id'] ?? 0);
+    $booking = $this->caretakerModel->getActiveBookingForCaretakerComplaint($caretakerId, $bookingId);
+    if (!$booking) {
+        $_SESSION['error'] = 'Invalid or expired booking selection.';
+        if ($ajax) {
+            $this->complaintSaveAjaxReply(false);
+        }
+        header("Location: " . URLROOT . "/caretaker/ct_complaints");
+        exit;
+    }
+
+    $serviceDate = trim((string) ($_POST['service_date'] ?? ''));
+    if (!CaretakerModel::complaintServiceDateInBookingRange(
+        $serviceDate,
+        (string) $booking['booking_date'],
+        (string) $booking['booking_end_date']
+    )) {
+        $_SESSION['error'] = 'Choose a date within the selected booking period.';
+        if ($ajax) {
+            $this->complaintSaveAjaxReply(false);
+        }
+        header("Location: " . URLROOT . "/caretaker/ct_complaints");
+        exit;
+    }
+
     $data = [
-        'caretaker_id' => AuthSession::profileId(),
-        'client_id' => $_POST['client_id'] ?? '',
-        'service_type' => $_POST['service_type'] ?? '',
-        'service_date' => $_POST['service_date'] ?? '',
-        'description' => $_POST['description'] ?? ''
+        'caretaker_id' => $caretakerId,
+        'client_id' => (int) $booking['client_id'],
+        'service_type' => $serviceType,
+        'service_date' => $serviceDate,
+        'description' => $_POST['description'] ?? '',
     ];
 
     $ok = $this->caretakerModel->addComplaint($data);
@@ -515,6 +618,10 @@ public function saveComplaint()
         $_SESSION['success'] = 'Complaint submitted successfully.';
     } else {
         $_SESSION['error'] = 'Failed to save complaint. Please try again.';
+    }
+
+    if ($ajax) {
+        $this->complaintSaveAjaxReply($ok);
     }
 
     header("Location: " . URLROOT . "/caretaker/ct_complaints");
@@ -533,7 +640,7 @@ public function saveComplaint()
     public function ct_settings()
     {
         if (!AuthSession::isLoggedIn()) {
-            header("Location: index.php?url=auth/login");
+            header("Location: " . URLROOT . "/public/?url=auth/login");
             exit;
         }
 
@@ -551,7 +658,7 @@ public function saveComplaint()
     {
 
         if (!AuthSession::hasRole('caretaker')) {
-            header("Location: " . URLROOT . "/auth/login");
+            header("Location: " . URLROOT . "/public/?url=auth/login");
             exit;
         }
 
@@ -579,19 +686,6 @@ public function saveComplaint()
         ];
 
         $ok = $this->profileChangeRequestModel->createRequest($payload);
-        if ($ok) {
-            require_once APPROOT . '/models/NotificationModel.php';
-            $notif = new NotificationModel();
-            $notif->notifyAdmins(
-                'Caretaker Profile Update Request',
-                'Caretaker ' . ($user['name'] ?? 'Unknown') . ' submitted a profile update request.',
-                URLROOT . '/admin/ad_profile_requests'
-            );
-
-            $_SESSION['success'] = "Profile change request submitted. Admin approval is required.";
-        } else {
-            $_SESSION['error'] = "Could not submit profile change request.";
-        }
 
         header("Location: " . URLROOT . "/caretaker/ct_settings");
         exit();
@@ -613,6 +707,13 @@ public function saveComplaint()
 
             if ($newPassword !== $confirmPassword) {
                 $_SESSION['error'] = "Passwords do not match!";
+                header("Location: " . URLROOT . "/caretaker/ct_settings");
+                exit();
+            }
+
+            $pwErr = CaretakerModel::validateCaretakerPassword($newPassword);
+            if ($pwErr !== null) {
+                $_SESSION['error'] = $pwErr;
                 header("Location: " . URLROOT . "/caretaker/ct_settings");
                 exit();
             }
@@ -683,13 +784,8 @@ public function saveComplaint()
 
     public function index()
     {
-        $clients = $this->clientModel->getAllClient();
-        $complaints = $this->complaintModel->getAllComplaints();
-
-        $this->view('caretaker/complaints', [
-            'clients' => $clients,
-            'complaints' => $complaints
-        ]);
+        // Redirect to dashboard when accessing /caretaker without a specific method
+        $this->ct_dashboard();
     }
 
     public function submit()
@@ -708,6 +804,16 @@ public function saveComplaint()
 
             header("Location: " . URLROOT . "/complaint/index");
         }
+    }
+
+    public function ct_profile()
+    {
+        if (!AuthSession::hasRole('caretaker')) {
+            header("Location: " . URLROOT . "/public/?url=auth/login");
+            exit;
+        }
+
+        $this->view("caretaker/ct_profile");
     }
 
     public function ct_announcement()
@@ -735,5 +841,237 @@ public function saveComplaint()
             'totalRecords'  => $totalRecords,
             'perPage'       => $perPage,
         ]);
+    }
+
+    public function ct_myBookings()
+    {
+        $caretakerId = AuthSession::profileId();
+        $bookings = $this->caretakerModel->getAllBookingsForCaretakerOverview($caretakerId);
+
+        $this->view('caretaker/ct_my_bookings', [
+            'bookings' => $bookings,
+        ]);
+    }
+
+    public function ct_upcomingBookings()
+    {
+        $caretakerId = AuthSession::profileId();
+        $bookings = $this->caretakerModel->getUpcomingBookings($caretakerId);
+
+        $this->view("caretaker/ct_upcomingBookings", ['bookings' => $bookings]);
+    }
+
+    public function ct_pastBookings()
+    {
+        $caretakerId = AuthSession::profileId();
+        $bookings = $this->caretakerModel->getPastBookings($caretakerId);
+        $this->view("caretaker/ct_pastBookings", ['bookings' => $bookings]);
+    }
+
+    public function ct_ongoingBookings()
+    {
+        $caretakerId = AuthSession::profileId();
+        $bookings = $this->caretakerModel->getOngoingBookings($caretakerId);
+
+        $this->view("caretaker/ct_ongoingBookings", ['bookings' => $bookings]);
+    }
+
+    public function ct_feedback()
+    {
+        $caretakerId = AuthSession::profileId() ?: null;
+        if (!$caretakerId) {
+            header("Location: " . URLROOT . "/public/?url=auth/login");
+            exit;
+        }
+
+        $feedbackModel = $this->model('FeedbackModel');
+        $feedbacks = $feedbackModel->getByCaretaker($caretakerId);
+
+        $this->view("caretaker/ct_feedback", ['feedbacks' => $feedbacks]);
+    }
+
+    public function ct_complaintReg()
+    {
+        $this->view("caretaker/ct_complaintReg");
+    }
+
+    public function submitComplaint()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: " . URLROOT . "/caretaker/ct_complaintReg");
+            exit;
+        }
+
+        $caretakerId = AuthSession::profileId();
+        $clientId = $_POST['client_id'] ?? null;
+        $bookingId = $_POST['booking_id'] ?? null;
+
+        if (!$clientId || !$bookingId) {
+            $_SESSION['error'] = "Invalid request.";
+            header("Location: " . URLROOT . "/caretaker/ct_complaintReg");
+            exit;
+        }
+
+        // Validate booking belongs to caretaker
+        $booking = $this->caretakerModel->getBookingById($bookingId);
+        if (!$booking || (int)$booking['caretaker_id'] !== (int)$caretakerId) {
+            $_SESSION['error'] = "Unauthorized access.";
+            header("Location: " . URLROOT . "/caretaker/ct_complaintReg");
+            exit;
+        }
+
+        // Prevent duplicate complaints
+        if ($this->caretakerModel->complaintExists($bookingId, $caretakerId)) {
+            $_SESSION['error'] = "Complaint already submitted for this booking.";
+            header("Location: " . URLROOT . "/caretaker/ct_complaintReg");
+            exit;
+        }
+
+        $data = [
+            'booking_id'   => $bookingId,
+            'client_id'    => $clientId,
+            'caretaker_id' => $caretakerId,
+            'complaint'    => $_POST['complaint'],
+            'type'         => $_POST['type'] ?? 'service'
+        ];
+
+        $this->caretakerModel->addComplaint($data);
+
+        $_SESSION['success'] = "Complaint submitted successfully!";
+        header("Location: " . URLROOT . "/caretaker/ct_complaintReg");
+        exit;
+    }
+
+    public function editComplaint($complaint_id = null)
+    {
+        if (!AuthSession::hasRole('caretaker')) {
+            header("Location: " . URLROOT . "/auth/login");
+            exit();
+        }
+
+        $complaint_id = (int) $complaint_id;
+        if (!$complaint_id) {
+            $_SESSION['error'] = "Invalid complaint ID";
+            header("Location: " . URLROOT . "/caretaker/ct_complaints");
+            exit;
+        }
+
+        $caretakerId = AuthSession::profileId();
+        $complaint = $this->caretakerModel->getComplaintById($complaint_id);
+
+        if (!$complaint || (int)$complaint['caretaker_id'] !== $caretakerId) {
+            $_SESSION['error'] = "Complaint not found or unauthorized access";
+            header("Location: " . URLROOT . "/caretaker/ct_complaints");
+            exit;
+        }
+
+        // Get clients for dropdown
+        $clients = $this->caretakerModel->getClientsByCaretaker($caretakerId);
+
+        $data = [
+            'complaint' => $complaint,
+            'clients' => $clients
+        ];
+
+        $this->view('caretaker/ct_complaint_edit', $data);
+    }
+
+    public function updateComplaint()
+    {
+        if (!AuthSession::hasRole('caretaker')) {
+            header("Location: " . URLROOT . "/auth/login");
+            exit();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: " . URLROOT . "/caretaker/ct_complaints");
+            exit;
+        }
+
+        $complaint_id = (int) $_POST['complaint_id'];
+        $caretakerId = AuthSession::profileId();
+
+        // Verify complaint belongs to caretaker
+        $complaint = $this->caretakerModel->getComplaintById($complaint_id);
+        if (!$complaint || (int)$complaint['caretaker_id'] !== $caretakerId) {
+            $_SESSION['error'] = "Unauthorized access";
+            header("Location: " . URLROOT . "/caretaker/ct_complaints");
+            exit;
+        }
+
+        // Validate required fields
+        $client_id = (int) $_POST['client_id'];
+        $complaint_text = trim($_POST['complaint'] ?? '');
+        $type = $_POST['type'] ?? 'service';
+
+        if (!$client_id || empty($complaint_text)) {
+            $_SESSION['error'] = "All fields are required";
+            header("Location: " . URLROOT . "/caretaker/editComplaint/" . $complaint_id);
+            exit;
+        }
+    
+        // Update complaint
+        $data = [
+            'client_id' => $client_id,
+            'complaint' => $complaint_text,
+            'type' => $type
+        ];
+
+        $success = $this->caretakerModel->updateComplaint($complaint_id, $data);
+
+        if ($success) {
+            $_SESSION['success'] = "Complaint updated successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to update complaint";
+        }
+
+        header("Location: " . URLROOT . "/caretaker/ct_complaints");
+        exit;
+    }
+
+    
+
+    public function deleteComplaint($complaint_id = null)
+    {
+        if (!AuthSession::hasRole('caretaker')) {
+            header("Location: " . URLROOT . "/auth/login");
+            exit();
+        }
+
+        $complaint_id = (int) $complaint_id;
+        if (!$complaint_id) {
+            $_SESSION['error'] = "Invalid complaint ID";
+            header("Location: " . URLROOT . "/caretaker/ct_complaints");
+            exit;
+        }
+
+        $caretakerId = AuthSession::profileId();
+
+        // Verify complaint belongs to caretaker and can be deleted (only if pending)
+        $complaint = $this->caretakerModel->getComplaintById($complaint_id);
+        if (!$complaint || (int)$complaint['caretaker_id'] !== $caretakerId) {
+            $_SESSION['error'] = "Complaint not found or unauthorized access";
+            header("Location: " . URLROOT . "/caretaker/ct_complaints");
+            exit;
+        }
+
+        // Only allow deletion if complaint is still pending
+        if ($complaint['status'] !== 'Pending') {
+            $_SESSION['error'] = "Cannot delete complaint that is already being processed";
+            header("Location: " . URLROOT . "/caretaker/ct_complaints");
+            exit;
+        }
+
+        // Delete complaint
+        $success = $this->caretakerModel->deleteComplaint($complaint_id);
+
+        if ($success) {
+            $_SESSION['success'] = "Complaint deleted successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to delete complaint";
+        }
+
+        header("Location: " . URLROOT . "/caretaker/ct_complaints");
+        exit;
     }
 }

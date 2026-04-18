@@ -2106,4 +2106,23 @@ class ClientModel
         $result = $stmt->get_result()->fetch_assoc();
         return $result ? $result['id'] : null;
     }
+
+    /**
+     * Get client bookings that are assigned to a specific caretaker
+     * Used for caretaker view of client details
+     */
+    public function getClientBookingsForCaretaker($clientId, $caretakerId)
+    {
+        $sql = "SELECT b.*, c.name as client_name, ct.name as caretaker_name
+                FROM bookings b
+                JOIN clients c ON b.client_id = c.id
+                JOIN caretakers ct ON b.caretaker_id = ct.id
+                WHERE b.client_id = ? AND b.caretaker_id = ?
+                ORDER BY b.booking_date DESC, b.preferred_time DESC";
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ii", $clientId, $caretakerId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 }

@@ -438,7 +438,7 @@ CREATE TABLE `ct_complaints` (
   `service_type` varchar(100) NOT NULL,
   `service_date` date NOT NULL,
   `description` text NOT NULL,
-  `status` enum('Pending','Resolved','Rejected') DEFAULT 'Pending',
+  `status` enum('Open','In Progress','Resolved','Closed') NOT NULL DEFAULT 'Open',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`complaint_id`),
   KEY `client_id` (`client_id`),

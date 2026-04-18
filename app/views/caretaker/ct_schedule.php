@@ -1,52 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caretaker Schedule</title>
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
-  <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_schedule.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-
-  <!-- Modal CSS removed - using external stylesheet -->
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-</head>
-
-<body>
-
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-  <main class="content schedule-container">
+<?php
+$caretakerPageTitle = 'Schedule - SmartCare';
+$caretakerExtraCss = ['caretaker/ct_schedule.css'];
+$caretakerHeadStylesheets = ['https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css'];
+$caretakerHeadScripts = ['https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'];
+require_once APPROOT . '/views/templates/caretaker/caretaker_layout_head.php';
+include_once APPROOT . '/views/templates/caretaker/ct_header.php';
+include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
+?>
+<main class="content schedule-container">
     <header class="page-header">
         <h1 class="page-title">My Schedule</h1>
     </header>
 
     <div class="card">
 
-    <!-- Status Legend -->
+    <!-- Legend: booking states caregivers see most often + leave/cover (payment steps stay colored on calendar) -->
     <div class="status-legend">
       <div class="legend-item">
-        <span class="legend-color" style="background-color: #ffc107;"></span>
-        <span class="legend-label">Payment Pending</span>
+        <span class="legend-color" style="background-color: #007bff;"></span>
+        <span class="legend-label">Bookings</span>
+      </div>
+      
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #FF8C00;"></span>
+        <span class="legend-label">Your approved leave</span>
       </div>
       <div class="legend-item">
-        <span class="legend-color" style="background-color: #17a2b8;"></span>
-        <span class="legend-label">Payment Approved</span>
+        <span class="legend-color" style="background-color: #7b1fa2;"></span>
+        <span class="legend-label">Replacement cover (leave)</span>
       </div>
       <div class="legend-item">
-        <span class="legend-color" style="background-color: #4CAF50;"></span>
-        <span class="legend-label">Accepted</span>
-      </div>
-      <div class="legend-item">
-        <span class="legend-color" style="background-color: #6c757d;"></span>
-        <span class="legend-label">Completed</span>
+        <span class="legend-color" style="background-color: #ff7043;"></span>
+        <span class="legend-label">Your approved leave</span>
       </div>
     </div>
 
@@ -115,13 +100,21 @@
         initialView: 'dayGridMonth',
         height: 'auto',
         events: {
-          url: "<?= URLROOT ?>/public/?url=Caretaker/getScheduleEvents",
+          url: "<?= URLROOT ?>/public/?url=caretaker/getScheduleEvents",
           method: "GET"
         },
         eventClick: function(info) {
-          // Populate modal with booking details
+          // Populate modal with booking details only (leave events disabled)
           const props = info.event.extendedProps;
+          const isLeave = props.type === 'leave';
 
+          // Only show popup for booking events, not leave events
+          if (isLeave) {
+            return; // Do nothing for leave events - no popup
+          }
+
+          // Handle booking events
+          document.querySelector('.modal-header h3').textContent = 'Booking Details';
           document.getElementById('clientName').textContent = props.client || '-';
           document.getElementById('serviceType').textContent = props.service || '-';
           document.getElementById('bookingTime').textContent = props.time || '-';
@@ -131,25 +124,24 @@
 
           // Format status with badge styling
           const statusEl = document.getElementById('bookingStatus');
-          const status = props.status || '-';
           let statusClass = '';
-          let statusText = status;
+          let statusText = '';
 
-          // Apply appropriate styling based on status
-          if (status === 'Completed') {
+          if (props.status === 'Completed') {
             statusClass = 'status-completed';
             statusText = 'Completed';
-          } else if (status === 'Accepted') {
+          } else if (props.status === 'Accepted') {
             statusClass = 'status-accepted';
             statusText = 'Accepted';
-          } else if (status === 'Payment_Requested') {
+          } else if (props.status === 'Payment_Requested') {
             statusClass = 'status-payment-pending';
             statusText = 'Payment Pending';
-          } else if (status === 'Advance_Paid') {
+          } else if (props.status === 'Advance_Paid') {
             statusClass = 'status-payment-approved';
             statusText = 'Payment Approved';
           } else {
             statusClass = 'status-default';
+            statusText = props.status || '-';
           }
 
           statusEl.innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;
@@ -171,7 +163,4 @@
     });
   </script>
 
-
-</body>
-
-</html>
+<?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>

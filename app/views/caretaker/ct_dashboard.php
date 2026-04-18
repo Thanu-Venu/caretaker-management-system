@@ -1,253 +1,212 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartCare Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/ad_dashboard.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_sidebar.css">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/common/sidebar-badges.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-</head>
-
-<body>
-
-<?php include_once APPROOT . "/views/templates/caretaker/ct_header.php"; ?>
-<?php include_once APPROOT . "/views/templates/caretaker/ct_sidebar.php"; ?>
-
 <?php
-  $upcomingCount = count($data['upcoming'] ?? []);
-  $pendingLeaveCount = 0;
-  foreach ($data['leaves'] ?? [] as $leave) {
-      if (strtolower($leave['status'] ?? '') === 'pending') {
-          $pendingLeaveCount++;
-      }
-  }
+$caretakerPageTitle = 'Dashboard - SmartCare';
+$caretakerExtraCss = ['caretaker/ct_dashboard.css'];
+require_once APPROOT . '/views/templates/caretaker/caretaker_layout_head.php';
+include_once APPROOT . '/views/templates/caretaker/ct_header.php';
+include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
+?>
+<?php
+  // Use real dashboard statistics from database
+  $upcomingCount = (int)($data['dashboardStats']['upcoming_bookings'] ?? 0);
+  $pendingLeaveCount = (int)($data['dashboardStats']['pending_leaves'] ?? 0);
+  $workingDays = (int)($data['dashboardStats']['working_days'] ?? 0);
+  $rating = number_format((float)($data['dashboardStats']['average_rating'] ?? 0), 1);
+  $totalReviews = (int)($data['dashboardStats']['total_reviews'] ?? 0);
+  
   $profileRequestPending = !empty($data['latestProfileChangeRequest']) && (($data['latestProfileChangeRequest']['status'] ?? '') === 'Pending');
   $activeBookings = (int)($data['monthlyStats']['active_bookings'] ?? 0);
   $completedBookings = (int)($data['monthlyStats']['completed_bookings'] ?? 0);
-  $workingDays = (int)($data['monthlyStats']['working_days'] ?? 0);
   $availability = !empty($data['monthlyStats']['is_available']);
-  $rating = number_format((float)($data['monthlyStats']['rating'] ?? 0), 1);
   $availabilityLabel = $availability ? "Visible to clients" : "Hidden from clients";
 ?>
 
-<div class="main-content admin-dashboard-page">
-  <div class="dashboard-layout">
+<main class="main-content admin-dashboard-page caretaker-dashboard-page">
 
-    <header class="page-header dashboard-page-header">
-      <div class="dashboard-page-header__row">
-        <div class="dashboard-page-header__text">
-          <h1 class="page-title dashboard-page-header__title">
-            <span class="dashboard-page-header__greeting">Welcome back,</span>
-            <span class="dashboard-page-header__name"><?= htmlspecialchars($_SESSION['user']['name'] ?? 'Caregiver') ?></span>
-          </h1>
-        </div>
-        <nav class="dashboard-breadcrumb" aria-label="Breadcrumb">
-          <ol class="dashboard-breadcrumb__list">
-            <li><a href="<?= URLROOT ?>/public?url=caretaker/ct_dashboard">SmartCare</a></li>
-            <li><span class="dashboard-breadcrumb__sep" aria-hidden="true">/</span> Caretaker</li>
-            <li><span class="dashboard-breadcrumb__sep" aria-hidden="true">/</span> <span class="dashboard-breadcrumb__current">Dashboard</span></li>
-          </ol>
-        </nav>
-      </div>
-      <div class="dashboard-page-header__toolbar">
-        <time class="dashboard-page-header__date" datetime="<?= date('c') ?>"><?= htmlspecialchars(date('l, j F Y')) ?></time>
-        <nav class="dashboard-quick-actions" aria-label="Quick links">
-          <a href="<?= URLROOT ?>/public?url=caretaker/ct_schedule" class="dashboard-quick-actions__link dashboard-quick-actions__link--primary"><i class="bx bx-calendar" aria-hidden="true"></i><span>Schedule</span></a>
-          <a href="<?= URLROOT ?>/public?url=caretaker/ct_booking" class="dashboard-quick-actions__link"><i class="bx bx-book-alt" aria-hidden="true"></i><span>Bookings</span></a>
-          <a href="<?= URLROOT ?>/public?url=caretaker/ct_leave" class="dashboard-quick-actions__link"><i class="bx bx-calendar-x" aria-hidden="true"></i><span>Leave</span></a>
-          <a href="<?= URLROOT ?>/public?url=caretaker/ct_reports" class="dashboard-quick-actions__link"><i class="bx bx-bar-chart" aria-hidden="true"></i><span>Reports</span></a>
-          <a href="<?= URLROOT ?>/public?url=caretaker/ct_announcement" class="dashboard-quick-actions__link"><i class="bx bxs-megaphone" aria-hidden="true"></i><span>Announcements</span></a>
-        </nav>
-      </div>
-    </header>
+    <div class="caretaker-dashboard">
 
-    <section class="dashboard-review-badges" aria-label="Quick review — needs attention">
-      <h2 class="dashboard-review-badges__heading">Quick review</h2>
-      <div class="dashboard-review-badges__grid">
-        <a href="<?= URLROOT ?>/public?url=caretaker/ct_booking&tab=upcoming" class="dashboard-review-badge dashboard-review-badge--payments">
-          <span class="dashboard-review-badge__label">Upcoming bookings</span>
-          <span class="dashboard-review-badge__value"><?= $upcomingCount ?></span>
-          <span class="dashboard-review-badge__hint">Bookings scheduled soon</span>
-          <span class="dashboard-review-badge__cta">View <i class="bx bx-chevron-right" aria-hidden="true"></i></span>
-        </a>
-        <a href="<?= URLROOT ?>/public?url=caretaker/ct_leave" class="dashboard-review-badge dashboard-review-badge--leave">
-          <span class="dashboard-review-badge__label">Pending leave</span>
-          <span class="dashboard-review-badge__value"><?= $pendingLeaveCount ?></span>
-          <span class="dashboard-review-badge__hint">Awaiting decision</span>
-          <span class="dashboard-review-badge__cta">Review <i class="bx bx-chevron-right" aria-hidden="true"></i></span>
-        </a>
-        <a href="<?= URLROOT ?>/public?url=caretaker/ct_settings" class="dashboard-review-badge dashboard-review-badge--profiles">
-          <span class="dashboard-review-badge__label">Profile updates</span>
-          <span class="dashboard-review-badge__value"><?= $profileRequestPending ? 1 : 0 ?></span>
-          <span class="dashboard-review-badge__hint">Admin review status</span>
-          <span class="dashboard-review-badge__cta">Open <i class="bx bx-chevron-right" aria-hidden="true"></i></span>
-        </a>
-        <a href="<?= URLROOT ?>/public?url=caretaker/ct_schedule" class="dashboard-review-badge dashboard-review-badge--complaints">
-          <span class="dashboard-review-badge__label">Active schedule</span>
-          <span class="dashboard-review-badge__value"><?= $activeBookings ?></span>
-          <span class="dashboard-review-badge__hint">Current appointments</span>
-          <span class="dashboard-review-badge__cta">Open <i class="bx bx-chevron-right" aria-hidden="true"></i></span>
-        </a>
-      </div>
-    </section>
+        <!-- Welcome hero -->
+        <section class="caretaker-dashboard-hero" aria-labelledby="caretakerDashboardHeroTitle">
+            <div class="caretaker-dashboard-hero__content">
+                <div class="caretaker-dashboard-hero__intro">
+                    <h1 id="caretakerDashboardHeroTitle" class="caretaker-dashboard-hero__title">
+                        <span class="caretaker-dashboard-hero__greeting">Welcome back,</span>
+                        <span class="caretaker-dashboard-hero__name"><?= htmlspecialchars($_SESSION['user']['name'] ?? 'Caregiver', ENT_QUOTES, 'UTF-8') ?></span>
+                    </h1>
+                    <p class="caretaker-dashboard-hero__lead">Manage your schedule, bookings, and leave requests effortlessly.</p>
 
-    <section class="dashboard-shortcut-tiles" aria-label="More caretaker shortcuts">
-      <h2 class="dashboard-shortcut-tiles__heading">Shortcuts</h2>
-      <div class="dashboard-shortcut-tiles__grid">
-        <a href="<?= URLROOT ?>/public?url=caretaker/ct_schedule" class="dashboard-shortcut-tile">
-          <span class="dashboard-shortcut-tile__icon"><i class="bx bx-calendar"></i></span>
-          <span class="dashboard-shortcut-tile__title">My schedule</span>
-          <span class="dashboard-shortcut-tile__meta">View shift details</span>
-        </a>
-        <a href="<?= URLROOT ?>/public?url=caretaker/ct_booking" class="dashboard-shortcut-tile">
-          <span class="dashboard-shortcut-tile__icon"><i class="bx bx-book-alt"></i></span>
-          <span class="dashboard-shortcut-tile__title">Bookings</span>
-          <span class="dashboard-shortcut-tile__meta">Client appointments</span>
-        </a>
-        <a href="<?= URLROOT ?>/public?url=caretaker/ct_leave" class="dashboard-shortcut-tile">
-          <span class="dashboard-shortcut-tile__icon"><i class="bx bx-calendar-x"></i></span>
-          <span class="dashboard-shortcut-tile__title">Leave request</span>
-          <span class="dashboard-shortcut-tile__meta">Submit a request</span>
-        </a>
-        <a href="<?= URLROOT ?>/public?url=caretaker/ct_announcement" class="dashboard-shortcut-tile">
-          <span class="dashboard-shortcut-tile__icon"><i class="bx bxs-megaphone"></i></span>
-          <span class="dashboard-shortcut-tile__title">Announcements</span>
-          <span class="dashboard-shortcut-tile__meta">Latest updates</span>
-        </a>
-        <a href="<?= URLROOT ?>/public?url=caretaker/ct_settings" class="dashboard-shortcut-tile">
-          <span class="dashboard-shortcut-tile__icon"><i class="bx bx-cog"></i></span>
-          <span class="dashboard-shortcut-tile__title">Settings</span>
-          <span class="dashboard-shortcut-tile__meta">Update profile</span>
-        </a>
-      </div>
-    </section>
+                    <div class="caretaker-dashboard-hero__actions" role="group" aria-label="Primary dashboard actions">
+                        <a class="btn caretaker-dashboard-hero__btn-primary" href="<?= URLROOT ?>/public?url=caretaker/ct_schedule">
+                            <i class='bx bx-calendar' aria-hidden="true"></i>
+                            <span>My Schedule</span>
+                        </a>
+                        <a class="btn secondary caretaker-dashboard-hero__btn-secondary" href="<?= URLROOT ?>/public?url=caretaker/ct_booking">
+                            <i class='bx bx-book-alt' aria-hidden="true"></i>
+                            <span>Bookings</span>
+                        </a>
+                    </div>
 
-    <div class="stats-grid dashboard-stats">
-      <div class="stat-card card-hover dashboard-stat dashboard-stat--blue">
-        <div class="stat-card-icon"><i class='bx bx-check-circle'></i></div>
-        <div class="stat-card-label">Upcoming bookings</div>
-        <div class="stat-card-value"><?= $upcomingCount ?></div>
-        <a href="<?= URLROOT ?>/public?url=caretaker/ct_booking" class="stat-card-link">View bookings</a>
-      </div>
-      <div class="stat-card card-hover dashboard-stat dashboard-stat--teal">
-        <div class="stat-card-icon"><i class='bx bx-calendar-x'></i></div>
-        <div class="stat-card-label">Pending leave</div>
-        <div class="stat-card-value"><?= $pendingLeaveCount ?></div>
-        <a href="<?= URLROOT ?>/public?url=caretaker/ct_leave" class="stat-card-link">Manage leave</a>
-      </div>
-      <div class="stat-card card-hover dashboard-stat dashboard-stat--indigo">
-        <div class="stat-card-icon"><i class='bx bx-time-five'></i></div>
-        <div class="stat-card-label">Working days</div>
-        <div class="stat-card-value"><?= $workingDays ?></div>
-        <a href="<?= URLROOT ?>/public?url=caretaker/ct_schedule" class="stat-card-link">View schedule</a>
-      </div>
-      <div class="stat-card card-hover dashboard-stat dashboard-stat--violet">
-        <div class="stat-card-icon"><i class='bx bx-star'></i></div>
-        <div class="stat-card-label">Average rating</div>
-        <div class="stat-card-value"><?= $rating ?> ★</div>
-        <a href="<?= URLROOT ?>/public?url=caretaker/ct_reviews" class="stat-card-link">See reviews</a>
-      </div>
-      <div class="stat-card card-hover dashboard-stat dashboard-stat--ocean">
-        <div class="stat-card-icon"><i class='bx bx-show'></i></div>
-        <div class="stat-card-label">Availability</div>
-        <div class="stat-card-value"><?= $availability ? 'Visible' : 'Hidden' ?></div>
-        <a href="<?= URLROOT ?>/public?url=caretaker/ct_schedule" class="stat-card-link">Toggle status</a>
-      </div>
-    </div>
-
-    <style>
-      @media (min-width: 1101px) {
-        .ct-overview-grid {
-          grid-template-columns: 2fr 1fr !important;
-        }
-      }
-    </style>
-    <section class="dashboard-overview-charts" aria-label="Caretaker overview">
-      <h2 class="dashboard-overview-charts__heading">Overview</h2>
-      <div class="dashboard-overview-charts__grid ct-overview-grid">
-        <div class="card dashboard-chart-card">
-          <div class="card-header">
-            <h3 class="card-title">Upcoming Bookings</h3>
-            <p class="dashboard-chart-card__sub">Your next appointments</p>
-          </div>
-          <div class="card-body" style="display: block; padding-top: 16px;">
-            <div class="table-container">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Client</th>
-                    <th>Date</th>
-                    <th>Service</th>
-                    <th>Location</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php if (empty($data['upcoming'])): ?>
-                    <tr>
-                      <td colspan="4" style="text-align:center;">No upcoming bookings</td>
-                    </tr>
-                  <?php else: ?>
-                    <?php foreach ($data['upcoming'] as $booking): ?>
-                      <tr>
-                        <td><?= htmlspecialchars($booking['client_name']) ?></td>
-                        <td><?= htmlspecialchars($booking['booking_date']) ?></td>
-                        <td><?= htmlspecialchars($booking['service_type']) ?></td>
-                        <td><?= htmlspecialchars($booking['service_location']) ?></td>
-                      </tr>
-                    <?php endforeach; ?>
-                  <?php endif; ?>
-                </tbody>
-              </table>
+                    <div class="caretaker-dashboard-hero__highlights" aria-label="Dashboard section shortcuts">
+                        <a class="caretaker-dashboard-hero__highlight-item caretaker-dashboard-hero__highlight-link" href="#statsCardsSection">
+                            <i class='bx bx-bar-chart-alt-2' aria-hidden="true"></i>
+                            <div>
+                                <p class="caretaker-dashboard-hero__highlight-value">Stats Overview</p>
+                            </div>
+                        </a>
+                        <a class="caretaker-dashboard-hero__highlight-item caretaker-dashboard-hero__highlight-link" href="#quickActionsSection">
+                            <i class='bx bx-grid-alt' aria-hidden="true"></i>
+                            <div>
+                                <p class="caretaker-dashboard-hero__highlight-value">Quick Actions</p>
+                            </div>
+                        </a>
+                        <a class="caretaker-dashboard-hero__highlight-item caretaker-dashboard-hero__highlight-link" href="#upcomingBookingsSection">
+                            <i class='bx bx-list-check' aria-hidden="true"></i>
+                            <div>
+                                <p class="caretaker-dashboard-hero__highlight-value">Upcoming</p>
+                            </div>
+                        </a>
+                        <a class="caretaker-dashboard-hero__highlight-item caretaker-dashboard-hero__highlight-link" href="#leaveSection">
+                            <i class='bx bx-calendar-x' aria-hidden="true"></i>
+                            <div>
+                                <p class="caretaker-dashboard-hero__highlight-value">Leave Status</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
-          </div>
+        </section>
+
+        <!-- Stats Cards -->
+        <div id="statsCardsSection" class="stats-cards caretaker-dashboard-scroll-target">
+            <h2>Status Cards</h2>
+            <div class="card">
+                <div class="action1">
+                    <i class='bx bx-book'></i>
+                </div>
+                <h3><?= $upcomingCount ?></h3>
+                <p>Upcoming Bookings</p>
+            </div>
+            <div class="card">
+                <div class="action1">
+                    <i class='bx bx-time-five'></i>
+                </div>
+                <h3><?= $workingDays ?></h3>
+                <p>Working Days</p>
+            </div>
+            <div class="card">
+                <div class="action1">
+                    <i class='bx bx-calendar-x'></i>
+                </div>
+                <h3><?= $pendingLeaveCount ?></h3>
+                <p>Pending Leave</p>
+            </div>
+            <div class="card">
+                <div class="action1">
+                    <i class='bx bx-star'></i>
+                </div>
+                <h3><?= $rating ?></h3>
+                <p>Average Rating (<?= $totalReviews ?> reviews)</p>
+            </div>
+            <div class="card">
+                <div class="action1">
+                    <i class='bx bx-show'></i>
+                </div>
+                <h3><?= $availability ? 'Visible' : 'Hidden' ?></h3>
+                <p>Availability Status</p>
+            </div>
         </div>
 
-        <div class="card dashboard-chart-card">
-          <div class="card-header">
-            <h3 class="card-title">Leave & availability</h3>
-            <p class="dashboard-chart-card__sub">Leave status and schedule</p>
-          </div>
-          <div class="card-body" style="display: block; padding-top: 16px;">
-            <div class="table-container" style="margin-bottom: 20px;">
-              <table class="table">
-                  <tbody>
-                      <tr>
-                          <td style="font-weight: 500;">Status</td>
-                          <td><strong><?= $availabilityLabel ?></strong></td>
-                      </tr>
-                      <tr>
-                          <td style="font-weight: 500;">Completed Bookings</td>
-                          <td><?= $completedBookings ?></td>
-                      </tr>
-                      <tr>
-                          <td style="font-weight: 500;">Pending Leave</td>
-                          <td><?= $pendingLeaveCount ?> requests</td>
-                      </tr>
-                  </tbody>
-              </table>
+        <!-- Quick Actions -->
+        <section id="quickActionsSection" class="quick-actions caretaker-dashboard-scroll-target">
+            <h2>Quick Actions</h2>
+            <div class="actions">
+                <div class="action">
+                    <i class='bx bx-calendar'></i>
+                    <h3>
+                        <button class="main-btn" onclick="location.href='<?= URLROOT ?>/public?url=caretaker/ct_schedule'">
+                            My Schedule
+                        </button>
+                    </h3>
+                    <p>View shift details</p>
+                </div>
+                <div class="action">
+                    <i class='bx bx-book-alt'></i>
+                    <h3>
+                        <button class="main-btn" onclick="location.href='<?= URLROOT ?>/public?url=caretaker/ct_booking'">
+                            Bookings
+                        </button>
+                    </h3>
+                    <p>Client appointments</p>
+                </div>
+                <div class="action">
+                    <i class='bx bx-calendar-x'></i>
+                    <h3>
+                        <button class="main-btn" onclick="location.href='<?= URLROOT ?>/public?url=caretaker/ct_leave'">
+                            Request Leave
+                        </button>
+                    </h3>
+                    <p>Submit a request</p>
+                </div>
+                <div class="action">
+                    <i class='bx bx-cog'></i>
+                    <h3>
+                        <button class="main-btn" onclick="location.href='<?= URLROOT ?>/public?url=caretaker/ct_settings'">
+                            Settings
+                        </button>
+                    </h3>
+                    <p>Update profile</p>
+                </div>
             </div>
+        </section>
+
+        <!-- Upcoming / Overview Section -->
+        <section id="upcomingBookingsSection" class="recent-bookings caretaker-dashboard-recent caretaker-dashboard-scroll-target">
+            <h2>Upcoming Bookings</h2>
             
-            <div class="card-actions">
-              <a class="btn btn-sm btn-primary" href="<?= URLROOT ?>/public?url=caretaker/ct_leave"><i class="bx bx-calendar-x"></i> Request leave</a>
-              <a class="btn btn-sm secondary" href="<?= URLROOT ?>/public?url=caretaker/ct_schedule"><i class="bx bx-calendar"></i> View schedule</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+            <?php if (empty($data['upcoming'])): ?>
+                <div class="booking">
+                    <div>
+                        <h3>No upcoming bookings</h3>
+                        <p>You do not have any upcoming appointments scheduled at the moment.</p>
+                    </div>
+                </div>
+            <?php else: ?>
+                <?php foreach (array_slice($data['upcoming'], 0, 5) as $booking): ?>
+                    <div class="booking">
+                        <div class="booking-icon" style="width:40px; height:40px; border-radius:10px; background:#e3f2fd; display:flex; align-items:center; justify-content:center; color:#1e88e5; font-size:1.5rem; flex-shrink:0;">
+                            <i class='bx bx-user'></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3><?= htmlspecialchars($booking['service_type']) ?> with <?= htmlspecialchars($booking['client_name']) ?></h3>
+                            <p>
+                                <i class='bx bx-calendar'></i> <?= date('m/d/Y', strtotime($booking['booking_date'])) ?>
+                                • <i class='bx bx-current-location'></i> <?= htmlspecialchars($booking['service_location']) ?>
+                            </p>
+                        </div>
+                        <span class="status accepted">Upcoming</span>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </section>
 
-  </div>
-</div>
+        <!-- Leave Status Section -->
+        <section id="leaveSection" class="recent-bookings caretaker-dashboard-recent caretaker-dashboard-scroll-target" style="margin-top:20px;">
+            <h2>Leave & Availability</h2>
+            <div class="booking" style="align-items: center;">
+                <div class="booking-icon" style="width:40px; height:40px; border-radius:10px; background:#fff3e0; display:flex; align-items:center; justify-content:center; color:#ff9800; font-size:1.5rem; flex-shrink:0;">
+                   <i class='bx bx-calendar-x'></i>
+                </div>
+                <div style="flex:1;">
+                    <h3 style="margin-bottom: 2px;">Availability Status</h3>
+                    <p style="margin-bottom: 0;">You are currently <strong><?= $availabilityLabel ?></strong>. You have <strong><?= $completedBookings ?></strong> completed bookings and <strong><?= $pendingLeaveCount ?></strong> pending leave requests.</p>
+                </div>
+                <div style="flex-shrink:0; margin-left: auto;">
+                    <a class="btn btn-sm" style="background:#1e88e5; color:#fff;" href="<?= URLROOT ?>/public?url=caretaker/ct_leave">Manage Leave</a>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</main>
 
 <script>
   window.dashboardData = {
@@ -258,6 +217,5 @@
   };
 </script>
 <script src="<?php echo URLROOT; ?>/public/js/caretaker/ct_dashboard.js"></script>
-</body>
 
-</html>
+<?php require_once APPROOT . '/views/templates/caretaker/caretaker_layout_close.php'; ?>

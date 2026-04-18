@@ -109,7 +109,7 @@ table {
   border-collapse: collapse;
   font-size: 14px;
   overflow: hidden;
-  min-width: 600px;
+  min-width: 760px;
 }
 
 thead th {
@@ -213,7 +213,7 @@ td[colspan] {
 }
 
 table {
-  min-width: 600px;
+  min-width: 760px;
 }
 
 @media (max-width: 1024px) {
@@ -239,4 +239,23 @@ table {
   box-shadow: none !important;
   border-radius: 0 !important;
   margin-top: 0 !important;
+}
+
+.ct-booking-cover-tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #4a148c;
+  background: #ede7f6;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+.status-replacement-cover {
+  background: linear-gradient(90deg, #7b1fa2, #512da8) !important;
+  color: #fff !important;
 }

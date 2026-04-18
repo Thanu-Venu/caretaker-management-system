@@ -13,6 +13,10 @@
 </head>
 
 <body>
+  <?php
+  require_once APPROOT . '/core/PasswordPolicy.php';
+  $passwordRequirementTitle = PasswordPolicy::formRequirementTitle();
+  ?>
   <div class="signup-container">
     <?php if (!empty($error)): ?>
       <div class="alert-danger"
@@ -78,13 +82,13 @@
                 name="password"
                 required
                 minlength="8"
-                pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$"
-                title="Password must be at least 8 characters and include a letter, a number, and a special character."
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$"
+                title="<?= htmlspecialchars($passwordRequirementTitle, ENT_QUOTES, 'UTF-8') ?>"
               >
               <i id="togglePassword" class='bx bx-hide' style="cursor:pointer;"></i>
             </div>
             <small id="passwordError" style="display:none; color:#d32f2f; margin-top:6px;">
-              Password must be at least 8 characters and include a letter, a number, and a special character.
+              <?= htmlspecialchars($passwordRequirementTitle, ENT_QUOTES, 'UTF-8') ?>
             </small>
           </div>
         </div>
@@ -99,8 +103,8 @@
                 name="confirmPassword"
                 required
                 minlength="8"
-                pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$"
-                title="Password must be at least 8 characters and include a letter, a number, and a special character."
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$"
+                title="<?= htmlspecialchars($passwordRequirementTitle, ENT_QUOTES, 'UTF-8') ?>"
               >
               <i id="toggleConfirmPassword" class='bx bx-hide' style="cursor:pointer;"></i>
             </div>
@@ -146,7 +150,8 @@ const toggleConfirm = document.getElementById('toggleConfirmPassword');
 const confirmPasswordError = document.getElementById('confirmPasswordError');
 const gmailRegex = /^[A-Za-z0-9._%+-]+@gmail\.com$/i;
 const phoneRegex = /^\+?[0-9]{10,15}$/;
-const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+const passwordRequirementMsg = <?= json_encode($passwordRequirementTitle, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
 function validateGmail() {
     const value = email.value.trim();
@@ -183,7 +188,7 @@ function validatePasswordRule() {
     const isValid = passwordRegex.test(value);
 
     if (!isValid) {
-        password.setCustomValidity('Password must be at least 8 characters and include a letter, a number, and a special character.');
+        password.setCustomValidity(passwordRequirementMsg);
         passwordError.style.display = 'block';
     } else {
         password.setCustomValidity('');

@@ -289,9 +289,10 @@ class ComplaintController
         }
 
         $id = (int) $_POST['Id'];
-        $status = $_POST['status'];
+        $status = trim((string) ($_POST['status'] ?? ''));
+        $allowedClient = ['Open', 'In Progress', 'Resolved', 'Closed'];
 
-        if (!$id || !$status) {
+        if (!$id || $status === '' || !in_array($status, $allowedClient, true)) {
             echo "<script>alert('Invalid data');</script>";
             exit;
         }
@@ -333,16 +334,23 @@ class ComplaintController
 
     public function updateCaretakerComplaintStatus()
     {
-        if (!AuthSession::hasRole('manager')) {
+        if (!AuthSession::hasRole('manager') && !AuthSession::hasRole('hr')) {
             echo "<script>alert('Unauthorized');</script>";
             exit;
         }
 
-        $complaint_id = (int)$_POST['complaint_id'];
-        $status = $_POST['action']; // Pending / In Progress / Resolved
+        $complaint_id = (int) $_POST['complaint_id'];
+        $status = trim((string) ($_POST['status'] ?? ''));
+        $allowedCt = ['Open', 'In Progress', 'Resolved', 'Closed'];
 
-        if (!$complaint_id || !$status) {
+        if (!$complaint_id || $status === '' || !in_array($status, $allowedCt, true)) {
             echo "<script>alert('Invalid data');</script>";
+            exit;
+        }
+
+        $complaint = $this->complaintModel->getCaretakerComplaintById($complaint_id);
+        if ($complaint === null) {
+            header("Location: " . URLROOT . "/public/index.php?url=hr/hr_complaint");
             exit;
         }
 
@@ -352,8 +360,29 @@ class ComplaintController
             $this->logManagerAction("Updated caretaker complaint status to {$status} (Complaint ID: {$complaint_id})", 'Complaints');
         }
 
+        $caretakerId = (int) ($complaint['caretaker_id'] ?? 0);
+        if ($updated && $caretakerId > 0) {
+            $clientLabel = trim((string) ($complaint['client_name'] ?? ''));
+            if ($clientLabel === '') {
+                $clientLabel = 'the client';
+            }
+            $ctLink = URLROOT . '/public?url=caretaker/ct_complaints';
+            $this->notificationModel->addNotification(
+                $caretakerId,
+                'caretaker',
+                'Complaint status updated',
+                "Your complaint #{$complaint_id} ({$clientLabel}) is now: {$status}.",
+                $ctLink
+            );
+            $this->notificationModel->notifyAdmins(
+                'Caregiver complaint updated',
+                "Complaint #{$complaint_id} about {$clientLabel} was set to '{$status}'.",
+                URLROOT . '/public/index.php?url=hr/hr_complaint'
+            );
+        }
+
         // Redirect back to HR complaints page
-        header("Location: " . URLROOT . "/public/index.php?url=Complaint/index");
+        header("Location: " . URLROOT . "/public/index.php?url=hr/hr_complaint");
         exit;
     }
 }

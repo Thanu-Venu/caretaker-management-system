@@ -274,8 +274,31 @@ body {
 }
 
 .notification-wrapper.active .notif-dropdown {
-    display: block;
+display: block;
 }
 
 /* Fixed header offset is applied on main via admin-ui (margin-top + padding-top).
    Do not add body padding-top here — it doubled the vertical gap on caretaker pages. */
+
+/* Consistent blue heading colors for all caretaker pages */
+.page-title {
+color: #1e88e5 !important;
+}
+
+.page-header .page-title {
+color: #1e88e5 !important;
+}
+
+/* Ensure all caretaker page headings are blue */
+.content .page-title,
+.ct-announcements-page .page-title,
+.booking-container .page-title,
+.schedule-container .page-title,
+.leave-container .page-title,
+.complaint-container .page-title,
+.reviews-container .page-title,
+.reports-container .page-title,
+.ct-dashboard .page-title,
+.ct-settings .page-title {
+color: #1e88e5 !important;
+}

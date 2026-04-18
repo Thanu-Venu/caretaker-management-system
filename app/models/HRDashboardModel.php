@@ -5,7 +5,7 @@ require_once APPROOT . '/core/Database.php';
 class HRDashboardModel {
      private $db;
 
-    public function __construct() {
+   public function __construct() {
         $database = new Database();
         $this->db = $database->conn;
     }

@@ -3,12 +3,11 @@ class Database
 {
     public $conn;
 
-    public function __construct()
-    {
+    public function __construct() {
         $host = "localhost";
         $user = "root";
-        $pass = "";
-        $dbname = "smartcare";
+        $pass = "Thanuvenu";
+        $dbname = "smartcare1";
 
         $this->conn = new mysqli($host, $user, $pass, $dbname);
 

@@ -1,6 +1,6 @@
 <?php
 $hrPageTitle = 'HR Dashboard — SmartCare';
-$hrExtraCss = ['hr/hr_dashboard.css'];
+$hrExtraCss = ['shared/staff_dashboard_hero.css', 'hr/hr_dashboard.css'];
 include_once APPROOT . '/views/templates/hr/hr_layout_head.php';
 include_once APPROOT . '/views/templates/hr/hr_header.php';
 include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
@@ -29,41 +29,64 @@ $bookingStatusColors = $data['bookingStatusColors'] ?? json_encode([]);
 $performanceLabels = $data['performanceLabels'] ?? json_encode([]);
 $performanceCounts = $data['performanceCounts'] ?? json_encode([]);
 $performanceColors = $data['performanceColors'] ?? json_encode([]);
+$hrDisplayName = trim((string) ($_SESSION['user']['username'] ?? ($_SESSION['user']['name'] ?? 'Manager')));
 ?>
 
 <main class="main-content managerHome">
  <div class="managerHomeInner">
 
- <header class="page-header welcomeCard">
- <div class="welcomeCardTop">
- <div class="welcomeLeft">
- <h1 class="page-title welcomeHeadline">
- <span class="welcomeLead">Welcome back,</span>
- <span class="welcomeName"><?= htmlspecialchars($_SESSION['user']['username'] ?? 'Manager', ENT_QUOTES, 'UTF-8') ?></span>
+ <section class="staff-dashboard-hero staff-dashboard-hero--hr" aria-labelledby="hrDashboardHeroTitle">
+ <div class="staff-dashboard-hero__content">
+ <div class="staff-dashboard-hero__intro">
+ <p class="staff-dashboard-hero__eyebrow">HR &amp; scheduling</p>
+ <h1 id="hrDashboardHeroTitle" class="staff-dashboard-hero__title">
+ <span class="staff-dashboard-hero__greeting">Welcome back,</span>
+ <span class="staff-dashboard-hero__name"><?= htmlspecialchars($hrDisplayName, ENT_QUOTES, 'UTF-8') ?></span>
  </h1>
- </div>
- <nav class="trail" aria-label="Breadcrumb">
- <ol class="trailList">
- <li><a href="<?= URLROOT ?>/public?url=hr/hr_dashboard">SmartCare</a></li>
- <li><span class="trailSep" aria-hidden="true">/</span> HR</li>
- <li><span class="trailSep" aria-hidden="true">/</span> <span class="trailHere">Dashboard</span></li>
- </ol>
- </nav>
- </div>
- <div class="welcomeTools">
- <time class="todayLine" datetime="<?= date('c') ?>"><?= htmlspecialchars(date('l, j F Y'), ENT_QUOTES, 'UTF-8') ?></time>
- <nav class="jumpLinks" aria-label="Quick links">
- <a href="<?= URLROOT ?>/public?url=hr/hr_pending_request" class="jumpLink current"><i class="bx bx-inbox" aria-hidden="true"></i><span>Pending requests</span></a>
- <a href="<?= URLROOT ?>/HRCaretakerCRUD/list" class="jumpLink"><i class="bx bx-group" aria-hidden="true"></i><span>Caregivers</span></a>
- <a href="<?= URLROOT ?>/public?url=hr/pendingPayments" class="jumpLink"><i class="bx bx-wallet" aria-hidden="true"></i><span>Payments</span></a>
- <a href="<?= URLROOT ?>/HrLeave/index" class="jumpLink"><i class="bx bx-calendar-x" aria-hidden="true"></i><span>Leave</span></a>
- <a href="<?= URLROOT ?>/public?url=hr/hr_reports" class="jumpLink"><i class="bx bx-bar-chart" aria-hidden="true"></i><span>Reports</span></a>
- <a href="<?= URLROOT ?>/public?url=hr/hr_schedule" class="jumpLink"><i class="bx bx-calendar" aria-hidden="true"></i><span>Schedule</span></a>
- </nav>
- </div>
- </header>
+ <p class="staff-dashboard-hero__lead">Coordinate caregivers, approve leave, and keep client requests moving — your dashboard surfaces what needs action first.</p>
 
- <section class="reviewBlock" aria-label="Quick review — needs attention">
+ <div class="staff-dashboard-hero__actions" role="group" aria-label="Primary HR actions">
+ <a class="btn staff-dashboard-hero__btn-primary" href="<?= URLROOT ?>/public?url=hr/hr_pending_request">
+ <i class="bx bx-inbox" aria-hidden="true"></i>
+ <span>Pending requests</span>
+ </a>
+ <a class="btn secondary staff-dashboard-hero__btn-secondary" href="<?= URLROOT ?>/HRCaretakerCRUD/list">
+ <i class="bx bx-group" aria-hidden="true"></i>
+ <span>Caregiver roster</span>
+ </a>
+ </div>
+
+ <div class="staff-dashboard-hero__highlights" aria-label="Jump to dashboard sections">
+ <a class="staff-dashboard-hero__highlight-item staff-dashboard-hero__highlight-link" href="#hrReviewSection">
+ <i class="bx bx-error-circle" aria-hidden="true"></i>
+ <div>
+ <p class="staff-dashboard-hero__highlight-value">Queues &amp; alerts</p>
+ </div>
+ </a>
+ <a class="staff-dashboard-hero__highlight-item staff-dashboard-hero__highlight-link" href="#hrStatsSection">
+ <i class="bx bx-grid-alt" aria-hidden="true"></i>
+ <div>
+ <p class="staff-dashboard-hero__highlight-value">Today's KPIs</p>
+ </div>
+ </a>
+ <a class="staff-dashboard-hero__highlight-item staff-dashboard-hero__highlight-link" href="#hrOverviewSection">
+ <i class="bx bx-pie-chart-alt-2" aria-hidden="true"></i>
+ <div>
+ <p class="staff-dashboard-hero__highlight-value">Pipeline charts</p>
+ </div>
+ </a>
+ <a class="staff-dashboard-hero__highlight-item staff-dashboard-hero__highlight-item--support staff-dashboard-hero__highlight-link" href="#hrActivitySection">
+ <i class="bx bx-time-five" aria-hidden="true"></i>
+ <div>
+ <p class="staff-dashboard-hero__highlight-value">Recent activity</p>
+ </div>
+ </a>
+ </div>
+ </div>
+ </div>
+ </section>
+
+ <section id="hrReviewSection" class="reviewBlock staff-dashboard-scroll-target" aria-label="Quick review — needs attention">
  <h2 class="smallHeading">Quick review</h2>
  <div class="reviewGrid">
  <a href="<?= URLROOT ?>/public?url=hr/hr_pending_request" class="reviewTile blue">
@@ -155,7 +178,7 @@ $performanceColors = $data['performanceColors'] ?? json_encode([]);
  </div>
  </section>
 
- <div class="stats-grid statsBand">
+ <div id="hrStatsSection" class="stats-grid statsBand staff-dashboard-scroll-target">
  <div class="stat-card card-hover kpiTile blue">
  <div class="stat-card-icon"><i class="bx bx-user-circle" aria-hidden="true"></i></div>
  <div class="stat-card-label">Total caregivers</div>
@@ -188,7 +211,7 @@ $performanceColors = $data['performanceColors'] ?? json_encode([]);
  </div>
  </div>
 
- <section class="chartSection" aria-label="Overview charts">
+ <section id="hrOverviewSection" class="chartSection staff-dashboard-scroll-target" aria-label="Overview charts">
  <h2 class="smallHeading">Overview</h2>
  <div class="chartGrid twoCols">
  <div class="card insightCard">
@@ -212,7 +235,7 @@ $performanceColors = $data['performanceColors'] ?? json_encode([]);
  </div>
  </section>
 
- <section class="activitySection" aria-label="Recent activity">
+ <section id="hrActivitySection" class="activitySection staff-dashboard-scroll-target" aria-label="Recent activity">
  <h2 class="smallHeading">Recent activity</h2>
  <div class="activityGrid">
  <div class="card">

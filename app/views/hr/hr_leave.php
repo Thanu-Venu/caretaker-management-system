@@ -63,7 +63,7 @@ function hr_leave_page_url(int $p): string
                     <th>Leave type</th>
                     <th>Start date</th>
                     <th>End date</th>
-                    <th>Replacement</th>
+                    <th>Booking overlap</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -82,9 +82,9 @@ function hr_leave_page_url(int $p): string
                             <td><?= htmlspecialchars((string) ($leave['end_date'] ?? ''), ENT_QUOTES, 'UTF-8') ?></td>
                             <td>
                                 <?php if (!empty($leave['replacement_required'])): ?>
-                                    <span class="leave-replacement-pill leave-replacement-pill--required">Required</span>
+                                    <span class="leave-replacement-pill leave-replacement-pill--required">Yes</span>
                                 <?php else: ?>
-                                    <span class="leave-replacement-pill leave-replacement-pill--na">Not required</span>
+                                    <span class="leave-replacement-pill leave-replacement-pill--na">No</span>
                                 <?php endif; ?>
                             </td>
                             <td>
@@ -103,7 +103,7 @@ function hr_leave_page_url(int $p): string
                                 <?php if ($pendingActions): ?>
                                     <a href="<?= htmlspecialchars(URLROOT . '/HrLeave/approve_form/' . (int) ($leave['id'] ?? 0), ENT_QUOTES, 'UTF-8') ?>"
                                         class="btn secondary btn-sm iconBtn"
-                                        title="Approve (assign replacement if needed)"
+                                        title="Approve leave (replacement optional if bookings overlap)"
                                         aria-label="Approve leave request">
                                         <i class="bx bx-check" aria-hidden="true"></i>
                                     </a>
@@ -112,14 +112,6 @@ function hr_leave_page_url(int $p): string
                                         <i class="bx bx-check" aria-hidden="true"></i>
                                     </span>
                                 <?php endif; ?>
-                                <button type="button"
-                                    class="btn secondary btn-sm iconBtn lvReject"
-                                    data-leave-id="<?= (int) ($leave['id'] ?? 0) ?>"
-                                    title="Reject leave"
-                                    aria-label="Reject leave request"
-                                    <?= $pendingActions ? '' : 'disabled' ?>>
-                                    <i class="bx bx-x" aria-hidden="true"></i>
-                                </button>
                             </td>
                         </tr>
                     <?php endforeach; ?>

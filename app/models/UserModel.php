@@ -1,5 +1,6 @@
 <?php
 require_once APPROOT . '/core/Database.php';
+require_once APPROOT . '/core/PasswordPolicy.php';
 require_once APPROOT . '/models/AccountModel.php';
 
 class UserModel
@@ -40,23 +41,7 @@ class UserModel
      */
     public static function validatePasswordPolicy(string $password): ?string
     {
-        if (strlen($password) < 8) {
-            return 'Password must be at least 8 characters long.';
-        }
-        if (!preg_match('/[A-Z]/', $password)) {
-            return 'Password must include at least one uppercase letter.';
-        }
-        if (!preg_match('/[a-z]/', $password)) {
-            return 'Password must include at least one lowercase letter.';
-        }
-        if (!preg_match('/[0-9]/', $password)) {
-            return 'Password must include at least one number.';
-        }
-        if (!preg_match('/[^A-Za-z0-9]/', $password)) {
-            return 'Password must include at least one special character.';
-        }
-
-        return null;
+        return PasswordPolicy::validateStrong($password);
     }
 
     // 🔹 Get all users
