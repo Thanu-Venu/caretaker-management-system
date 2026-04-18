@@ -363,7 +363,7 @@ CREATE TABLE `ct_complaints` (
   `service_type` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   `service_date` date NOT NULL,
   `description` text COLLATE utf8mb4_general_ci NOT NULL,
-  `status` enum('Pending','Resolved','Rejected') COLLATE utf8mb4_general_ci DEFAULT 'Pending',
+  `status` enum('Open','In Progress','Resolved','Closed') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Open',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`complaint_id`),
   KEY `client_id` (`client_id`),

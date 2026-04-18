@@ -73,8 +73,7 @@ class LandingModel
      *   image_url:string
      * }>
      */
-
-      public function getPublicTestimonials(int $limit = 12): array
+    public function getPublicTestimonials(int $limit = 12): array
     {
         if (!$this->conn) {
             return [];
@@ -133,6 +132,7 @@ class LandingModel
 
         return $out;
     }
+
     private function fetchEstimatedCareHours(): int
     {
         $sql = "SELECT COALESCE(SUM(

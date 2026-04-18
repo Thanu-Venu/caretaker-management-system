@@ -470,6 +470,21 @@ class LeaveModel
     }
 
     /**
+     * Overlap between a booking's service window and the approved leave dates (same rule as reassignment rows).
+     *
+     * @return array{0: string, 1: string} [overlapStart, overlapEnd] (Y-m-d)
+     */
+    private function bookingLeaveOverlapDates(array $booking, string $leaveStart, string $leaveEnd): array
+    {
+        $bStart = (string) ($booking['booking_date'] ?? $leaveStart);
+        $bEnd = (string) ($booking['booking_end_date'] ?? $bStart);
+        $oStart = (strtotime($bStart) > strtotime($leaveStart)) ? $bStart : $leaveStart;
+        $oEnd = (strtotime($bEnd) < strtotime($leaveEnd)) ? $bEnd : $leaveEnd;
+
+        return [$oStart, $oEnd];
+    }
+
+    /**
      * Insert reassignment rows for all affected bookings.
      * NOTE: We store only the overlap portion per booking (better than storing whole leave blindly).
      */
@@ -490,12 +505,8 @@ class LeaveModel
         $legacyStmt = $this->conn->prepare($legacySql);
 
         foreach ($affected as $b) {
-            $bookingId = (int)$b['id'];
-            $bStart = $b['booking_date'];
-            $bEnd   = $b['booking_end_date'] ?? $bStart;
-
-            $oStart = (strtotime($bStart) > strtotime($leaveStart)) ? $bStart : $leaveStart;
-            $oEnd   = (strtotime($bEnd)   < strtotime($leaveEnd))   ? $bEnd   : $leaveEnd;
+            $bookingId = (int) $b['id'];
+            [$oStart, $oEnd] = $this->bookingLeaveOverlapDates($b, $leaveStart, $leaveEnd);
 
             $stmt->bind_param("iiissis", $bookingId, $oldCaretakerId, $replacementId, $oStart, $oEnd, $hrId, $note);
             if (!$stmt->execute()) return false;
@@ -527,10 +538,8 @@ class LeaveModel
         // Uses derived booking_end_date (make sure your getAffectedBookingsRange() is the fixed version)
         $affected = $this->getAffectedBookingsRange($oldCaretakerId, $leaveStart, $leaveEnd);
 
-        // If bookings are affected, replacement is required
-        if (!empty($affected) && empty($replacementId)) {
-            return ['ok' => false, 'message' => 'Replacement caretaker is required because bookings are affected'];
-        }
+        // Replacement is optional: if bookings are affected but no replacement is chosen,
+        // leave is still approved and affected clients are notified (no booking_reassignments rows).
 
         // Validate conflicts if replacement is selected
         if (!empty($replacementId)) {
@@ -552,8 +561,8 @@ class LeaveModel
 
         $this->conn->begin_transaction();
         try {
-            // Create reassignment records only if affected bookings exist
-            if (!empty($affected)) {
+            // Reassignment rows require a replacement (schema: new_caretaker_id NOT NULL)
+            if (!empty($affected) && !empty($replacementId)) {
                 $ok = $this->createReassignmentsForLeave(
                     $leaveId,
                     $oldCaretakerId,
@@ -563,7 +572,9 @@ class LeaveModel
                     $leaveEnd,
                     $hrNote
                 );
-                if (!$ok) throw new Exception("Failed to create reassignment records");
+                if (!$ok) {
+                    throw new Exception("Failed to create reassignment records");
+                }
             }
 
             // Approve leave (replacement can be NULL if no affected bookings)
@@ -573,40 +584,55 @@ class LeaveModel
 
             $this->conn->commit();
 
-            /* ===================== NOTIFICATION TO CARETAKER ===================== */
-            // Uses your common notifications table.
-            // Receiver is caretaker => user_role='caretaker'
-            $title = empty($affected) ? "Leave Approved" : "Leave Approved (Reassigned)";
-            $msg   = "Your leave request has been approved.\n"
-                . "Period: {$leaveStart} to {$leaveEnd}\n"
-                . "Note: " . (trim($hrNote) !== '' ? $hrNote : '—');
+            $stmtNm = $this->conn->prepare("SELECT name FROM caretakers WHERE id = ? LIMIT 1");
+            $stmtNm->bind_param('i', $oldCaretakerId);
+            $stmtNm->execute();
+            $nmRow = $stmtNm->get_result()->fetch_assoc();
+            $caretakerName = $nmRow['name'] ?? 'Your caregiver';
 
-            // Change this link to your caretaker leave page route
-            $link  = URLROOT . "/public?url=caretaker/ct_leave";
+            $link = URLROOT . '/public?url=caretaker/ct_leave';
+            $hrNoteTrim = trim($hrNote);
+            $noteLine = $hrNoteTrim !== '' ? $hrNoteTrim : '—';
 
-            // Notify original caretaker via shared helper (includes role fallback handling).
+            if (empty($affected)) {
+                $title = 'Leave Approved';
+                $msg = "Your leave request has been approved.\n"
+                    . "Period: {$leaveStart} to {$leaveEnd}\n"
+                    . "HR note: {$noteLine}";
+            } elseif (!empty($replacementId)) {
+                $title = 'Leave Approved (Reassigned)';
+                $msg = "Your leave request has been approved.\n"
+                    . "Period: {$leaveStart} to {$leaveEnd}\n"
+                    . "Affected bookings will be covered by the replacement caregiver you selected.\n"
+                    . "HR note: {$noteLine}";
+            } else {
+                $title = 'Leave Approved';
+                $msg = "Your leave request has been approved for {$leaveStart} to {$leaveEnd}.\n\n"
+                    . "This period overlaps active client bookings. No replacement caregiver was assigned in the system.\n"
+                    . "Affected clients have been notified.\n\n"
+                    . "HR note: {$noteLine}";
+            }
             $this->notifyUser($oldCaretakerId, 'caretaker', $title, $msg, $link);
 
+            $clientBookingsLink = URLROOT . '/public?url=client/c_myBookings';
+
             if (!empty($affected) && !empty($replacementId)) {
-                // Notify replacement caretaker
-                $replacementTitle = 'New Service Assignment';
+                $replacementTitle = 'New service assignment';
                 $replacementMessage = "You have been assigned as a replacement caregiver.\n"
                     . "Leave period: {$leaveStart} to {$leaveEnd}.\n"
-                    . "Affected bookings: " . count($affected) . "\n"
-                    . "Please review your updated schedule.";
+                    . 'Affected bookings: ' . count($affected) . "\n"
+                    . 'Please review your schedule.';
                 $replacementLink = URLROOT . '/public?url=caretaker/ct_booking';
-                $this->notifyUser((int)$replacementId, 'caretaker', $replacementTitle, $replacementMessage, $replacementLink);
+                $this->notifyUser((int) $replacementId, 'caretaker', $replacementTitle, $replacementMessage, $replacementLink);
 
-                // Get replacement caregiver details for client notifications
-                $sqlRepl = "SELECT id, name FROM caretakers WHERE id = ?";
+                $sqlRepl = 'SELECT id, name FROM caretakers WHERE id = ?';
                 $stmtRepl = $this->conn->prepare($sqlRepl);
-                $stmtRepl->bind_param("i", $replacementId);
+                $stmtRepl->bind_param('i', $replacementId);
                 $stmtRepl->execute();
                 $replResult = $stmtRepl->get_result()->fetch_assoc();
-                $replacementName = $replResult ? $replResult['name'] : 'New Caregiver';
+                $replacementName = $replResult ? $replResult['name'] : 'New caregiver';
 
-                // Notify all affected clients about the new caregiver
-                $uniqueClients = [];
+                $byClient = [];
                 foreach ($affected as $booking) {
                     $clientId = (int)($booking['client_id'] ?? 0);
                     if ($clientId > 0 && !isset($uniqueClients[$clientId])) {
@@ -621,20 +647,82 @@ class LeaveModel
                         $this->notifyUser($clientId, 'client', $clientTitle, $clientMessage, $clientLink);
                     }
                 }
+                foreach ($byClient as $clientId => $clientBookings) {
+                    $lines = [];
+                    foreach ($clientBookings as $b) {
+                        $bid = (int) ($b['id'] ?? 0);
+                        $svc = trim((string) ($b['service_type'] ?? 'Service'));
+                        $bd = (string) ($b['booking_date'] ?? '');
+                        [$coverStart, $coverEnd] = $this->bookingLeaveOverlapDates($b, $leaveStart, $leaveEnd);
+                        $lines[] = "• Booking #{$bid} — {$svc} — booking starts {$bd}; new caregiver covers {$coverStart} to {$coverEnd}.";
+                    }
+                    $bookingList = implode("\n", $lines);
+                    $clientTitle = 'Your caregiver has been changed';
+                    $clientMessage = "Your caregiver has been reassigned for the following booking(s):\n\n"
+                        . $bookingList
+                        . "\n\nNew caregiver: {$replacementName}\n"
+                        . "Previous caregiver: {$caretakerName}\n"
+                        . 'Your usual caregiver is on approved leave during the dates above; the new caregiver will cover only those dates for each listed booking.';
+                    $this->notifyUser((int) $clientId, 'client', $clientTitle, $clientMessage, $clientBookingsLink);
+                }
 
-                // Notify HR/Manager about completion
-                $hrTitle = 'Leave Approved with Reassignment';
-                $hrMessage = "Leave ID {$leaveId} approved and reassigned to caregiver {$replacementName} (ID: {$replacementId}).\n"
-                    . 'Affected bookings: ' . count($affected) . '\n'
-                    . "Clients notified about service continuity.";
+                $hrTitle = 'Leave approved with reassignment';
+                $hrMessage = "Leave ID {$leaveId} approved for {$caretakerName}; reassigned to {$replacementName} (ID {$replacementId}).\n"
+                    . 'Affected bookings: ' . count($affected) . "\n"
+                    . 'Clients were notified.';
                 $this->notifyRoleUsers('Manager', $hrTitle, $hrMessage, URLROOT . '/HrLeave/index');
+            } elseif (!empty($affected)) {
+                $sorry = "We are sorry for the inconvenience. Your caregiver ({$caretakerName}) has approved leave during dates that overlap your scheduled service, and we were not able to assign a replacement caregiver for those dates. Our team may contact you to reschedule or discuss options.";
+                if ($hrNoteTrim !== '') {
+                    $sorry .= "\n\nMessage from our team:\n" . $hrNoteTrim;
+                }
+
+                $byClient = [];
+                foreach ($affected as $booking) {
+                    $cid = (int) ($booking['client_id'] ?? 0);
+                    if ($cid > 0) {
+                        $byClient[$cid][] = $booking;
+                    }
+                }
+                foreach ($byClient as $clientId => $clientBookings) {
+                    $lines = [];
+                    foreach ($clientBookings as $b) {
+                        $bid = (int) ($b['id'] ?? 0);
+                        $svc = trim((string) ($b['service_type'] ?? 'Service'));
+                        $bd = (string) ($b['booking_date'] ?? '');
+                        [$coverStart, $coverEnd] = $this->bookingLeaveOverlapDates($b, $leaveStart, $leaveEnd);
+                        $lines[] = "• Booking #{$bid} — {$svc} — booking starts {$bd}; affected period {$coverStart} to {$coverEnd}.";
+                    }
+                    $bookingList = implode("\n", $lines);
+                    $this->notifyUser(
+                        (int) $clientId,
+                        'client',
+                        'Important: caregiver leave (no replacement)',
+                        "Your scheduled caregiver ({$caretakerName}) has approved leave that overlaps the following booking(s):\n\n"
+                        . $bookingList
+                        . "\n\n"
+                        . $sorry,
+                        $clientBookingsLink
+                    );
+                }
+
+                $hrTitle = 'Leave approved without replacement';
+                $hrMessage = "Leave ID {$leaveId} approved for {$caretakerName} with overlapping bookings but no replacement recorded.\n"
+                    . 'Affected bookings: ' . count($affected) . "\n"
+                    . 'Clients were sent an apology / service-disruption notice.';
+                $this->notifyRoleUsers('Manager', $hrTitle, $hrMessage, URLROOT . '/HrLeave/index');
+            }
+
+            $summaryMsg = 'Leave approved';
+            if (!empty($affected) && !empty($replacementId)) {
+                $summaryMsg = 'Leave approved; reassignment records saved';
+            } elseif (!empty($affected)) {
+                $summaryMsg = 'Leave approved; clients notified (no replacement)';
             }
 
             return [
                 'ok' => true,
-                'message' => empty($affected)
-                    ? "Leave approved (no affected bookings)"
-                    : "Leave approved and reassignment records saved"
+                'message' => $summaryMsg,
             ];
         } catch (Exception $e) {
             $this->conn->rollback();

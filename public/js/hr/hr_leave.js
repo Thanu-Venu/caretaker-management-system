@@ -17,7 +17,7 @@
         ['monthly_used_after_request', 'Monthly leave after request (days)'],
         ['monthly_limit', 'Monthly leave limit (days)'],
         ['affected_booking_count', 'Affected active bookings'],
-        ['replacement_required', 'Replacement required'],
+        ['replacement_required', 'Overlapping active bookings'],
         ['replacement_caretaker_id', 'Replacement caregiver ID'],
         ['replacement_caretaker_name', 'Replacement caregiver name'],
         ['reason', 'Caregiver reason'],

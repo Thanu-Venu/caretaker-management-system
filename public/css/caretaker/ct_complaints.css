@@ -130,6 +130,159 @@ body {
   min-height: 100px;
 }
 
+.complaint-field-readonly {
+  margin: 0;
+}
+
+.complaint-service-readonly {
+  margin: 6px 0 0;
+  padding: 12px 15px;
+  border: 1px solid var(--complaint-border);
+  border-radius: 10px;
+  background: #f1f5f9;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--complaint-text);
+}
+
+.complaint-service-hint,
+.complaint-service-missing {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--complaint-muted);
+  line-height: 1.45;
+}
+
+.complaint-service-missing {
+  color: #b45309;
+  font-weight: 500;
+}
+
+.complaint-date-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.complaint-period-hint {
+  margin: 0;
+  font-size: 14px;
+  color: var(--complaint-muted);
+  line-height: 1.45;
+}
+
+.complaint-calendar-wrap {
+  margin-top: 4px;
+  padding: 14px;
+  border: 1px solid var(--complaint-border);
+  border-radius: 12px;
+  background: #fff;
+  max-width: 320px;
+}
+
+.complaint-calendar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.complaint-cal-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--complaint-text);
+}
+
+.complaint-cal-nav {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--complaint-border);
+  border-radius: 10px;
+  background: #f8fafc;
+  color: var(--complaint-text);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.complaint-cal-nav:hover:not(:disabled) {
+  background: #eef6ff;
+  border-color: var(--complaint-accent);
+}
+
+.complaint-cal-nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.complaint-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--complaint-muted);
+  text-align: center;
+}
+
+.complaint-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.complaint-cal-cell--pad {
+  min-height: 36px;
+}
+
+.complaint-cal-day {
+  min-height: 36px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--complaint-text);
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.complaint-cal-day--inrange:hover:not(:disabled) {
+  background: #e3f2fd;
+  border-color: rgba(30, 136, 229, 0.35);
+}
+
+.complaint-cal-day--inrange {
+  background: rgba(30, 136, 229, 0.12);
+}
+
+.complaint-cal-day--selected {
+  background: var(--complaint-accent) !important;
+  color: #fff !important;
+  border-color: var(--complaint-accent-strong) !important;
+  font-weight: 700;
+}
+
+.complaint-cal-day--outside {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: #f1f5f9;
+  color: var(--complaint-muted);
+}
+
+.complaint-selected-date {
+  margin: 12px 0 0;
+  font-size: 14px;
+  color: var(--complaint-text);
+}
+
+.complaint-selected-date strong {
+  color: var(--complaint-accent-strong);
+}
+
 .ct-page-filters {
   margin: 0 0 16px;
 }

@@ -25,6 +25,14 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
         <span class="legend-color" style="background-color: #FF8C00;"></span>
         <span class="legend-label">Your approved leave</span>
       </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #7b1fa2;"></span>
+        <span class="legend-label">Replacement cover (leave)</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #ff7043;"></span>
+        <span class="legend-label">Your approved leave</span>
+      </div>
     </div>
 
     <div id="calendar"></div>

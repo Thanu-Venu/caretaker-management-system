@@ -113,7 +113,7 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
           </div>
           <div class="field">
               <label for="new-password">New Password</label>
-              <input type="password" id="new-password" name="new-password" placeholder="New password" required>
+              <input type="password" id="new-password" name="new-password" placeholder="Min. 8 chars: upper, lower, number, symbol" required>
           </div>
           <div class="field">
               <label for="confirm-password">Confirm New Password</label>

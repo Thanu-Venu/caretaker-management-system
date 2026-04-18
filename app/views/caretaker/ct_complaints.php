@@ -4,6 +4,7 @@ $complaintServiceOptions = (isset($data['serviceTypeOptions']) && is_array($data
 $complaintStatusOptions = (isset($data['statusOptions']) && is_array($data['statusOptions'])) ? $data['statusOptions'] : [];
 $selectedComplaintService = trim((string) ($complaintFilters['service_type'] ?? ''));
 $selectedComplaintStatus = trim((string) ($complaintFilters['status'] ?? ''));
+$caretakerServiceType = trim((string) ($data['caretaker_service_type'] ?? ''));
 
 $caretakerPageTitle = 'Complaints - SmartCare';
 $caretakerExtraCss = ['caretaker/ct_complaints.css'];
@@ -16,21 +17,35 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
         <h1 class="page-title">Register a Complaint</h1>
       </header>
 
-  <form id="complaintForm" action="<?php echo URLROOT; ?>/public/index.php?url=caretaker/saveComplaint" method="POST">
+  <form id="complaintForm" action="<?php echo URLROOT; ?>/public/index.php?url=caretaker/saveComplaint" method="POST" data-caretaker-service="<?= htmlspecialchars($caretakerServiceType, ENT_QUOTES, 'UTF-8') ?>">
     <input type="hidden" name="form_token" value="<?php echo htmlspecialchars($data['form_token'] ?? ''); ?>">
-    <label for="clientName">Select Client</label>
-   <select id="clientName" name="client_id" required>
-    <option value="">-- Select Client --</option>
+    <input type="hidden" name="complaint_ajax" value="1">
+    <label for="clientBooking">Client &amp; active booking</label>
+   <select id="clientBooking" name="booking_id" required>
+    <option value="">— Select —</option>
 
-    <?php foreach ($data['clients'] as $client): ?>
-        <option 
-            value="<?= $client['client_id']; ?>" 
-             data-booking-id="<?= $client['booking_id']; ?>"
-            data-booking-date="<?= $client['booking_date']; ?>"
-            data-time="<?= $client['preferred_time']; ?>"
-            data-service="<?= $client['service_type']; ?>"
+    <?php foreach ($data['clients'] as $client):
+        $bd = (string) ($client['booking_date'] ?? '');
+        $ed = (string) ($client['booking_end_date'] ?? $bd);
+        $optLabel = (string) ($client['client_name'] ?? '');
+        if ($bd !== '') {
+            $tsS = strtotime($bd);
+            $tsE = strtotime($ed !== '' ? $ed : $bd);
+            if ($tsS !== false && $tsE !== false) {
+                if ($bd === $ed) {
+                    $optLabel .= ' — ' . date('M j, Y', $tsS);
+                } else {
+                    $optLabel .= ' — ' . date('M j', $tsS) . ' – ' . date('M j, Y', $tsE);
+                }
+            }
+        }
+        ?>
+        <option
+            value="<?= (int) ($client['booking_id'] ?? 0); ?>"
+            data-booking-start="<?= htmlspecialchars($bd, ENT_QUOTES, 'UTF-8'); ?>"
+            data-booking-end="<?= htmlspecialchars($ed !== '' ? $ed : $bd, ENT_QUOTES, 'UTF-8'); ?>"
         >
-            <?= htmlspecialchars($client['client_name']); ?>
+            <?= htmlspecialchars($optLabel, ENT_QUOTES, 'UTF-8'); ?>
         </option>
     <?php endforeach; ?>
 
@@ -38,22 +53,41 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
 
 
 
-    <label for="serviceType">Service Type</label>
-    <select id="serviceType" name="service_type" required>
-      <option value="">-- Select Service Type --</option>
-       <option value="Elder Care">Elder Care</option>
-       <option value="Maid">Maid Service</option>
-       <option value="Babysitter">Babysitting</option>
-    </select>
-  
+    <input type="hidden" name="service_type" id="caretakerServiceType" value="<?= htmlspecialchars($caretakerServiceType, ENT_QUOTES, 'UTF-8') ?>">
+    <div class="complaint-field-readonly">
+      <label for="caretakerServiceDisplay">Your service type</label>
+      <p id="caretakerServiceDisplay" class="complaint-service-readonly" role="status">
+        <?= $caretakerServiceType !== '' ? htmlspecialchars($caretakerServiceType, ENT_QUOTES, 'UTF-8') : '— Not set on your profile —' ?>
+      </p>
+      <?php if ($caretakerServiceType === ''): ?>
+        <p class="complaint-service-missing">Set your service type in profile settings before submitting a complaint.</p>
+      <?php else: ?>
+        <p class="complaint-service-hint">Taken from your caregiver profile (cannot be changed here).</p>
+      <?php endif; ?>
+    </div>
 
-    <label for="dateOfService">Date of Service</label>
-    <input type="date" id="dateOfService" name="service_date" >
+    <div class="complaint-date-section">
+      <label id="complaintDateLabel">Date of service</label>
+      <p class="complaint-period-hint" id="complaintPeriodHint">Select a booking to see the service period on the calendar.</p>
+      <div class="complaint-calendar-wrap" id="complaintCalendarWrap" hidden>
+        <div class="complaint-calendar-head">
+          <button type="button" class="complaint-cal-nav" id="complaintCalPrev" aria-label="Previous month">‹</button>
+          <span class="complaint-cal-title" id="complaintCalTitle" aria-live="polite"></span>
+          <button type="button" class="complaint-cal-nav" id="complaintCalNext" aria-label="Next month">›</button>
+        </div>
+        <div class="complaint-cal-weekdays" aria-hidden="true">
+          <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+        </div>
+        <div class="complaint-cal-grid" id="complaintCalGrid" role="grid" aria-labelledby="complaintDateLabel"></div>
+        <p class="complaint-selected-date">Selected day: <strong id="complaintSelectedDateLabel">—</strong></p>
+      </div>
+      <input type="hidden" name="service_date" id="dateOfService" value="" required>
+    </div>
 
     <label for="complaintDesc">Complaint Description</label>
     <textarea id="complaintDesc" name="description" placeholder="Describe the issue..." required></textarea>
 
-    <button type="submit" class="btn-submit">Submit Complaint</button>
+    <button type="submit" class="btn-submit"<?= $caretakerServiceType === '' ? ' disabled' : '' ?>>Submit Complaint</button>
   </form>
 
   <div class="card">
@@ -110,10 +144,13 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
                         <td>
                             <?php
                                 $statusClass = 'status';
-                                if ($c['status'] == 'Pending' || $c['status'] == 'Open') $statusClass .= ' pending';
-                                elseif ($c['status'] == 'Resolved' || $c['status'] == 'Closed') $statusClass .= ' resolved';
-                                elseif ($c['status'] == 'Rejected') $statusClass .= ' rejected';
-                                elseif ($c['status'] == 'InProgress' || $c['status'] == 'In Progress') $statusClass .= ' InProgress';
+                                if ($c['status'] === 'Open') {
+                                    $statusClass .= ' pending';
+                                } elseif ($c['status'] === 'Resolved' || $c['status'] === 'Closed') {
+                                    $statusClass .= ' resolved';
+                                } elseif ($c['status'] === 'In Progress') {
+                                    $statusClass .= ' InProgress';
+                                }
                             ?>
                             <span class="<?= $statusClass ?>"><?= htmlspecialchars($c['status']) ?></span>
                         </td>

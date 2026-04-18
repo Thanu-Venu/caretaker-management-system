@@ -71,7 +71,13 @@ $selectedBookingTo = trim((string) ($bookingFilters['date_to'] ?? ''));
                     <td><?= htmlspecialchars($b['service_type']) ?></td>
                     <td><?= htmlspecialchars($b['service_location']) ?></td>
                     <td>
-                      <?= $b['booking_date'] ?> - <?= $b['preferred_time'] ?>
+                      <?php if (!empty($b['is_replacement_cover'])): ?>
+                        <?= htmlspecialchars((string) ($b['cover_start_date'] ?? ''), ENT_QUOTES, 'UTF-8') ?> → <?= htmlspecialchars((string) ($b['cover_end_date'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
+                        · <?= htmlspecialchars((string) ($b['preferred_time'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
+                        <span class="ct-booking-cover-tag">Cover</span>
+                      <?php else: ?>
+                        <?= htmlspecialchars((string) ($b['booking_date'] ?? ''), ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars((string) ($b['preferred_time'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
+                      <?php endif; ?>
                     </td>
                   </tr>
                 <?php endforeach; ?>
@@ -105,14 +111,23 @@ $selectedBookingTo = trim((string) ($bookingFilters['date_to'] ?? ''));
                     <td><?= htmlspecialchars($b['service_type']) ?></td>
                     <td><?= htmlspecialchars($b['service_location']) ?></td>
                     <td>
-                      <?= $b['booking_date'] ?> - <?= $b['preferred_time'] ?>
+                      <?php if (!empty($b['is_replacement_cover'])): ?>
+                        <?= htmlspecialchars((string) ($b['cover_start_date'] ?? ''), ENT_QUOTES, 'UTF-8') ?> → <?= htmlspecialchars((string) ($b['cover_end_date'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
+                        · <?= htmlspecialchars((string) ($b['preferred_time'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
+                        <span class="ct-booking-cover-tag">Cover</span>
+                      <?php else: ?>
+                        <?= htmlspecialchars((string) ($b['booking_date'] ?? ''), ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars((string) ($b['preferred_time'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
+                      <?php endif; ?>
                     </td>
                     <td>
-                      <?php 
+                      <?php if (!empty($b['is_replacement_cover'])): ?>
+                        <span class="status-badge status-replacement-cover">Replacement cover</span>
+                      <?php else: ?>
+                        <?php
                         $status = $b['status'] ?? 'Accepted';
                         $badgeClass = '';
                         $displayStatus = str_replace('_', ' ', $status);
-                        
+
                         if ($status === 'Payment_Requested') {
                           $badgeClass = 'status-pending';
                           $displayStatus = '⏳ Payment Pending';
@@ -123,8 +138,9 @@ $selectedBookingTo = trim((string) ($bookingFilters['date_to'] ?? ''));
                           $badgeClass = 'status-active';
                           $displayStatus = '✓ Accepted';
                         }
-                      ?>
-                      <span class="status-badge <?= $badgeClass ?>"><?= htmlspecialchars($displayStatus) ?></span>
+                        ?>
+                        <span class="status-badge <?= $badgeClass ?>"><?= htmlspecialchars($displayStatus) ?></span>
+                      <?php endif; ?>
                     </td>
                   </tr>
                 <?php endforeach; ?>
@@ -157,8 +173,13 @@ $selectedBookingTo = trim((string) ($bookingFilters['date_to'] ?? ''));
                     <td><?= htmlspecialchars($b['service_type']) ?></td>
                     <td><?= htmlspecialchars($b['service_location']) ?></td>
                     <td>
-                      <?= $b['booking_date'] ?> - <?= $b['preferred_time'] ?>
-
+                      <?php if (!empty($b['is_replacement_cover'])): ?>
+                        <?= htmlspecialchars((string) ($b['cover_start_date'] ?? ''), ENT_QUOTES, 'UTF-8') ?> → <?= htmlspecialchars((string) ($b['cover_end_date'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
+                        · <?= htmlspecialchars((string) ($b['preferred_time'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
+                        <span class="ct-booking-cover-tag">Cover</span>
+                      <?php else: ?>
+                        <?= htmlspecialchars((string) ($b['booking_date'] ?? ''), ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars((string) ($b['preferred_time'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
+                      <?php endif; ?>
                     </td>
                   </tr>
                 <?php endforeach; ?>

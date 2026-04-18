@@ -1,6 +1,7 @@
 <?php
 
 require_once APPROOT . '/core/PayHereHelper.php';
+require_once APPROOT . '/models/UserModel.php';
 
 class ClientController extends Controller
 {
@@ -1905,8 +1906,9 @@ class ClientController extends Controller
                 exit();
             }
 
-            if (strlen($new) < 8) {
-                $_SESSION['error'] = 'New password must be at least 8 characters.';
+            $pwErr = UserModel::validatePasswordPolicy($new);
+            if ($pwErr !== null) {
+                $_SESSION['error'] = $pwErr;
                 header('Location: ' . URLROOT . '/client/c_settings');
                 exit();
             }
