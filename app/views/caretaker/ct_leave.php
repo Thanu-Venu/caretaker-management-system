@@ -82,23 +82,6 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
                             <?php endforeach; ?>
                         </select>
                     </div>
-
-                    <div class="filter-group">
-                        <label for="dateTypeFilter">Start date</label>
-                        <input type="date" id="bookingDateFromFilter" name="booking_from" value="<?= htmlspecialchars($selectedBookingFrom, ENT_QUOTES, 'UTF-8') ?>">
-                            
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label for="dateTypeFilter">End date</label>
-                       <input type="date" id="bookingDateFromFilter" name="booking_from" value="<?= htmlspecialchars($selectedBookingFrom, ENT_QUOTES, 'UTF-8') ?>">
-
-                        </select>
-                    </div>
-
-
-
                     <div class="filter-group filter-group--actions">
                         <button type="submit" class="btn primary">Apply</button>
                         <a class="btn ghost" href="<?= htmlspecialchars(URLROOT . '/public?url=caretaker/ct_leave', ENT_QUOTES, 'UTF-8') ?>">Reset</a>
