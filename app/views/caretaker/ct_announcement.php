@@ -71,6 +71,7 @@ $buildAnnPageUrl = static function (int $page) use ($df, $dt, $fq): string {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Announcements — SmartCare</title>
+    <?php include_once APPROOT . '/views/partials/smartcare_favicon.php'; ?>
     <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/admin-ui.css">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/caretaker/ct_announcement.css">
     <link rel="stylesheet" href="<?= URLROOT ?>/public/css/caretaker/ct_header.css">

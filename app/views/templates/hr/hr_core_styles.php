@@ -4,6 +4,7 @@
  * Edit hr-ui.css / hr_shell_*.css for HR-only changes; do not include public/css/admin/* here.
  */
 ?>
+<?php include_once APPROOT . '/views/partials/smartcare_favicon.php'; ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">

@@ -158,21 +158,6 @@
         if (fileInput) {
             fileInput.value = '';
         }
-        var np = editForm.querySelector('input[name="new_password"]');
-        if (np) {
-            np.value = '';
-            np.type = 'password';
-            var tw = np.closest('.password-input-wrap');
-            var tbtn = tw && tw.querySelector('.password-toggle');
-            if (tbtn) {
-                tbtn.setAttribute('aria-label', 'Show password');
-                var ic = tbtn.querySelector('i');
-                if (ic) {
-                    ic.classList.remove('bx-show');
-                    ic.classList.add('bx-hide');
-                }
-            }
-        }
     }
 
     function bindPasswordToggles(root) {

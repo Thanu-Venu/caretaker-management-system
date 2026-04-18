@@ -5,6 +5,7 @@
  * from a duplicate document in ad_header.php — they live here now.
  */
 ?>
+<?php include_once APPROOT . '/views/partials/smartcare_favicon.php'; ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">

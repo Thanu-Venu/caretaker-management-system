@@ -20,6 +20,8 @@ if (count($sbParts) >= 2) {
         <ul class="sidebar-menu">
             <li><a href="<?= URLROOT ?>/public?url=hr/hr_dashboard"><i class="bx bxs-dashboard"></i> <span>Dashboard</span></a></li>
             <li><a href="<?= URLROOT ?>/HRCaretakerCRUD/list"><i class="bx bx-group"></i> <span>Caregivers</span></a></li>
+            <li><a href="<?= URLROOT ?>/public?url=hr/hr_schedule"><i class="bx bx-calendar"></i> <span>Schedule</span></a></li>
+
             <li>
                 <a href="<?= URLROOT ?>/public?url=hr/hr_pending_request">
                     <span class="menu-item-content">
@@ -62,7 +64,6 @@ if (count($sbParts) >= 2) {
                     </span>
                 </a>
             </li>
-            <li><a href="<?= URLROOT ?>/public?url=hr/hr_schedule"><i class="bx bx-calendar"></i> <span>Schedule</span></a></li>
             <li>
                 <a href="<?= URLROOT ?>/public?url=HrLeave/index">
                     <span class="menu-item-content">
