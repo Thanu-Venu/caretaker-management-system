@@ -168,21 +168,7 @@ include_once APPROOT . '/views/templates/client/c_sidebar.php';
             </div>
         </div>
 
-        <!-- Actions Section -->
-        <div class="actions-container">
-            <div class="actions-card">
-                <h3 class="actions-title">What's Next?</h3>
-                <p class="actions-description">Your service will continue uninterrupted with your new caregiver. If you have any questions or need assistance, we're here to help.</p>
-                <div class="actions-grid">
-                    <a href="<?= URLROOT ?>/client/c_myBookings" class="action-btn primary">
-                        <i class="bx bx-calendar"></i>
-                        <span>View My Bookings</span>
-                    </a>
-                    <a href="<?= URLROOT ?>/client/c_complaintReg" class="action-btn secondary">
-                        <i class="bx bx-message-square"></i>
-                        <span>Contact Support</span>
-                    </a>
-                </div>
+      
             </div>
         </div>
     </main>
