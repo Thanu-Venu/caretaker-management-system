@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const baseCost = rate * duration * modifier;
 
     const mult = calcCustomizationMultiplier(basis, duration, applyMode);
-    const customizationFee = hours * 100 * mult;
+    const customizationFee = hours * 300 * mult;
 
     const total = baseCost + customizationFee;
 
