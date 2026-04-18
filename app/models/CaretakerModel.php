@@ -56,11 +56,16 @@ class CaretakerModel
     public function getActiveCaretakers()
     {
         $stmt = $this->conn->prepare(
-            "SELECT * FROM caretakers WHERE status = 'Active'
-             ORDER BY (rating IS NULL) ASC, rating DESC, name ASC"
+            "SELECT * FROM caretakers WHERE status = 'Active' ORDER BY name ASC"
         );
         $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        foreach ($rows as &$row) {
+            $row = $this->mergeFeedbackAverageIntoCaretakerRow($row);
+        }
+        unset($row);
+        $this->sortCaretakerRowsByRatingDescThenName($rows);
+        return $rows;
     }
 
     public function getCaretakerById($id)
@@ -549,7 +554,55 @@ AND NOT EXISTS (
         $stmt->bind_param($types, ...$values);
 
         $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        foreach ($rows as &$row) {
+            $row = $this->mergeFeedbackAverageIntoCaretakerRow($row);
+        }
+        unset($row);
+        return $rows;
+    }
+
+    /**
+     * Client-facing listings use caretakers.rating, but feedback stars are stored in feedbacks.
+     * When at least one client rating exists, expose its average as rating for browse/profile views.
+     *
+     * @param array $row Single caretaker row from the caretakers table
+     * @return array
+     */
+    public function mergeFeedbackAverageIntoCaretakerRow(array $row): array
+    {
+        $id = (int) ($row['id'] ?? 0);
+        if ($id <= 0) {
+            return $row;
+        }
+        $avg = $this->getAverageRating($id);
+        if ($avg > 0) {
+            $row['rating'] = round($avg, 1);
+        }
+        return $row;
+    }
+
+    /** @param array<int, array<string, mixed>> $rows */
+    private function sortCaretakerRowsByRatingDescThenName(array &$rows): void
+    {
+        usort($rows, static function (array $a, array $b): int {
+            $ra = isset($a['rating']) && $a['rating'] !== '' && $a['rating'] !== null ? (float) $a['rating'] : null;
+            $rb = isset($b['rating']) && $b['rating'] !== '' && $b['rating'] !== null ? (float) $b['rating'] : null;
+            if ($ra === null && $rb === null) {
+                return strcasecmp((string) ($a['name'] ?? ''), (string) ($b['name'] ?? ''));
+            }
+            if ($ra === null) {
+                return 1;
+            }
+            if ($rb === null) {
+                return -1;
+            }
+            if ((int) ($ra * 10) !== (int) ($rb * 10)) {
+                return $rb <=> $ra;
+            }
+
+            return strcasecmp((string) ($a['name'] ?? ''), (string) ($b['name'] ?? ''));
+        });
     }
 
 
@@ -1059,7 +1112,9 @@ public function getComplaintsByCaretaker($caretaker_id)
 
     public function getAverageRating($caretakerId)
     {
-        $stmt = $this->conn->prepare("SELECT AVG(rating) as avg_rating FROM feedbacks WHERE caretaker_id = ?");
+        $stmt = $this->conn->prepare(
+            "SELECT AVG(rating) AS avg_rating FROM feedbacks WHERE caretaker_id = ? AND rating > 0"
+        );
         $stmt->bind_param("i", $caretakerId);
         $stmt->execute();
         $res = $stmt->get_result()->fetch_assoc();

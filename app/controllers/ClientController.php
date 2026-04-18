@@ -1330,7 +1330,7 @@ class ClientController extends Controller
             exit;
         }
 
-        $caretaker = (array) $caretaker;
+        $caretaker = $caretakerModel->mergeFeedbackAverageIntoCaretakerRow((array) $caretaker);
 
         // Normalize incoming basis values from search flow (e.g., "hourly" -> "Hourly").
         $rawBasis = trim((string)($_GET['basis'] ?? ''));
@@ -1601,6 +1601,8 @@ class ClientController extends Controller
         if (!$caretaker) {
             die("Caretaker not found");
         }
+
+        $caretaker = $caretakerModel->mergeFeedbackAverageIntoCaretakerRow($caretaker);
 
         $allowedBookingKeys = ['service_type', 'basis', 'duration', 'date', 'time', 'customization_hours', 'customization_apply'];
         $bookingContext = [];
