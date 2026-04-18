@@ -371,18 +371,6 @@ class CaretakerModel
         return $stmt->execute();
     }
 
-    private function getTimeRangeFromString($timeString)
-    {
-        $map = [
-            "Morning (8am - 12pm)" => ["08:00:00", "12:00:00"],
-            "Evening (1pm - 5pm)"  => ["13:00:00", "17:00:00"],
-            "Night (6pm - 10pm)"   => ["18:00:00", "22:00:00"],
-            "Full Time (8am - 5pm)" => ["08:00:00", "17:00:00"]
-        ];
-
-        return $map[$timeString] ?? ["00:00:00", "23:59:59"];
-    }
-
     public function getAvailableCaretakers($service, $date, $preferredTime, $basis, $duration, $location = '', $excludeBookingId = null)
     {
         $startDate = $date;
@@ -398,7 +386,6 @@ class CaretakerModel
         } else {
             $endDate = date('Y-m-d', strtotime('+' . ($duration - 1) . ' days', strtotime($date)));
         }
-        list($searchStart, $searchEnd) = $this->getTimeRangeFromString($preferredTime);
 
         // base SQL
         $sql = "
@@ -430,35 +417,15 @@ AND NOT EXISTS (
         'requested','payment_requested','advance_paid',
         'accepted','approved','change_requested','reschedule_requested'
       )
-      AND b.booking_date <= ?
+      AND COALESCE(b.service_start_date, b.booking_date) <= ?
     AND (
         CASE
-            WHEN LOWER(b.basis) = 'hourly' THEN b.booking_date
-            WHEN LOWER(b.basis) = 'monthly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) MONTH), INTERVAL 1 DAY)
-            WHEN LOWER(b.basis) = 'yearly' THEN DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) YEAR), INTERVAL 1 DAY)
-            ELSE DATE_SUB(DATE_ADD(b.booking_date, INTERVAL GREATEST(b.duration, 1) DAY), INTERVAL 1 DAY)
+            WHEN LOWER(b.basis) = 'hourly' THEN COALESCE(b.service_start_date, b.booking_date)
+            WHEN LOWER(b.basis) = 'monthly' THEN DATE_SUB(DATE_ADD(COALESCE(b.service_start_date, b.booking_date), INTERVAL GREATEST(b.duration, 1) MONTH), INTERVAL 1 DAY)
+            WHEN LOWER(b.basis) = 'yearly' THEN DATE_SUB(DATE_ADD(COALESCE(b.service_start_date, b.booking_date), INTERVAL GREATEST(b.duration, 1) YEAR), INTERVAL 1 DAY)
+            ELSE DATE_SUB(DATE_ADD(COALESCE(b.service_start_date, b.booking_date), INTERVAL GREATEST(b.duration, 1) DAY), INTERVAL 1 DAY)
         END
-    ) >= ?
-      AND (
-          LOWER(b.basis) <> 'hourly'
-          OR (
-              ? <
-              CASE b.preferred_time
-                  WHEN 'Morning (8am - 12pm)' THEN '12:00:00'
-                  WHEN 'Evening (1pm - 5pm)'  THEN '17:00:00'
-                  WHEN 'Night (6pm - 10pm)'   THEN '22:00:00'
-                  WHEN 'Full Time (8am - 5pm)' THEN '17:00:00'
-              END
-              AND
-              ? >
-              CASE b.preferred_time
-                  WHEN 'Morning (8am - 12pm)' THEN '08:00:00'
-                  WHEN 'Evening (1pm - 5pm)'  THEN '13:00:00'
-                  WHEN 'Night (6pm - 10pm)'   THEN '18:00:00'
-                  WHEN 'Full Time (8am - 5pm)' THEN '08:00:00'
-              END
-          )
-      )";
+    ) >= ?";
 
         // Add exclusion for current booking if rescheduling
         if ($excludeBookingId !== null) {
@@ -466,26 +433,6 @@ AND NOT EXISTS (
         }
 
         $sql .= ")";
-
-                // Also block caretakers who are currently occupied today in any active booking.
-                // This prevents other clients from seeing caregivers who are already working now.
-                $sql .= "
-AND NOT EXISTS (
-        SELECT 1 FROM bookings b2
-        WHERE b2.caretaker_id = c.id
-            AND LOWER(b2.status) IN (
-                'requested','payment_requested','advance_paid',
-                'accepted','approved','change_requested','reschedule_requested'
-            )
-            AND CURDATE() BETWEEN b2.booking_date AND (
-                CASE
-                        WHEN LOWER(b2.basis) = 'hourly' THEN b2.booking_date
-                        WHEN LOWER(b2.basis) = 'monthly' THEN DATE_SUB(DATE_ADD(b2.booking_date, INTERVAL GREATEST(b2.duration, 1) MONTH), INTERVAL 1 DAY)
-                        WHEN LOWER(b2.basis) = 'yearly' THEN DATE_SUB(DATE_ADD(b2.booking_date, INTERVAL GREATEST(b2.duration, 1) YEAR), INTERVAL 1 DAY)
-                        ELSE DATE_SUB(DATE_ADD(b2.booking_date, INTERVAL GREATEST(b2.duration, 1) DAY), INTERVAL 1 DAY)
-                END
-            )
-)";
 
         // Leave replacement cover: caregiver is busy as new_caretaker_id for overlapping dates/slots
         $sql .= "
@@ -498,27 +445,7 @@ AND NOT EXISTS (
         'accepted','approved','change_requested','reschedule_requested'
       )
       AND br.start_date <= ?
-      AND br.end_date >= ?
-      AND (
-          LOWER(rb.basis) <> 'hourly'
-          OR (
-              ? <
-              CASE rb.preferred_time
-                  WHEN 'Morning (8am - 12pm)' THEN '12:00:00'
-                  WHEN 'Evening (1pm - 5pm)'  THEN '17:00:00'
-                  WHEN 'Night (6pm - 10pm)'   THEN '22:00:00'
-                  WHEN 'Full Time (8am - 5pm)' THEN '17:00:00'
-              END
-              AND
-              ? >
-              CASE rb.preferred_time
-                  WHEN 'Morning (8am - 12pm)' THEN '08:00:00'
-                  WHEN 'Evening (1pm - 5pm)'  THEN '13:00:00'
-                  WHEN 'Night (6pm - 10pm)'   THEN '18:00:00'
-                  WHEN 'Full Time (8am - 5pm)' THEN '08:00:00'
-              END
-          )
-      )";
+      AND br.end_date >= ?";
 
         if ($excludeBookingId !== null) {
             $sql .= "
@@ -531,10 +458,10 @@ AND NOT EXISTS (
         // prepare statement
         $stmt = $this->conn->prepare($sql);
 
-        // append date/time params (4 values)
-        $types .= "ssss";
-        // True overlap: existing_start <= requested_end AND existing_end >= requested_start
-        $values = array_merge($values, [$endDate, $startDate, $searchStart, $searchEnd]);
+        // Date overlap: existing_start <= requested_end AND existing_end >= requested_start.
+        // Hourly bookings occupy the full calendar day (matches HH:MM preferred_time in DB).
+        $types .= "ss";
+        $values = array_merge($values, [$endDate, $startDate]);
 
         // Add exclusion param if rescheduling
         if ($excludeBookingId !== null) {
@@ -542,8 +469,8 @@ AND NOT EXISTS (
             $values[] = $excludeBookingId;
         }
 
-        $types .= "ssss";
-        $values = array_merge($values, [$endDate, $startDate, $searchStart, $searchEnd]);
+        $types .= "ss";
+        $values = array_merge($values, [$endDate, $startDate]);
 
         if ($excludeBookingId !== null) {
             $types .= "i";
