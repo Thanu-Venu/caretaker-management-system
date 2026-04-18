@@ -617,7 +617,7 @@ class LeaveModel
                             . "New caregiver: {$replacementName}\n"
                             . "Service period: {$leaveStart} to {$leaveEnd}\n"
                             . "Your service will continue uninterrupted.";
-                        $clientLink = URLROOT . '/client/c_booking';
+                        $clientLink = URLROOT . '/client/caretakerDetails/' . $replacementId . '?start_date=' . urlencode($leaveStart) . '&end_date=' . urlencode($leaveEnd);
                         $this->notifyUser($clientId, 'client', $clientTitle, $clientMessage, $clientLink);
                     }
                 }
