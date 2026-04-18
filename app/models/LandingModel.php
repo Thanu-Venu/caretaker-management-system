@@ -61,6 +61,78 @@ class LandingModel
         }
     }
 
+    /**
+     * Recent client feedback for the public “What families say” section.
+     *
+     * @return list<array{
+     *   id:int,
+     *   client_name:string,
+     *   location:string,
+     *   rating:int,
+     *   quote:string,
+     *   image_url:string
+     * }>
+     */
+
+      public function getPublicTestimonials(int $limit = 12): array
+    {
+        if (!$this->conn) {
+            return [];
+        }
+
+        $limit = max(1, min(24, $limit));
+
+        $sql = "SELECT
+                f.id,
+                f.rating,
+                f.feedback AS quote,
+                c.name AS client_name,
+                COALESCE(NULLIF(TRIM(b.district), ''), 'Sri Lanka') AS location_label,
+                c.profile_image
+            FROM feedbacks f
+            INNER JOIN clients c ON c.id = f.client_id
+            INNER JOIN bookings b ON b.id = f.booking_id
+            WHERE f.rating >= 1
+              AND f.rating <= 5
+              AND CHAR_LENGTH(TRIM(f.feedback)) >= 8
+            ORDER BY f.created_at DESC
+            LIMIT ?";
+
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            return [];
+        }
+
+        $stmt->bind_param('i', $limit);
+        if (!$stmt->execute()) {
+            return [];
+        }
+
+        $res = $stmt->get_result();
+        $out = [];
+        $base = defined('URLROOT') ? rtrim((string) URLROOT, '/') : '';
+
+        while ($row = $res->fetch_assoc()) {
+            $img = trim((string) ($row['profile_image'] ?? ''));
+            if ($img !== '') {
+                $safeFile = basename($img);
+                $imageUrl = $base . '/public/uploads/' . rawurlencode($safeFile);
+            } else {
+                $imageUrl = $base . '/public/images/default.jpg';
+            }
+
+            $out[] = [
+                'id' => (int) ($row['id'] ?? 0),
+                'client_name' => (string) ($row['client_name'] ?? ''),
+                'location' => (string) ($row['location_label'] ?? ''),
+                'rating' => max(1, min(5, (int) ($row['rating'] ?? 0))),
+                'quote' => (string) ($row['quote'] ?? ''),
+                'image_url' => $imageUrl,
+            ];
+        }
+
+        return $out;
+    }
     private function fetchEstimatedCareHours(): int
     {
         $sql = "SELECT COALESCE(SUM(

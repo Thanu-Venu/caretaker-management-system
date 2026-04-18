@@ -17,19 +17,12 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
     <!-- Legend: booking states caregivers see most often + leave/cover (payment steps stay colored on calendar) -->
     <div class="status-legend">
       <div class="legend-item">
-        <span class="legend-color" style="background-color: #4CAF50;"></span>
-        <span class="legend-label">Accepted</span>
+        <span class="legend-color" style="background-color: #007bff;"></span>
+        <span class="legend-label">Bookings</span>
       </div>
+      
       <div class="legend-item">
-        <span class="legend-color" style="background-color: #6c757d;"></span>
-        <span class="legend-label">Completed</span>
-      </div>
-      <div class="legend-item">
-        <span class="legend-color" style="background-color: #7b1fa2;"></span>
-        <span class="legend-label">Replacement cover (leave)</span>
-      </div>
-      <div class="legend-item">
-        <span class="legend-color" style="background-color: #ff7043;"></span>
+        <span class="legend-color" style="background-color: #FF8C00;"></span>
         <span class="legend-label">Your approved leave</span>
       </div>
     </div>
@@ -103,57 +96,51 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
           method: "GET"
         },
         eventClick: function(info) {
-          // Populate modal with booking details
+          // Populate modal with booking or leave details
           const props = info.event.extendedProps;
+          const isLeave = props.type === 'leave';
 
-          if (props.isApprovedLeave) {
-            document.getElementById('clientName').textContent = 'Approved leave (you)';
-            document.getElementById('serviceType').textContent = props.service || '-';
-            document.getElementById('bookingTime').textContent = props.time || '-';
-            document.getElementById('bookingDate').textContent = (props.leaveStart && props.leaveEnd)
-              ? (props.leaveStart + ' → ' + props.leaveEnd)
-              : (props.dateRange || '-');
-            document.getElementById('serviceDuration').textContent = props.duration || '-';
-            document.getElementById('serviceLocation').textContent = props.leaveReason && props.leaveReason !== '—'
-              ? ('Reason: ' + props.leaveReason)
-              : '—';
+          if (isLeave) {
+            // Handle leave events
+            console.log('Leave event data:', props); // Debug log
+            document.querySelector('.modal-header h3').textContent = 'Leave Details';
+            document.getElementById('clientName').textContent = 'Leave (You)';
+            document.getElementById('leaveype').textContent = props.leave_type || '-';
+            document.getElementById('leaveate').textContent = info.event.startStr.split('T')[0];
           } else {
+            // Handle booking events
+            document.querySelector('.modal-header h3').textContent = 'Booking Details';
             document.getElementById('clientName').textContent = props.client || '-';
             document.getElementById('serviceType').textContent = props.service || '-';
             document.getElementById('bookingTime').textContent = props.time || '-';
-            document.getElementById('bookingDate').textContent = props.isReplacementCover
-              ? ((props.coverStart && props.coverEnd) ? (props.coverStart + ' → ' + props.coverEnd) : (props.dateRange || '-'))
-              : (props.dateRange || info.event.startStr.split('T')[0] || '-');
+            document.getElementById('bookingDate').textContent = props.dateRange || info.event.startStr.split('T')[0] || '-';
             document.getElementById('serviceDuration').textContent = props.duration || '-';
             document.getElementById('serviceLocation').textContent = props.location || '-';
           }
 
           // Format status with badge styling
           const statusEl = document.getElementById('bookingStatus');
-          const status = props.status || '-';
           let statusClass = '';
-          let statusText = status;
+          let statusText = '';
 
-          if (props.isApprovedLeave) {
+          if (isLeave) {
             statusClass = 'status-approved-leave';
-            statusText = 'Approved leave';
-          } else if (props.isReplacementCover) {
-            statusClass = 'status-replacement-cover';
-            statusText = 'Replacement cover';
-          } else if (status === 'Completed') {
+            statusText = 'Approved Leave';
+          } else if (props.status === 'Completed') {
             statusClass = 'status-completed';
             statusText = 'Completed';
-          } else if (status === 'Accepted') {
+          } else if (props.status === 'Accepted') {
             statusClass = 'status-accepted';
             statusText = 'Accepted';
-          } else if (status === 'Payment_Requested') {
+          } else if (props.status === 'Payment_Requested') {
             statusClass = 'status-payment-pending';
             statusText = 'Payment Pending';
-          } else if (status === 'Advance_Paid') {
+          } else if (props.status === 'Advance_Paid') {
             statusClass = 'status-payment-approved';
             statusText = 'Payment Approved';
           } else {
             statusClass = 'status-default';
+            statusText = props.status || '-';
           }
 
           statusEl.innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;

@@ -610,7 +610,8 @@ AND NOT EXISTS (
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    // Get All Active Bookings for Schedule Calendar
+    
+
     public function getAllActiveBookings($caretakerId)
     {
         // Update old accepted bookings to completed first
@@ -1106,5 +1107,69 @@ public function getComplaintsByCaretaker($caretaker_id)
         $stmt->bind_param("i", $caretakerId);
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    // Get single caretaker complaint by ID
+    public function getComplaintById($complaint_id)
+    {
+        $complaint_id = (int)$complaint_id;
+        $stmt = $this->conn->prepare("
+            SELECT cc.complaint_id, cc.caretaker_id, cc.client_id, cc.service_type, cc.service_date, cc.description, cc.status,
+                   c.name AS client_name, ct.name AS caretaker_name
+            FROM ct_complaints cc
+            LEFT JOIN clients c ON cc.client_id = c.id
+            LEFT JOIN caretakers ct ON cc.caretaker_id = ct.id
+            WHERE cc.complaint_id = ?
+        ");
+        $stmt->bind_param("i", $complaint_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result ? $result->fetch_assoc() : null;
+    }
+
+    // Update caretaker complaint
+    public function updateComplaint($complaint_id, $data)
+    {
+        $complaint_id = (int)$complaint_id;
+        $client_id = (int)$data['client_id'];
+        $description = $data['complaint'];
+        $service_type = $data['type'] ?? 'service';
+        
+        $stmt = $this->conn->prepare("
+            UPDATE ct_complaints 
+            SET client_id = ?, description = ?, service_type = ?
+            WHERE complaint_id = ? AND status = 'Pending'
+        ");
+        $stmt->bind_param("issi", $client_id, $description, $service_type, $complaint_id);
+        return $stmt->execute();
+    }
+
+    // Get clients by caretaker for dropdown
+    public function getClientsByCaretaker($caretaker_id)
+    {
+        $caretaker_id = (int)$caretaker_id;
+        $stmt = $this->conn->prepare("
+            SELECT DISTINCT c.id, c.name 
+            FROM clients c
+            JOIN bookings b ON c.id = b.client_id
+            WHERE b.caretaker_id = ?
+            ORDER BY c.name ASC
+        ");
+        $stmt->bind_param("i", $caretaker_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+    }
+
+    // Delete caretaker complaint (only if pending)
+    public function deleteComplaint($complaint_id)
+    {
+        $complaint_id = (int)$complaint_id;
+        $stmt = $this->conn->prepare("
+            DELETE FROM ct_complaints 
+            WHERE complaint_id = ? AND status = 'Pending'
+        ");
+        $stmt->bind_param("i", $complaint_id);
+        return $stmt->execute();
     }
 }

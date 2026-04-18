@@ -51,6 +51,16 @@ class LeaveModel
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function getLeavesByStatusAndUser($status, $userId)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM leaves WHERE status=? AND user_id=? ORDER BY start_date DESC"
+        );
+        $stmt->bind_param("si", $status, $userId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
     public function getLeaveByIdWithCaretaker($id)
     {
         $stmt = $this->conn->prepare(

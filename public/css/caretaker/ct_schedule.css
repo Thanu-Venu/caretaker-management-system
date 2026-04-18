@@ -81,7 +81,7 @@
 .modal-card {
   background: #fff;
   border-radius: 12px;
-  max-width: 700px;
+  max-width: 900px;
   margin: 80px auto;
   padding: 20px;
   animation: slideUp 0.3s ease-in-out;
@@ -258,6 +258,12 @@
   background: #e2e3e5;
   color: #383d41;
   border: 1px solid #d6d8db;
+}
+
+.status-approved-leave {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
 }
 
 /* Additional status classes for modal */
@@ -500,7 +506,7 @@ table {
     padding: 0;
     border-radius: 16px;
     width: 90%;
-    max-width: 400px;
+    max-width: 1500px !important;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     animation: modalSlideIn 0.3s ease-out;
 }

@@ -29,7 +29,7 @@
                     <?php echo htmlspecialchars($data['error']); ?>
                 </div>
             <?php endif; ?>
-            <form id="loginForm" action="<?php echo URLROOT; ?>/public/?url=auth/login" method="POST">
+            <form id="loginForm" action="http://localhost/CMA/public/?url=auth/login" method="POST">
                 <div class="input-box">
                     <label>Email Address</label>
                     <input
@@ -136,5 +136,4 @@
     </script>
 </body>
 
-</html>
 </html>
