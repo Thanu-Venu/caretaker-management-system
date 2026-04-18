@@ -45,6 +45,15 @@ function ensureTimeSelect() {
   return select;
 }
 
+/** Re-scan for date/time inputs and wrap with SmartCare.CustomDateTime (see public/js/common/custom-datetime.js). */
+function refreshFindPopupDateTime(scopeRoot) {
+  const root = scopeRoot || document.getElementById("searchPopup") || document;
+  if (window.SmartCare && window.SmartCare.CustomDateTime && typeof window.SmartCare.CustomDateTime.init === "function") {
+    window.SmartCare.CustomDateTime.init(root);
+  }
+}
+window.refreshFindPopupDateTime = refreshFindPopupDateTime;
+
 function updatePopupOptions(service) {
   const timeSelect = ensureTimeSelect();
   const basisSelect = document.getElementById("basisFilter");
@@ -212,6 +221,7 @@ if (basisFilter) {
         container.innerHTML = "";
         container.appendChild(input);
         timeSelect = input;
+        refreshFindPopupDateTime(container);
       }
     } else {
       if (labelEl) labelEl.textContent = "Preferred Time";
@@ -237,6 +247,25 @@ if (durationInput) {
   durationInput.addEventListener('input', enforceDurationRange);
 }
 
+/** Backdrop suspend while native <select> menus are open (custom date/time avoids native pickers). */
+let cFindOverlaySuspendTimer = null;
+function clearCFindOverlaySuspendTimer() {
+  if (cFindOverlaySuspendTimer) {
+    clearTimeout(cFindOverlaySuspendTimer);
+    cFindOverlaySuspendTimer = null;
+  }
+}
+function scheduleOverlaySuspendOff(overlayEl) {
+  clearCFindOverlaySuspendTimer();
+  cFindOverlaySuspendTimer = window.setTimeout(() => {
+    if (overlayEl) overlayEl.classList.remove("popup-overlay--suspend");
+    cFindOverlaySuspendTimer = null;
+  }, 420);
+}
+function overlaySuspendOn(overlayEl) {
+  clearCFindOverlaySuspendTimer();
+  if (overlayEl) overlayEl.classList.add("popup-overlay--suspend");
+}
 
 const cancelBtn = document.getElementById("cancelPopupBtn");
 const popup = document.getElementById("searchPopup");
@@ -244,8 +273,13 @@ const overlay = document.getElementById("popupOverlay");
 
 if (cancelBtn && popup && overlay) {
   cancelBtn.addEventListener("click", () => {
+    if (window.SmartCare && window.SmartCare.CustomDateTime && typeof window.SmartCare.CustomDateTime.closeAll === "function") {
+      window.SmartCare.CustomDateTime.closeAll();
+    }
     popup.style.display = "none";
     overlay.style.display = "none";
+    overlay.classList.remove("popup-overlay--suspend");
+    clearCFindOverlaySuspendTimer();
   });
 }
 
@@ -439,7 +473,11 @@ document.addEventListener("DOMContentLoaded", function () {
     popupFormEl.addEventListener("submit", function () {
       const overlayEl = document.getElementById("popupOverlay");
       const popupEl = document.getElementById("searchPopup");
-      if (overlayEl) overlayEl.style.display = "none";
+      if (overlayEl) {
+        overlayEl.style.display = "none";
+        overlayEl.classList.remove("popup-overlay--suspend");
+        clearCFindOverlaySuspendTimer();
+      }
       if (popupEl) popupEl.style.display = "none";
     });
   }
@@ -448,26 +486,63 @@ document.addEventListener("DOMContentLoaded", function () {
   const popup = document.getElementById("searchPopup");
   const form = document.getElementById("popupForm");
 
+  /** Native <select> dropdowns + custom pickers: guard overlay clicks */
+  if (popup && overlay) {
+    popup.addEventListener("focusin", function (e) {
+      const el = e.target;
+      if (!(el instanceof HTMLElement)) return;
+      if (el.tagName === "SELECT") {
+        overlaySuspendOn(overlay);
+        return;
+      }
+      if (el.tagName === "INPUT" && ["time", "date", "datetime-local"].includes(el.type)) {
+        overlaySuspendOn(overlay);
+      }
+    });
+    popup.addEventListener("focusout", function (e) {
+      const el = e.target;
+      if (!(el instanceof HTMLElement)) return;
+      if (
+        el.tagName === "SELECT" ||
+        (el.tagName === "INPUT" && ["time", "date", "datetime-local"].includes(el.type))
+      ) {
+        scheduleOverlaySuspendOff(overlay);
+      }
+    });
+  }
+
   if (openBtn && overlay && popup) {
-    // 🔹 OPEN popup on button click
     openBtn.addEventListener("click", function () {
       overlay.style.display = "block";
       popup.style.display = "block";
+      overlay.classList.remove("popup-overlay--suspend");
+      clearCFindOverlaySuspendTimer();
       if (popupServiceFilter) {
         updatePopupOptions(popupServiceFilter.value);
       }
+      refreshFindPopupDateTime(popup);
     });
 
-    // 🔹 CLOSE popup when clicking overlay
-    overlay.addEventListener("click", function () {
+    overlay.addEventListener("click", function (ev) {
+      if (ev.target !== overlay) return;
+      if (overlay.classList.contains("popup-overlay--suspend")) return;
+      if (window.SmartCare && window.SmartCare.CustomDateTime && typeof window.SmartCare.CustomDateTime.closeAll === "function") {
+        window.SmartCare.CustomDateTime.closeAll();
+      }
       overlay.style.display = "none";
       popup.style.display = "none";
+      overlay.classList.remove("popup-overlay--suspend");
+      clearCFindOverlaySuspendTimer();
     });
   }
 
   if (form) {
     form.addEventListener("submit", () => {
-      if (overlay) overlay.style.display = "none";
+      if (overlay) {
+        overlay.style.display = "none";
+        overlay.classList.remove("popup-overlay--suspend");
+        clearCFindOverlaySuspendTimer();
+      }
       if (popup) popup.style.display = "none";
     });
   }
@@ -488,4 +563,5 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   applyFilters();
+  refreshFindPopupDateTime(document.getElementById("searchPopup"));
 });
