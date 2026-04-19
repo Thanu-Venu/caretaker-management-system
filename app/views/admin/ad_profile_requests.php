@@ -20,7 +20,7 @@ $selectedStatus = $data['selectedStatus'] ?? 'All';
     <main class="content">
         <section>
             <div class="page-header">
-                <h1 class="page-title">Caretaker Profile Update Requests</h1>
+                <h1 class="page-title">Caregiver Profile Update Requests</h1>
             </div>
 
             <?php if (!empty($_SESSION['success'])): ?>
