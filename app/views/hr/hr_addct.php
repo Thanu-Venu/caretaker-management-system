@@ -106,9 +106,6 @@ include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
         <?php endforeach; ?>
       </select>
 
-     <!--<input type="text" name="location" placeholder="Location"
-        value="<?= htmlspecialchars($filters['location'] ?? '') ?>">-->
-
       <input type="text" name="q" placeholder="Search name"
         value="<?= htmlspecialchars($filters['q'] ?? '') ?>">
 
