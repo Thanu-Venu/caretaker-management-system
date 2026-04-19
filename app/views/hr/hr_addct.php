@@ -97,8 +97,14 @@ include_once APPROOT . '/views/templates/hr/hr_sidebar.php';
         <option value="Inactive" <?= (($filters['status'] ?? '') === 'Inactive') ? 'selected' : '' ?>>Inactive</option>
       </select>
 
-      <input type="text" name="location" placeholder="Location"
-        value="<?= htmlspecialchars($filters['location'] ?? '') ?>">
+      <select name="location">
+        <option value="">All Locations</option>
+        <?php foreach ($data['locations'] ?? [] as $loc): ?>
+          <option value="<?= htmlspecialchars($loc) ?>" <?= (($filters['location'] ?? '') === $loc) ? 'selected' : '' ?>>
+            <?= htmlspecialchars($loc) ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
 
       <input type="text" name="q" placeholder="Search name"
         value="<?= htmlspecialchars($filters['q'] ?? '') ?>">

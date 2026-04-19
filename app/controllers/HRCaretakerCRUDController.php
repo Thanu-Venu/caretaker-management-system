@@ -305,6 +305,7 @@ class HRCaretakerCRUDController extends Controller
             'totalPages' => $totalPages,
             'openModal' => $openModal,
             'editCaretaker' => $editCaretaker,
+            'locations' => $this->caretakerModel->getDistinctLocations(),
         ]);
     }
 
