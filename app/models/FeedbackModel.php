@@ -10,9 +10,7 @@ class FeedbackModel {
         $this->conn = $db->conn;
     }
 
-    /* ===============================
-       ADMIN / HR – GET ALL FEEDBACKS
-    =============================== */
+    /* ADMIN / HR – GET ALL FEEDBACKS */
     public function getAll() {
         $sql = "SELECT 
                     f.id,
@@ -21,19 +19,19 @@ class FeedbackModel {
                     f.feedback,
                     f.created_at,
                     c.name AS client_name,
-                    ct.name AS caretaker_name
+                    ct.name AS caretaker_name,
+                    b.service_type AS service
                 FROM feedbacks f
                 JOIN clients c ON f.client_id = c.id
                 JOIN caretakers ct ON f.caretaker_id = ct.id
+                LEFT JOIN bookings b ON f.booking_id = b.id
                 ORDER BY f.created_at DESC";
 
         $result = $this->conn->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    /* ===============================
-       CLIENT – GET OWN FEEDBACKS
-    =============================== */
+    /* CLIENT – GET OWN FEEDBACKS */
     public function getByClient($clientId) {
         $stmt = $this->conn->prepare(
             "SELECT 
@@ -53,9 +51,7 @@ class FeedbackModel {
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    /* ===============================
-       CARETAKER – GET OWN FEEDBACKS
-    =============================== */
+    /* CARETAKER – GET OWN FEEDBACKS */
     public function getByCaretaker($caretakerId) {
         $stmt = $this->conn->prepare(
             "SELECT 
@@ -75,9 +71,7 @@ class FeedbackModel {
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    /* ===============================
-       GET SINGLE FEEDBACK
-    =============================== */
+    /* GET SINGLE FEEDBACK */
     public function getById($id) {
         $stmt = $this->conn->prepare(
             "SELECT * FROM feedbacks WHERE id = ?"
@@ -87,9 +81,7 @@ class FeedbackModel {
         return $stmt->get_result()->fetch_assoc();
     }
 
-    /* ===============================
-       CREATE FEEDBACK
-    =============================== */
+    /* CREATE FEEDBACK */
     public function create($data) {
         $stmt = $this->conn->prepare(
             "INSERT INTO feedbacks 
@@ -112,9 +104,7 @@ class FeedbackModel {
         return false;
     }
 
-    /* ===============================
-       UPDATE FEEDBACK
-    =============================== */
+    /* UPDATE FEEDBACK */
     public function update($id, $data) {
         $stmt = $this->conn->prepare(
             "UPDATE feedbacks
@@ -132,9 +122,7 @@ class FeedbackModel {
         return $stmt->execute();
     }
 
-    /* ===============================
-       DELETE FEEDBACK
-    =============================== */
+    /* DELETE FEEDBACK */
     public function delete($id) {
         $stmt = $this->conn->prepare(
             "DELETE FROM feedbacks WHERE id = ?"
@@ -143,9 +131,7 @@ class FeedbackModel {
         return $stmt->execute();
     }
 
-    /* ===============================
-       CHECK IF FEEDBACK EXISTS (PER BOOKING)
-    =============================== */
+    /* CHECK IF FEEDBACK EXISTS (PER BOOKING) */
     public function feedbackExists($bookingId) {
         $stmt = $this->conn->prepare(
             "SELECT id FROM feedbacks WHERE booking_id = ?"

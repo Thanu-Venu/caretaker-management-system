@@ -13,10 +13,6 @@ class FeedbackController extends Controller
         $this->notifModel = new NotificationModel();
     }
 
-    // -------------------------------
-    // ADMIN + HR + CARETAKER
-    // -------------------------------
-
     // Admin list
     public function adminList()
     {
@@ -42,10 +38,7 @@ class FeedbackController extends Controller
         $this->view("caretaker/feedback_list", ['feedbacks' => $data]);
     }
 
-    // -------------------------------
     // CLIENT CRUD
-    // -------------------------------
-
     // Client list
     public function index($client_id = null)
     {
