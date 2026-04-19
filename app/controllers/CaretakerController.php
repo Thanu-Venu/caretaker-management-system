@@ -803,13 +803,13 @@ public function saveComplaint()
         $user = $_SESSION['user'];
 
         if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-            header("Location: " . URLROOT . "/caretaker/ct_settings");
+            header("Location: " . URLROOT . "/public?url=caretaker/ct_settings");
             exit();
         }
 
         if ($this->profileChangeRequestModel->hasPendingRequest((int)$user['id'])) {
             $_SESSION['error'] = "You already have a pending profile change request.";
-            header("Location: " . URLROOT . "/caretaker/ct_settings");
+            header("Location: " . URLROOT . "/public?url=caretaker/ct_settings");
             exit();
         }
 
@@ -830,7 +830,7 @@ public function saveComplaint()
             $notif->notifyAdmins(
                 'Caretaker Profile Update Request',
                 'Caretaker ' . ($user['name'] ?? 'Unknown') . ' submitted a profile update request.',
-                URLROOT . '/admin/ad_profile_requests'
+                URLROOT . '/public?url=admin/ad_profile_requests'
             );
 
             $_SESSION['success'] = "Profile change request submitted. Admin approval is required.";
@@ -838,7 +838,7 @@ public function saveComplaint()
             $_SESSION['error'] = "Could not submit profile change request.";
         }
 
-        header("Location: " . URLROOT . "/caretaker/ct_settings");
+        header("Location: " . URLROOT . "/public?url=caretaker/ct_settings");
         exit();
     }
 
@@ -858,14 +858,14 @@ public function saveComplaint()
 
             if ($newPassword !== $confirmPassword) {
                 $_SESSION['error'] = "Passwords do not match!";
-                header("Location: " . URLROOT . "/caretaker/ct_settings");
+                header("Location: " . URLROOT . "/public?url=caretaker/ct_settings");
                 exit();
             }
 
             $pwErr = CaretakerModel::validateCaretakerPassword($newPassword);
             if ($pwErr !== null) {
                 $_SESSION['error'] = $pwErr;
-                header("Location: " . URLROOT . "/caretaker/ct_settings");
+                header("Location: " . URLROOT . "/public?url=caretaker/ct_settings");
                 exit();
             }
 
@@ -877,7 +877,7 @@ public function saveComplaint()
 
             // Success
             $_SESSION['success'] = "Password updated successfully!";
-            header("Location: " . URLROOT . "/caretaker/ct_settings");
+            header("Location: " . URLROOT . "/public?url=caretaker/ct_settings");
             exit();
         }
     }
