@@ -145,7 +145,7 @@ class CaretakerModel
             );
             $stmt->bind_param("sssss", $data['name'], $data['email'], $hashedPassword, $role, $status);
             if (!$stmt->execute()) {
-                throw new Exception('Failed to create caretaker account');
+                throw new Exception('Failed to create caregiver account');
             }
             $accountId = (int)$this->conn->insert_id;
             $stmt->close();
@@ -170,7 +170,7 @@ class CaretakerModel
             );
 
             if (!$stmt->execute()) {
-                throw new Exception('Failed to create caretaker profile');
+                throw new Exception('Failed to create caregiver profile');
             }
             $stmt->close();
 
@@ -283,7 +283,7 @@ class CaretakerModel
             $stmt = $this->conn->prepare("DELETE FROM caretakers WHERE id=?");
             $stmt->bind_param("i", $id);
             if (!$stmt->execute()) {
-                throw new Exception('Failed to delete caretaker profile');
+                throw new Exception('Failed to delete caregiver profile');
             }
             $stmt->close();
 
@@ -292,7 +292,7 @@ class CaretakerModel
                 $stmt = $this->conn->prepare("DELETE FROM accounts WHERE id=?");
                 $stmt->bind_param("i", $accountId);
                 if (!$stmt->execute()) {
-                    throw new Exception('Failed to delete caretaker account');
+                    throw new Exception('Failed to delete caregiver account');
                 }
                 $stmt->close();
             }
