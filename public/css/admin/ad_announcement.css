@@ -1,25 +1,41 @@
 /* Announcements — filters, column hints, modals; table chrome from admin-ui */
 
+/* One horizontal toolbar: filters + Apply/Reset stay on the same line */
 .announcement-admin-page .announcement-filters {
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 16px 20px;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 12px 16px;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable;
+}
+
+/* flex-shrink:0 keeps groups on one toolbar row; nowrap keeps label beside control
+   (global .filter-group { flex-wrap:wrap } otherwise stacks label above inputs). */
+.announcement-admin-page .announcement-filters > .filter-group {
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+    align-items: center;
 }
 
 .announcement-admin-page .announcement-filters .filter-group--grow {
-    flex: 1 1 200px;
-    min-width: 160px;
+    flex: 1 1 120px;
+    min-width: 120px;
+    max-width: none;
 }
 
 .announcement-admin-page .announcement-filters .filter-group--grow input[type="search"] {
     min-width: 0;
     width: 100%;
-    max-width: 320px;
+    max-width: min(280px, 36vw);
 }
 
 .announcement-admin-page .announcement-filters .filter-group--actions {
-    display: flex;
-    flex-wrap: wrap;
+    display: inline-flex;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
     align-items: center;
     gap: 10px;
     margin-left: auto;
