@@ -44,7 +44,6 @@
 }
 
 .complaint-page input,
-.complaint-page select,
 .complaint-page textarea {
     width: 100%;
     padding: 14px;
@@ -52,6 +51,21 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 15px;
+}
+
+/* Native selects only — enhanced ones use .sc-select (custom-select.js). */
+.complaint-page select:not(.sc-select-native) {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 24px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.complaint-page .sc-select {
+    width: 100%;
+    margin-bottom: 24px;
 }
 
 .complaint-page textarea {
@@ -64,7 +78,8 @@
     flex-direction: column;
 }
 
-.complaint-page button {
+/* Submit only — do not style .sc-select-trigger / .sc-select-option (same page). */
+.complaint-page .form-actions button[type='submit'] {
     width: auto;
     background: #1e88e5;
     color: white;
@@ -76,7 +91,7 @@
     cursor: pointer;
 }
 
-.complaint-page button:hover {
+.complaint-page .form-actions button[type='submit']:hover {
     background: #1a76c7;
 }
 
