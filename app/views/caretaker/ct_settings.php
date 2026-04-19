@@ -59,7 +59,7 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
             alt="Profile"
             onerror="this.src='<?= URLROOT ?>/public/uploads/default.jpg';">
             
-            <form id="edit-details-form" action="<?= URLROOT ?>/index.php?url=Caretaker/editCaretakerDetails" method="post" enctype="multipart/form-data">
+            <form id="edit-details-form" action="<?= URLROOT ?>/public/index.php?url=caretaker/editCaretakerDetails" method="post" enctype="multipart/form-data">
             <div class="pro-section">
                 <div class="field">
                     <label for="name">Full Name</label>
@@ -105,7 +105,7 @@ include_once APPROOT . '/views/templates/caretaker/ct_sidebar.php';
       <section class="card">
         <h3>Change Password</h3>
         <form id="passwordForm"
-          action="<?= URLROOT ?>/index.php?url=Caretaker/editPasswordDetails"
+          action="<?= URLROOT ?>/public/index.php?url=caretaker/editPasswordDetails"
           method="post">
           <div class="field">
               <label for="current-password">Current Password</label>
