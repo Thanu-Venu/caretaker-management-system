@@ -15,11 +15,10 @@ if (profileFile) {
     });
 }
 
-// Profile Form Submission Validation
-const saveProfileBtn = document.getElementById('saveProfile');
-
-if (saveProfileBtn) {
-    saveProfileBtn.addEventListener('click', function(e) {
+// Profile form validation (submit event avoids double-submit from click + native submit)
+const editDetailsForm = document.getElementById('edit-details-form');
+if (editDetailsForm) {
+    editDetailsForm.addEventListener('submit', function(e) {
         const name = document.getElementById('name').value.trim();
         const phone = document.getElementById('phone').value.trim();
         const experience = document.getElementById('experience').value.trim();
@@ -28,11 +27,7 @@ if (saveProfileBtn) {
         if (!name || !phone || !experience || !qualifications) {
             e.preventDefault();
             alert('Please fill all required fields!');
-            return false;
         }
-
-        // Submit the form
-        saveProfileBtn.closest('form').submit();
     });
 }
 
